@@ -31,7 +31,7 @@
 		ORDER BY id
 	</select>
 
-	<select id="selectList_ilj01015_calendar" parameterType="map" resultType="map">
+	<select id="selectList_ilj01040_grid1" parameterType="map" resultType="map">
 		SELECT
 			A.MST_NO			AS MST_NO,
 			A.IMPORTANT_YN		AS IMPORTANT_YN,
