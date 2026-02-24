@@ -260,5 +260,3 @@
 
 </script>
 
-
-<%@ include file = "../../inc_footer.jsp" %>

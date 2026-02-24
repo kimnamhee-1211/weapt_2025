@@ -8,16 +8,9 @@
             <div class="section1">
                 <span class="section1_nav"><i class="icon-picture"></i>퇴사직원조회</span>
                 <div class="section1_btn" id="section1_btn"></div>
-            </div>
-            <div class="section2">
-                <div class="section2_block">
-                    <span class="section1_nav_mic">
-                        <i class="icon-mic"></i>복귀 버튼을 사용하여 퇴사 직원을 재직 상태로 복귀 처리합니다.
-                    </span>
-                    <span class="search-box section1_btn">
-                        <button id="cancelResign_btn_grid1" class="del_btn" onclick="cancelResign_onclick()">복귀</button>
-                    </span>
-                </div>
+                <span class="search-box section1_btn">
+                    <button id="cancelResign_btn_grid1" class="del_btn" onclick="cancelResign_onclick()">복귀</button>
+                </span>
             </div>
             <jsp:include page="/WEB-INF/jsp/section/hwan/hwa020.jsp" />
         </div>

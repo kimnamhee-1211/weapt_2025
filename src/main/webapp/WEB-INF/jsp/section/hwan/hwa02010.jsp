@@ -6,18 +6,14 @@
 
     <div id="section">
         <div class="section1">
-            <span class="section1_nav"><i class="icon-picture"></i>청소용역직원등록</span>
+            <div class="section1_nav"><i class="icon-picture"></i>청소용역직원등록</div>
             <div class="section1_btn" id="section1_btn"></div>
-        </div>
-        <div class="section2">
-            <div class="section2_block">
-                <span class="search-box section1_btn">
-                    퇴사일 :
-                    <input type="date" id="input_resignDate" name="RESIGN_DATE" class="box_width100">
-                     &nbsp; 퇴사사유 :
-                    <input type="text" id="input_resignReason" name="RESIGN_REASON" class="box_width200">
-                    <button id="resign_btn_grid1" class="del_btn" onclick="resign_onclick()">퇴사</button>
-                </span>
+            <div class="search-box section1_btn">
+                퇴사일 :
+                <input type="date" id="input_resignDate" name="RESIGN_DATE" class="box_width100">
+                 &nbsp; 퇴사사유 :
+                <input type="text" id="input_resignReason" name="RESIGN_REASON" class="box_width200">
+                <button id="resign_btn_grid1" class="del_btn" onclick="resign_onclick()">퇴사</button>
             </div>
         </div>
         <jsp:include page="/WEB-INF/jsp/section/hwan/hwa010.jsp" />

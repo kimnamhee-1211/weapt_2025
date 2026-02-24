@@ -8,17 +8,13 @@
             <div class="section1">
                 <div class="section1_nav"><i class="icon-user-add"></i>동대표명단</div>
                 <div class="section1_btn" id="section1_btn"></div>
-            </div>
-            <div class="section2">
-                <div class="section2_block">
-                    <span class="search-box section1_btn">
+                <span class="search-box" style="float: right;">
                     퇴사일 :
                     <input type="date" id="input_disuseDate" name="DISUSE_DATE" class="box_width100">
                      &nbsp; 퇴사사유 :
                     <input type="text" id="input_disuseReason" name="DISUSE_REASON" class="box_width200">
                     <button id="disuse_btn_grid1" class="del_btn" onclick="disuse_onclick()">퇴사</button>
                 </span>
-                </div>
             </div>
             <jsp:include page="/WEB-INF/jsp/section/danche/dan001.jsp" />
     </div>
@@ -74,3 +70,5 @@
     };
 
 </script>
+
+<%@ include file = "../../inc_footer.jsp" %>

@@ -8,15 +8,8 @@
             <div class="section1">
                 <span class="section1_nav"><i class="icon-picture"></i>퇴사직원조회</span>
                 <div class="section1_btn" id="section1_btn"></div>
-            </div>
-            <div class="section2">
-                <div class="section2_block">
-                    <span class="section1_nav_mic">
-                        <i class="icon-mic"></i>복귀 버튼을 사용하여 퇴사 직원을 재직 상태로 복귀 처리합니다.
-                    </span>
-                    <span class="search-box section1_btn">
-                        <button id="cancelResign_btn_grid1" class="del_btn" onclick="cancelResign_onclick()">복귀</button>
-                    </span>
+                <div class="search-box section1_btn">
+                    <button id="cancelResign_btn_grid1" class="del_btn" onclick="cancelResign_onclick()">복귀</button>
                 </div>
             </div>
             <jsp:include page="/WEB-INF/jsp/section/hwan/hwa020.jsp" />
@@ -30,6 +23,7 @@
      *      체크박스 클릭 시 셀렉트 이벤트, 셀 선택 변경 이벤트, 더블 클릭 시 팝업 오픈 이벤트
      * 팝업 이벤트 : (미사용시 생략)
      * 그리드 조회 함수
+     *
      * 그리드 추가 함수    (미사용시 생략)
      * 그리드 저장 함수    (미사용시 생략)
      * 그리드 삭제 함수    (미사용시 생략)

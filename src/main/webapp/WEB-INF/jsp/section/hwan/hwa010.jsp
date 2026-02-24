@@ -140,7 +140,6 @@
     grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
-                height : 580,
                 showRowNumColumn : false
             })
     );
@@ -331,15 +330,13 @@
 
 
     async function getSelectOption_grid1_jobDutyCd(){
-        //검색데이터
-        let param = {};
-        //파라미터
-        let data = {
-            sectionId : sectionId,
-            component : querySet + "_grid1_jobDutyCd",
-            param: param,
-        }
-        DS_JOB_DUTY_CD = await we_getSelectOption(data);
+        let  code = await we_getCode('136');
+        code.forEach(row=>{
+            let item = {};
+            item.JOB_DUTY_CD = row.CODE_NO;
+            item.JOB_DUTY_NAME = row.CODEDTL_NM;
+            DS_JOB_DUTY_CD.push(item);
+        });
     }
 
 
@@ -359,7 +356,3 @@
 
 
 </script>
-
-
-
-<%@ include file = "../../inc_footer.jsp" %>

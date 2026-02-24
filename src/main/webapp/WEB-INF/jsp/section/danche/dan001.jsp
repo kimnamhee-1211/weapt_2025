@@ -43,7 +43,7 @@
      */
 
         //변수 선언
-    const querySet;
+    let querySet;
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const search_option = document.querySelector("search_option")	//select 컴포넌트
@@ -71,14 +71,14 @@
         { dataField: "GRADE_CD",
             headerText: "직위",
             dataType: "text",
-            width : "10%",
+            width : "15%",
             renderer: {
                 type: "DropDownListRenderer",
                 listFunction: function (rowIndex, columnIndex, item, dataField) {
                     return DS_GRADE_CD;
                 },
-                keyField: "CD", // key 에 해당되는 필드명
-                valueField: "NAME", // value 에 해당되는 필드명
+                keyField: "GRADE_CD", // key 에 해당되는 필드명
+                valueField: "GRADE_NAME", // value 에 해당되는 필드명
             }
         },
         { dataField: "NAME",
@@ -342,15 +342,14 @@
     }
 
     async function getSelectOption_grid1_gradeCd(){
-        //검색데이터
-        let param = {};
-        //파라미터
-        let data = {
-            sectionId : sectionId,
-            component : querySet + "_grid1_gradeCd",
-            param: param,
-        }
-        DS_GRADE_CD = await we_getSelectOption(data);
+        let  code = await we_getCode('126');
+        code.forEach(row=>{
+            let item = {};
+            item.GRADE_CD = row.CODE_NO;
+            item.GRADE_NAME = row.CODEDTL_NM;
+            DS_GRADE_CD.push(item);
+        });
+
     }
 
 
