@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.com.cmmn.service.LoginMapper">
+
+	<select id="selectLoginList" parameterType="Map" resultType="egovMap">
+
+		SELECT A.USER_ID, A.PASSWD, A.USER_NAME, A.REGI_DATE,                                 
+		       A.USE_YN, A.OFFICE_CODE, A.HP_NO, -- A.COMP_CODE,                                 
+		       A.AUTH_CODE, A.USERGROUP_ID, C.USERGROUP_NM AS USERGROUP_NM,                   
+		       A.WORK_GROUP_ID, dbo.getCode_nm(A.WORK_GROUP_ID) as WORK_GROUP_NM,             
+		       A.MGMCOMP_CODE, B.MGMCOMP_CODE AS MGMCOMP_NM,                                  
+		       CASE WHEN D.STATUS = '104003' OR A.STATUS = '100003' THEN '9' ELSE '0' END AS STATUS, 
+		       dbo.getCode_nm(A.STATUS) as STATUS_NM,                               		  
+		       A.MGM_CODE,A.UP_MGMUSER_ID, A.LEVEL_CODE,                                      
+		       A.UP_MGMUSER_NAME, C.GROUP_GBN, ISNULL(D.TEL,E.TEL) AS TEL,          			  
+		       ISNULL(ISNULL(D.COMP_CODE, A.COMP_CODE), E.COMP_CODE) AS COMP_CODE,
+		       CONVERT(VARCHAR(4),GETDATE(),112) AS TODAY_Y,
+		       CONVERT(VARCHAR(2),GETDATE(),110) AS TODAY_M,
+		       CONVERT(VARCHAR(2),GETDATE(),103) AS TODAY_D  			  
+		  FROM TPM_USER A                                                                       
+		  LEFT JOIN TPM_MGM_COMPANY B                                                      
+		         ON A.MGMCOMP_CODE = B.MGMCOMP_CODE                                               
+		  LEFT JOIN TPM_MGTGROUP C                                                         
+		         ON A.USERGROUP_ID = C.USERGROUP_ID                                               
+		  LEFT JOIN TPM_OFFICE D                                                   		
+		         ON A.OFFICE_CODE = D.OFFICE_CODE                                             	
+		  LEFT JOIN TPM_COMPANY E                                                   		
+		         ON A.OFFICE_CODE = E.COMP_CODE                                             	
+		 WHERE 1 = 1                                                       					
+		   AND A.USER_ID = #{username}
+		   AND A.PASSWD  = #{password}
+		   AND ISNULL(D.STATUS,'') NOT IN ('104002','104003')  
+       
+	</select>
+
+</mapper>

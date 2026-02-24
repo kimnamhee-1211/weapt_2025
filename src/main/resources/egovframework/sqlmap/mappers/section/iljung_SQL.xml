@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="iljungMapper">
+
+	<select id="selectList_ilj01015_calendar" parameterType="map" resultType="map">
+		SELECT
+			A.MST_NO		AS id,
+			A.TITLE			AS title,
+			CONVERT(varchar(10), CONVERT(date, A.START_DATE, 112), 23) AS start,
+		    CONVERT(varchar(10), CONVERT(date, A.START_DATE, 112), 23) AS [end]
+		FROM dbo.TWK_SCHEDULE_NEW A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			<if test="start != null and start != '' and end != null and end != ''">
+				AND CONVERT(date, A.START_DATE)  &gt;= #{start}
+				AND CONVERT(date, A.START_DATE)  &lt;= #{end}
+			</if>
+		UNION
+		SELECT
+			99999999							AS id,
+			B.NAME + '(' + E.ABSENT_NAME + ')'	AS title,
+			CONVERT(varchar(10), CONVERT(date, A.START_DATE, 112), 23) AS start,
+			CONVERT(varchar(10), CONVERT(date, A.END_DATE,   112), 23) AS [end]
+		FROM dbo.TAD_ABSENT AS A
+		LEFT JOIN dbo.TAD_EMP AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		LEFT JOIN dbo.TAD_ABSENT_ITEM AS E ON A.ABSENT_CD = E.ABSENT_CD AND A.OFFICE_CODE = E.OFFICE_CODE
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			<if test="start != null and start != '' and end != null and end != ''">
+				AND CONVERT(date, A.START_DATE)  &gt;= #{start}
+				AND CONVERT(date, A.END_DATE)  &lt;= #{end}
+			</if>
+		ORDER BY id
+	</select>
+
+	<select id="selectList_ilj01015_calendar" parameterType="map" resultType="map">
+		SELECT
+			A.MST_NO			AS MST_NO,
+			A.IMPORTANT_YN		AS IMPORTANT_YN,
+			A.MY_SCHEDULE		AS MY_SCHEDULE,
+			A.TITLE				AS TITLE,
+			A.START_DATE		AS START_DATE,
+			A.END_DATE			AS END_DATE,
+			A.SCH_GBN			AS SCH_GBN,
+			B.GBN_NAME      	AS GBN_NAME,
+			A.MAIN_DEPT_CD		AS MAIN_DEPT_CD,
+			C.DEPT_NAME 		AS MAIN_DEPT_NAME,
+			A.STATUS_CD			AS STATUS_CD
+		FROM dbo.TWK_SCHEDULE_NEW A
+		LEFT JOIN dbo.TWK_SCHEDULE_GBN AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SCH_GBN = B.SCH_GBN
+		LEFT JOIN dbo.THR_DEPT AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MAIN_DEPT_CD = C.DEPT_CD
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			<if test="START_DATE != null and START_DATE != ''">
+				AND A.START_DATE &gt;= #{START_DATE}
+			</if>
+			<if test="END_DATE != null and END_DATE != ''">
+				AND A.END_DATE  &lt;= #{END_DATE}
+			</if>
+			<if test="START_DATE != null and START_DATE != '' and END_DATE != null and END_DATE != ''">
+				AND A.START_DATE &gt;= #{START_DATE}
+				AND A.END_DATE  &lt;= #{END_DATE}
+			</if>
+			<if test="SCH_GBN != null and SCH_GBN != ''">
+				AND A.SCH_GBN = #{SCH_GBN}
+			</if>
+			<if test="MAIN_DEPT_CD != null and MAIN_DEPT_CD != ''">
+				AND A.MAIN_DEPT_CD = #{MAIN_DEPT_CD}
+			</if>
+			<if test="IMPORTANT_YN != null and IMPORTANT_YN != ''">
+				AND ISNULL(A.IMPORTANT_YN, 'Y') = #{IMPORTANT_YN}
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				AND A.STATUS_CD = #{STATUS_CD}
+			</if>
+			<if test="TEXT != null and TEXT != ''">
+				A.TITLE LIKE '%' + #{TEXT} + '%' OR A.DESCR LIKE '%' + #{TEXT} + '%'
+			</if>
+	</select>
+
+
+	<select id="getSelectOption_ilj02010_search_mstDate" parameterType="map" resultType="map">
+		SELECT
+			A.MST_DATE,
+			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
+		FROM dbo.TWK_MONTH_BASIC A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY CONVERT(INT, A.MST_DATE) DESC
+	</select>
+
+	<select id="getSelectOption_ilj02010_grid1_schGbn" parameterType="map" resultType="map">
+		SELECT
+			A.SCH_GBN,
+			A.GBN_NAME
+		FROM dbo.TWK_SCHEDULE_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, 'Y') = 'Y'
+		ORDER BY CONVERT(INT, A.ODER_SEQ)
+	</select>
+
+	<select id="getSelectOption_ilj02010_grid1_deptCd" parameterType="map" resultType="map">
+		SELECT
+			A.DEPT_CD,
+			A.DEPT_NAME
+		FROM dbo.THR_DEPT A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
+		ORDER BY A.SORT_ORDER
+	</select>
+
+	<select id="selectList_ilj02010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.MST_DATE			AS MST_DATE,
+			A.MST_MONTH			AS MST_MONTH,
+			A.MST_NO			AS MST_NO,
+			A.TITLE 			AS TITLE,
+			A.IMPORTANT_YN		AS IMPORTANT_YN,
+			A.DESCR				AS DESCR,
+			A.SCH_GBN 			AS SCH_GBN,
+			A.MAIN_DEPT_CD		AS MAIN_DEPT_CD
+		FROM dbo.TWK_MONTH_SCHEDULE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			AND A.MST_DATE = #{MST_DATE} AND A.MST_MONTH = #{MST_MONTH}
+		ORDER BY A.SCH_GBN, A.MST_NO
+	</select>
+
+	<update id="updateList_ilj02010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.TITLE   			= U.TITLE,
+				A.IMPORTANT_YN    	= U.IMPORTANT_YN,
+				A.DESCR    			= U.DESCR,
+				A.SCH_GBN     		= U.SCH_GBN,
+				A.MAIN_DEPT_CD 		= U.MAIN_DEPT_CD
+			FROM dbo.TWK_MONTH_SCHEDULE A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.MST_DATE} 			 AS MST_DATE,
+					#{row.MST_NO} 				 AS MST_NO,
+					#{row.MST_MONTH}  			 AS MST_MONTH,
+					#{row.TITLE}   		 		 AS TITLE,
+					#{row.IMPORTANT_YN}  		 AS IMPORTANT_YN,
+					#{row.DESCR}   		 		 AS DESCR,
+					#{row.SCH_GBN}   	 		 AS SCH_GBN,
+					#{row.MAIN_DEPT_CD} 	 	 AS MAIN_DEPT_CD
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE
+			    AND A.MST_DATE = U.MST_DATE AND A.MST_NO = U.MST_NO AND A.MST_MONTH = U.MST_MONTH
+		</if>
+	</update>
+
+	<select id="getKey_ilj02010_grid1" parameterType="map" resultType="map">
+		SELECT
+			ISNULL(MAX(A.MST_NO), 10000) AS MST_NO
+		FROM dbo.TWK_MONTH_SCHEDULE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		 	 AND A.MST_DATE = U.MST_DATE AND A.MST_MONTH = U.MST_MONTH
+	</select>
+
+	<insert id="insertList_ilj02010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TWK_MONTH_SCHEDULE (
+				OFFICE_CODE,
+				MST_DATE,
+				MST_MONTH,
+				MST_NO,
+				TITLE,
+				IMPORTANT_YN,
+				DESCR,
+				SCH_GBN,
+				MAIN_DEPT_CD,
+				REG_USER,
+				REG_DATE)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.MST_DATE},
+					#{row.MST_MONTH},
+					#{row.MST_NO},
+					#{row.TITLE},
+					#{row.IMPORTANT_YN},
+					#{row.DESCR},
+					#{row.SCH_GBN},
+					#{row.MAIN_DEPT_CD},
+					#{row.LOGINUSER_ID},
+					#{row.REG_DATE}
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="deleteList_ilj02010_grid1" parameterType="list">
+		DELETE FROM dbo.TWK_MONTH_SCHEDULE
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.MST_DATE} AS MST_DATE,
+					#{row.MST_MONTH} AS MST_MONTH, #{row.MST_NO} AS MST_NO
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TWK_MONTH_SCHEDULE.OFFICE_CODE AND temp.MST_DATE = TWK_MONTH_SCHEDULE.MST_DATE
+			  AND temp.MST_MONTH = TWK_MONTH_SCHEDULE.MST_MONTH AND temp.MST_NO = TWK_MONTH_SCHEDULE.MST_NO
+		)
+	</delete>
+
+
+	<select id="getSelectOption_ilj02030_search_mstDate" parameterType="map" resultType="map">
+		SELECT
+			A.MST_DATE,
+			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
+		FROM dbo.TWK_MONTH_BASIC_JOB A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY CONVERT(INT, A.MST_DATE) DESC
+	</select>
+
+	<select id="selectList_ilj02030_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.MST_DATE			AS MST_DATE,
+			A.MST_MONTH			AS MST_MONTH,
+			A.MST_NO			AS MST_NO,
+			A.TITLE 			AS TITLE
+		FROM dbo.TWK_MONTH_BASIC_JOB A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  AND A.MST_DATE = #{MST_DATE} AND A.MST_MONTH = #{MST_MONTH}
+		ORDER BY A.SCH_GBN, A.MST_NO
+	</select>
+
+	<update id="updateList_ilj02030_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.TITLE   			= U.TITLE
+			FROM dbo.TWK_MONTH_BASIC_JOB A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+				#{row.MST_DATE} 			 AS MST_DATE,
+				#{row.MST_NO} 				 AS MST_NO,
+				#{row.MST_MONTH}  			 AS MST_MONTH,
+				#{row.TITLE}   		 		 AS TITLE
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE
+			AND A.MST_DATE = U.MST_DATE AND A.MST_NO = U.MST_NO AND A.MST_MONTH = U.MST_MONTH
+		</if>
+	</update>
+
+	<select id="getKey_ilj02030_grid1" parameterType="map" resultType="map">
+		SELECT
+			ISNULL(MAX(A.MST_NO), 10000) AS MST_NO
+		FROM dbo.TWK_MONTH_BASIC_JOB A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  AND A.MST_DATE = U.MST_DATE AND A.MST_MONTH = U.MST_MONTH
+	</select>
+
+	<insert id="insertList_ilj02030_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TWK_MONTH_BASIC_JOB (
+				OFFICE_CODE,
+				MST_DATE,
+				MST_MONTH,
+				MST_NO,
+				TITLE,
+				REG_USER,
+				REG_DATE)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.MST_DATE},
+					#{row.MST_MONTH},
+					#{row.MST_NO},
+					#{row.TITLE},
+					#{row.LOGINUSER_ID},
+					#{row.REG_DATE}
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="deleteList_ilj02030_grid1" parameterType="list">
+		DELETE FROM dbo.TWK_MONTH_BASIC_JOB
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.MST_DATE} AS MST_DATE,
+					#{row.MST_MONTH} AS MST_MONTH, #{row.MST_NO} AS MST_NO
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TWK_MONTH_BASIC_JOB.OFFICE_CODE AND temp.MST_DATE = TWK_MONTH_BASIC_JOB.MST_DATE
+				AND temp.MST_MONTH = TWK_MONTH_BASIC_JOB.MST_MONTH AND temp.MST_NO = TWK_MONTH_BASIC_JOB.MST_NO
+		)
+	</delete>
+
+
+
+</mapper>

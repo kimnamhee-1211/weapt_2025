@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dancheMapper">
+
+	<select id="selectList_dan001_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.REG_DATE,
+			A.DONG,
+			A.HO,
+			A.GRADE_CD,
+			A.NAME,
+			A.HP_NO,
+			A.BIRTH,
+			A.REMARKS
+		FROM
+		<choose>
+			<when test="pgId == 'dan001'">
+				dbo.TME_EMP_TOWN
+			</when>
+		</choose> AS A
+
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_YN = '' OR ISNULL(A.DISUSE_YN,'N') = 'N')
+		<if test="TEXT != null and TEXT != '' ">
+			<choose>
+				<when test="WHAT == 'name'">
+					AND A.NAME LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'dong'">
+					AND A.DONG = #{TEXT}
+				</when>
+				<when test="WHAT == 'ho'">
+					AND A.HO = #{TEXT}
+				</when>
+			</choose>
+		</if>
+		ORDER BY CONVERT(INT, A.EMP_NO), A.REG_DATE, A.NAME
+	</select>
+
+	<select id="getKey_dan001_grid1" parameterType="map" resultType="map">
+		SELECT
+			CONVERT(VARCHAR, MAX(CONVERT(INT, A.EMP_NO))) AS EMP_NO
+		FROM
+		<choose>
+			<when test="pgId == 'dan001'">
+				dbo.TME_EMP_TOWN
+			</when>
+		</choose> AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+	<insert id="insertList_dan001_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO
+				<choose>
+					<when test="pgId == 'dan001'">
+						dbo.TME_EMP_TOWN
+					</when>
+				</choose>
+			(
+				OFFICE_CODE,
+				EMP_NO,
+				REG_DATE,
+				DONG,
+				HO,
+				GRADE_CD,
+				NAME,
+				HP_NO,
+				BIRTH,
+				REMARKS
+			)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.EMP_NO},
+					#{row.REG_DATE},
+					#{row.DONG},
+					#{row.HO},
+					#{row.GRADE_CD},
+					#{row.NAME},
+					#{row.HP_NO},
+					#{row.BIRTH},
+					#{row.REMARKS}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_dan001_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.DONG 			= B.DONG,
+				A.HO 			= B.HO,
+				A.GRADE_CD 		= B.GRADE_CD,
+				A.NAME 			= B.NAME,
+				A.REG_DATE 		= B.REG_DATE,
+				A.HP_NO 		= B.HP_NO,
+				A.BIRTH 		= B.BIRTH,
+				A.REMARKS 		= B.REMARKS
+			FROM
+			<choose>
+				<when test="pgId == 'dan001'">
+					dbo.TME_EMP_TOWN
+				</when>
+			</choose> AS A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+				#{row.EMP_NO}          			AS EMP_NO,
+				#{row.DONG}       				AS DONG,
+				#{row.HO}         				AS HO,
+				#{row.GRADE_CD}     			AS GRADE_CD,
+				#{row.NAME}            			AS NAME,
+				#{row.REG_DATE}            		AS REG_DATE,
+				#{row.HP_NO}           			AS HP_NO,
+				#{row.BIRTH}           			AS BIRTH,
+				#{row.REMARKS}         			AS REMARKS
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		</if>
+	</update>
+
+	<update id="updateList_dan001_disuse" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.DISUSE_YN		 = 'Y',
+				A.DISUSE_DATE    = B.DISUSE_DATE,
+				A.DISUSE_REASON  = B.DISUSE_REASON
+			FROM
+				<choose>
+					<when test="pgId == 'dan001'">
+						dbo.TME_EMP_TOWN
+					</when>
+				</choose> AS A
+			JOIN (
+				<foreach collection="list" item="row" separator=" UNION ALL ">
+					SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.EMP_NO}          			AS EMP_NO
+					#{row.DISUSE_DATE}          	AS DISUSE_DATE
+					#{row.DISUSE_REASON}          	AS DISUSE_REASON
+				</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		</if>
+	</update>
+
+	<select id="selectList_dan002_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.BOARD_DIV		AS BOARD_DIV,
+			A.BOARD_NO		AS BOARD_NO,
+			A.BOARD_TITLE	AS BOARD_TITLE,
+			B.FILE_SEQ		AS ATT_NO,
+			A.BOARD_DATE	AS BOARD_DATE,
+			A.USER_ID		AS USER_ID,
+			A.WRITER		AS BOARD_WRITER
+		FROM dbo.TME_BOARD A
+		LEFT JOIN (
+			SELECT OFFICE_CODE, BOARD_DIV, BOARD_NO, MAX(FILE_SEQ) AS FILE_SEQ
+			FROM dbo.TME_FILE
+			GROUP BY OFFICE_CODE, BOARD_DIV, BOARD_NO
+		) B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.BOARD_DIV = B.BOARD_DIV AND A.BOARD_NO = B.BOARD_NO
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.BOARD_DIV = #{BOARD_DIV}
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+						A.BOARD_TITLE LIKE '%' + #{TEXT} + '%' OR A.BOARD_CONTENT LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.BOARD_TITLE LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.BOARD_CONTENT LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.BOARD_NO DESC, A.BOARD_DATE DESC, A.BOARD_TITLE
+	</select>
+
+	<select id="boardSelectOne_dan002_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.BOARD_DIV		AS BOARD_DIV,
+			A.BOARD_NO		AS BOARD_NO,
+			A.BOARD_TITLE	AS BOARD_TITLE,
+			A.BOARD_CONTENT	AS BOARD_CONTENT,
+			A.BOARD_DATE	AS BOARD_DATE,
+			A.USER_ID		AS USER_ID,
+			A.WRITER		AS BOARD_WRITER
+		FROM dbo.TME_BOARD A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.BOARD_DIV = #{BOARD_DIV} AND A.BOARD_NO = #{BOARD_NO}
+		ORDER BY A.BOARD_DATE, A.BOARD_TITLE
+	</select>
+
+	<insert id="boardInsertOne_dan002_board1" parameterType="map">
+		INSERT INTO dbo.TME_BOARD(
+			OFFICE_CODE,
+			BOARD_DIV,
+			BOARD_NO,
+			BOARD_TITLE,
+			BOARD_CONTENT,
+			BOARD_DATE,
+			USER_ID,
+			WRITER
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			#{BOARD_DIV},
+			ISNULL(MAX(BOARD_NO), 0) + 1,
+			#{BOARD_TITLE},
+			#{BOARD_CONTENT},
+			#{BOARD_DATE},
+			#{LOGINUSER_ID},
+			#{LOGINUSER_NAME},
+		FROM dbo.TME_BOARD
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND BOARD_DIV = #{BOARD_DIV}
+	</insert>
+
+	<update id="boardUpdateOne_dan002_board1" parameterType="map">
+			UPDATE dbo.TME_BOARD
+			SET
+				BOARD_TITLE   =  #{BOARD_TITLE},
+				BOARD_CONTENT =  #{BOARD_CONTENT}
+			WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND BOARD_DIV = #{BOARD_DIV} AND BOARD_NO = #{BOARD_NO}
+	</update>
+
+	<delete id="boardDeleteOne_dan002_board1" parameterType="map">
+		DELETE FROM dbo.TME_BOARD
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND BOARD_DIV = #{BOARD_DIV} AND BOARD_NO = #{BOARD_NO}
+	</delete>
+
+	<select id="selectList_dan002_file1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.BOARD_DIV		AS BOARD_DIV,
+			A.BOARD_NO		AS BOARD_NO,
+			A.FILE_SEQ		AS ATT_NO,
+			A.FILE_NM,
+			A.SYS_FILE_NM
+		FROM dbo.TME_FILE A
+		JOIN dbo.TME_BOARD B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.BOARD_DIV = B.BOARD_DIV AND A.BOARD_NO = B.BOARD_NO
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.BOARD_DIV = #{BOARD_DIV} AND A.BOARD_NO = #{BOARD_NO}
+		ORDER BY A.FILE_SEQ, A.FILE_NM
+	</select>
+
+	<select id="selectList_dan003_grid1" parameterType="map" resultType="map">
+		SELECT
+		A.OFFICE_CODE,
+		A.EMP_NO,
+		A.REG_DATE,
+		A.DONG,
+		A.HO,
+		A.GRADE_CD,
+		A.NAME,
+		A.HP_NO,
+		A.BIRTH,
+		A.DISUSE_DATE,
+		A.DISUSE_REASON
+		FROM
+		<choose>
+			<when test="pgId == 'dan001'">
+				dbo.TME_EMP_TOWN
+			</when>
+		</choose> AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_YN = 'Y' AND A.DISUSE_DATE IS NOT NULL)
+		<if test="TEXT != null and TEXT != '' ">
+			<choose>
+				<when test="WHAT == 'name'">
+					AND A.NAME LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'dong'">
+					AND A.DONG = #{TEXT}
+				</when>
+				<when test="WHAT == 'ho'">
+					AND A.HO = #{TEXT}
+				</when>
+			</choose>
+		</if>
+		ORDER BY CONVERT(INT, A.EMP_NO), A.DISUSE_DATE, A.NAME
+	</select>
+
+	<update id="updateList_dan003_cancelDisuse" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+			A.DISUSE_YN		 = 'N',
+			A.DISUSE_DATE    = NULL,
+			A.DISUSE_REASON  = NULL
+			FROM
+			<choose>
+				<when test="pgId == 'dan001'">
+					dbo.TME_EMP_TOWN
+				</when>
+			</choose> AS A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+				#{row.EMP_NO}          			AS EMP_NO
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		</if>
+	</update>
+
+
+
+
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,1498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sojangMapper">
+
+	<select id="selectList_soj01010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.END_DATE,
+			A.SEQ
+		FROM dbo.TPM_DEADLINE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DEAD_YN = 'Y'
+		  AND A.END_DATE = (
+			SELECT MAX(END_DATE)
+			FROM dbo.TPM_DEADLINE
+			WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			  AND DEAD_YN = 'Y')
+		  AND A.SEQ = (
+			SELECT MAX(SEQ)
+			FROM dbo.TPM_DEADLINE
+			WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			  AND DEAD_YN = 'Y'
+			  AND END_DATE = (
+				SELECT MAX(END_DATE)
+				FROM dbo.TPM_DEADLINE
+				WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+				  AND DEAD_YN = 'Y'))
+	</select>
+
+	<insert id="insertList_soj01010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TPM_DEADLINE (
+			OFFICE_CODE,
+			END_DATE,
+			SEQ,
+			DEAD_YN,
+			REG_USER,
+			REG_DATE)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.END_DATE},
+				#{row.SEQ},
+				'Y',
+				#{row.LOGINUSER_USER_ID},
+				#{row.REG_DATE}
+			</foreach>
+		</if>
+	</insert>
+
+	<select id="getSelectOption_soj03010_input_empNo" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.USER_ID,
+			A.JOIN_DATE,
+			A.DEPT_CD,
+			A.JOB_DUTY_CD,
+			A.NAME AS USER_NAME,
+			A.NAME + '(' + B.DEPT_NAME + ')' AS EMP,
+			A.HP_NO,
+			A.PASSWORD,
+			A.CERT_NO,
+			A.RESIGN_DATE,
+			A.REMARKS,
+			A.MOON_GBN,
+			A.BIRTH,
+			A.LEVEL_CODE,
+		    A.COMP_CODE
+		FROM dbo.TAD_EMP A
+		LEFT JOIN dbo.THR_DEPT B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DEPT_CD = B.DEPT_CD
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  AND (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR CONVERT(DATE, A.RESIGN_DATE, 112) > CAST(GETDATE() AS DATE))
+		ORDER BY A.EMP_NO
+	</select>
+
+	<select id="getSelectOption_soj03010_input_deptCd" parameterType="map" resultType="map">
+		SELECT
+			A.DEPT_CD,
+			A.DEPT_NAME
+		FROM dbo.THR_DEPT A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY A.DEPT_CD
+	</select>
+
+	<select id="getSelectOption_soj03010_input_jobDutyCd" parameterType="map" resultType="map">
+		SELECT
+			A.JOB_DUTY_CD,
+			A.JOB_DUTY_NAME
+		FROM dbo.THR_JOB_DUTY A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY A.JOB_DUTY_CD
+	</select>
+
+	<select id="selectList_soj03010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.USER_ID,
+			A.USERGROUP_ID,
+			A.PASSWD,
+			A.USER_NAME,
+			A.REGI_DATE,
+			A.OFFICE_CODE,
+			A.HP_NO,
+			A.COMP_CODE,
+			A.AUTH_CODE,
+			A.MGMCOMP_CODE,
+			A.STATUS,
+			dbo.getCode_nm(A.STATUS) as STATUS_NM,
+			A.MGM_CODE,
+			A.UP_MGMUSER_ID,
+			A.REG_END_DATE,
+			A.WORK_GROUP_ID,
+			A.LEVEL_CODE,
+			A.DEPT_CD,
+			B.DEPT_NAME,
+			A.JOB_DUTY_CD,
+			C.JOB_DUTY_NAME,
+			A.ID_GBN,
+			dbo.getCode_nm(A.ID_GBN) as ID_GBN_NM,
+			A.EMP_NO,
+			A.GROUP_DTL_CD,
+			dbo.getCode_nm(A.GROUP_DTL_CD) as GROUP_DTL_NM,
+			A.EMAIL,
+			D.REMARKS
+		FROM dbo.TPM_USER A
+		LEFT JOIN dbo.THR_DEPT B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DEPT_CD = B.DEPT_CD
+		LEFT JOIN dbo.THR_JOB_DUTY C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.JOB_DUTY_CD = C.JOB_DUTY_CD
+		LEFT JOIN dbo.TAD_EMP D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.EMP_NO = D.EMP_NO
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND
+			<if test="LOGINUSER_COMP_CODE != null and LOGINUSER_COMP_CODE != ''">
+				A.COMP_CODE = #{LOGINUSER_COMP_CODE}
+			</if>
+			<if test="LOGINUSER_COMP_CODE == null or LOGINUSER_COMP_CODE == ''">
+				(A.COMP_CODE IS NULL OR A.COMP_CODE = '')
+			</if>
+		ORDER BY A.USER_ID, A.REGI_DATE
+	</select>
+
+	<update id="beforeUpdate_soj03010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.USER_ID 		= U.USER_ID,
+				A.DEPT_CD    	= U.DEPT_CD,
+				A.JOB_DUTY_CD   = U.JOB_DUTY_CD,
+				A.NAME    		= U.USER_NAME,
+				A.HP_NO    		= U.HP_NO,
+				A.PASSWORD     	= U.PASSWORD,
+				A.REMARKS     	= U.REMARKS
+			FROM dbo.TAD_EMP A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} 	AS OFFICE_CODE,
+				#{row.EMP_NO}   	AS EMP_NO,
+				#{row.USER_ID}  	AS USER_ID,
+				#{row.DEPT_CD}   	AS DEPT_CD,
+				#{row.JOB_DUTY_CD}  AS JOB_DUTY_CD,
+				#{row.USER_NAME}    AS USER_NAME,
+				#{row.HP_NO}   		AS HP_NO,
+				#{row.PASSWORD}    	AS PASSWORD,
+				#{row.REMARKS}    	AS REMARKS
+			</foreach>
+			) AS U ON A.OFFICE_CODE	= U.OFFICE_CODE AND A.EMP_NO = U.EMP_NO
+		</if>
+	</update>
+
+
+	<update id="updateList_soj03010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.PASSWD    	= U.PASSWD,
+				A.USER_NAME   	= U.USER_NAME,
+				A.REGI_DATE    	= U.REGI_DATE,
+				A.USE_YN    	= U.USE_YN,
+				A.HP_NO     	= U.HP_NO,
+				A.STATUS 		= U.STATUS,
+				A.REG_END_DATE  = U.REG_END_DATE,
+				A.DEPT_CD   	= U.DEPT_CD,
+				A.JOB_DUTY_CD   = U.JOB_DUTY_CD,
+				A.ID_GBN    	= U.ID_GBN,
+				A.REMARK     	= U.REMARK,
+				A.EMP_NO     	= U.EMP_NO,
+				A.GROUP_DTL_CD  = U.GROUP_DTL_CD,
+				A.EMAIL    		= U.EMAIL
+			FROM dbo.TPM_USER A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+				#{row.LOGINUSER_COMP_CODE} 	AS COMP_CODE,
+				#{row.USER_ID} 		AS USER_ID,
+				COALESCE(NULLIF(#{row.PASSWD1}, ''), RIGHT(CONVERT(varchar, #{row.HP_NO}), 4), '1234') AS PASSWD,
+				#{row.USER_NAME}  	AS USER_NAME,
+				#{row.REGI_DATE}   	AS REGI_DATE,
+				#{row.USE_YN}  		AS USE_YN,
+				#{row.HP_NO}   		AS HP_NO,
+				#{row.STATUS}   	AS STATUS,
+				#{row.REG_END_DATE} AS REG_END_DATE,
+				#{row.DEPT_CD}    	AS DEPT_CD,
+				#{row.JOB_DUTY_CD}  AS JOB_DUTY_CD,
+				#{row.ID_GBN}  		AS ID_GBN,
+				#{row.REMARK}   	AS REMARK,
+				#{row.EMP_NO}  		AS EMP_NO,
+				#{row.GROUP_DTL_CD} AS GROUP_DTL_CD,
+				#{row.EMAIL}    	AS EMAIL
+			</foreach>
+			) AS U ON A.USER_ID	= U.USER_ID AND A.OFFICE_CODE = U.OFFICE_CODE
+				AND ISNULL(A.COMP_CODE, '') = ISNULL(U.COMP_CODE, '')
+		</if>
+	</update>
+
+
+	<insert id="insertList_soj03010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TPM_USER (
+				USER_ID,
+				USERGROUP_ID,
+				PASSWD,
+				USER_NAME,
+				REGI_DATE,
+				USE_YN,
+				OFFICE_CODE,
+				HP_NO,
+				COMP_CODE,
+				MGMCOMP_CODE,
+				STATUS,
+				MGM_CODE,
+				UP_MGMUSER_ID,
+				UP_MGMUSER_NAME,
+				REG_END_DATE,
+				WORK_GROUP_ID,
+				LEVEL_CODE,
+				DEPT_CD,
+				JOB_DUTY_CD,
+				ID_GBN,
+				REMARK,
+				EMP_NO,
+				GROUP_DTL_CD,
+				EMAIL)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				    #{row.USER_ID},
+					#{row.LOGINUSER_USERGROUP_ID},
+					COALESCE(NULLIF(#{row.PASSWD1}, ''), RIGHT(CONVERT(varchar, #{row.HP_NO}), 4), '1234'),
+					#{row.USER_NAME},
+					#{row.REGI_DATE},
+					'Y',
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.HP_NO},
+					#{row.LOGINUSER_MGMCOMP_CODE},
+					#{row.LOGINUSER_COMP_CODE},
+					ISNULL(#{row.STATUS},'100001'),
+					#{row.LOGINUSER_MGM_CODE},
+					#{row.LOGINUSER_UP_MGMUSER_ID},
+					#{row.LOGINUSER_UP_MGMUSER_NAME},
+					#{row.REG_END_DATE},
+					#{row.LOGINUSER_WORK_GROUP_ID},
+					#{row.LOGINUSER_LEVEL_CODE},
+					#{row.DEPT_CD},
+					#{row.JOB_DUTY_CD},
+					#{row.ID_GBN},
+					#{row.REMARK},
+					#{row.EMP_NO},
+					ISNULL(#{row.GROUP_DTL_CD},'500'),
+					#{row.EMAIL}
+			</foreach>
+		</if>
+	</insert>
+
+
+	<select id="selectList_soj03020_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.USER_ID,
+			A.USERGROUP_ID,
+			A.USER_NAME,
+			A.OFFICE_CODE,
+			A.COMP_CODE,
+			B.JOB_DUTY_NAME,
+			A.EMP_NO
+		FROM dbo.TPM_USER A
+		LEFT JOIN dbo.THR_JOB_DUTY B ON A.OFFICE_CODE = B.OFFICE_CODE AND  A.JOB_DUTY_CD = B.JOB_DUTY_CD
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND
+			<if test="LOGINUSER_COMP_CODE != null and LOGINUSER_COMP_CODE != ''">
+				A.COMP_CODE = #{LOGINUSER_COMP_CODE}
+			</if>
+			<if test="LOGINUSER_COMP_CODE == null or LOGINUSER_COMP_CODE == ''">
+				(A.COMP_CODE IS NULL OR A.COMP_CODE = '')
+			</if>
+		ORDER BY A.USER_ID
+	</select>
+
+	<select id="selectList_soj03020_grid2" parameterType="map" resultType="map">
+		SELECT
+			A.MENU_NAME,
+			A.MENU_ID,
+			A.M_LEVEL,
+			A.UP_MENU_ID,
+			B.USER_ID,
+			B.USER_NAME,
+			E.JOB_DUTY_NAME,
+			COALESCE(C.FORM_USE, D.FORM_USE, '0') 	 AS FORM_USE,
+			COALESCE(C.GRD_READ, D.GRD_READ,'0') 	 AS GRD_READ,
+			COALESCE(C.GRD_CREATE, D.GRD_CREATE,'0') AS GRD_CREATE,
+			COALESCE(C.GRD_UPDATE, D.GRD_UPDATE,'0') AS GRD_UPDATE,
+			COALESCE(C.GRD_DELETE, D.GRD_DELETE,'0') AS GRD_DELETE,
+			COALESCE(C.GRD_EXCEL, D.GRD_EXCEL,'0') 	 AS GRD_EXCEL
+		FROM dbo.TPM_MENU A
+		INNER JOIN dbo.TPM_USER B ON B.USER_ID = #{USER_ID}
+		LEFT JOIN dbo.TPM_USERMENU C ON A.MENU_ID = C.MENU_ID AND B.USER_ID = C.USER_ID
+		LEFT JOIN dbo.TPM_GROUPMENU D ON A.MENU_ID = D.MENU_ID AND D.USERGROUP_ID = #{USERGROUP_ID}
+		LEFT JOIN dbo.THR_JOB_DUTY E ON B.OFFICE_CODE = E.OFFICE_CODE AND B.JOB_DUTY_CD = E.JOB_DUTY_CD
+		WHERE A.FORM_USE = '1'
+		ORDER BY A.MENU_ID, A.M_LEVEL, A.LEVEL_ORDER;
+	</select>
+
+	<update id="updateList_soj03020_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+			A.FORM_USE 		= U.FORM_USE,
+			A.GRD_CREATE    = U.GRD_CREATE,
+			A.GRD_READ      = U.GRD_READ,
+			A.GRD_UPDATE    = U.GRD_UPDATE,
+			A.GRD_DELETE    = U.GRD_DELETE,
+			A.GRD_EXCEL     = U.GRD_EXCEL
+			FROM dbo.TPM_USERMENU A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.MENU_ID}  	AS MENU_ID,
+				#{row.USER_ID}   	AS USER_ID,
+				#{row.FORM_USE}  	AS FORM_USE,
+				#{row.GRD_CREATE}   AS GRD_CREATE,
+				#{row.GRD_READ}     AS GRD_READ,
+				#{row.GRD_UPDATE}   AS GRD_UPDATE,
+				#{row.GRD_DELETE}   AS GRD_DELETE,
+				#{row.GRD_EXCEL}    AS GRD_EXCEL
+			</foreach>
+			) AS U ON A.MENU_ID	= U.MENU_ID AND A.USER_ID	= U.USER_ID
+		</if>
+	</update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<select id="selectList_soj05040_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.MGMCOMP_CODE,
+			A.MGMCOMP_NAME,
+			A.NUM,
+			A.CEO,
+			A.CEO_HP,
+			A.CON,
+			A.ITEM,
+			A.ZIP,
+			A.ADDR1,
+			A.ADDR2,
+			A.TEL,
+			A.FAX,
+			A.EMAIL,
+			A.HOMEPAGE,
+			A.REGI_DAY,
+			A.OFF_DAY,
+			A.STATE,
+			dbo.getCode_nm(A.STATE) as STATE_NM,
+			ISNULL(A.USE_YN, '0') AS USE_YN
+		FROM dbo.TPM_MGM_COMPANY A
+		ORDER BY A.MGMCOMP_CODE, A.REGI_DAY
+	</select>
+
+	<select id="getKey_soj05040_grid1" parameterType="map" resultType="map">
+		SELECT
+			MAX(A.MGMCOMP_CODE) AS MGMCOMP_CODE
+		FROM dbo.TPM_MGM_COMPANY A
+	</select>
+
+	<insert id="insertList_soj05040_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TPM_MGM_COMPANY (
+				MGMCOMP_CODE,
+				MGMCOMP_NAME,
+				NUM,
+				CEO,
+				CEO_HP,
+				CON,
+				ITEM,
+				ZIP,
+				ADDR1,
+				ADDR2,
+				TEL,
+				FAX,
+				EMAIL,
+				HOMEPAGE,
+				REGI_DAY,
+				OFF_DAY,
+				STATE,
+				USE_YN)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT #{row.MGMCOMP_CODE},
+					#{row.MGMCOMP_NAME},
+					#{row.NUM},
+					#{row.CEO},
+					#{row.CEO_HP},
+					#{row.CON},
+					#{row.ITEM},
+					#{row.ZIP},
+					#{row.ADDR1},
+					#{row.ADDR2},
+					#{row.TEL},
+					#{row.FAX},
+					#{row.EMAIL},
+					#{row.HOMEPAGE},
+					#{row.REGI_DAY},
+					#{row.OFF_DAY},
+					#{row.STATE},
+					#{row.USE_YN}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_soj05040_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.MGMCOMP_NAME  = U.MGMCOMP_NAME,
+				A.NUM           = U.NUM,
+				A.CEO           = U.CEO,
+				A.CEO_HP        = U.CEO_HP,
+				A.CON           = U.CON,
+				A.ITEM          = U.ITEM,
+				A.ZIP           = U.ZIP,
+				A.ADDR1         = U.ADDR1,
+				A.ADDR2         = U.ADDR2,
+				A.TEL           = U.TEL,
+				A.FAX           = U.FAX,
+				A.EMAIL         = U.EMAIL,
+				A.HOMEPAGE      = U.HOMEPAGE,
+				A.REGI_DAY      = U.REGI_DAY,
+				A.OFF_DAY       = U.OFF_DAY,
+				A.STATE         = U.STATE,
+				A.USE_YN        = U.USE_YN
+			FROM dbo.TPM_MGM_COMPANY A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.MGMCOMP_CODE}  AS MGMCOMP_CODE,
+					#{row.MGMCOMP_NAME}  AS MGMCOMP_NAME,
+					#{row.NUM}           AS NUM,
+					#{row.CEO}           AS CEO,
+					#{row.CEO_HP}        AS CEO_HP,
+					#{row.CON}           AS CON,
+					#{row.ITEM}          AS ITEM,
+					#{row.ZIP}           AS ZIP,
+					#{row.ADDR1}         AS ADDR1,
+					#{row.ADDR2}         AS ADDR2,
+					#{row.TEL}           AS TEL,
+					#{row.FAX}           AS FAX,
+					#{row.EMAIL}         AS EMAIL,
+					#{row.HOMEPAGE}      AS HOMEPAGE,
+					#{row.REGI_DAY}      AS REGI_DAY,
+					#{row.OFF_DAY}       AS OFF_DAY,
+					#{row.STATE}         AS STATE,
+					#{row.USE_YN}        AS USE_YN
+			</foreach>
+			) AS U ON A.MGMCOMP_CODE	= U.MGMCOMP_CODE
+		</if>
+	</update>
+
+
+
+
+
+	<select id="selectList_soj05060_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.COMP_CODE,
+			A.COMP_NAME,
+			A.NUM,
+			A.CEO,
+			A.CEO_HP,
+			A.CON,
+			A.ITEM,
+			A.ZIP,
+			A.ADDR1,
+			A.ADDR2,
+			A.TEL,
+			A.FAX,
+			A.EMAIL,
+			A.HOMEPAGE,
+			A.REGI_DAY,
+			A.OFF_DAY,
+			ISNULL(A.STATE, '107003') AS STATE,
+			dbo.getCode_nm(A.STATE) as STATE_NM,
+			ISNULL(A.USE_YN, '0') AS USE_YN,
+			A.MGMUSER_ID,
+			A.GROUP_CODE
+		FROM dbo.TPM_COMPANY A
+		ORDER BY A.COMP_CODE, A.REGI_DAY
+	</select>
+
+	<select id="getKey_soj05060_grid1" parameterType="map" resultType="map">
+		SELECT
+			MAX(A.COMP_CODE) AS COMP_CODE
+		FROM dbo.TPM_COMPANY A
+	</select>
+
+	<insert id="insertList_soj05060_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TPM_COMPANY (
+				COMP_CODE,
+				COMP_NAME,
+				NUM,
+				CEO,
+				CEO_HP,
+				CON,
+				ITEM,
+				ZIP,
+				ADDR1,
+				ADDR2,
+				TEL,
+				FAX,
+				EMAIL,
+				HOMEPAGE,
+				REGI_DAY,
+				OFF_DAY,
+				STATE,
+				USE_YN,
+				MGMUSER_ID,
+				GROUP_CODE)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT #{row.COMP_CODE},
+					#{row.COMP_NAME},
+					#{row.NUM},
+					#{row.CEO},
+					#{row.CEO_HP},
+					#{row.CON},
+					#{row.ITEM},
+					#{row.ZIP},
+					#{row.ADDR1},
+					#{row.ADDR2},
+					#{row.TEL},
+					#{row.FAX},
+					#{row.EMAIL},
+					#{row.HOMEPAGE},
+					#{row.REGI_DAY},
+					#{row.OFF_DAY},
+					#{row.STATE},
+					#{row.USE_YN},
+					#{row.MGMUSER_ID},
+					#{row.GROUP_CODE}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_soj05060_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.COMP_NAME     = U.COMP_NAME,
+				A.NUM           = U.NUM,
+				A.CEO           = U.CEO,
+				A.CEO_HP        = U.CEO_HP,
+				A.CON           = U.CON,
+				A.ITEM          = U.ITEM,
+				A.ZIP           = U.ZIP,
+				A.ADDR1         = U.ADDR1,
+				A.ADDR2         = U.ADDR2,
+				A.TEL           = U.TEL,
+				A.FAX           = U.FAX,
+				A.EMAIL         = U.EMAIL,
+				A.HOMEPAGE      = U.HOMEPAGE,
+				A.REGI_DAY      = U.REGI_DAY,
+				A.OFF_DAY       = U.OFF_DAY,
+				A.STATE         = U.STATE,
+				A.USE_YN        = U.USE_YN,
+				A.MGMUSER_ID    = U.MGMUSER_ID,
+				A.GROUP_CODE    = U.GROUP_CODE
+			FROM dbo.TPM_COMPANY A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.COMP_CODE}     AS COMP_CODE,
+				#{row.COMP_NAME}     AS COMP_NAME,
+				#{row.NUM}           AS NUM,
+				#{row.CEO}           AS CEO,
+				#{row.CEO_HP}        AS CEO_HP,
+				#{row.CON}           AS CON,
+				#{row.ITEM}          AS ITEM,
+				#{row.ZIP}           AS ZIP,
+				#{row.ADDR1}         AS ADDR1,
+				#{row.ADDR2}         AS ADDR2,
+				#{row.TEL}           AS TEL,
+				#{row.FAX}           AS FAX,
+				#{row.EMAIL}         AS EMAIL,
+				#{row.HOMEPAGE}      AS HOMEPAGE,
+				#{row.REGI_DAY}      AS REGI_DAY,
+				#{row.OFF_DAY}       AS OFF_DAY,
+				#{row.STATE}         AS STATE,
+				#{row.USE_YN}        AS USE_YN,
+				#{row.MGMUSER_ID}    AS MGMUSER_ID,
+				#{row.GROUP_CODE}    AS GROUP_CODE
+			</foreach>
+			) AS U ON A.COMP_CODE	= U.COMP_CODE
+		</if>
+	</update>
+
+	<delete id="deleteList_soj05060_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			DELETE FROM dbo.TPM_COMPANY
+			WHERE COMP_CODE IN
+			<foreach collection="list" item="row" open="(" close=")" separator=",">
+				#{row.COMP_CODE}
+			</foreach>
+		</if>
+	</delete>
+
+	<select id="getSelectOption_soj05070_input_compCode" parameterType="map" resultType="map">
+		SELECT
+			A.COMP_CODE,
+			A.COMP_NAME
+		FROM dbo.TPM_COMPANY A
+		WHERE A.STATE = '107001'
+		ORDER BY A.COMP_CODE
+	</select>
+
+	<select id="getSelectOption_soj05070_input_mgmuserId" parameterType="map" resultType="map">
+		SELECT
+			A.COMP_CODE,
+			A.MGMUSER_ID
+		FROM dbo.TPM_COMPANY A
+		WHERE A.STATE = '107001'
+		<if test="COMP_CODE != null and COMP_CODE != ''">
+		  AND A.COMP_CODE = #{COMP_CODE}
+		</if>
+		ORDER BY A.MGMUSER_ID
+	</select>
+
+	<select id="selectList_soj05070_grid1" parameterType="map" resultType="map">
+		WITH LatestContract AS (
+			SELECT *,
+			ROW_NUMBER() OVER (
+				PARTITION BY OFFICE_CODE
+				ORDER BY START_DATE DESC, CONT_SEQ DESC
+				) AS RN
+			FROM dbo.TPM_CONTRACT
+		),
+		LatestContract2 AS (
+			SELECT *,
+				ROW_NUMBER() OVER (
+				PARTITION BY OFFICE_CODE
+				ORDER BY PLAN_MONTH DESC, SEQ DESC
+				) AS RN
+			FROM dbo.TRP_MONTH_REPAIR_BASIC
+		)
+		SELECT
+			A.OFFICE_CODE,
+			A.OFFICE_NAME,
+			ISNULL(A.COMP_CODE, '') AS COMP_CODE,
+			A.MGMCOMP_CODE AS MGMCOMP_CODE,
+			A.EXPLAN,
+			A.PART1,
+			A.PART2,
+			A.TEL,
+			A.FAX,
+			A.ZIP,
+			A.ADDR1,
+			A.ADDR2,
+			A.MAGOR_NAME,
+			A.MAJOR_HP,
+			A.REGI_DAY,
+			ISNULL(A.STATUS, '104003') AS STATUS,
+			dbo.getCode_nm(A.STATUS) as STATUS_NM,
+			A.MGMUSER_ID,
+			A.OFFICE_HARD_SIZE,
+			A.OFFICE_USER_CNT,
+			A.OFFICE_CNT,
+			A.OFFICE_AREAR,
+			A.START_DAY,
+			A.END_DAY,
+			B.CONT_SEQ,
+			B.START_DATE,
+			B.END_DATE,
+		    B.CONT_KIND_CD,
+			dbo.getCode_nm(B.CONT_KIND_CD) as CONT_KIND_NM,
+		    B.CONT_AMT,
+		    C.PLAN_GBN,
+			dbo.getCode_nm(C.PLAN_GBN) as PLAN_GBN_NM,
+		    C.PLAN_MONTH,
+		    C.STATUS AS REPAIR_STATUS,
+			dbo.getCode_nm(C.STATUS) as REPAIR_STATUS_NM
+		FROM dbo.TPM_OFFICE A
+		LEFT JOIN LatestContract B
+		    ON A.OFFICE_CODE = B.OFFICE_CODE AND B.RN = 1
+		LEFT JOIN LatestContract2 C
+			ON A.OFFICE_CODE = C.OFFICE_CODE AND C.RN = 1
+		WHERE A.STATUS LIKE '%' + #{STATUS} + '%'
+		<if test="CONT_KIND_CD != null and CONT_KIND_CD != ''">
+			AND B.CONT_KIND_CD LIKE '%' + #{CONT_KIND_CD} + '%'
+		</if>
+		<if test="END_DATE1 != null and END_DATE1 != ''">
+			AND END_DATE >= #{END_DATE1}
+		</if>
+		<if test="END_DATE2 != null and END_DATE2 != ''">
+			AND END_DATE &lt;= #{END_DATE2}
+		</if>
+		<if test="LOGINUSER_OFFICE_CODE != '10001' and LOGINUSER_MGMCOMP_CODE != '101' and LOGINUSER_USERGROUP_ID !='900'" >
+			AND A.MGMCOMP_CODE = #{LOGINUSER_MGMCOMP_CODE}
+		</if>
+		<if test="LOGINUSER_USERGROUP_ID == '400'">
+			AND A.COMP_CODE = #{LOGINUSER_COMP_CODE}
+		</if>
+		ORDER BY A.OFFICE_CODE, A.REGI_DAY, B.START_DATE
+	</select>
+
+	<select id="getKey_soj05070_grid1" parameterType="map" resultType="map">
+		SELECT
+			MAX(A.OFFICE_CODE) AS OFFICE_CODE
+		FROM dbo.TPM_OFFICE A
+	</select>
+
+	<insert id="insertList_soj05070_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TPM_OFFICE (
+				OFFICE_CODE,
+				OFFICE_NAME,
+				COMP_CODE,
+				MGMCOMP_CODE,
+				EXPLAN,
+				PART1,
+				PART2,
+				TEL,
+				FAX,
+				ZIP,
+				ADDR1,
+				ADDR2,
+				MAGOR_NAME,
+				MAJOR_HP,
+				REGI_DAY,
+				STATUS,
+				MGMUSER_ID,
+				OFFICE_HARD_SIZE,
+				OFFICE_USER_CNT,
+				OFFICE_CNT,
+				OFFICE_AREAR,
+				START_DAY,
+				END_DAY)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT #{row.OFFICE_CODE},
+					#{row.OFFICE_NAME},
+					#{row.COMP_CODE},
+					ISNULL(#{LOGINUSER_MGMCOMP_CODE}, '101'),
+					#{row.EXPLAN},
+					#{row.PART1},
+					#{row.PART2},
+					#{row.TEL},
+					#{row.FAX},
+					#{row.ZIP},
+					#{row.ADDR1},
+					#{row.ADDR2},
+					#{row.MAGOR_NAME},
+					#{row.MAJOR_HP},
+					#{row.REGI_DAY},
+					#{row.STATUS},
+					#{row.MGMUSER_ID},
+					#{row.OFFICE_HARD_SIZE},
+					#{row.OFFICE_USER_CNT},
+					#{row.OFFICE_CNT},
+					#{row.OFFICE_AREAR},
+					#{row.START_DAY},
+					#{row.END_DAY}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_soj05070_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.OFFICE_NAME        = U.OFFICE_NAME,
+				A.COMP_CODE          = U.COMP_CODE,
+				A.EXPLAN             = U.EXPLAN,
+				A.PART1              = U.PART1,
+				A.PART2              = U.PART2,
+				A.TEL                = U.TEL,
+				A.FAX                = U.FAX,
+				A.ZIP                = U.ZIP,
+				A.ADDR1              = U.ADDR1,
+				A.ADDR2              = U.ADDR2,
+				A.MAGOR_NAME         = U.MAGOR_NAME,
+				A.MAJOR_HP           = U.MAJOR_HP,
+				A.REGI_DAY           = U.REGI_DAY,
+				A.STATUS             = U.STATUS,
+				A.MGMUSER_ID         = U.MGMUSER_ID,
+				A.OFFICE_HARD_SIZE   = U.OFFICE_HARD_SIZE,
+				A.OFFICE_USER_CNT    = U.OFFICE_USER_CNT,
+				A.OFFICE_CNT         = U.OFFICE_CNT,
+				A.OFFICE_AREAR       = U.OFFICE_AREAR,
+				A.START_DAY          = U.START_DAY,
+				A.END_DAY            = U.END_DAY
+			FROM dbo.TPM_OFFICE A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.OFFICE_CODE}        AS OFFICE_CODE,
+					#{row.OFFICE_NAME}        AS OFFICE_NAME,
+					#{row.COMP_CODE}          AS COMP_CODE,
+					#{row.EXPLAN}             AS EXPLAN,
+					#{row.PART1}              AS PART1,
+					#{row.PART2}              AS PART2,
+					#{row.TEL}                AS TEL,
+					#{row.FAX}                AS FAX,
+					#{row.ZIP}                AS ZIP,
+					#{row.ADDR1}              AS ADDR1,
+					#{row.ADDR2}              AS ADDR2,
+					#{row.MAGOR_NAME}         AS MAGOR_NAME,
+					#{row.MAJOR_HP}           AS MAJOR_HP,
+					#{row.REGI_DAY}           AS REGI_DAY,
+					#{row.STATUS}             AS STATUS,
+					#{row.MGMUSER_ID}         AS MGMUSER_ID,
+					#{row.OFFICE_HARD_SIZE}   AS OFFICE_HARD_SIZE,
+					#{row.OFFICE_USER_CNT}    AS OFFICE_USER_CNT,
+					#{row.OFFICE_CNT}         AS OFFICE_CNT,
+					#{row.OFFICE_AREAR}       AS OFFICE_AREAR,
+					#{row.START_DAY}          AS START_DAY,
+					#{row.END_DAY}            AS END_DAY
+			</foreach>
+			) AS U ON A.OFFICE_CODE	= U.OFFICE_CODE
+		</if>
+	</update>
+
+	<select id="selectList_soj05070_grid2" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.CONT_SEQ,
+			A.CONTRACT_NO,
+			A.START_DATE,
+			A.END_DATE,
+			A.CONT_KIND_CD,
+			dbo.getCode_nm(A.CONT_KIND_CD) as CONT_KIND_NM,
+			A.CONT_AMT,
+			A.REV_DATE,
+			A.REV_REASON,
+			A.REMARKS
+		FROM dbo.TPM_CONTRACT A
+		WHERE A.OFFICE_CODE = #{OFFICE_CODE}
+		ORDER BY A.CONT_SEQ, A.START_DATE, A.END_DATE
+	</select>
+
+	<select id="getKey_soj05070_grid2" parameterType="map" resultType="map">
+		SELECT
+			MAX(A.CONT_SEQ) AS CONT_SEQ
+		FROM dbo.TPM_CONTRACT A
+	</select>
+
+	<insert id="insertList_soj05070_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TPM_CONTRACT (
+				OFFICE_CODE,
+				CONT_SEQ,
+				CONTRACT_NO,
+				START_DATE,
+				END_DATE,
+				CONT_KIND_CD,
+				CONT_AMT,
+				REV_DATE,
+				REV_REASON,
+				REMARKS
+				)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.OFFICE_CODE},
+				#{row.CONT_SEQ},
+				#{row.CONTRACT_NO},
+				#{row.START_DATE},
+				#{row.END_DATE},
+				#{row.CONT_KIND_CD},
+				#{row.CONT_AMT},
+				#{row.REV_DATE},
+				#{row.REV_REASON},
+				#{row.REMARKS}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_soj05070_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.CONTRACT_NO   = U.CONTRACT_NO,
+				A.START_DATE    = U.START_DATE,
+				A.END_DATE      = U.END_DATE,
+				A.CONT_KIND_CD  = U.CONT_KIND_CD,
+				A.CONT_AMT      = U.CONT_AMT,
+				A.REV_DATE      = U.REV_DATE,
+				A.REV_REASON    = U.REV_REASON,
+				A.REMARKS       = U.REMARKS
+			FROM dbo.TPM_CONTRACT A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.OFFICE_CODE}   AS OFFICE_CODE,
+					#{row.CONT_SEQ}      AS CONT_SEQ,
+					#{row.CONTRACT_NO}   AS CONTRACT_NO,
+					#{row.START_DATE}    AS START_DATE,
+					#{row.END_DATE}      AS END_DATE,
+					#{row.CONT_KIND_CD}  AS CONT_KIND_CD,
+					#{row.CONT_AMT}      AS CONT_AMT,
+					#{row.REV_DATE}      AS REV_DATE,
+					#{row.REV_REASON}    AS REV_REASON,
+					#{row.REMARKS}       AS REMARKS
+			</foreach>
+			) AS U ON A.OFFICE_CODE	= U.OFFICE_CODE AND A.CONT_SEQ	= U.CONT_SEQ
+		</if>
+	</update>
+
+	<select id="selectList_soj05080_grid1" parameterType="map" resultType="map">
+		WITH LatestContract AS (
+			SELECT *,
+				ROW_NUMBER() OVER (
+				PARTITION BY OFFICE_CODE
+				ORDER BY START_DATE DESC, CONT_SEQ DESC
+				) AS RN
+			FROM dbo.TPM_CONTRACT
+		),
+		LatestContract2 AS (
+			SELECT *,
+				ROW_NUMBER() OVER (
+				PARTITION BY OFFICE_CODE
+				ORDER BY PLAN_MONTH DESC, SEQ DESC
+				) AS RN
+			FROM dbo.TRP_MONTH_REPAIR_BASIC
+		)
+		SELECT
+			A.OFFICE_CODE,
+			A.OFFICE_NAME,
+			A.PART1,
+			A.PART2,
+			ISNULL(A.COMP_CODE, '') AS COMP_CODE,
+			ISNULL(A.MGMCOMP_CODE, '') AS MGMCOMP_CODE,
+			A.EXPLAN,
+			A.PART1,
+			dbo.getCode_nm(A.PART1) as PART1_NM,
+			A.PART2,
+			dbo.getCode_nm(A.PART2) as PART2_NM,
+			A.TEL,
+			A.FAX,
+			'(' + A.ZIP + ') ' + A.ADDR1 + ' ' + A.ADDR2 AS ADDR,
+			A.MAGOR_NAME,
+			A.MAJOR_HP,
+			D.COMP_NAME,
+			A.MGMUSER_ID,
+			A.REGI_DAY,
+			ISNULL(A.STATUS, '104003') AS STATUS,
+			dbo.getCode_nm(A.STATUS) as STATUS_NM,
+			A.OFFICE_HARD_SIZE,
+			A.OFFICE_USER_CNT,
+			A.OFFICE_CNT,
+			A.OFFICE_AREAR,
+			B.CONT_SEQ,
+			B.START_DATE,
+			B.END_DATE,
+			B.CONT_KIND_CD,
+			dbo.getCode_nm(B.CONT_KIND_CD) as CONT_KIND_NM,
+			B.CONT_AMT,
+			B.REV_DATE,
+			B.REV_REASON,
+			C.PLAN_GBN,
+			dbo.getCode_nm(C.PLAN_GBN) as PLAN_GBN_NM,
+			C.PLAN_MONTH,
+			C.STATUS AS REPAIR_STATUS,
+			dbo.getCode_nm(C.STATUS) as REPAIR_STATUS_NM
+		FROM dbo.TPM_OFFICE A
+		LEFT JOIN LatestContract B
+			ON A.OFFICE_CODE = B.OFFICE_CODE AND B.RN = 1
+		LEFT JOIN LatestContract2 C
+			ON A.OFFICE_CODE = C.OFFICE_CODE AND C.RN = 1
+		LEFT JOIN TPM_COMPANY D
+			ON A.COMP_CODE = D.COMP_CODE
+		WHERE A.STATUS LIKE '%' + #{STATUS} + '%'
+			<if test="CONT_KIND_CD != null and CONT_KIND_CD != ''">
+				AND B.CONT_KIND_CD LIKE '%' + #{CONT_KIND_CD} + '%'
+			</if>
+			<if test="LOGINUSER_OFFICE_CODE != '10001' and LOGINUSER_MGMCOMP_CODE != '101' and LOGINUSER_USERGROUP_ID !='900'" >
+				AND A.MGMCOMP_CODE = #{LOGINUSER_MGMCOMP_CODE}
+			</if>
+			<if test="LOGINUSER_USERGROUP_ID == '400'">
+				AND A.COMP_CODE = #{LOGINUSER_COMP_CODE}
+			</if>
+		ORDER BY A.OFFICE_CODE, A.REGI_DAY, B.START_DATE
+	</select>
+
+	<select id="selectList_soj05120_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.BOARD_DIV,
+			A.BOARD_NO,
+			A.BOARD_TITLE,
+			B.ATT_NO AS ATT_NO,
+			A.BOARD_WRITER,
+			A.BOARD_DATE
+		FROM dbo.TPM_BOARD A
+		LEFT JOIN (
+			SELECT BOARD_DIV, BOARD_NO, MAX(ATT_NO) AS ATT_NO
+			FROM dbo.TPM_FILE
+			GROUP BY BOARD_DIV, BOARD_NO
+		) B ON A.BOARD_DIV = B.BOARD_DIV AND A.BOARD_NO = B.BOARD_NO
+		WHERE A.BOARD_DIV = #{BOARD_DIV}
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+						A.BOARD_TITLE LIKE '%' + #{TEXT} + '%' OR A.BOARD_CONTENT LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.BOARD_TITLE LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.BOARD_CONTENT LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.BOARD_NO DESC, A.BOARD_DATE DESC, A.BOARD_TITLE
+	</select>
+
+	<select id="boardSelectOne_soj05120_board1" parameterType="map" resultType="map">
+		SELECT
+			A.BOARD_DIV,
+			A.BOARD_NO,
+			A.BOARD_TITLE,
+			A.BOARD_CONTENT,
+			A.BOARD_WRITER,
+			A.BOARD_DATE,
+			A.BOARD_CNT,
+			A.USER_ID
+		FROM dbo.TPM_BOARD A
+		WHERE A.BOARD_DIV = #{BOARD_DIV} AND A.BOARD_NO = #{BOARD_NO}
+		ORDER BY A.BOARD_DATE, A.BOARD_TITLE
+	</select>
+
+	<update id="boardCntUp_soj05120_board1" parameterType="map">
+		UPDATE dbo.TPM_BOARD
+		SET BOARD_CNT = ISNULL(BOARD_CNT, 0) + 1
+		WHERE BOARD_DIV = #{BOARD_DIV} AND BOARD_NO = #{BOARD_NO}
+	</update>
+
+	<insert id="boardInsertOne_soj05120_board1" parameterType="map">
+		INSERT INTO dbo.TPM_BOARD (
+			BOARD_DIV,
+			BOARD_NO,
+			BOARD_TITLE,
+			BOARD_CONTENT,
+			BOARD_WRITER,
+			BOARD_DATE,
+			BOARD_CNT,
+			USER_ID
+		)
+		SELECT
+			#{BOARD_DIV},
+			ISNULL(MAX(BOARD_NO), 0) + 1,
+			#{BOARD_TITLE},
+			#{BOARD_CONTENT},
+			#{LOGINUSER_NAME},
+			#{BOARD_DATE},
+			0,
+			#{LOGINUSER_ID}
+	</insert>
+
+	<update id="boardUpdateOne_soj05120_board1" parameterType="map">
+			UPDATE dbo.TPM_BOARD
+			SET
+				BOARD_TITLE   =  #{BOARD_TITLE},
+				BOARD_CONTENT =  #{BOARD_CONTENT}
+			WHERE BOARD_DIV = #{BOARD_DIV} AND BOARD_NO = #{BOARD_NO}
+	</update>
+
+	<delete id="boardDeleteOne_soj05120_board1" parameterType="map">
+		DELETE FROM dbo.TPM_BOARD
+		WHERE BOARD_DIV = #{BOARD_DIV} AND BOARD_NO = #{BOARD_NO}
+	</delete>
+
+
+	<select id="selectList_soj05120_file1" parameterType="map" resultType="map">
+		SELECT
+			A.BOARD_DIV,
+			A.BOARD_NO,
+			A.ATT_NO,
+			A.FILE_NM,
+			A.SYS_FILE_NM,
+			A.FILE_PATH
+		FROM dbo.TPM_FILE A
+		JOIN dbo.TPM_BOARD B ON  A.BOARD_DIV = B.BOARD_DIV AND A.BOARD_NO = B.BOARD_NO
+		WHERE A.BOARD_DIV = #{BOARD_DIV} AND A.BOARD_NO = #{BOARD_NO}
+		ORDER BY A.ATT_NO, A.FILE_NM
+	</select>
+
+
+	<select id="selectList_soj07010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.MENU_GROUP,
+			A.MENU_ID,
+			A.MENU_NAME,
+			A.M_LEVEL,
+			A.LEVEL_ORDER,
+			A.UP_MENU_ID,
+			ISNULL(A.FORM_USE, '0') AS FORM_USE
+		FROM dbo.TPM_MENU A
+		<if test="MENU_NAME != null and MENU_NAME != ''">
+			WHERE MENU_NAME LIKE '%' + #{MENU_NAME} + '%'
+		</if>
+		ORDER BY A.MENU_ID, M_LEVEL, LEVEL_ORDER
+	</select>
+
+	<insert id="insertList_soj07010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TPM_MENU (
+				MENU_ID,
+				MENU_GROUP,
+				MENU_NAME,
+				M_LEVEL,
+				LEVEL_ORDER,
+				UP_MENU_ID,
+				FORM_USE)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT #{row.MENU_ID},
+					   #{row.MENU_GROUP},
+					   #{row.MENU_NAME},
+					   #{row.M_LEVEL},
+					   #{row.LEVEL_ORDER},
+					   #{row.UP_MENU_ID},
+					   #{row.FORM_USE}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_soj07010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.MENU_GROUP	= U.MENU_GROUP,
+				A.MENU_NAME		= U.MENU_NAME,
+				A.M_LEVEL		= U.M_LEVEL,
+				A.LEVEL_ORDER	= U.LEVEL_ORDER,
+				A.UP_MENU_ID	= U.UP_MENU_ID,
+				A.FORM_USE		= U.FORM_USE
+			FROM dbo.TPM_MENU A
+			JOIN(
+				<foreach collection="list" item="row" separator=" UNION ALL ">
+					SELECT  #{row.MENU_ID} AS MENU_ID,
+							#{row.MENU_GROUP} AS MENU_GROUP,
+							#{row.MENU_NAME} AS MENU_NAME,
+							#{row.M_LEVEL} AS M_LEVEL,
+							#{row.LEVEL_ORDER} AS LEVEL_ORDER,
+							#{row.UP_MENU_ID}	AS UP_MENU_ID,
+							#{row.FORM_USE} AS FORM_USE
+				</foreach>
+			) AS U ON A.MENU_ID	= U.MENU_ID
+		</if>
+	</update>
+
+	<delete id="deleteList_soj07010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			DELETE FROM dbo.TPM_MENU
+			WHERE MENU_ID IN
+			<foreach collection="list" item="row" open="(" close=")" separator=",">
+				#{row.MENU_ID}
+			</foreach>
+		</if>
+	</delete>
+
+	<select id="selectList_soj07020_grid1" parameterType="map" resultType="map">
+		SELECT
+		    A.MENU_NAME,
+			A.MENU_ID,
+			A.M_LEVEL,
+			A.UP_MENU_ID,
+			ISNULL(B.FORM_USE, '0')    AS FORM_USE,
+			ISNULL(B.GRD_CREATE, '0')  AS GRD_CREATE,
+			ISNULL(B.GRD_READ, '0')    AS GRD_READ,
+			ISNULL(B.GRD_UPDATE, '0')  AS GRD_UPDATE,
+			ISNULL(B.GRD_DELETE, '0')  AS GRD_DELETE,
+			ISNULL(B.GRD_EXCEL, '0')   AS GRD_EXCEL,
+			B.USERGROUP_ID
+		FROM dbo.TPM_MENU AS A
+		LEFT JOIN dbo.TPM_GROUPMENU AS B
+			ON A.MENU_ID = B.MENU_ID
+			AND B.USERGROUP_ID = #{USERGROUP_ID}
+		WHERE A.FORM_USE = '1'
+		ORDER BY MENU_ID
+	</select>
+
+	<insert id="insertList_soj07020_grid1" parameterType="list">
+		<if test = "list != null and list.size > 0">
+		INSERT INTO dbo.TPM_GROUPMENU (
+		    USERGROUP_ID,
+			MENU_ID,
+			FORM_USE,
+			GRD_CREATE,
+			GRD_READ,
+			GRD_UPDATE,
+			GRD_DELETE,
+			GRD_EXCEL)
+		<foreach collection = "list" item = "row" separator = " UNION ALL ">
+			SELECT
+			    #{row.USERGROUP_ID},
+				#{row.MENU_ID},
+				#{row.FORM_USE},
+				#{row.GRD_CREATE},
+				#{row.GRD_READ},
+				#{row.GRD_UPDATE},
+				#{row.GRD_DELETE},
+				#{row.GRD_EXCEL}
+		</foreach>
+		</if>
+	</insert>
+
+	<update  id="updateList_soj07020_grid1" parameterType="list">
+		<if test = "list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.MENU_ID		= B.MENU_ID,
+				A.FORM_USE		= B.FORM_USE,
+				A.GRD_CREATE	= B.GRD_CREATE,
+				A.GRD_READ		= B.GRD_READ,
+				A.GRD_UPDATE	= B.GRD_UPDATE,
+				A.GRD_DELETE	= B.GRD_DELETE,
+				A.GRD_EXCEL		= B.GRD_EXCEL
+			FROM dbo.TPM_GROUPMENU AS A
+			JOIN(
+			<foreach collection = "list" item = "row" separator = " UNION ALL ">
+				SELECT
+					#{row.USERGROUP_ID} AS USERGROUP_ID,
+					#{row.MENU_ID} AS MENU_ID,
+					#{row.FORM_USE} AS FORM_USE,
+					#{row.GRD_CREATE} AS GRD_CREATE,
+					#{row.GRD_READ} AS GRD_READ,
+					#{row.GRD_UPDATE} AS GRD_UPDATE,
+					#{row.GRD_DELETE} AS GRD_DELETE,
+					#{row.GRD_EXCEL} AS GRD_EXCEL
+			</foreach>
+			) AS B ON A.MENU_ID = B.MENU_ID
+		</if>
+	</update>
+
+	<select id="selectList_soj07030_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.MENU_NAME,
+			A.MENU_ID,
+			A.M_LEVEL,
+			A.UP_MENU_ID,
+			ISNULL(B.FORM_USE, '0')   AS FORM_USE,
+			ISNULL(B.GRD_CREATE, '0') AS GRD_CREATE,
+			ISNULL(B.GRD_READ, '0')   AS GRD_READ,
+			ISNULL(B.GRD_UPDATE, '0') AS GRD_UPDATE,
+			ISNULL(B.GRD_DELETE, '0') AS GRD_DELETE,
+			ISNULL(B.GRD_EXCEL, '0')  AS GRD_EXCEL,
+			B.USERGROUP_ID
+		FROM dbo.TPM_MENU AS A
+		LEFT JOIN dbo.TPM_GROUPMENU AS B
+			ON A.MENU_ID = B.MENU_ID
+			AND B.USERGROUP_ID = #{USERGROUP_ID}
+		WHERE A.FORM_USE = '1'
+		ORDER BY MENU_ID
+	</select>
+
+	<insert id="insertList_soj07030_grid1" parameterType="list">
+		<if test = "list != null and list.size > 0">
+			INSERT INTO dbo.TPM_GROUPMENU (
+				USERGROUP_ID,
+				MENU_ID,
+				FORM_USE,
+				GRD_CREATE,
+				GRD_READ,
+				GRD_UPDATE,
+				GRD_DELETE,
+				GRD_EXCEL)
+			<foreach collection = "list" item = "row" separator = " UNION ALL ">
+				SELECT
+				    #{row.USERGROUP_ID},
+					#{row.MENU_ID},
+					#{row.FORM_USE},
+					#{row.GRD_CREATE},
+					#{row.GRD_READ},
+					#{row.GRD_UPDATE},
+					#{row.GRD_DELETE},
+					#{row.GRD_EXCEL}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_soj07030_grid1" parameterType="list">
+		<if test = "list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.MENU_ID		= B.MENU_ID,
+				A.FORM_USE		= B.FORM_USE,
+				A.GRD_CREATE	= B.GRD_CREATE,
+				A.GRD_READ		= B.GRD_READ,
+				A.GRD_UPDATE	= B.GRD_UPDATE,
+				A.GRD_DELETE	= B.GRD_DELETE,
+				A.GRD_EXCEL		= B.GRD_EXCEL
+			FROM dbo.TPM_GROUPMENU AS A
+			JOIN(
+			<foreach collection = "list" item = "row" separator = " UNION ALL ">
+				SELECT #{row.USERGROUP_ID} AS USERGROUP_ID,
+						#{row.MENU_ID} AS MENU_ID,
+						#{row.FORM_USE} AS FORM_USE,
+						#{row.GRD_CREATE} AS GRD_CREATE,
+						#{row.GRD_READ} AS GRD_READ,
+						#{row.GRD_UPDATE} AS GRD_UPDATE,
+						#{row.GRD_DELETE} AS GRD_DELETE,
+						#{row.GRD_EXCEL} AS GRD_EXCEL
+			</foreach>
+			) AS B ON A.MENU_ID = B.MENU_ID
+		</if>
+	</update>
+
+	<select id="selectList_soj07040_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.CODEDV_NO,
+			A.CODEDV_NM,
+			A.DIVISION1_NM,
+			A.DIVISION2_NM,
+			A.DIVISION3_NM,
+			A.DIVISION4_NM,
+			A.DIVISION5_NM,
+			ISNULL(A.USE_YN, 'N')  AS USE_YN,
+			A.SORTORDER,
+			A.ABOLITION_DT
+		FROM dbo.TPM_CODE_MST AS A
+		ORDER BY A.CODEDV_NO
+	</select>
+
+	<select id="selectList_soj07040_grid2" parameterType="map" resultType="map">
+		SELECT
+			A.CODEDV_NO,
+			A.CODE_NO,
+			A.CODEDTL_NM,
+			A.SHORT_NM,
+			A.DIVISION1_NM,
+			A.DIVISION2_NM,
+			A.DIVISION3_NM,
+			A.DIVISION4_NM,
+			A.DIVISION5_NM,
+			ISNULL(A.USE_YN, 'N')  AS USE_YN,
+			A.SORTORDER,
+			A.ABOLITION_DT
+		FROM dbo.TPM_CODEBODY AS A
+		LEFT JOIN  dbo.TPM_CODE_MST AS B
+			ON A.CODEDV_NO = B.CODEDV_NO
+		WHERE REPLACE(B.CODEDV_NO, ' ', '') = REPLACE(#{CODEDV_NO}, ' ', '')
+		ORDER BY A.SORTORDER, A.CODEDV_NO, A.CODE_NO
+	</select>
+
+	<select id="getKey_soj07040_grid1" parameterType="map" resultType="map">
+		SELECT
+			MAX(A.CODEDV_NO) AS CODEDV_NO
+		FROM dbo.TPM_CODE_MST A
+	</select>
+
+	<insert id="insertList_soj07040_grid1" parameterType="list">
+		<if test = "list != null and list.size > 0">
+			INSERT INTO dbo.TPM_CODE_MST (
+				CODEDV_NO,
+				CODEDV_NM,
+				USE_YN)
+			<foreach collection = "list" item = "row" separator = " UNION ALL ">
+				SELECT
+				    #{row.CODEDV_NO},
+					#{row.CODEDV_NM},
+					#{row.USE_YN}
+			</foreach>
+		</if>
+	</insert>
+
+
+	<update id="updateList_soj07040_grid1" parameterType="list">
+		<if test = "list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.CODEDV_NM		= B.CODEDV_NM,
+				A.USE_YN		= B.USE_YN
+			FROM dbo.TPM_CODE_MST AS A
+			JOIN(
+			<foreach collection = "list" item = "row" separator = " UNION ALL ">
+				SELECT
+					#{row.CODEDV_NO} AS CODEDV_NO,
+					#{row.CODEDV_NM} AS CODEDV_NM,
+					#{row.USE_YN} AS USE_YN
+			</foreach>
+			) AS B ON A.CODEDV_NO = B.CODEDV_NO
+		</if>
+	</update>
+
+	<insert id="insertList_soj07040_grid2" parameterType="list">
+		<if test = "list != null and list.size > 0">
+			INSERT INTO dbo.TPM_CODEBODY(
+				CODEDV_NO,
+				CODE_NO,
+				CODEDTL_NM,
+				SHORT_NM,
+				DIVISION1_NM,
+				DIVISION2_NM,
+				DIVISION3_NM,
+				DIVISION4_NM,
+				DIVISION5_NM,
+				SORTORDER,
+				USE_YN)
+			<foreach collection = "list" item = "row" separator = " UNION ALL ">
+				SELECT
+				    #{row.CODEDV_NO},
+					#{row.CODE_NO},
+					#{row.CODEDTL_NM},
+					#{row.SHORT_NM},
+					#{row.DIVISION1_NM},
+					#{row.DIVISION2_NM},
+					#{row.DIVISION3_NM},
+					#{row.DIVISION4_NM},
+					#{row.DIVISION5_NM},
+					#{row.SORTORDER},
+					#{row.USE_YN}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_soj07040_grid2" parameterType="list">
+		<if test = "list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.CODEDTL_NM		= B.CODEDTL_NM,
+				A.SHORT_NM			= B.SHORT_NM,
+				A.DIVISION1_NM		= B.DIVISION1_NM,
+				A.DIVISION2_NM		= B.DIVISION2_NM,
+				A.DIVISION3_NM		= B.DIVISION3_NM,
+				A.DIVISION4_NM		= B.DIVISION4_NM,
+				A.DIVISION5_NM		= B.DIVISION5_NM,
+				A.SORTORDER			= B.SORTORDER,
+				A.USE_YN			= B.USE_YN
+			FROM dbo.TPM_CODEBODY AS A
+			JOIN(
+			<foreach collection = "list" item = "row" separator = " UNION ALL ">
+				SELECT
+					#{row.CODEDV_NO} 	AS CODEDV_NO,
+					#{row.CODE_NO} 		AS CODE_NO,
+					#{row.CODEDTL_NM} 	AS CODEDTL_NM,
+					#{row.SHORT_NM}		AS SHORT_NM,
+					#{row.DIVISION1_NM} AS DIVISION1_NM,
+					#{row.DIVISION2_NM} AS DIVISION2_NM,
+					#{row.DIVISION3_NM} AS DIVISION3_NM,
+					#{row.DIVISION4_NM} AS DIVISION4_NM,
+					#{row.DIVISION5_NM} AS DIVISION5_NM,
+					#{row.SORTORDER}	AS SORTORDER,
+					#{row.USE_YN} 		AS USE_YN
+			</foreach>
+			) AS B ON A.CODEDV_NO = B.CODEDV_NO AND A.CODE_NO = B.CODE_NO
+		</if>
+	</update>
+
+	<select id="getCode" parameterType="string" resultType="map">
+		SELECT
+			REPLACE(A.CODEDV_NO, ' ', '') AS CODEDV_NO, --코드구분
+			REPLACE(A.CODE_NO, ' ', '') AS CODE_NO,		--코드
+			A.CODEDTL_NM,								--코드명
+			A.SHORT_NM,									--약어명
+			A.DIVISION1_NM,
+			A.DIVISION2_NM,
+			A.DIVISION3_NM,
+			A.DIVISION4_NM,
+			A.DIVISION5_NM,
+			A.SORTORDER,
+			ISNULL(A.USE_YN, 'N')  AS USE_YN,
+			A.ABOLITION_DT
+		FROM dbo.TPM_CODEBODY AS A
+		INNER JOIN dbo.TPM_CODE_MST AS B ON A.CODEDV_NO = B.CODEDV_NO
+		WHERE A.CODEDV_NO = #{CODEDV_NO} AND A.USE_YN = 'Y'
+		ORDER BY B.SORTORDER, A.SORTORDER, A.CODEDV_NO, A.CODE_NO
+	</select>
+
+	<select id="getUsergroupId" parameterType="map" resultType="map">
+		SELECT
+			A.USERGROUP_ID,
+			A.USERGROUP_NM,
+			A.USERGROUP_EXP,
+			A.GROUP_GBN
+		FROM dbo.TPM_MGTGROUP A
+		ORDER BY A.USERGROUP_ID
+	</select>
+
+
+</mapper>

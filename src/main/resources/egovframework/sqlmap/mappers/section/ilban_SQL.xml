@@ -1,0 +1,1468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ilbanMapper">
+
+	<select id="selectList_ilb001_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.RULE_DIV		AS BOARD_DIV,
+			A.RULE_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			B.FILE_SEQ		AS ATT_NO,
+			A.WRITER 		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TMG_RULE A
+		LEFT JOIN (
+			SELECT OFFICE_CODE, RULE_DIV, RULE_SEQ, MAX(FILE_SEQ) AS FILE_SEQ
+			FROM dbo.TMG_RULE_FILE
+			GROUP BY OFFICE_CODE, RULE_DIV, RULE_SEQ
+		) B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.RULE_DIV = B.RULE_DIV AND A.RULE_SEQ = B.RULE_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.RULE_DIV = #{BOARD_DIV}
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+						A.SUBJECT LIKE '%' + #{TEXT} + '%' OR A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.SUBJECT LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.RULE_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_ilb001_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.RULE_DIV		AS BOARD_DIV,
+			A.RULE_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			A.DOC_HTML		AS BOARD_CONTENT,
+			A.WRITER		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TMG_RULE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.RULE_DIV = #{BOARD_DIV} AND A.RULE_SEQ = #{BOARD_NO}
+		ORDER BY A.REG_DATE, A.SUBJECT
+	</select>
+
+	<insert id="boardInsertOne_ilb001_board1" parameterType="map">
+		INSERT INTO dbo.TMG_RULE(
+			OFFICE_CODE,
+			RULE_DIV,
+			RULE_SEQ,
+			SUBJECT,
+			DOC_HTML,
+			WRITER,
+			REG_DATE,
+			REG_USER
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			#{BOARD_DIV},
+			ISNULL(MAX(RULE_SEQ), 0) + 1,
+			#{BOARD_TITLE},
+			#{BOARD_CONTENT},
+			#{LOGINUSER_NAME},
+			#{BOARD_DATE},
+			#{LOGINUSER_ID}
+		FROM dbo.TMG_RULE
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND RULE_DIV = #{BOARD_DIV}
+	</insert>
+
+	<update id="boardUpdateOne_ilb001_board1" parameterType="map">
+			UPDATE dbo.TMG_RULE
+			SET
+				SUBJECT  =  #{BOARD_TITLE},
+				DOC_HTML =  #{BOARD_CONTENT}
+			WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND RULE_DIV = #{BOARD_DIV} AND RULE_SEQ = #{BOARD_NO}
+	</update>
+
+	<delete id="boardDeleteOne_ilb001_board1" parameterType="map">
+		DELETE FROM dbo.TMG_RULE
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND RULE_DIV = #{BOARD_DIV} AND RULE_SEQ = #{BOARD_NO}
+	</delete>
+
+	<select id="selectList_ilb001_file1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.RULE_DIV		AS BOARD_DIV,
+			A.RULE_SEQ		AS BOARD_NO,
+			A.FILE_SEQ		AS ATT_NO,
+			A.FILE_NM,
+			A.SYS_FILE_NM
+		FROM dbo.TMG_RULE_FILE A
+		JOIN dbo.TMG_RULE B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.RULE_DIV = B.RULE_DIV AND A.RULE_SEQ = B.RULE_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.RULE_DIV = #{BOARD_DIV} AND A.RULE_SEQ = #{BOARD_NO}
+		ORDER BY A.FILE_SEQ, A.FILE_NM
+	</select>
+
+
+	<select id="selectList_ilb02010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.SUPPLIER_CD,
+			A.SUPPLIER_NAME,
+			A.LICENSE_NO,
+			A.OWNER,
+			A.OWNER_PHON_NO,
+			A.COMP_PHON_NO,
+			A.FAX_NO,
+			A.TYPE,
+			A.ITEMS,
+			A.ZIP_CODE AS ZIP,
+			A.MAIN_ADDR AS ADDR1,
+			A.SUB_ADDR AS ADDR2,
+			CASE WHEN A.USE_YN IS NULL THEN '1'
+				 WHEN REPLACE(A.USE_YN, ' ', '') = '' THEN '1'
+				 ELSE A.USE_YN
+			END AS USE_YN,
+			A.REG_DATE,
+			A.REMARKS
+		FROM dbo.TMG_SUPPLIER AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		<choose>
+			<when test="WHAT == 'all'">
+				AND A.SUPPLIER_NAME LIKE '%' + #{TEXT} + '%'
+			</when>
+			<when test="WHAT == 'Y'">
+				AND A.SUPPLIER_NAME LIKE '%' + #{TEXT} + '%'
+				AND (A.USE_YN IS NULL OR REPLACE(A.USE_YN, ' ', '') = '' OR A.USE_YN = '1')
+			</when>
+			<when test="WHAT == 'N'">
+				AND A.SUPPLIER_NAME LIKE '%' + #{TEXT} + '%'
+				AND A.USE_YN = '0'
+			</when>
+		</choose>
+		ORDER BY A.REG_DATE, A.SUPPLIER_CD
+	</select>
+
+	<select id="getKey_ilb02010_grid1" parameterType="map" resultType="map">
+		SELECT
+			CONVERT(VARCHAR, MAX(CONVERT(INT, A.SUPPLIER_CD))) AS SUPPLIER_CD
+		FROM dbo.TMG_SUPPLIER A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+	<insert id="insertList_ilb02010_grid1" parameterType="list">
+		<if test = "list != null and list.size > 0">
+			INSERT INTO dbo.TMG_SUPPLIER (
+				OFFICE_CODE,
+				SUPPLIER_CD,
+				SUPPLIER_NAME,
+				LICENSE_NO,
+				OWNER,
+				OWNER_PHON_NO,
+				COMP_PHON_NO,
+				FAX_NO,
+				TYPE,
+				ITEMS,
+				ZIP_CODE,
+				MAIN_ADDR,
+				SUB_ADDR,
+				USE_YN,
+				REG_DATE,
+				REMARKS)
+			<foreach collection = "list" item = "row" separator = " UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.SUPPLIER_CD},
+					#{row.SUPPLIER_NAME},
+					#{row.LICENSE_NO},
+					#{row.OWNER},
+					#{row.OWNER_PHON_NO},
+					#{row.COMP_PHON_NO},
+					#{row.FAX_NO},
+					#{row.TYPE},
+					#{row.ITEMS},
+					#{row.ZIP},
+					#{row.ADDR1},
+					#{row.ADDR2},
+					#{row.USE_YN},
+					#{row.REG_DATE},
+					#{row.REMARKS}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_ilb02010_grid1" parameterType="list">
+		<if test = "list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.SUPPLIER_NAME = B.SUPPLIER_NAME,
+				A.LICENSE_NO 	= B.LICENSE_NO,
+				A.OWNER 		= B.OWNER,
+				A.OWNER_PHON_NO = B.OWNER_PHON_NO,
+				A.COMP_PHON_NO 	= B.COMP_PHON_NO,
+				A.FAX_NO 		= B.FAX_NO,
+				A.TYPE 			= B.TYPE,
+				A.ITEMS 		= B.ITEMS,
+				A.ZIP_CODE 		= B.ZIP_CODE,
+				A.MAIN_ADDR 	= B.MAIN_ADDR,
+				A.SUB_ADDR 		= B.SUB_ADDR,
+				A.USE_YN 		= B.USE_YN,
+				A.REG_DATE		= B.REG_DATE,
+				A.REMARKS		= B.BREMARKS
+			FROM dbo.TMG_SUPPLIER AS A
+			JOIN(
+			<foreach collection = "list" item = "row" separator = " UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+				#{row.SUPPLIER_CD} 			 AS SUPPLIER_CD,
+				#{row.SUPPLIER_NAME} 		 AS SUPPLIER_NAME,
+				#{row.LICENSE_NO}			 AS LICENSE_NO,
+				#{row.OWNER}				 AS OWNER,
+				#{row.OWNER_PHON_NO}		 AS OWNER_PHON_NO,
+				#{row.COMP_PHON_NO}			 AS COMP_PHON_NO,
+				#{row.FAX_NO}				 AS FAX_NO,
+				#{row.TYPE}					 AS TYPE,
+				#{row.ITEMS}				 AS ITEMS,
+				#{row.ZIP}					 AS ZIP_CODE,
+				#{row.ADDR1}				 AS MAIN_ADDR,
+				#{row.ADDR2}				 AS SUB_ADDR,
+				#{row.USE_YN}				 AS USE_YN,
+				#{row.REG_DATE}				 AS REG_DATE,
+				#{row.REMARKS}				 AS REMARKS
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SUPPLIER_CD = B.SUPPLIER_CD
+		</if>
+	</update>
+
+
+	<delete id="deleteList_ilb02010_grid1" parameterType="list">
+		DELETE FROM dbo.TMG_SUPPLIER
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.SUPPLIER_CD} AS SUPPLIER_CD
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TMG_SUPPLIER.OFFICE_CODE AND temp.SUPPLIER_CD = TMG_SUPPLIER.SUPPLIER_CD
+		)
+	</delete>
+
+	<select id="getSelectOption_pop_contract_input_supplier" parameterType="map" resultType="map">
+		SELECT
+		    A.OFFICE_CODE,
+			A.SUPPLIER_CD,
+			A.SUPPLIER_NAME,
+			A.LICENSE_NO,
+			A.OWNER,
+			A.COMP_PHON_NO
+		FROM dbo.TMG_SUPPLIER A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.USE_YN = '' OR A.USE_YN = '1' OR A.USE_YN IS NULL)
+		ORDER BY A.SUPPLIER_CD
+	</select>
+
+	<select id="selectList_ilb02020_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.CONTRACT_NO,
+			A.CONTRACT_NAME,
+			A.CONTRACT_DATE,
+			A.CONTRACT_TERM,
+			A.STRAT_DATE,
+			A.END_DATE,
+			A.PAY_TYPE,
+			A.CONTRACT_AMOUNT,
+			A.CONTRACT_GBN,
+			A.REMARKS,
+			A.SUPPLIER_CD,
+			A.SUPPLIER_NAME,
+			A.LICENSE_NO,
+			A.OWNER,
+			A.COMP_PHON_NO,
+			A.TYPE,
+			A.ITEMS,
+			A.ADDR,
+			A.GUARANTEE_YN,
+			A.GUARANTEE_NAME,
+			A.GUARANTEE_COMP,
+			A.GUARANTEE_DATE,
+			A.GUARANTEE_ST_DATE,
+			A.GUARANTEE_END_DATE,
+			A.GUARANTEE_AMOUNT,
+			A.GUARANTEE_REMARKS,
+			A.GUARANTEE_TERM,
+			A.CANCEL_DATE,
+			A.CANCEL_REASON,
+			A.CONTRACT_DIV,
+			dbo.getCode_nm(A.CONTRACT_DIV) AS CONTRACT_DIV_NM,
+			CASE WHEN (A.END_DATE IS NULL OR A.END_DATE = '' OR A.END_DATE > CONVERT(VARCHAR(8), GETDATE(), 112))
+				 	AND (A.CANCEL_DATE IS NULL OR A.CANCEL_DATE = '' OR A.CANCEL_DATE > CONVERT(VARCHAR(8), GETDATE(), 112)) THEN '계약'
+				 ELSE '미계약'
+			END	 AS STATE
+		FROM dbo.TMG_CONTRACT AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			<if test="CONTRACT != 'all'">
+				<choose>
+					<when test="CONTRACT == 'contract'">
+						AND (A.END_DATE IS NULL OR A.END_DATE = '' OR A.END_DATE &gt; CONVERT(VARCHAR(8), GETDATE(), 112))
+						AND (A.CANCEL_DATE IS NULL OR A.CANCEL_DATE = '' OR A.CANCEL_DATE &gt; CONVERT(VARCHAR(8), GETDATE(), 112))
+					</when>
+					<when test="CONTRACT == 'uncontract'">
+						AND (A.END_DATE &lt; CONVERT(VARCHAR(8), GETDATE(), 112)
+						OR A.CANCEL_DATE &lt; CONVERT(VARCHAR(8), GETDATE(), 112))
+					</when>
+				</choose>
+			</if>
+			<if test="TEXT != null and TEXT != ''">
+				<choose>
+					<when test="WHAT == 'all'">
+						AND (A.SUPPLIER_NAME LIKE '%' + #{TEXT} + '%' OR A.CONTRACT_NAME LIKE '%' + #{TEXT} + '%')
+					</when>
+					<when test="WHAT == 'contract'">
+						AND A.CONTRACT_NAME LIKE '%' + #{TEXT} + '%'
+					</when>
+					<when test="WHAT == 'office'">
+						AND A.SUPPLIER_NAME LIKE '%' + #{TEXT} + '%'
+					</when>
+				</choose>
+			</if>
+		ORDER BY CONVERT(INT, A.CONTRACT_NO)
+	</select>
+
+	<insert id="insertList_ilb02020_grid1" parameterType="list">
+		<if test = "list != null and list.size > 0">
+			INSERT INTO dbo.TMG_CONTRACT (
+				OFFICE_CODE,
+				CONTRACT_NO,
+				CONTRACT_NAME,
+				CONTRACT_DATE,
+				CONTRACT_TERM,
+				STRAT_DATE,
+				END_DATE,
+				PAY_TYPE,
+				CONTRACT_AMOUNT,
+				CONTRACT_GBN,
+				REMARKS,
+				SUPPLIER_CD,
+				SUPPLIER_NAME,
+				LICENSE_NO,
+				OWNER,
+				COMP_PHON_NO,
+				TYPE,
+				ITEMS,
+				ADDR,
+				GUARANTEE_YN,
+				GUARANTEE_NAME,
+				GUARANTEE_COMP,
+				GUARANTEE_DATE,
+				GUARANTEE_ST_DATE,
+				GUARANTEE_END_DATE,
+				GUARANTEE_AMOUNT,
+				GUARANTEE_REMARKS,
+				GUARANTEE_TERM,
+				CANCEL_DATE,
+				CANCEL_REASON,
+				CONTRACT_DIV)
+			<foreach collection = "list" item = "row" separator = " UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.CONTRACT_NO},
+				#{row.CONTRACT_NAME},
+				#{row.CONTRACT_DATE},
+				#{row.CONTRACT_TERM},
+				#{row.STRAT_DATE},
+				#{row.END_DATE},
+				#{row.PAY_TYPE},
+				#{row.CONTRACT_AMOUNT},
+				#{row.CONTRACT_GBN},
+				#{row.REMARKS},
+				#{row.SUPPLIER_CD},
+				#{row.SUPPLIER_NAME},
+				#{row.LICENSE_NO},
+				#{row.OWNER},
+				#{row.COMP_PHON_NO},
+				#{row.TYPE},
+				#{row.ITEMS},
+				#{row.ADDR},
+				#{row.GUARANTEE_YN},
+				#{row.GUARANTEE_NAME},
+				#{row.GUARANTEE_COMP},
+				#{row.GUARANTEE_DATE},
+				#{row.GUARANTEE_ST_DATE},
+				#{row.GUARANTEE_END_DATE},
+				#{row.GUARANTEE_AMOUNT},
+				#{row.GUARANTEE_REMARKS},
+				#{row.GUARANTEE_TERM},
+				#{row.CANCEL_DATE},
+				#{row.CANCEL_REASON},
+				#{row.CONTRACT_DIV}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_ilb02020_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.CONTRACT_NAME      = B.CONTRACT_NAME,
+				A.CONTRACT_DATE      = B.CONTRACT_DATE,
+				A.CONTRACT_TERM      = B.CONTRACT_TERM,
+				A.STRAT_DATE         = B.STRAT_DATE,
+				A.END_DATE           = B.END_DATE,
+				A.PAY_TYPE           = B.PAY_TYPE,
+				A.CONTRACT_AMOUNT    = B.CONTRACT_AMOUNT,
+				A.CONTRACT_GBN       = B.CONTRACT_GBN,
+				A.REMARKS            = B.REMARKS,
+				A.SUPPLIER_CD        = B.SUPPLIER_CD,
+				A.SUPPLIER_NAME      = B.SUPPLIER_NAME,
+				A.LICENSE_NO         = B.LICENSE_NO,
+				A.OWNER              = B.OWNER,
+				A.COMP_PHON_NO       = B.COMP_PHON_NO,
+				A.TYPE               = B.TYPE,
+				A.ITEMS              = B.ITEMS,
+				A.ADDR               = B.ADDR,
+				A.GUARANTEE_YN       = B.GUARANTEE_YN,
+				A.GUARANTEE_NAME     = B.GUARANTEE_NAME,
+				A.GUARANTEE_AMOUNT   = B.GUARANTEE_AMOUNT,
+				A.GUARANTEE_REMARKS  = B.GUARANTEE_REMARKS,
+				A.GUARANTEE_TERM     = B.GUARANTEE_TERM,
+				A.CANCEL_DATE        = B.CANCEL_DATE,
+				A.CANCEL_REASON      = B.CANCEL_REASON,
+				A.CONTRACT_DIV       = B.CONTRACT_DIV
+			FROM dbo.TMG_CONTRACT A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE}	AS OFFICE_CODE,
+				#{row.CONTRACT_NO}        		AS CONTRACT_NO,
+				#{row.CONTRACT_NAME}      		AS CONTRACT_NAME,
+				#{row.CONTRACT_DATE}      		AS CONTRACT_DATE,
+				#{row.CONTRACT_TERM}     		AS CONTRACT_TERM,
+				#{row.STRAT_DATE}         		AS STRAT_DATE,
+				#{row.END_DATE}           		AS END_DATE,
+				#{row.PAY_TYPE}           		AS PAY_TYPE,
+				#{row.CONTRACT_AMOUNT}    		AS CONTRACT_AMOUNT,
+				#{row.CONTRACT_GBN}       		AS CONTRACT_GBN,
+				#{row.REMARKS}            		AS REMARKS,
+				#{row.SUPPLIER_CD}        		AS SUPPLIER_CD,
+				#{row.SUPPLIER_NAME}      		AS SUPPLIER_NAME,
+				#{row.LICENSE_NO}         		AS LICENSE_NO,
+				#{row.OWNER}              		AS OWNER,
+				#{row.COMP_PHON_NO}       		AS COMP_PHON_NO,
+				#{row.TYPE}               		AS TYPE,
+				#{row.ITEMS}              		AS ITEMS,
+				#{row.ADDR}               		AS ADDR,
+				#{row.GUARANTEE_YN}       		AS GUARANTEE_YN,
+				#{row.GUARANTEE_NAME}     		AS GUARANTEE_NAME,
+				#{row.GUARANTEE_AMOUNT}   		AS GUARANTEE_AMOUNT,
+				#{row.GUARANTEE_REMARKS}  		AS GUARANTEE_REMARKS,
+				#{row.GUARANTEE_TERM}     		AS GUARANTEE_TERM,
+				#{row.CANCEL_DATE}        		AS CANCEL_DATE,
+				#{row.CANCEL_REASON}      		AS CANCEL_REASON,
+				#{row.CONTRACT_DIV}       		AS CONTRACT_DIV
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.CONTRACT_NO = B.CONTRACT_NO
+		</if>
+	</update>
+
+	<delete id="deleteList_ilb02020_grid1" parameterType="list">
+		DELETE FROM dbo.TMG_CONTRACT
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.CONTRACT_NO} AS CONTRACT_NO
+				</foreach>
+				) AS temp
+			WHERE temp.OFFICE_CODE = TMG_CONTRACT.OFFICE_CODE AND temp.CONTRACT_NO = TMG_CONTRACT.CONTRACT_NO
+			)
+	</delete>
+
+	<select id="selectList_ilb02030_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.CONTRACT_NO,
+			A.CONTRACT_NAME,
+			A.CONTRACT_DATE,
+			A.CONTRACT_TERM,
+			A.STRAT_DATE,
+			A.END_DATE,
+			A.PAY_TYPE,
+			A.CONTRACT_AMOUNT,
+			A.CONTRACT_GBN,
+			A.REMARKS,
+			A.SUPPLIER_CD,
+			A.SUPPLIER_NAME,
+			A.LICENSE_NO,
+			A.OWNER,
+			A.COMP_PHON_NO,
+			A.TYPE,
+			A.ITEMS,
+			A.ADDR,
+			A.GUARANTEE_YN,
+			A.GUARANTEE_NAME,
+			A.GUARANTEE_COMP,
+			A.GUARANTEE_DATE,
+			A.GUARANTEE_ST_DATE,
+			A.GUARANTEE_END_DATE,
+			A.GUARANTEE_AMOUNT,
+			A.GUARANTEE_REMARKS,
+			A.GUARANTEE_TERM,
+			A.CANCEL_DATE,
+			A.CANCEL_REASON,
+			A.CONTRACT_DIV,
+			dbo.getCode_nm(A.CONTRACT_DIV) AS CONTRACT_DIV_NM,
+			STUFF(STUFF(A.STRAT_DATE, 5, 0, '-'), 8, 0, '-') + ' ~ ' + STUFF(STUFF(A.CANCEL_DATE, 5, 0, '-'), 8, 0, '-') AS CONTRACT_PERIOD
+		FROM dbo.TMG_CONTRACT AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			AND (A.END_DATE &lt; CONVERT(VARCHAR(8), GETDATE(), 112) OR A.CANCEL_DATE &lt; CONVERT(VARCHAR(8), GETDATE(), 112))
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (A.SUPPLIER_NAME LIKE '%' + #{TEXT} + '%' OR A.CONTRACT_NAME LIKE '%' + #{TEXT} + '%')
+				</when>
+				<when test="WHAT == 'contract'">
+					AND A.CONTRACT_NAME LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'office'">
+					AND A.SUPPLIER_NAME LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY CONVERT(INT, A.CONTRACT_NO)
+	</select>
+
+
+	<select id="getSelectOption_ilb03010_grid1_deptCd" parameterType="map" resultType="map">
+		SELECT
+			A.DEPT_CD,
+			A.DEPT_NAME
+		FROM dbo.THR_DEPT A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
+		ORDER BY A.SORT_ORDER
+	</select>
+
+	<select id="getSelectOption_ilb03010_grid1_jobDutyCd" parameterType="map" resultType="map">
+		SELECT
+			A.JOB_DUTY_CD,
+			A.JOB_DUTY_NAME
+		FROM dbo.THR_JOB_DUTY A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
+		ORDER BY A.SORT_ORDER
+	</select>
+
+	<select id="selectList_ilb03010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.JOIN_DATE,
+			A.DEPT_CD,
+			B.DEPT_NAME,
+			A.JOB_DUTY_CD,
+			C.JOB_DUTY_NAME,
+			A.NAME,
+			A.HP_NO,
+			ISNULL(A.USE_YN,'Y'),
+			A.RESIGN_DATE,
+			A.REMARKS,
+			A.RESIGN_REASON,
+			CASE WHEN NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NOT NULL AND A.RESIGN_DATE &lt; CONVERT(VARCHAR(8), GETDATE(), 112) THEN '퇴사'
+				 WHEN (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR A.RESIGN_DATE &gt;= CONVERT(VARCHAR(8), GETDATE(), 112))
+						AND A.JOIN_DATE &lt;= CONVERT(VARCHAR(8), GETDATE(), 112) THEN '재직'
+				ELSE '' END AS JOIN_YN
+		FROM dbo.TAD_EMP AS A
+		LEFT JOIN dbo.THR_DEPT AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DEPT_CD = B.DEPT_CD
+		LEFT JOIN dbo.THR_JOB_DUTY AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.JOB_DUTY_CD = C.JOB_DUTY_CD
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+				AND (A.USE_YN = '' OR ISNULL(A.USE_YN,'Y') = 'Y')
+			<if test="TEXT != null and TEXT != '' ">
+				<choose>
+					<when test="WHAT == 'all'">
+						AND (C.JOB_DUTY_NAME LIKE '%' + #{TEXT} + '%' OR A.NAME LIKE '%' + #{TEXT} + '%')
+					</when>
+					<when test="WHAT == 'position'">
+						AND C.JOB_DUTY_NAME LIKE '%' + #{TEXT} + '%'
+					</when>
+					<when test="WHAT == 'name'">
+						AND A.NAME LIKE '%' + #{TEXT} + '%'
+					</when>
+				</choose>
+			</if>
+		ORDER BY CONVERT(INT, A.EMP_NO), A.JOIN_DATE, A.NAME
+	</select>
+
+	<select id="getKey_ilb03010_grid1" parameterType="map" resultType="map">
+		SELECT
+			CONVERT(VARCHAR, MAX(CONVERT(INT, A.EMP_NO))) AS EMP_NO
+		FROM dbo.TAD_EMP A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+
+	<insert id="insertList_ilb03010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TAD_EMP (
+				OFFICE_CODE,
+				EMP_NO,
+				JOIN_DATE,
+				DEPT_CD,
+				JOB_DUTY_CD,
+				NAME,
+				HP_NO,
+				USE_YN,
+				REMARKS
+			)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.EMP_NO},
+					#{row.JOIN_DATE},
+					#{row.DEPT_CD},
+					#{row.JOB_DUTY_CD},
+					#{row.NAME},
+					#{row.HP_NO},
+					'Y',
+					#{row.REMARKS}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_ilb03010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.EMP_NO         = B.EMP_NO,
+				A.JOIN_DATE      = B.JOIN_DATE,
+				A.DEPT_CD        = B.DEPT_CD,
+				A.JOB_DUTY_CD    = B.JOB_DUTY_CD,
+				A.NAME           = B.NAME,
+				A.HP_NO          = B.HP_NO,
+				A.REMARKS        = B.REMARKS
+			FROM dbo.TAD_EMP A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.EMP_NO}          			AS EMP_NO,
+					#{row.JOIN_DATE}       			AS JOIN_DATE,
+					#{row.DEPT_CD}         			AS DEPT_CD,
+					#{row.JOB_DUTY_CD}     			AS JOB_DUTY_CD,
+					#{row.NAME}            			AS NAME,
+					#{row.HP_NO}           			AS HP_NO,
+					#{row.REMARKS}         			AS REMARKS
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		</if>
+	</update>
+
+
+	<update id="beforeUpdate_ilb03010_resign" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.STATUS  = '100003'
+			FROM dbo.TPM_USER A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.EMP_NO}          			AS EMP_NO
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		</if>
+	</update>
+
+
+
+	<update id="updateList_ilb03010_resign" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.RESIGN_DATE    = B.RESIGN_DATE,
+				A.RESIGN_REASON  = B.RESIGN_REASON
+			FROM dbo.TAD_EMP A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.EMP_NO}          			AS EMP_NO,
+					#{row.RESIGN_DATE}     			AS RESIGN_DATE,
+					#{row.RESIGN_REASON}     		AS RESIGN_REASON
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		</if>
+	</update>
+
+	<select id="getSelectOption_ilb03020_grid1_empId" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.JOIN_DATE,
+			A.DEPT_CD,
+			B.DEPT_NAME,
+			A.JOB_DUTY_CD,
+			C.JOB_DUTY_NAME,
+			A.NAME,
+			A.HP_NO
+		FROM dbo.TAD_EMP AS A
+		LEFT JOIN dbo.THR_DEPT AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DEPT_CD = B.DEPT_CD
+		LEFT JOIN dbo.THR_JOB_DUTY AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.JOB_DUTY_CD = C.JOB_DUTY_CD
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			AND (A.USE_YN = '' OR ISNULL(A.USE_YN,'Y') = 'Y')
+			AND (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR A.RESIGN_DATE &gt; CONVERT(VARCHAR(8), GETDATE(), 112))
+		ORDER BY CONVERT(INT, A.EMP_NO), A.JOIN_DATE, A.NAME
+	</select>
+
+	<select id="selectList_ilb03020_grid1" parameterType="map" resultType="map">
+		SELECT
+		    A.OFFICE_CODE,
+			A.USER_ID,
+			B.EMP_NO,
+			B.HP_NO,
+			B.DEPT_CD,
+			C.DEPT_NAME,
+			B.JOB_DUTY_CD,
+			D.JOB_DUTY_NAME,
+			B.NAME,
+			B.JOIN_DATE
+		FROM dbo.TPM_USER A
+		LEFT JOIN dbo.TAD_EMP AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		LEFT JOIN dbo.THR_DEPT AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND B.DEPT_CD = C.DEPT_CD
+		LEFT JOIN dbo.THR_JOB_DUTY AS D ON A.OFFICE_CODE = D.OFFICE_CODE AND B.JOB_DUTY_CD = D.JOB_DUTY_CD
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			<if test="TEXT != null and TEXT != '' ">
+				<choose>
+					<when test="WHAT == 'all'">
+						AND (C.JOB_DUTY_NAME LIKE '%' + #{TEXT} + '%' OR B.NAME LIKE '%' + #{TEXT} + '%')
+					</when>
+					<when test="WHAT == 'position'">
+						AND C.JOB_DUTY_NAME LIKE '%' + #{TEXT} + '%'
+					</when>
+					<when test="WHAT == 'name'">
+						AND B.NAME LIKE '%' + #{TEXT} + '%'
+					</when>
+				</choose>
+			</if>
+			ORDER BY A.USER_ID
+	</select>
+
+	<update id="updateList_ilb03020_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.EMP_NO        = B.EMP_NO,
+				A.DEPT_CD       = B.DEPT_CD,
+				A.JOB_DUTY_CD   = B.JOB_DUTY_CD,
+				A.USER_NAME		= B.NAME,
+				A.HP_NO         = B.HP_NO,
+				A.PASSWD		= ISNULL(RIGHT(B.HP_NO, 4), '1234')
+			FROM dbo.TPM_USER A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.USER_ID}          		AS USER_ID,
+					#{row.EMP_NO}          			AS EMP_NO,
+					#{row.DEPT_CD}         			AS DEPT_CD,
+					#{row.JOB_DUTY_CD}     			AS JOB_DUTY_CD,
+					#{row.NAME}            			AS NAME,
+					#{row.HP_NO}           			AS HP_NO,
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.USER_ID = B.USER_ID
+		</if>
+	</update>
+
+
+	<select id="selectList_ilb03030_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			B.DEPT_NAME,
+			C.JOB_DUTY_NAME,
+			A.NAME
+		FROM dbo.TAD_EMP A
+		LEFT JOIN dbo.THR_DEPT AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DEPT_CD = B.DEPT_CD
+		LEFT JOIN dbo.THR_JOB_DUTY AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.JOB_DUTY_CD = C.JOB_DUTY_CD
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.USE_YN = '' OR ISNULL(A.USE_YN,'Y') = 'Y')
+		<if test="TEXT != null and TEXT != '' ">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (B.JOB_DUTY_NAME LIKE '%' + #{TEXT} + '%' OR A.NAME LIKE '%' + #{TEXT} + '%')
+				</when>
+				<when test="WHAT == 'position'">
+					AND B.JOB_DUTY_NAME LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'name'">
+					AND A.NAME LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY CONVERT(INT, A.EMP_NO)
+	</select>
+
+	<select id="selectList_ilb03030_grid2" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.SEQ,
+			A.LICENSE_CODE,
+			A.LICENSE_NO,
+			A.OPER_ORG,
+			A.POSS_DT,
+			A.REMARKS
+		FROM dbo.TAD_LICENSE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.EMP_NO = #{EMP_NO}
+		ORDER BY A.SEQ
+	</select>
+
+	<select id="getKey_ilb03030_grid2" parameterType="map" resultType="map">
+		SELECT
+			MAX(A.SEQ) AS SEQ
+		FROM dbo.TAD_LICENSE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.EMP_NO = #{EMP_NO}
+	</select>
+
+
+	<insert id="insertList_ilb03030_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TAD_LICENSE (
+				OFFICE_CODE,
+				EMP_NO,
+				SEQ,
+				LICENSE_CODE,
+				LICENSE_NO,
+				LICENSE_NAME,
+				OPER_ORG,
+				POSS_DT,
+				REMARKS
+			)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.EMP_NO},
+					#{row.SEQ},
+					#{row.LICENSE_CODE},
+					#{row.LICENSE_NO},
+					dbo.getCode_nm(#{row.LICENSE_CODE}),
+					#{row.OPER_ORG},
+					#{row.POSS_DT},
+					#{row.REMARKS}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_ilb03030_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.LICENSE_CODE   = B.LICENSE_CODE,
+				A.LICENSE_NO     = B.LICENSE_NO,
+				A.LICENSE_NAME   = dbo.getCode_nm(B.LICENSE_CODE)
+				A.OPER_ORG		 = B.OPER_ORG,
+				A.POSS_DT        = B.POSS_DT,
+				A.REMARKS        = B.REMARKS
+			FROM dbo.TAD_LICENSE A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.EMP_NO}          			AS EMP_NO,
+					#{row.SEQ}          			AS SEQ,
+					#{row.LICENSE_CODE}       		AS LICENSE_CODE,
+					#{row.LICENSE_NO}         		AS LICENSE_NO,
+					#{row.OPER_ORG}     			AS OPER_ORG,
+					#{row.NAMEPOSS_DT}            	AS POSS_DT,
+					#{row.REMARKS}         			AS REMARKS
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO AND A.SEQ = B.SEQ
+		</if>
+	</update>
+
+	<delete id="deleteList_ilb03030_grid2" parameterType="list">
+		DELETE FROM dbo.TAD_LICENSE
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.EMP_NO} AS EMP_NO, #{row.SEQ} AS SEQ
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TAD_LICENSE.OFFICE_CODE AND temp.EMP_NO = TAD_LICENSE.EMP_NO AND temp.SEQ = TAD_LICENSE.SEQ
+		)
+	</delete>
+
+	<select id="selectList_ilb03040_grid1" parameterType="map" resultType="map">
+		SELECT
+			ISNULL(A.DEPT_CD, B.DEPT_CD) AS DEPT_CD,
+			ISNULL(A.DEPT_NAME, B.DEPT_NAME) AS DEPT_NAME,
+			A.SORT_ORDER,
+			B.OFFICE_CODE,
+			B.DEPT_CD AS THR_DEPT_CD,
+			ISNULL(A.USE_YN,'Y') AS a_USE_YN,
+			ISNULL(B.USE_YN,'Y'),
+			B.REG_DATE,
+			B.END_DATE
+		FROM dbo.TCM_DEPT A
+		FULL OUTER JOIN (
+			SELECT *
+			FROM dbo.THR_DEPT
+			WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		) B ON A.DEPT_CD = B.DEPT_CD
+		WHERE (A.USE_YN = '' OR ISNULL(A.USE_YN,'Y') = 'Y')
+		<if test="DEPT_NAME != null and DEPT_NAME != '' ">
+				AND ((A.DEPT_NAME IS NOT NULL AND A.DEPT_NAME LIKE '%' + #{DEPT_NAME} + '%')
+						OR (B.DEPT_NAME IS NOT NULL AND B.DEPT_NAME LIKE '%' + #{DEPT_NAME} + '%'))
+			</if>
+		ORDER BY CONVERT(INT,ISNULL(A.DEPT_CD, B.DEPT_CD)), A.SORT_ORDER
+	</select>
+
+	<select id="selectList_ilb03040_grid2" parameterType="map" resultType="map">
+		SELECT
+			ISNULL(A.JOB_DUTY_CD, B.JOB_DUTY_CD) AS JOB_DUTY_CD,
+			ISNULL(A.JOB_DUTY_NAME, B.JOB_DUTY_NAME) AS JOB_DUTY_NAME,
+			ISNULL(A.JOB_GRAD_CD, B.JOB_GRAD_CD) AS JOB_GRAD_CD,
+			A.SORT_ORDER,
+			B.OFFICE_CODE,
+			B.JOB_DUTY_CD AS THR_JOB_DUTY_CD,
+			ISNULL(B.USE_YN,'Y'),
+			B.REG_DATE,
+			B.END_DATE
+		FROM dbo.TCM_JOB_DUTY A
+		FULL OUTER JOIN (
+			SELECT *
+			FROM dbo.THR_JOB_DUTY
+			WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		) B ON A.JOB_DUTY_CD = B.JOB_DUTY_CD
+		WHERE (A.USE_YN = '' OR ISNULL(A.USE_YN,'Y') = 'Y')
+			<if test="DEPT_NAME != null and DEPT_NAME != '' ">
+				AND ((A.JOB_DUTY_NAME IS NOT NULL AND A.JOB_DUTY_NAME LIKE '%' + #{DEPT_NAME} + '%')
+						OR (B.JOB_DUTY_NAME IS NOT NULL AND B.JOB_DUTY_NAME LIKE '%' + #{DEPT_NAME} + '%'))
+			</if>
+		ORDER BY CONVERT(INT,ISNULL(A.JOB_DUTY_CD, B.JOB_DUTY_CD)), A.SORT_ORDER
+	</select>
+
+
+	<insert id="insertList_ilb03040_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.THR_DEPT (
+				OFFICE_CODE,
+				DEPT_CD,
+				DEPT_NAME,
+				SORT_ORDER,
+				USE_YN,
+				REG_DATE
+			)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.DEPT_CD},
+					#{row.DEPT_NAME},
+					#{row.SORT_ORDER},
+					'Y',
+					CONVERT(VARCHAR(8), GETDATE(), 112)
+			</foreach>
+		</if>
+	</insert>
+
+	<insert id="insertList_ilb03040_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.THR_JOB_DUTY (
+				OFFICE_CODE,
+				JOB_DUTY_CD,
+				JOB_DUTY_NAME,
+				JOB_GRAD_CD,
+				SORT_ORDER,
+				USE_YN,
+				REG_DATE
+			)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.JOB_DUTY_CD},
+					#{row.JOB_DUTY_NAME},
+					#{row.JOB_GRAD_CD},
+					#{row.SORT_ORDER},
+					'Y',
+					CONVERT(VARCHAR(8), GETDATE(), 112)
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_ilb03040_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.USE_YN   = B.USE_YN,
+				A.REG_DATE = CASE
+							WHEN B.USE_YN = 'Y' THEN CONVERT(VARCHAR(8), GETDATE(), 112)
+							ELSE A.REG_DATE
+							END,
+				A.END_DATE = CASE
+							WHEN B.USE_YN = 'N' THEN CONVERT(VARCHAR(8), GETDATE(), 112)
+							ELSE A.END_DATE
+							END
+			FROM dbo.THR_DEPT A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.DEPT_CD}          		AS DEPT_CD,
+					#{row.USE_YN}          			AS USE_YN
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DEPT_CD = B.DEPT_CD
+		</if>
+	</update>
+
+	<update id="updateList_ilb03040_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.USE_YN   = B.USE_YN,
+				A.REG_DATE = CASE WHEN B.USE_YN = 'Y' THEN CONVERT(VARCHAR(8), GETDATE(), 112)
+								ELSE A.REG_DATE
+								END,
+				A.END_DATE = CASE WHEN B.USE_YN = 'N' THEN CONVERT(VARCHAR(8), GETDATE(), 112)
+								ELSE A.END_DATE
+								END
+			FROM dbo.THR_JOB_DUTY A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+				#{row.JOB_DUTY_CD}          	AS JOB_DUTY_CD,
+				#{row.USE_YN}          			AS USE_YN
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.JOB_DUTY_CD = B.JOB_DUTY_CD
+		</if>
+	</update>
+
+
+	<select id="selectList_ilb03060_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.JOIN_DATE,
+			A.DEPT_CD,
+			B.DEPT_NAME,
+			A.JOB_DUTY_CD,
+			C.JOB_DUTY_NAME,
+			A.NAME,
+			A.HP_NO,
+			A.RESIGN_DATE,
+			A.REMARKS,
+			A.RESIGN_REASON
+		FROM dbo.TAD_EMP AS A
+		LEFT JOIN dbo.THR_DEPT AS B ON B.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DEPT_CD = B.DEPT_CD
+		LEFT JOIN dbo.THR_JOB_DUTY AS C ON C.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.JOB_DUTY_CD = C.JOB_DUTY_CD
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			AND (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NOT NULL AND A.RESIGN_DATE &lt; CONVERT(VARCHAR(8), GETDATE(), 112))
+			<if test="TEXT != null and TEXT != '' ">
+				<choose>
+					<when test="WHAT == 'all'">
+						AND (C.JOB_DUTY_NAME LIKE '%' + #{TEXT} + '%' OR A.NAME LIKE '%' + #{TEXT} + '%')
+					</when>
+					<when test="WHAT == 'position'">
+						AND C.JOB_DUTY_NAME LIKE '%' + #{TEXT} + '%'
+					</when>
+					<when test="WHAT == 'name'">
+						AND A.NAME LIKE '%' + #{TEXT} + '%'
+					</when>
+				</choose>
+			</if>
+		ORDER BY CONVERT(INT, A.EMP_NO), A.JOIN_DATE, A.NAME
+	</select>
+
+	<update id="beforeUpdate_ilb03060_cancelResign" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.STATUS    = '100001'
+			FROM dbo.TPM_USER A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.EMP_NO}          			AS EMP_NO
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		</if>
+	</update>
+
+
+	<update id="updateList_ilb03060_cancelResign" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.RESIGN_DATE    = NULL,
+				A.RESIGN_REASON  = NULL
+			FROM dbo.TAD_EMP A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+				#{row.EMP_NO}          			AS EMP_NO
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		</if>
+	</update>
+
+	<select id="selectList_ilb04010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.DEPT_CD,
+			B.DEPT_NAME,
+			A.JOB_DUTY_CD,
+			C.JOB_DUTY_NAME,
+			A.NAME
+		FROM dbo.TAD_EMP AS A
+		LEFT JOIN dbo.THR_DEPT AS B ON A.DEPT_CD = B.DEPT_CD AND B.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		LEFT JOIN dbo.THR_JOB_DUTY AS C ON A.JOB_DUTY_CD = C.JOB_DUTY_CD AND C.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  AND (A.USE_YN = '' OR ISNULL(A.USE_YN,'Y') = 'Y')
+		  AND ((NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR A.RESIGN_DATE &gt;= CONVERT(VARCHAR(8), GETDATE(), 112))
+				AND A.JOIN_DATE &lt;= CONVERT(VARCHAR(8), GETDATE(), 112))
+		ORDER BY CONVERT(INT, A.EMP_NO), A.JOIN_DATE, A.NAME
+	</select>
+
+	<select id="getSelectOption_ilb04010_input1_absentCd" parameterType="map" resultType="map">
+		SELECT
+			A.ABSENT_CD,
+			A.ABSENT_NAME,
+			A.ABSENT_DESC,
+			A.ORDER_SEQ
+		FROM dbo.TAD_ABSENT_ITEM AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY A.ORDER_SEQ
+	</select>
+
+	<select id="getKey_ilb04010_input1" parameterType="map" resultType="map">
+		SELECT
+			CONVERT(VARCHAR, MAX(CONVERT(INT, A.REG_SEQ))) AS REG_SEQ
+		FROM dbo.TAD_ABSENT A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.EMP_NO = #{EMP_NO}
+	</select>
+
+	<insert id="insertList_ilb04010_input1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TAD_ABSENT (
+				OFFICE_CODE,
+				EMP_NO,
+				REG_SEQ,
+				REG_DATE,
+				ABSENT_CD,
+				START_DATE,
+				END_DATE,
+				USE_DAY_CNT,
+				DESCR,
+				IDX
+			)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.EMP_NO},
+				#{row.REG_SEQ},
+				#{row.REG_DATE},
+				#{row.ABSENT_CD},
+				#{row.START_DATE},
+				#{row.END_DATE},
+				#{row.USE_DAY_CNT},
+				#{row.DESCR},
+				#{row.IDX}
+			</foreach>
+		</if>
+	</insert>
+
+	<select id="getSelectOption_ilb04020_search_empNo" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.NAME
+		FROM dbo.TAD_EMP A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  	AND (A.USE_YN = '' OR ISNULL(A.USE_YN,'Y') = 'Y')
+			<choose>
+				<when test="STATUS == 'work'">
+					AND (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR A.RESIGN_DATE &gt;= CONVERT(VARCHAR(8), GETDATE(), 112))
+					AND A.JOIN_DATE &lt;= CONVERT(VARCHAR(8), GETDATE(), 112)
+				</when>
+				<when test="STATUS == 'resign'">
+					AND A.RESIGN_DATE IS NOT NULL AND A.RESIGN_DATE &lt; CONVERT(VARCHAR(8), GETDATE(), 112)
+				</when>
+			</choose>
+		ORDER BY A.EMP_NO
+	</select>
+
+	<select id="getSelectOption_ilb04020_grid1_absentCd" parameterType="map" resultType="map">
+		SELECT
+			A.ABSENT_CD,
+			A.ABSENT_NAME,
+			A.ABSENT_DESC,
+			A.ORDER_SEQ
+		FROM dbo.TAD_ABSENT_ITEM AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY A.ORDER_SEQ
+	</select>
+
+	<select id="selectList_ilb04020_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.REG_SEQ,
+			A.REG_DATE,
+			A.ABSENT_CD,
+			E.ABSENT_NAME,
+			A.START_DATE,
+			A.END_DATE,
+			A.USE_DAY_CNT,
+			A.DESCR,
+			A.IDX,
+			B.NAME,
+			B.DEPT_CD,
+			B.JOB_DUTY_CD,
+			C.DEPT_NAME,
+			D.JOB_DUTY_NAME,
+			CASE WHEN NULLIF(LTRIM(RTRIM(B.RESIGN_DATE)), '') IS NOT NULL AND B.RESIGN_DATE &lt; CONVERT(VARCHAR(8), GETDATE(), 112) THEN '퇴사'
+				 WHEN (NULLIF(LTRIM(RTRIM(B.RESIGN_DATE)), '') IS NULL OR B.RESIGN_DATE &gt;= CONVERT(VARCHAR(8), GETDATE(), 112))
+						AND B.JOIN_DATE &lt;= CONVERT(VARCHAR(8), GETDATE(), 112) THEN '재직'
+				 ELSE ' ' END AS JOIN_YN
+		FROM dbo.TAD_ABSENT AS A
+		LEFT JOIN dbo.TAD_EMP AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		LEFT JOIN dbo.THR_DEPT AS C ON B.DEPT_CD = C.DEPT_CD AND C.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		LEFT JOIN dbo.THR_JOB_DUTY AS D ON B.JOB_DUTY_CD = D.JOB_DUTY_CD AND D.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		LEFT JOIN dbo.TAD_ABSENT_ITEM AS E ON A.ABSENT_CD = E.ABSENT_CD AND E.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			<if test="(START_DATE != null and START_DATE != '') and (END_DATE != null and END_DATE != '')">
+				AND A.START_DATE &gt;= #{START_DATE}
+				AND A.END_DATE &lt;= #{END_DATE}
+			</if>
+			<if test="(START_DATE != null and START_DATE != '') and (END_DATE == null or END_DATE == '')">
+				AND A.START_DATE &gt;= #{START_DATE}
+			</if>
+			<if test="(END_DATE != null and END_DATE != '') and (START_DATE == null or START_DATE == '') ">
+				AND A.END_DATE &lt;= #{END_DATE}
+			</if>
+			<choose>
+				<when test="STATUS == 'work'">
+					AND (NULLIF(LTRIM(RTRIM(B.RESIGN_DATE)), '') IS NULL OR B.RESIGN_DATE &gt;= CONVERT(VARCHAR(8), GETDATE(), 112))
+					AND B.JOIN_DATE &lt;= CONVERT(VARCHAR(8), GETDATE(), 112)
+				</when>
+				<when test="STATUS == 'resign'">
+					AND NULLIF(LTRIM(RTRIM(B.RESIGN_DATE)), '') IS NOT NULL AND B.RESIGN_DATE &lt; CONVERT(VARCHAR(8), GETDATE(), 112)
+				</when>
+			</choose>
+			<if test="EMP_NO != null and EMP_NO != '' ">
+				AND B.EMP_NO = #{EMP_NO}
+			</if>
+		ORDER BY A.START_DATE DESC, A.END_DATE DESC
+	</select>
+
+	<update id="updateList_ilb04020_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.REG_DATE     = B.REG_DATE,
+				A.ABSENT_CD    = B.ABSENT_CD,
+				A.START_DATE   = B.START_DATE,
+				A.END_DATE     = B.END_DATE,
+				A.USE_DAY_CNT  = B.USE_DAY_CNT,
+				A.DESCR        = B.DESCR,
+				A.IDX		   = B.IDX
+			FROM dbo.TAD_ABSENT A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+				#{row.EMP_NO}        			AS EMP_NO,
+				#{row.REG_SEQ}       			AS REG_SEQ,
+				#{row.REG_DATE}      			AS REG_DATE,
+				#{row.ABSENT_CD}     			AS ABSENT_CD,
+				#{row.START_DATE}    			AS START_DATE,
+				#{row.END_DATE}      			AS END_DATE,
+				#{row.USE_DAY_CNT}   			AS USE_DAY_CNT,
+				#{row.DESCR}         			AS DESCR,
+				#{row.IDX}           			AS IDX
+			</foreach>
+			) B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO AND A.REG_SEQ = B.REG_SEQ
+		</if>
+	</update>
+
+	<delete id="deleteList_ilb04020_grid1" parameterType="list">
+		DELETE FROM dbo.TAD_ABSENT
+		WHERE EXISTS (
+		SELECT 1
+		FROM (
+		<foreach collection="list" item="row" separator="UNION ALL">
+			SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.EMP_NO} AS EMP_NO, #{row.REG_SEQ} AS REG_SEQ
+		</foreach>
+		) AS temp
+		WHERE temp.OFFICE_CODE = TAD_ABSENT.OFFICE_CODE AND temp.EMP_NO = TAD_ABSENT.EMP_NO AND temp.REG_SEQ = TAD_ABSENT.REG_SEQ
+		)
+	</delete>
+
+	<select id="getSelectOption_ilb04030_grid1_column" parameterType="map" resultType="map">
+		SELECT
+			A.ABSENT_CD,
+			A.ABSENT_NAME,
+			A.ORDER_SEQ
+		FROM dbo.TAD_ABSENT_ITEM AS A
+		WHERE A.OFFICE_CODE = (
+			CASE WHEN EXISTS(SELECT 1
+							FROM dbo.TAD_ABSENT_ITEM
+							WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}) THEN #{LOGINUSER_OFFICE_CODE}
+				ELSE '10001' END)
+		ORDER BY A.ORDER_SEQ
+	</select>
+
+	<select id="selectList_ilb04030_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.NAME,
+			A.DEPT_CD,
+			A.JOB_DUTY_CD,
+			CASE WHEN NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NOT NULL AND A.RESIGN_DATE &lt; CONVERT(VARCHAR(8), GETDATE(), 112) THEN '퇴사'
+				 WHEN (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR A.RESIGN_DATE &gt;= CONVERT(VARCHAR(8), GETDATE(), 112))
+						AND A.JOIN_DATE &lt;= CONVERT(VARCHAR(8), GETDATE(), 112) THEN '재직'
+				 ELSE '' END AS STATUS,
+			SUBSTRING(B.START_DATE, 1, 6) AS DATE,
+			B.ABSENT_CD,
+			SUM(B.USE_DAY_CNT) AS USE_DAY_CNT,
+			C.DEPT_NAME,
+			D.JOB_DUTY_NAME
+		FROM dbo.TAD_EMP AS A
+		LEFT JOIN dbo.TAD_ABSENT AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+										AND (SUBSTRING(B.START_DATE, 1, 6) = #{DATE} OR B.START_DATE IS NULL)
+		LEFT JOIN dbo.THR_DEPT AS C ON A.DEPT_CD = C.DEPT_CD AND C.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		LEFT JOIN dbo.THR_JOB_DUTY AS D ON A.JOB_DUTY_CD = D.JOB_DUTY_CD AND D.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			<if test="NAME != null and NAME != '' ">
+				AND A.NAME LIKE '%' + #{NAME} + '%'
+			</if>
+			AND  ((NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR SUBSTRING(A.RESIGN_DATE, 1, 6) &gt;= SUBSTRING(B.START_DATE, 1, 6))
+					AND SUBSTRING(A.JOIN_DATE, 1, 6) &lt;=  SUBSTRING(B.START_DATE, 1, 6))
+		GROUP BY A.OFFICE_CODE, A.EMP_NO, A.NAME, A.DEPT_CD, A.JOB_DUTY_CD,
+				CASE WHEN NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NOT NULL AND A.RESIGN_DATE &lt; CONVERT(VARCHAR(8), GETDATE(), 112) THEN '퇴사'
+				 	 WHEN (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR A.RESIGN_DATE &gt;= CONVERT(VARCHAR(8), GETDATE(), 112))
+				 			AND A.JOIN_DATE &lt;= CONVERT(VARCHAR(8), GETDATE(), 112) THEN '재직'
+				 	 ELSE '' END,
+		    	SUBSTRING(B.START_DATE, 1, 6), B.ABSENT_CD,
+				C.DEPT_NAME, D.JOB_DUTY_NAME
+		ORDER BY CONVERT(INT, A.EMP_NO);
+	</select>
+
+	<select id="selectList_ilb04040_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.ABSENT_CD,
+			A.ABSENT_NAME,
+			A.ABSENT_DESC,
+			A.REG_DATE,
+			ISNULL(A.USE_YN,'Y'),
+			A.ORDER_SEQ
+		FROM dbo.TAD_ABSENT_ITEM AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY A.ORDER_SEQ, A.ABSENT_CD
+	</select>
+
+	<insert id="insertList_ilb04040_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TAD_ABSENT_ITEM (
+				OFFICE_CODE,
+				ABSENT_CD,
+				ABSENT_NAME,
+				ABSENT_DESC,
+				REG_DATE,
+				USE_YN,
+				ORDER_SEQ
+			)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.ABSENT_CD},
+					#{row.ABSENT_NAME},
+					#{row.ABSENT_DESC},
+					#{row.REG_DATE},
+					#{row.USE_YN},
+					#{row.ORDER_SEQ}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_ilb04040_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.ABSENT_NAME   = B.ABSENT_NAME,
+				A.ABSENT_DESC   = B.ABSENT_DESC,
+				A.REG_DATE   	= B.REG_DATE,
+				A.USE_YN     	= B.USE_YN,
+				A.ORDER_SEQ     = B.ORDER_SEQ
+			FROM dbo.TAD_ABSENT_ITEM A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.ABSENT_CD}        		AS ABSENT_CD,
+					#{row.ABSENT_NAME}       		AS ABSENT_NAME,
+					#{row.ABSENT_DESC}      		AS ABSENT_DESC,
+					#{row.REG_DATE}     			AS REG_DATE,
+					#{row.USE_YN}    				AS USE_YN,
+					#{row.ORDER_SEQ}      			AS ORDER_SEQ
+			</foreach>
+			) B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.ABSENT_CD = B.ABSENT_CD
+		</if>
+	</update>
+
+	<delete id="deleteList_ilb04040_grid1" parameterType="list">
+		DELETE FROM dbo.TAD_ABSENT_ITEM
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.ABSENT_CD} AS ABSENT_CD
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TAD_ABSENT_ITEM.OFFICE_CODE AND temp.ABSENT_CD = TAD_ABSENT_ITEM.ABSENT_CD
+		)
+	</delete>
+
+	<delete id="beforeDelete_ilb04040_resign" parameterType="list">
+		DELETE FROM dbo.TAD_ABSENT_ITEM
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</delete>
+
+
+	<insert id="insertList_ilb04040_resign" parameterType="list">
+		<if test="list != null and list.size > 0">
+			<foreach collection="list" item="row" separator=";">
+				INSERT INTO dbo.TAD_ABSENT_ITEM (
+					OFFICE_CODE,
+					ABSENT_CD,
+					ABSENT_NAME,
+					ABSENT_DESC,
+					REG_DATE,
+					USE_YN,
+					ORDER_SEQ
+				)
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					ABSENT_CD,
+					ABSENT_NAME,
+					ABSENT_DESC,
+					CONVERT(char(8), GETDATE(), 112),
+					USE_YN,
+					ORDER_SEQ
+				FROM dbo.TAD_ABSENT_ITEM
+				WHERE OFFICE_CODE = '10001'
+			</foreach>
+		</if>
+	</insert>
+
+
+
+
+
+
+
+</mapper>

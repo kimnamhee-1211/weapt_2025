@@ -1,0 +1,1594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="haengMapper">
+
+	<select id="selectList_hae02010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			C.FILE_SEQ		AS ATT_NO,
+			A.WRITER 		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_DRAFT A
+		LEFT JOIN (
+			SELECT OFFICE_CODE, DOC_SEQ, MAX(FILE_SEQ) AS FILE_SEQ
+			FROM dbo.TAD_DOC_DRAFT_FILE
+			GROUP BY OFFICE_CODE, DOC_SEQ
+		) C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.DOC_SEQ = C.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+					A.SUBJECT LIKE '%' + #{TEXT} + '%' OR A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.SUBJECT LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.DOC_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_hae02010_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			A.DOC_HTML		AS BOARD_CONTENT,
+			A.WRITER		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_DRAFT A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.REG_DATE, A.SUBJECT
+	</select>
+
+	<insert id="boardInsertOne_hae02010_board1" parameterType="map">
+		INSERT INTO dbo.TAD_DOC_DRAFT(
+			OFFICE_CODE,
+			DOC_SEQ,
+			SUBJECT,
+			DOC_HTML,
+			WRITER,
+			REG_DATE,
+			REG_USER
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			ISNULL(MAX(DOC_SEQ), 0) + 1,
+			#{BOARD_TITLE},
+			#{BOARD_CONTENT},
+			#{LOGINUSER_NAME},
+			#{BOARD_DATE},
+			#{LOGINUSER_ID}
+		FROM dbo.TAD_DOC_DRAFT
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</insert>
+
+	<update id="boardUpdateOne_hae02010_board1" parameterType="map">
+		UPDATE dbo.TAD_DOC_DRAFT
+		SET
+			SUBJECT  =  #{BOARD_TITLE},
+			DOC_HTML =  #{BOARD_CONTENT}
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</update>
+
+	<delete id="boardDeleteOne_hae02010_board1" parameterType="map">
+		DELETE FROM dbo.TAD_DOC_DRAFT
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</delete>
+
+	<select id="selectList_hae02010_file1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.FILE_SEQ		AS ATT_NO,
+			A.FILE_NM,
+			A.SYS_FILE_NM
+		FROM dbo.TAD_DOC_DRAFT_FILE A
+		JOIN dbo.TAD_DOC_DRAFT B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.DOC_SEQ = B.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.FILE_SEQ, A.FILE_NM
+	</select>
+
+
+	<select id="selectList_hae02020_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			C.FILE_SEQ		AS ATT_NO,
+			A.WRITER 		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_SEND A
+		LEFT JOIN (
+			SELECT OFFICE_CODE, DOC_SEQ, MAX(FILE_SEQ) AS FILE_SEQ
+			FROM dbo.TAD_DOC_SEND_FILE
+			GROUP BY OFFICE_CODE, DOC_SEQ
+		) C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.DOC_SEQ = C.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+					A.SUBJECT LIKE '%' + #{TEXT} + '%' OR A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.SUBJECT LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.DOC_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_hae02020_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			A.DOC_HTML		AS BOARD_CONTENT,
+			A.WRITER		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_SEND A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.REG_DATE, A.SUBJECT
+	</select>
+
+	<insert id="boardInsertOne_hae02020_board1" parameterType="map">
+		INSERT INTO dbo.TAD_DOC_SEND(
+			OFFICE_CODE,
+			DOC_SEQ,
+			SUBJECT,
+			DOC_HTML,
+			WRITER,
+			REG_DATE,
+			REG_USER
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			ISNULL(MAX(DOC_SEQ), 0) + 1,
+			#{BOARD_TITLE},
+			#{BOARD_CONTENT},
+			#{LOGINUSER_NAME},
+			#{BOARD_DATE},
+			#{LOGINUSER_ID}
+		FROM dbo.TAD_DOC_SEND
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</insert>
+
+	<update id="boardUpdateOne_hae02020_board1" parameterType="map">
+		UPDATE dbo.TAD_DOC_SEND
+		SET
+			SUBJECT  =  #{BOARD_TITLE},
+			DOC_HTML =  #{BOARD_CONTENT}
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</update>
+
+	<delete id="boardDeleteOne_hae02020_board1" parameterType="map">
+		DELETE FROM dbo.TAD_DOC_SEND
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</delete>
+
+	<select id="selectList_hae02020_file1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.FILE_SEQ		AS ATT_NO,
+			A.FILE_NM,
+			A.SYS_FILE_NM
+		FROM dbo.TAD_DOC_SEND_FILE A
+		JOIN dbo.TAD_DOC_SEND B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.DOC_SEQ = B.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.FILE_SEQ, A.FILE_NM
+	</select>
+
+
+
+	<select id="selectList_hae02030_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			C.FILE_SEQ		AS ATT_NO,
+			A.WRITER 		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_BID A
+		LEFT JOIN (
+		SELECT OFFICE_CODE, DOC_SEQ, MAX(FILE_SEQ) AS FILE_SEQ
+		FROM dbo.TAD_DOC_BID_FILE
+		GROUP BY OFFICE_CODE, DOC_SEQ
+		) C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.DOC_SEQ = C.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+					A.SUBJECT LIKE '%' + #{TEXT} + '%' OR A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.SUBJECT LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.DOC_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_hae02030_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			A.DOC_HTML		AS BOARD_CONTENT,
+			A.WRITER		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_BID A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.REG_DATE, A.SUBJECT
+	</select>
+
+	<insert id="boardInsertOne_hae02030_board1" parameterType="map">
+		INSERT INTO dbo.TAD_DOC_BID(
+			OFFICE_CODE,
+			DOC_SEQ,
+			SUBJECT,
+			DOC_HTML,
+			WRITER,
+			REG_DATE,
+			REG_USER
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			ISNULL(MAX(DOC_SEQ), 0) + 1,
+			#{BOARD_TITLE},
+			#{BOARD_CONTENT},
+			#{LOGINUSER_NAME},
+			#{BOARD_DATE},
+			#{LOGINUSER_ID}
+		FROM dbo.TAD_DOC_BID
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</insert>
+
+	<update id="boardUpdateOne_hae02030_board1" parameterType="map">
+		UPDATE dbo.TAD_DOC_BID
+		SET
+			SUBJECT  =  #{BOARD_TITLE},
+			DOC_HTML =  #{BOARD_CONTENT}
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</update>
+
+	<delete id="boardDeleteOne_hae02030_board1" parameterType="map">
+		DELETE FROM dbo.TAD_DOC_BID
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</delete>
+
+	<select id="selectList_hae02030_file1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.FILE_SEQ		AS ATT_NO,
+			A.FILE_NM,
+			A.SYS_FILE_NM
+		FROM dbo.TAD_DOC_BID_FILE A
+		JOIN dbo.TAD_DOC_BID B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.DOC_SEQ = B.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.FILE_SEQ, A.FILE_NM
+	</select>
+
+	<select id="selectList_hae02040_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			C.FILE_SEQ		AS ATT_NO,
+			A.WRITER 		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_RECEIPT A
+		LEFT JOIN (
+		SELECT OFFICE_CODE, DOC_SEQ, MAX(FILE_SEQ) AS FILE_SEQ
+		FROM dbo.TAD_DOC_RECEIPT_FILE
+		GROUP BY OFFICE_CODE, DOC_SEQ
+		) C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.DOC_SEQ = C.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+					A.SUBJECT LIKE '%' + #{TEXT} + '%' OR A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.SUBJECT LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.DOC_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_hae02040_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			A.DOC_HTML		AS BOARD_CONTENT,
+			A.WRITER		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_RECEIPT A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.REG_DATE, A.SUBJECT
+	</select>
+
+	<insert id="boardInsertOne_hae02040_board1" parameterType="map">
+		INSERT INTO dbo.TAD_DOC_RECEIPT(
+			OFFICE_CODE,
+			DOC_SEQ,
+			SUBJECT,
+			DOC_HTML,
+			WRITER,
+			REG_DATE,
+			REG_USER
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			ISNULL(MAX(DOC_SEQ), 0) + 1,
+			#{BOARD_TITLE},
+			#{BOARD_CONTENT},
+			#{LOGINUSER_NAME},
+			#{BOARD_DATE},
+			#{LOGINUSER_ID}
+		FROM dbo.TAD_DOC_RECEIPT
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</insert>
+
+	<update id="boardUpdateOne_hae02040_board1" parameterType="map">
+		UPDATE dbo.TAD_DOC_RECEIPT
+		SET
+			SUBJECT  =  #{BOARD_TITLE},
+			DOC_HTML =  #{BOARD_CONTENT}
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</update>
+
+	<delete id="boardDeleteOne_hae02040_board1" parameterType="map">
+		DELETE FROM dbo.TAD_DOC_RECEIPT
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</delete>
+
+	<select id="selectList_hae02040_file1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.FILE_SEQ		AS ATT_NO,
+			A.FILE_NM,
+			A.SYS_FILE_NM
+		FROM dbo.TAD_DOC_RECEIPT_FILE A
+		JOIN dbo.TAD_DOC_RECEIPT B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.DOC_SEQ = B.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.FILE_SEQ, A.FILE_NM
+	</select>
+
+	<select id="selectList_hae03010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS DOC_SEQ,
+			A.SUBJECT		AS SUBJECT,
+			A.REG_DATE		AS REG_DATE,
+			A.REG_USER		AS REG_USER,
+			A.BROADCASTER 	AS BROADCASTER,
+			A.BROADCAST_CNT	AS BROADCAST_CNT,
+			A.WRITER		AS WRITER,
+			A.CAST_DATE + RIGHT('00' + A.CAST_HOUR, 2) + RIGHT('00' + A.CAST_MINUTE, 2)	AS CAST_DATE
+		FROM dbo.TAD_DOC_BROADCAST A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+					A.SUBJECT LIKE '%' + #{TEXT} + '%' OR A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.SUBJECT LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.DOC_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_hae03010_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS DOC_SEQ,
+			A.SUBJECT		AS SUBJECT,
+			A.REG_DATE		AS REG_DATE,
+			A.REG_USER		AS REG_USER,
+			A.BROADCASTER 	AS BROADCASTER,
+			A.BROADCAST_CNT	AS BROADCAST_CNT,
+			A.WRITER		AS WRITER,
+			A.CAST_DATE		AS CAST_DATE,
+			RIGHT('00' + A.CAST_HOUR, 2) + RIGHT('00' + A.CAST_MINUTE, 2) AS CAST_HOUR,
+			A.CAST_DATE + RIGHT('00' + A.CAST_HOUR, 2) + RIGHT('00' + A.CAST_MINUTE, 2) AS CAST_TIME,
+			A.DOC_HTML		AS DOC_HTML
+		FROM dbo.TAD_DOC_BROADCAST A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{DOC_SEQ}
+	</select>
+
+	<insert id="boardInsertOne_hae03010_board1" parameterType="map">
+		INSERT INTO dbo.TAD_DOC_BROADCAST(
+			OFFICE_CODE,
+			DOC_SEQ,
+			SUBJECT,
+			DOC_HTML,
+			REG_DATE,
+			REG_USER,
+			BROADCASTER,
+			BROADCAST_CNT,
+			WRITER,
+			CAST_DATE,
+			CAST_HOUR,
+			CAST_MINUTE
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			ISNULL(MAX(DOC_SEQ), 0) + 1,
+			#{SUBJECT},
+			#{DOC_HTML},
+			#{REG_DATE},
+			#{REG_USER},
+			#{BROADCASTER},
+			#{BROADCAST_CNT},
+			#{WRITER},
+			#{CAST_DATE},
+			#{CAST_HOUR},
+			#{CAST_MINUTE}
+		FROM dbo.TAD_DOC_BROADCAST
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</insert>
+
+	<update id="boardUpdateOne_hae03010_board1" parameterType="map">
+		UPDATE dbo.TAD_DOC_BROADCAST
+		SET
+			BROADCASTER = #{BROADCASTER},
+			BROADCAST_CNT = #{BROADCAST_CNT},
+			CAST_DATE = #{CAST_DATE},
+			CAST_HOUR = #{CAST_HOUR},
+			CAST_MINUTE = #{CAST_MINUTE},
+			SUBJECT  =  #{SUBJECT},
+			DOC_HTML =  #{DOC_HTML}
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{DOC_SEQ}
+	</update>
+
+	<delete id="boardDeleteOne_hae03010_board1" parameterType="map">
+		DELETE FROM dbo.TAD_DOC_BROADCAST
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{DOC_SEQ}
+	</delete>
+
+
+
+	<select id="selectList_hae03020_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS DOC_SEQ,
+			A.SUBJECT		AS SUBJECT,
+			A.REG_DATE		AS REG_DATE,
+			A.REG_USER		AS REG_USER,
+			A.START_DATE 	AS START_DATE,
+			A.END_DATE		AS END_DATE,
+			A.WRITER		AS WRITER
+		FROM dbo.TAD_DOC_NOTICE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+					A.SUBJECT LIKE '%' + #{TEXT} + '%' OR A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.SUBJECT LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.DOC_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_hae03020_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS DOC_SEQ,
+			A.SUBJECT		AS SUBJECT,
+			A.REG_DATE		AS REG_DATE,
+			A.REG_USER		AS REG_USER,
+			A.START_DATE 	AS START_DATE,
+			A.END_DATE		AS END_DATE,
+			A.WRITER		AS WRITER,
+			A.DOC_HTML		AS DOC_HTML
+		FROM dbo.TAD_DOC_NOTICE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{DOC_SEQ}
+	</select>
+
+	<insert id="boardInsertOne_hae03020_board1" parameterType="map">
+		INSERT INTO dbo.TAD_DOC_NOTICE(
+			OFFICE_CODE,
+			DOC_SEQ,
+			SUBJECT,
+			DOC_HTML,
+			REG_DATE,
+			REG_USER,
+			START_DATE,
+			END_DATE,
+			WRITER
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			ISNULL(MAX(DOC_SEQ), 0) + 1,
+			#{SUBJECT},
+			#{DOC_HTML},
+			#{REG_DATE},
+			#{REG_USER},
+			#{START_DATE},
+			#{END_DATE},
+			#{WRITER}
+		FROM dbo.TAD_DOC_NOTICE
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</insert>
+
+	<update id="boardUpdateOne_hae03020_board1" parameterType="map">
+		UPDATE dbo.TAD_DOC_NOTICE
+		SET
+			START_DATE = #{START_DATE},
+			END_DATE = #{END_DATE},
+			SUBJECT  =  #{SUBJECT},
+			DOC_HTML =  #{DOC_HTML}
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{DOC_SEQ}
+	</update>
+
+	<delete id="boardDeleteOne_hae03020_board1" parameterType="map">
+		DELETE FROM dbo.TAD_DOC_NOTICE
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{DOC_SEQ}
+	</delete>
+
+	<select id="selectList_hae03020_grid2" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS DOC_SEQ,
+			A.SEQ			AS SEQ,
+			A.NOTICE_POINT	AS NOTICE_POINT
+		FROM dbo.TAD_DOC_NOTICE_POINT A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{DOC_SEQ}
+		ORDER BY A.SEQ
+	</select>
+
+	<select id="getKey_hae03020_grid2" parameterType="map" resultType="map">
+		SELECT
+			CONVERT(VARCHAR, MAX(CONVERT(INT, A.SEQ))) AS SEQ
+		FROM dbo.TAD_DOC_NOTICE_POINT A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{DOC_SEQ}
+	</select>
+
+	<insert id="insertList_hae03020_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TAD_DOC_NOTICE_POINT (
+				OFFICE_CODE,
+				DOC_SEQ,
+				SEQ,
+				NOTICE_POINT
+			)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.DOC_SEQ},
+				#{row.SEQ},
+				#{row.NOTICE_POINT}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_hae03020_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.NOTICE_POINT   = B.NOTICE_POINT
+			FROM dbo.TAD_DOC_NOTICE_POINT A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+				#{row.DOC_SEQ}        			AS DOC_SEQ,
+				#{row.SEQ}       				AS SEQ,
+				#{row.NOTICE_POINT}      		AS NOTICE_POINT
+			</foreach>
+			) B ON  A.OFFICE_CODE = B.OFFICE_CODE AND DOC_SEQ = #{DOC_SEQ} AND SEQ = #{SEQ}
+		</if>
+	</update>
+
+	<delete id="deleteList_hae03020_grid2" parameterType="list">
+		DELETE FROM dbo.TAD_DOC_NOTICE_POINT
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.DOC_SEQ} AS DOC_SEQ, #{row.SEQ} AS SEQ
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TAD_DOC_NOTICE_POINT.OFFICE_CODE AND temp.DOC_SEQ = TAD_DOC_NOTICE_POINT.DOC_SEQ AND temp.SEQ = TAD_DOC_NOTICE_POINT.SEQ
+		)
+	</delete>
+
+	<select id="selectList_hae03030_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS DOC_SEQ,
+			A.SUBJECT		AS SUBJECT,
+			A.REG_DATE		AS REG_DATE,
+			A.REG_USER		AS REG_USER,
+			A.START_DATE 	AS START_DATE,
+			A.END_DATE		AS END_DATE,
+			A.AD_COMP_NAME	AS AD_COMP_NAME,
+			A.AD_OWNER 		AS AD_OWNER,
+			A.TEL_NO		AS TEL_NO,
+			A.AD_AMOUNT		AS AD_AMOUNT,
+			A.POINT_ID		AS POINT_ID
+		FROM dbo.TAD_DOC_ADVER A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		<if test="(START_DATE != null and START_DATE != '') and (END_DATE != null and END_DATE != '')">
+			AND A.START_DATE &gt;= #{START_DATE}
+			AND A.END_DATE &lt;= #{END_DATE}
+		</if>
+		<if test="(START_DATE != null and START_DATE != '') and (END_DATE == null or END_DATE == '')">
+			AND A.START_DATE &gt;= #{START_DATE}
+		</if>
+		<if test="(END_DATE != null and END_DATE != '') and (START_DATE == null or START_DATE == '') ">
+			AND A.END_DATE &lt;= #{END_DATE}
+		</if>
+		ORDER BY A.DOC_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_hae03030_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS DOC_SEQ,
+			A.SUBJECT		AS SUBJECT,
+			A.REG_DATE		AS REG_DATE,
+			A.REG_USER		AS REG_USER,
+			A.START_DATE 	AS START_DATE,
+			A.END_DATE		AS END_DATE,
+			A.AD_COMP_NAME	AS AD_COMP_NAME,
+			A.AD_OWNER		AS AD_OWNER,
+			A.TEL_NO		AS TEL_NO,
+			A.AD_AMOUNT		AS AD_AMOUNT,
+			A.POINT_ID		AS POINT_ID,
+			A.DOC_HTML		AS DOC_HTML
+		FROM dbo.TAD_DOC_ADVER A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{DOC_SEQ}
+	</select>
+
+	<insert id="boardInsertOne_hae03030_board1" parameterType="map">
+		INSERT INTO dbo.TAD_DOC_ADVER(
+			OFFICE_CODE,
+			DOC_SEQ,
+			SUBJECT,
+			DOC_HTML,
+			REG_DATE,
+			REG_USER,
+			START_DATE,
+			END_DATE,
+			AD_COMP_NAME,
+			AD_OWNER,
+			TEL_NO,
+			AD_AMOUNT,
+			POINT_ID
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			ISNULL(MAX(DOC_SEQ), 0) + 1,
+			#{SUBJECT},
+			#{DOC_HTML},
+			#{REG_DATE},
+			#{REG_USER},
+			#{START_DATE},
+			#{END_DATE},
+			#{AD_COMP_NAME},
+			#{AD_OWNER},
+			#{TEL_NO},
+			#{AD_AMOUNT},
+			#{POINT_ID}
+		FROM dbo.TAD_DOC_ADVER
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</insert>
+
+	<update id="boardUpdateOne_hae03030_board1" parameterType="map">
+		UPDATE dbo.TAD_DOC_ADVER
+		SET
+			START_DATE = #{START_DATE},
+			END_DATE = #{END_DATE},
+			AD_COMP_NAME = #{AD_COMP_NAME},
+			AD_OWNER = #{AD_OWNER},
+			TEL_NO = #{TEL_NO},
+			AD_AMOUNT = #{AD_AMOUNT},
+			POINT_ID = #{POINT_ID},
+			SUBJECT  =  #{SUBJECT},
+			DOC_HTML =  #{DOC_HTML}
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{DOC_SEQ}
+	</update>
+
+	<delete id="boardDeleteOne_hae03030_board1" parameterType="map">
+		DELETE FROM dbo.TAD_DOC_ADVER
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{DOC_SEQ}
+	</delete>
+
+	<select id="selectList_hae03040_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS DOC_SEQ,
+			A.SUBJECT		AS SUBJECT,
+			A.REG_DATE		AS REG_DATE,
+			A.REG_USER		AS REG_USER,
+			A.START_DATE 	AS START_DATE,
+			A.END_DATE		AS END_DATE,
+			A.AD_COMP_NAME	AS AD_COMP_NAME,
+			A.AD_OWNER 		AS AD_OWNER,
+			A.TEL_NO		AS TEL_NO,
+			A.AD_AMOUNT		AS AD_AMOUNT,
+			A.POINT_ID		AS POINT_ID
+		FROM dbo.TAD_DOC_ADVER A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		<if test="START_DATE != null and START_DATE != '' and END_DATE != null and END_DATE != ''">
+			AND A.START_DATE &gt;= #{START_DATE}
+			AND A.END_DATE &lt;= #{END_DATE}
+		</if>
+		<if test="(START_DATE != null and START_DATE != '') and (END_DATE == null or END_DATE == '')">
+			AND A.START_DATE &gt;= #{START_DATE}
+		</if>
+		<if test="(END_DATE != null and END_DATE != '') and (START_DATE == null or START_DATE == '') ">
+			AND A.END_DATE &lt;= #{END_DATE}
+		</if>
+		ORDER BY A.DOC_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+
+	<select id="getSelectOption_hae05010_grid1_docGbn" parameterType="map" resultType="map">
+		SELECT
+			A.DOC_GBN,
+			A.DOC_GBN_NAME
+		FROM dbo.TAD_MAKE_DOC_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'1') = '1'
+		ORDER BY CONVERT(INT, A.ORDER_SEQ)
+	</select>
+
+	<select id="getSelectOption_hae05010_grid1_docStorage" parameterType="map" resultType="map">
+		SELECT
+			A.STORAGE_CD,
+			A.STORAGE_NAME
+		FROM dbo.TAD_DOC_STORAGE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'1') = '1'
+		ORDER BY CONVERT(INT, A.ORDER_SEQ)
+	</select>
+
+	<select id="getSelectOption_hae05010_grid1_deptCd" parameterType="map" resultType="map">
+		SELECT
+			A.DEPT_CD,
+			A.DEPT_NAME
+		FROM dbo.THR_DEPT A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY A.DEPT_CD
+	</select>
+
+	<select id="selectList_hae05010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.DOC_SEQ			AS DOC_SEQ,
+			A.DOC_GBN			AS DOC_GBN,
+			A.MAKE_DATE			AS MAKE_DATE,
+			A.DOC_FOLDER 		AS DOC_FOLDER,
+			A.MGM_DEPT_CD		AS MGM_DEPT_CD,
+			A.DOC_STORAGE		AS DOC_STORAGE,
+			A.STORAGE_MAX_YEAR 	AS STORAGE_MAX_YEAR,
+			A.DISUSE_PLAN_DATE	AS DISUSE_PLAN_DATE,
+			ISNULL(A.USE_YN,'1')AS USE_YN,
+			A.REMARKS			AS REMARKS
+		FROM dbo.TAD_MAKE_DOC A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			 AND ISNULL(A.DISUSE_YN,'N') = 'N' AND NULLIF(LTRIM(RTRIM(A.DISUSE_DATE)), '') IS NULL
+		ORDER BY A.DOC_SEQ
+	</select>
+
+
+	<update id="updateList_hae05010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.DOC_GBN    		= U.DOC_GBN,
+				A.MAKE_DATE   		= U.MAKE_DATE,
+				A.DOC_FOLDER    	= U.DOC_FOLDER,
+				A.MGM_DEPT_CD    	= U.MGM_DEPT_CD,
+				A.DOC_STORAGE     	= U.DOC_STORAGE,
+				A.STORAGE_MAX_YEAR 	= U.STORAGE_MAX_YEAR,
+				A.DISUSE_PLAN_DATE  = U.DISUSE_PLAN_DATE,
+				A.USE_YN 			= U.USE_YN,
+				A.REMARKS   		= U.REMARKS
+			FROM dbo.TAD_MAKE_DOC A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.DOC_SEQ} 				 AS DOC_SEQ,
+					#{row.DOC_GBN} 				 AS DOC_GBN,
+					#{row.MAKE_DATE}  			 AS MAKE_DATE,
+					#{row.DOC_FOLDER}   		 AS DOC_FOLDER,
+					#{row.MGM_DEPT_CD}  		 AS MGM_DEPT_CD,
+					#{row.DOC_STORAGE}   		 AS DOC_STORAGE,
+					#{row.STORAGE_MAX_YEAR}   	 AS STORAGE_MAX_YEAR,
+					#{row.DISUSE_PLAN_DATE} 	 AS DISUSE_PLAN_DATE,
+					#{row.USE_YN} 	 			 AS USE_YN,
+					#{row.REMARKS}    			 AS REMARKS
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.DOC_SEQ = U.DOC_SEQ
+		</if>
+	</update>
+
+	<select id="getKey_hae05010_grid1" parameterType="map" resultType="map">
+		SELECT
+			MAX(A.DOC_SEQ) AS DOC_SEQ
+		FROM dbo.TAD_MAKE_DOC A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+	<insert id="insertList_hae05010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TAD_MAKE_DOC (
+				OFFICE_CODE,
+				DOC_SEQ,
+				DOC_GBN,
+				MAKE_DATE,
+				DOC_FOLDER,
+				MGM_DEPT_CD,
+				DOC_STORAGE,
+				STORAGE_MAX_YEAR,
+				DISUSE_PLAN_DATE,
+				USE_YN,
+				REMARKS,
+				DISUSE_YN,
+				DISUSE_DATE,
+				DISUSE_REASON)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.DOC_SEQ},
+					#{row.DOC_GBN},
+					#{row.MAKE_DATE},
+					#{row.DOC_FOLDER},
+					#{row.MGM_DEPT_CD},
+					#{row.DOC_STORAGE},
+					#{row.STORAGE_MAX_YEAR},
+					#{row.DISUSE_PLAN_DATE},
+					'1',
+					#{row.REMARKS},
+					'N',
+					NULL,
+					NULL
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="deleteList_hae05010_grid1" parameterType="list">
+		DELETE FROM dbo.TAD_MAKE_DOC
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.DOC_SEQ} AS DOC_SEQ
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TAD_MAKE_DOC.OFFICE_CODE AND temp.DOC_SEQ = TAD_MAKE_DOC.DOC_SEQ AND
+			)
+	</delete>
+
+	<update id="updateList_hae05010_disuse" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.DISUSE_YN    		= 'Y',
+				A.DISUSE_DATE   	= U.DISUSE_DATE,
+				A.DISUSE_REASON    	= U.DISUSE_REASON
+			FROM dbo.TAD_MAKE_DOC A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.DOC_SEQ} 				 AS DOC_SEQ,
+					#{row.DISUSE_DATE}  		 AS DISUSE_DATE,
+					#{row.DISUSE_REASON}   		 AS DISUSE_REASON
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.DOC_SEQ = U.DOC_SEQ
+		</if>
+	</update>
+
+
+	<select id="selectList_hae05020_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.DOC_SEQ			AS DOC_SEQ,
+			A.DOC_GBN			AS DOC_GBN,
+			B.DOC_GBN_NAME		AS DOC_GBN_NAME,
+			A.MAKE_DATE			AS MAKE_DATE,
+			A.DOC_FOLDER 		AS DOC_FOLDER,
+			A.MGM_DEPT_CD		AS MGM_DEPT_CD,
+			C.DEPT_NAME			AS MGM_DEPT_NM,
+			A.DOC_STORAGE		AS DOC_STORAGE,
+			D.STORAGE_NAME		AS DOC_STORAGE_NAME,
+			A.STORAGE_MAX_YEAR 	AS STORAGE_MAX_YEAR,
+			A.DISUSE_PLAN_DATE	AS DISUSE_PLAN_DATE,
+			A.REMARKS			AS REMARKS,
+			ISNULL(A.DISUSE_YN,'N') 	AS DISUSE_YN,
+			A.DISUSE_DATE		AS DISUSE_DATE,
+			A.DISUSE_REASON		AS DISUSE_REASON
+		FROM dbo.TAD_MAKE_DOC A
+		LEFT JOIN dbo.TAD_MAKE_DOC_GBN B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DOC_GBN = B.DOC_GBN
+		LEFT JOIN dbo.THR_DEPT C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MGM_DEPT_CD = C.DEPT_CD
+		LEFT JOIN dbo.TAD_DOC_STORAGE D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.DOC_STORAGE = D.STORAGE_CD
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  AND ISNULL(A.DISUSE_YN,'N') = 'Y' AND NULLIF(LTRIM(RTRIM(A.DISUSE_DATE)), '') IS NOT NULL
+			<if test="START_DATE != '' and START_DATE != null">
+				AND A.DISUSE_DATE &gt; #{START_DATE}
+			</if>
+			<if test="END_DATE != '' and END_DATE != null">
+				AND A.DISUSE_DATE &lt;= #{END_DATE}
+			</if>
+		ORDER BY CONVERT(INT,A.DISUSE_DATE) DESC
+	</select>
+
+
+	<select id="selectList_hae05030_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.DOC_GBN			AS DOC_GBN,
+			A.REG_DATE			AS REG_DATE,
+			A.DOC_GBN_NAME		AS DOC_GBN_NAME,
+			ISNULL(A.USE_YN,'1')	AS USE_YN,
+			A.ORDER_SEQ 		AS ORDER_SEQ
+		FROM dbo.TAD_MAKE_DOC_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY CONVERT(INT,A.ORDER_SEQ)
+	</select>
+
+	<update id="updateList_hae05030_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.DOC_GBN_NAME    	= U.DOC_GBN_NAME,
+				A.USE_YN    		= U.USE_YN,
+				A.ORDER_SEQ    		= U.ORDER_SEQ
+			FROM dbo.TAD_MAKE_DOC_GBN A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.DOC_GBN} 				 AS DOC_GBN,
+					#{row.DOC_GBN_NAME}  		 AS DOC_GBN_NAME,
+					#{row.USE_YN}  		 		 AS USE_YN,
+					#{row.ORDER_SEQ}   			 AS ORDER_SEQ
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.DOC_GBN = U.DOC_GBN
+		</if>
+	</update>
+
+	<select id="getKey_hae05030_grid1" parameterType="map" resultType="map">
+		SELECT
+			CONVERT(VARCHAR, MAX(CONVERT(INT, A.DOC_GBN))) AS DOC_GBN
+		FROM dbo.TAD_MAKE_DOC_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+
+	<insert id="insertList_hae05030_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+				INSERT INTO dbo.TAD_MAKE_DOC_GBN (
+					OFFICE_CODE,
+					DOC_GBN,
+					REG_DATE,
+					DOC_GBN_NAME,
+					USE_YN,
+					ORDER_SEQ
+				)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.DOC_GBN},
+					CONVERT(char(8), GETDATE(), 112),
+					#{row.DOC_GBN_NAME},
+					#{row.USE_YN},
+					#{row.ORDER_SEQ}
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="deleteList_hae05030_grid1" parameterType="list">
+		DELETE FROM dbo.TAD_MAKE_DOC_GBN
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.DOC_GBN} AS DOC_GBN
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TAD_MAKE_DOC_GBN.OFFICE_CODE AND temp.DOC_GBN = TAD_MAKE_DOC_GBN.DOC_GBN
+		)
+	</delete>
+
+
+	<select id="selectList_hae05030_grid2" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.STORAGE_CD		AS STORAGE_CD,
+			A.REG_DATE			AS REG_DATE,
+			A.STORAGE_NAME		AS STORAGE_NAME,
+			ISNULL(A.USE_YN,'1')	AS USE_YN,
+			A.ORDER_SEQ 		AS ORDER_SEQ
+		FROM dbo.TAD_DOC_STORAGE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY CONVERT(INT,A.ORDER_SEQ)
+	</select>
+
+	<update id="updateList_hae05030_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.STORAGE_NAME    	= U.STORAGE_NAME,
+				A.USE_YN    		= U.USE_YN,
+				A.ORDER_SEQ    		= U.ORDER_SEQ
+			FROM dbo.TAD_DOC_STORAGE A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.STORAGE_CD} 			 AS STORAGE_CD,
+					#{row.STORAGE_NAME}  		 AS STORAGE_NAME,
+					#{row.USE_YN}  		 		 AS USE_YN,
+					#{row.ORDER_SEQ}   			 AS ORDER_SEQ
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.STORAGE_CD = U.STORAGE_CD
+		</if>
+	</update>
+
+	<select id="getKey_hae05030_grid2" parameterType="map" resultType="map">
+		SELECT
+			CONVERT(VARCHAR, MAX(CONVERT(INT, A.STORAGE_CD))) AS STORAGE_CD
+		FROM dbo.TAD_DOC_STORAGE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+
+	<insert id="insertList_hae05030_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TAD_DOC_STORAGE (
+				OFFICE_CODE,
+				STORAGE_CD,
+				REG_DATE,
+				STORAGE_NAME,
+				USE_YN,
+				ORDER_SEQ
+			)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.STORAGE_CD},
+				CONVERT(char(8), GETDATE(), 112),
+				#{row.STORAGE_NAME},
+				#{row.USE_YN},
+				#{row.ORDER_SEQ}
+			</foreach>
+		</if>
+	</insert>
+
+
+	<delete id="deleteList_hae05030_grid2" parameterType="list">
+		DELETE FROM dbo.TAD_DOC_STORAGE
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.STORAGE_CD} AS STORAGE_CD
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TAD_DOC_STORAGE.OFFICE_CODE AND temp.STORAGE_CD = TAD_DOC_STORAGE.STORAGE_CD
+		)
+	</delete>
+
+	<delete id="beforeDelete_hae05030_registGbn" parameterType="list">
+		DELETE FROM dbo.TAD_MAKE_DOC_GBN
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</delete>
+
+	<insert id="insertList_hae05030_registGbn" parameterType="list">
+		<if test="list != null and list.size > 0">
+			<foreach collection="list" item="row" separator=";">
+				INSERT INTO dbo.TAD_MAKE_DOC_GBN (
+					OFFICE_CODE,
+					DOC_GBN,
+					REG_DATE,
+					DOC_GBN_NAME,
+					USE_YN,
+					ORDER_SEQ
+				)
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					DOC_GBN,
+					CONVERT(char(8), GETDATE(), 112),
+					DOC_GBN_NAME,
+					'Y',
+					ORDER_SEQ
+				FROM dbo.TAD_MAKE_DOC_GBN
+				WHERE OFFICE_CODE = '10001'
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="beforeDelete_hae05030_registStorage" parameterType="list">
+		DELETE FROM dbo.TAD_DOC_STORAGE
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</delete>
+
+	<insert id="insertList_hae05030_registStorage" parameterType="list">
+		<if test="list != null and list.size > 0">
+			<foreach collection="list" item="row" separator=";">
+				INSERT INTO dbo.TAD_DOC_STORAGE (
+					OFFICE_CODE,
+					STORAGE_CD,
+					REG_DATE,
+					STORAGE_NAME,
+					USE_YN,
+					ORDER_SEQ
+				)
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					STORAGE_CD,
+					CONVERT(char(8), GETDATE(), 112),
+					STORAGE_NAME,
+					'Y',
+					ORDER_SEQ
+				FROM dbo.TAD_MAKE_DOC_GBN
+				WHERE OFFICE_CODE = '10001'
+			</foreach>
+		</if>
+	</insert>
+
+
+
+
+
+
+
+
+	<select id="selectList_hae06010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			C.FILE_SEQ		AS ATT_NO,
+			A.WRITER 		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_ADMIN A
+		LEFT JOIN (
+			SELECT OFFICE_CODE, DOC_SEQ, MAX(FILE_SEQ) AS FILE_SEQ
+			FROM dbo.TAD_DOC_ADMIN_FILE
+			GROUP BY OFFICE_CODE, DOC_SEQ
+		) C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.DOC_SEQ = C.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+						A.SUBJECT LIKE '%' + #{TEXT} + '%' OR A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.SUBJECT LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.DOC_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_hae06010_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			A.DOC_HTML		AS BOARD_CONTENT,
+			A.WRITER		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_ADMIN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.REG_DATE, A.SUBJECT
+	</select>
+
+	<insert id="boardInsertOne_hae06010_board1" parameterType="map">
+		INSERT INTO dbo.TAD_DOC_ADMIN(
+			OFFICE_CODE,
+			DOC_SEQ,
+			SUBJECT,
+			DOC_HTML,
+			WRITER,
+			REG_DATE,
+			REG_USER
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			ISNULL(MAX(DOC_SEQ), 0) + 1,
+			#{BOARD_TITLE},
+			#{BOARD_CONTENT},
+			#{LOGINUSER_NAME},
+			#{BOARD_DATE},
+			#{LOGINUSER_ID}
+		FROM dbo.TAD_DOC_ADMIN
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</insert>
+
+	<update id="boardUpdateOne_hae06010_board1" parameterType="map">
+		UPDATE dbo.TAD_DOC_ADMIN
+		SET
+			SUBJECT  =  #{BOARD_TITLE},
+			DOC_HTML =  #{BOARD_CONTENT}
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</update>
+
+	<delete id="boardDeleteOne_hae06010_board1" parameterType="map">
+		DELETE FROM dbo.TAD_DOC_ADMIN
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</delete>
+
+	<select id="selectList_hae06010_file1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.FILE_SEQ		AS ATT_NO,
+			A.FILE_NM,
+			A.SYS_FILE_NM
+		FROM dbo.TAD_DOC_ADMIN_FILE A
+		JOIN dbo.TAD_DOC_ADMIN B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.DOC_SEQ = B.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.FILE_SEQ, A.FILE_NM
+	</select>
+
+	<select id="selectList_hae06020_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			C.FILE_SEQ		AS ATT_NO,
+			A.WRITER 		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_LEVY A
+		LEFT JOIN (
+			SELECT OFFICE_CODE, DOC_SEQ, MAX(FILE_SEQ) AS FILE_SEQ
+			FROM dbo.TAD_DOC_LEVY_FILE
+			GROUP BY OFFICE_CODE, DOC_SEQ
+		) C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.DOC_SEQ = C.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+					A.SUBJECT LIKE '%' + #{TEXT} + '%' OR A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.SUBJECT LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.DOC_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_hae06020_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.SUBJECT		AS BOARD_TITLE,
+			A.DOC_HTML		AS BOARD_CONTENT,
+			A.WRITER		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_DOC_LEVY A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.REG_DATE, A.SUBJECT
+	</select>
+
+	<insert id="boardInsertOne_hae06020_board1" parameterType="map">
+		INSERT INTO dbo.TAD_DOC_LEVY(
+			OFFICE_CODE,
+			DOC_SEQ,
+			SUBJECT,
+			DOC_HTML,
+			WRITER,
+			REG_DATE,
+			REG_USER
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			ISNULL(MAX(DOC_SEQ), 0) + 1,
+			#{BOARD_TITLE},
+			#{BOARD_CONTENT},
+			#{LOGINUSER_NAME},
+			#{BOARD_DATE},
+			#{LOGINUSER_ID}
+		FROM dbo.TAD_DOC_LEVY
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</insert>
+
+	<update id="boardUpdateOne_hae06020_board1" parameterType="map">
+		UPDATE dbo.TAD_DOC_LEVY
+		SET
+			SUBJECT  =  #{BOARD_TITLE},
+			DOC_HTML =  #{BOARD_CONTENT}
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</update>
+
+	<delete id="boardDeleteOne_hae06020_board1" parameterType="map">
+		DELETE FROM dbo.TAD_DOC_LEVY
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND DOC_SEQ = #{BOARD_NO}
+	</delete>
+
+	<select id="selectList_hae06020_file1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DOC_SEQ		AS BOARD_NO,
+			A.FILE_SEQ		AS ATT_NO,
+			A.FILE_NM,
+			A.SYS_FILE_NM
+		FROM dbo.TAD_DOC_LEVY_FILE A
+		JOIN dbo.TAD_DOC_LEVY B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.DOC_SEQ = B.DOC_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DOC_SEQ = #{BOARD_NO}
+		ORDER BY A.FILE_SEQ, A.FILE_NM
+	</select>
+
+	<select id="selectList_hae06030_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.RULE_SEQ		AS BOARD_NO,
+			A.RULE_DIV		AS BOARD_DIV,
+			A.SUBJECT		AS BOARD_TITLE,
+			C.FILE_SEQ		AS ATT_NO,
+			A.WRITER 		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_RULE A
+		LEFT JOIN (
+			SELECT OFFICE_CODE, RULE_SEQ, RULE_DIV, MAX(FILE_SEQ) AS FILE_SEQ
+			FROM dbo.TAD_RULE_FILE
+			WHERE RULE_DIV = '100001'
+			GROUP BY OFFICE_CODE, RULE_SEQ, RULE_DIV
+		) C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.RULE_SEQ = C.RULE_SEQ AND A.RULE_DIV = C.RULE_DIV
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.RULE_DIV = '100001'
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+					A.SUBJECT LIKE '%' + #{TEXT} + '%' OR A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.SUBJECT LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.RULE_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_hae06030_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.RULE_SEQ		AS BOARD_NO,
+			A.RULE_DIV		AS BOARD_DIV,
+			A.RULE_DIV		AS RULE_DIV,
+			A.SUBJECT		AS BOARD_TITLE,
+			A.DOC_HTML		AS BOARD_CONTENT,
+			A.WRITER		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_RULE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.RULE_SEQ = #{BOARD_NO} AND A.RULE_DIV = '100001'
+	</select>
+
+	<insert id="boardInsertOne_hae06030_board1" parameterType="map">
+		INSERT INTO dbo.TAD_RULE(
+			OFFICE_CODE,
+			RULE_SEQ,
+			RULE_DIV,
+			SUBJECT,
+			DOC_HTML,
+			WRITER,
+			REG_DATE,
+			REG_USER
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			ISNULL(MAX(RULE_SEQ), 0) + 1,
+			'100001',
+			#{BOARD_TITLE},
+			#{BOARD_CONTENT},
+			#{LOGINUSER_NAME},
+			#{BOARD_DATE},
+			#{LOGINUSER_ID}
+		FROM dbo.TAD_RULE
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</insert>
+
+	<update id="boardUpdateOne_hae06030_board1" parameterType="map">
+		UPDATE dbo.TAD_RULE
+		SET
+			SUBJECT  =  #{BOARD_TITLE},
+			DOC_HTML =  #{BOARD_CONTENT}
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND RULE_SEQ = #{BOARD_NO} AND RULE_DIV = '100001'
+	</update>
+
+	<delete id="boardDeleteOne_hae06030_board1" parameterType="map">
+		DELETE FROM dbo.TAD_RULE
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND RULE_SEQ = #{BOARD_NO} AND RULE_DIV = '100001'
+	</delete>
+
+	<select id="selectList_hae06030_file1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.RULE_SEQ		AS BOARD_NO,
+			A.RULE_DIV		AS BOARD_DIV,
+			A.FILE_SEQ		AS ATT_NO,
+			A.FILE_NM,
+			A.SYS_FILE_NM
+		FROM dbo.TAD_RULE_FILE A
+		JOIN dbo.TAD_RULE B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.RULE_SEQ = B.RULE_SEQ AND A.RULE_DIV = B.RULE_DIV
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.RULE_SEQ = #{BOARD_NO} AND A.RULE_DIV = '100001'
+		ORDER BY A.FILE_SEQ, A.FILE_NM
+	</select>
+
+	<select id="selectList_hae06040_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.RULE_SEQ		AS BOARD_NO,
+			A.RULE_DIV		AS BOARD_DIV,
+			A.SUBJECT		AS BOARD_TITLE,
+			C.FILE_SEQ		AS ATT_NO,
+			A.WRITER 		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_RULE A
+		LEFT JOIN (
+			SELECT OFFICE_CODE, RULE_SEQ, RULE_DIV, MAX(FILE_SEQ) AS FILE_SEQ
+			FROM dbo.TAD_RULE_FILE
+			WHERE RULE_DIV = '100002'
+			GROUP BY OFFICE_CODE, RULE_SEQ, RULE_DIV
+		) C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.RULE_SEQ = C.RULE_SEQ AND A.RULE_DIV = C.RULE_DIV
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.RULE_DIV = '100002'
+		<if test="TEXT != null and TEXT != ''">
+			<choose>
+				<when test="WHAT == 'all'">
+					AND (
+					A.SUBJECT LIKE '%' + #{TEXT} + '%' OR A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+					)
+				</when>
+				<when test="WHAT == 'title'">
+					AND A.SUBJECT LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'content'">
+					AND A.DOC_HTML LIKE '%' + #{TEXT} + '%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.RULE_SEQ DESC, A.REG_DATE DESC, A.SUBJECT
+	</select>
+
+	<select id="boardSelectOne_hae06040_board1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.RULE_SEQ		AS BOARD_NO,
+			A.RULE_DIV		AS BOARD_DIV,
+			A.SUBJECT		AS BOARD_TITLE,
+			A.DOC_HTML		AS BOARD_CONTENT,
+			A.WRITER		AS BOARD_WRITER,
+			A.REG_DATE		AS BOARD_DATE,
+			A.REG_USER		AS USER_ID
+		FROM dbo.TAD_RULE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.RULE_SEQ = #{BOARD_NO} AND A.RULE_DIV = '100002'
+	</select>
+
+	<insert id="boardInsertOne_hae06040_board1" parameterType="map">
+		INSERT INTO dbo.TAD_RULE(
+			OFFICE_CODE,
+			RULE_SEQ,
+			RULE_DIV,
+			SUBJECT,
+			DOC_HTML,
+			WRITER,
+			REG_DATE,
+			REG_USER
+		)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			ISNULL(MAX(RULE_SEQ), 0) + 1,
+			'100002',
+			#{BOARD_TITLE},
+			#{BOARD_CONTENT},
+			#{LOGINUSER_NAME},
+			#{BOARD_DATE},
+			#{LOGINUSER_ID}
+		FROM dbo.TAD_RULE
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</insert>
+
+	<update id="boardUpdateOne_hae06040_board1" parameterType="map">
+		UPDATE dbo.TAD_RULE
+		SET
+			SUBJECT  =  #{BOARD_TITLE},
+			DOC_HTML =  #{BOARD_CONTENT}
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND RULE_SEQ = #{BOARD_NO} AND RULE_DIV = '100002'
+	</update>
+
+	<delete id="boardDeleteOne_hae06040_board1" parameterType="map">
+		DELETE FROM dbo.TAD_RULE
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND RULE_SEQ = #{BOARD_NO} AND RULE_DIV = '100002'
+	</delete>
+
+	<select id="selectList_hae06040_file1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.RULE_SEQ		AS BOARD_NO,
+			A.RULE_DIV		AS BOARD_DIV,
+			A.FILE_SEQ		AS ATT_NO,
+			A.FILE_NM,
+			A.SYS_FILE_NM
+		FROM dbo.TAD_RULE_FILE A
+		JOIN dbo.TAD_RULE B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.RULE_SEQ = B.RULE_SEQ AND A.RULE_DIV = B.RULE_DIV
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.RULE_SEQ = #{BOARD_NO} AND A.RULE_DIV = '100002'
+		ORDER BY A.FILE_SEQ, A.FILE_NM
+	</select>
+
+
+
+
+
+
+
+
+
+</mapper>
