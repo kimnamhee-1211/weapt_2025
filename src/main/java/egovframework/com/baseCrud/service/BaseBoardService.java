@@ -12,10 +12,10 @@ import egovframework.com.login.model.LoginVO;
 
 public interface BaseBoardService {
 
-	public Map<String, Object> boardSelectOne(String sectionId, String component, Map<String, Object> param);
+	public Map<String, Object> boardSelectOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId);
 
-	public Map<String, Object> boardSave(String sectionId, String component, Map<String, Object> param);
+	public Map<String, Object> boardSave(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId);
 
-	public Map<String, Object> boardDeleteOne(String sectionId, String component,  Map<String, Object> param);
+	public Map<String, Object> boardDeleteOne(String sectionId, String component,  Map<String, Object> param, LoginVO loginUser, String pgId);
 
 }

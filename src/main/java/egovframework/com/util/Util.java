@@ -16,7 +16,6 @@ public class Util {
 		}else {
 			rtnStr = object.toString();
 		}
-		System.out.println("rtnStr >> "+rtnStr);
 		return rtnStr;
 	}
 	

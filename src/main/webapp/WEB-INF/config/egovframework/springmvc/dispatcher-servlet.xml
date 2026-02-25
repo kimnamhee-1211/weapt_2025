@@ -68,6 +68,24 @@
 	<mvc:resources mapping="/resources/**" location="/resources/" />
     <mvc:view-controller path="/cmmn/validator" view-name="cmmn/validator"/>
 
+    <bean id="SetParamInterceptor" class="egovframework.com.interceptor.SetParamInterceptor"/>
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/selectList/**"/>
+            <mvc:mapping path="/selectMap/**"/>
+            <mvc:mapping path="/insertList/**"/>
+            <mvc:mapping path="/insertOne/**"/>
+            <mvc:mapping path="/updateList/**"/>
+            <mvc:mapping path="/updateOne/**"/>
+            <mvc:mapping path="/deleteList/**"/>
+            <mvc:mapping path="/deleteOne/**"/>
+            <mvc:mapping path="/saveList/**"/>
+            <mvc:mapping path="/boardSelectOne/**"/>
+            <mvc:mapping path="/boardSave/**"/>
+            <mvc:mapping path="/boardDeleteOne/**"/>
+            <ref bean="SetParamInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
  
 </beans>

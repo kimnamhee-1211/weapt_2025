@@ -16,8 +16,26 @@
 			A.REMARKS
 		FROM
 		<choose>
-			<when test="pgId == 'dan001'">
+			<when test="PG_ID == 'dan01010'">
 				dbo.TME_EMP_TOWN
+			</when>
+			<when test="PG_ID == 'dan02010'">
+				dbo.TME_EMP_WITH
+			</when>
+			<when test="PG_ID == 'dan05010'">
+				dbo.TME_EMP_CLASS
+			</when>
+			<when test="PG_ID == 'dan06010'">
+				dbo.TME_EMP_WOMEN
+			</when>
+			<when test="PG_ID == 'dan07010'">
+				dbo.TME_EMP_CITIZEN
+			</when>
+			<when test="PG_ID == 'dan08010'">
+				dbo.TME_EMP_PROSPER
+			</when>
+			<when test="PG_ID == 'dan09010'">
+				dbo.TME_EMP_RENT
 			</when>
 			<otherwise>
 				dbo.TME_EMP_TOWN
@@ -44,14 +62,32 @@
 		SELECT
 			CONVERT(VARCHAR, MAX(CONVERT(INT, A.EMP_NO))) AS EMP_NO
 		FROM
-		<choose>
-			<when test="pgId == 'dan001'">
-				dbo.TME_EMP_TOWN
-			</when>
-			<otherwise>
-				dbo.TME_EMP_TOWN
-			</otherwise>
-		</choose> AS A
+			<choose>
+				<when test="PG_ID == 'dan01010'">
+					dbo.TME_EMP_TOWN
+				</when>
+				<when test="PG_ID == 'dan02010'">
+					dbo.TME_EMP_WITH
+				</when>
+				<when test="PG_ID == 'dan05010'">
+					dbo.TME_EMP_CLASS
+				</when>
+				<when test="PG_ID == 'dan06010'">
+					dbo.TME_EMP_WOMEN
+				</when>
+				<when test="PG_ID == 'dan07010'">
+					dbo.TME_EMP_CITIZEN
+				</when>
+				<when test="PG_ID == 'dan08010'">
+					dbo.TME_EMP_PROSPER
+				</when>
+				<when test="PG_ID == 'dan09010'">
+					dbo.TME_EMP_RENT
+				</when>
+				<otherwise>
+					dbo.TME_EMP_TOWN
+				</otherwise>
+			</choose> AS A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 	</select>
 
@@ -59,8 +95,26 @@
 		<if test="list != null and list.size > 0">
 			INSERT INTO
 				<choose>
-					<when test="pgId == 'dan001'">
+					<when test="PG_ID == 'dan01010'">
 						dbo.TME_EMP_TOWN
+					</when>
+					<when test="PG_ID == 'dan02010'">
+						dbo.TME_EMP_WITH
+					</when>
+					<when test="PG_ID == 'dan05010'">
+						dbo.TME_EMP_CLASS
+					</when>
+					<when test="PG_ID == 'dan06010'">
+						dbo.TME_EMP_WOMEN
+					</when>
+					<when test="PG_ID == 'dan07010'">
+						dbo.TME_EMP_CITIZEN
+					</when>
+					<when test="PG_ID == 'dan08010'">
+						dbo.TME_EMP_PROSPER
+					</when>
+					<when test="PG_ID == 'dan09010'">
+						dbo.TME_EMP_RENT
 					</when>
 					<otherwise>
 						dbo.TME_EMP_TOWN
@@ -107,14 +161,32 @@
 				A.BIRTH 		= B.BIRTH,
 				A.REMARKS 		= B.REMARKS
 			FROM
-			<choose>
-				<when test="pgId == 'dan001'">
-					dbo.TME_EMP_TOWN
-				</when>
-				<otherwise>
-					dbo.TME_EMP_TOWN
-				</otherwise>
-			</choose> AS A
+				<choose>
+					<when test="PG_ID == 'dan01010'">
+						dbo.TME_EMP_TOWN
+					</when>
+					<when test="PG_ID == 'dan02010'">
+						dbo.TME_EMP_WITH
+					</when>
+					<when test="PG_ID == 'dan05010'">
+						dbo.TME_EMP_CLASS
+					</when>
+					<when test="PG_ID == 'dan06010'">
+						dbo.TME_EMP_WOMEN
+					</when>
+					<when test="PG_ID == 'dan07010'">
+						dbo.TME_EMP_CITIZEN
+					</when>
+					<when test="PG_ID == 'dan08010'">
+						dbo.TME_EMP_PROSPER
+					</when>
+					<when test="PG_ID == 'dan09010'">
+						dbo.TME_EMP_RENT
+					</when>
+					<otherwise>
+						dbo.TME_EMP_TOWN
+					</otherwise>
+				</choose> AS A
 			JOIN (
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
@@ -142,8 +214,26 @@
 				A.DISUSE_REASON  = B.DISUSE_REASON
 			FROM
 				<choose>
-					<when test="pgId == 'dan001'">
+					<when test="PG_ID == 'dan01010'">
 						dbo.TME_EMP_TOWN
+					</when>
+					<when test="PG_ID == 'dan02010'">
+						dbo.TME_EMP_WITH
+					</when>
+					<when test="PG_ID == 'dan05010'">
+						dbo.TME_EMP_CLASS
+					</when>
+					<when test="PG_ID == 'dan06010'">
+						dbo.TME_EMP_WOMEN
+					</when>
+					<when test="PG_ID == 'dan07010'">
+						dbo.TME_EMP_CITIZEN
+					</when>
+					<when test="PG_ID == 'dan08010'">
+						dbo.TME_EMP_PROSPER
+					</when>
+					<when test="PG_ID == 'dan09010'">
+						dbo.TME_EMP_RENT
 					</when>
 					<otherwise>
 						dbo.TME_EMP_TOWN
@@ -264,23 +354,44 @@
 
 	<select id="selectList_dan003_grid1" parameterType="map" resultType="map">
 		SELECT
-		A.OFFICE_CODE,
-		A.EMP_NO,
-		A.REG_DATE,
-		A.DONG,
-		A.HO,
-		A.GRADE_CD,
-		A.NAME,
-		A.HP_NO,
-		A.BIRTH,
-		A.DISUSE_DATE,
-		A.DISUSE_REASON
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.REG_DATE,
+			A.DONG,
+			A.HO,
+			A.GRADE_CD,
+			A.NAME,
+			A.HP_NO,
+			A.BIRTH,
+			A.DISUSE_DATE,
+			A.DISUSE_REASON
 		FROM
-		<choose>
-			<when test="pgId == 'dan001'">
-				dbo.TME_EMP_TOWN
-			</when>
-		</choose> AS A
+			<choose>
+				<when test="PG_ID == 'dan01030'">
+					dbo.TME_EMP_TOWN
+				</when>
+				<when test="PG_ID == 'dan02030'">
+					dbo.TME_EMP_WITH
+				</when>
+				<when test="PG_ID == 'dan05030'">
+					dbo.TME_EMP_CLASS
+				</when>
+				<when test="PG_ID == 'dan06030'">
+					dbo.TME_EMP_WOMEN
+				</when>
+				<when test="PG_ID == 'dan07030'">
+					dbo.TME_EMP_CITIZEN
+				</when>
+				<when test="PG_ID == 'dan08030'">
+					dbo.TME_EMP_PROSPER
+				</when>
+				<when test="PG_ID == 'dan09030'">
+					dbo.TME_EMP_RENT
+				</when>
+				<otherwise>
+					dbo.TME_EMP_TOWN
+				</otherwise>
+			</choose> AS A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_YN = 'Y' AND A.DISUSE_DATE IS NOT NULL)
 		<if test="TEXT != null and TEXT != '' ">
 			<choose>
@@ -302,15 +413,36 @@
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
-			A.DISUSE_YN		 = 'N',
-			A.DISUSE_DATE    = NULL,
-			A.DISUSE_REASON  = NULL
+				A.DISUSE_YN		 = 'N',
+				A.DISUSE_DATE    = NULL,
+				A.DISUSE_REASON  = NULL
 			FROM
-			<choose>
-				<when test="pgId == 'dan001'">
-					dbo.TME_EMP_TOWN
-				</when>
-			</choose> AS A
+				<choose>
+					<when test="PG_ID == 'dan01030'">
+						dbo.TME_EMP_TOWN
+					</when>
+					<when test="PG_ID == 'dan02030'">
+						dbo.TME_EMP_WITH
+					</when>
+					<when test="PG_ID == 'dan05030'">
+						dbo.TME_EMP_CLASS
+					</when>
+					<when test="PG_ID == 'dan06030'">
+						dbo.TME_EMP_WOMEN
+					</when>
+					<when test="PG_ID == 'dan07030'">
+						dbo.TME_EMP_CITIZEN
+					</when>
+					<when test="PG_ID == 'dan08030'">
+						dbo.TME_EMP_PROSPER
+					</when>
+					<when test="PG_ID == 'dan09030'">
+						dbo.TME_EMP_RENT
+					</when>
+					<otherwise>
+						dbo.TME_EMP_TOWN
+					</otherwise>
+				</choose> AS A
 			JOIN (
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
@@ -324,6 +456,340 @@
 
 
 
+	<select id="selectList_dan004_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.REG_DATE,
+			A.DONG,
+			A.HO,
+			A.GRADE_CD,
+			A.APPOINT,
+			A.NAME,
+			A.HP_NO,
+			A.BIRTH,
+			A.REMARKS
+		FROM
+			<choose>
+				<when test="PG_ID == 'dan03010'">
+					dbo.TME_EMP_COM
+				</when>
+				<when test="PG_ID == 'dan04010'">
+					dbo.TME_EMP_FLOOR
+				</when>
+				<when test="PG_ID == 'dan10010'">
+					dbo.TME_EMP_RENTCOM
+				</when>
+				<when test="PG_ID == 'dan11010'">
+					dbo.TME_HOEUI_120
+				</when>
+				<when test="PG_ID == 'dan12010'">
+					dbo.TME_HOEUI_130
+				</when>
+				<when test="PG_ID == 'dan13010'">
+					dbo.TME_HOEUI_140
+				</when>
+				<otherwise>
+					dbo.TME_EMP_COM
+				</otherwise>
+			</choose> AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_YN = '' OR ISNULL(A.DISUSE_YN,'N') = 'N')
+		<if test="TEXT != null and TEXT != '' ">
+			<choose>
+				<when test="WHAT == 'name'">
+					AND A.NAME LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'dong'">
+					AND A.DONG = #{TEXT}
+				</when>
+				<when test="WHAT == 'ho'">
+					AND A.HO = #{TEXT}
+				</when>
+			</choose>
+		</if>
+		ORDER BY CONVERT(INT, A.EMP_NO), A.REG_DATE, A.NAME
+	</select>
+
+	<select id="getKey_dan004_grid1" parameterType="map" resultType="map">
+		SELECT
+		CONVERT(VARCHAR, MAX(CONVERT(INT, A.EMP_NO))) AS EMP_NO
+		FROM
+		<choose>
+			<when test="PG_ID == 'dan03010'">
+				dbo.TME_EMP_COM
+			</when>
+			<when test="PG_ID == 'dan04010'">
+				dbo.TME_EMP_FLOOR
+			</when>
+			<when test="PG_ID == 'dan10010'">
+				dbo.TME_EMP_RENTCOM
+			</when>
+			<when test="PG_ID == 'dan11010'">
+				dbo.TME_HOEUI_120
+			</when>
+			<when test="PG_ID == 'dan12010'">
+				dbo.TME_HOEUI_130
+			</when>
+			<when test="PG_ID == 'dan13010'">
+				dbo.TME_HOEUI_140
+			</when>
+			<otherwise>
+				dbo.TME_EMP_COM
+			</otherwise>
+		</choose> AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+	<insert id="insertList_dan004_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO
+				<choose>
+					<when test="PG_ID == 'dan03010'">
+						dbo.TME_EMP_COM
+					</when>
+					<when test="PG_ID == 'dan04010'">
+						dbo.TME_EMP_FLOOR
+					</when>
+					<when test="PG_ID == 'dan10010'">
+						dbo.TME_EMP_RENTCOM
+					</when>
+					<when test="PG_ID == 'dan11010'">
+						dbo.TME_HOEUI_120
+					</when>
+					<when test="PG_ID == 'dan12010'">
+						dbo.TME_HOEUI_130
+					</when>
+					<when test="PG_ID == 'dan13010'">
+						dbo.TME_HOEUI_140
+					</when>
+					<otherwise>
+						dbo.TME_EMP_COM
+					</otherwise>
+				</choose>
+			(
+				OFFICE_CODE,
+				EMP_NO,
+				REG_DATE,
+				DONG,
+				HO,
+				GRADE_CD,
+				APPOINT,
+				NAME,
+				HP_NO,
+				BIRTH,
+				REMARKS
+			)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.EMP_NO},
+					#{row.REG_DATE},
+					#{row.DONG},
+					#{row.HO},
+					#{row.GRADE_CD},
+					#{row.APPOINT},
+					#{row.NAME},
+					#{row.HP_NO},
+					#{row.BIRTH},
+					#{row.REMARKS}
+			</foreach>
+		</if>
+	</insert>
+
+	<update id="updateList_dan004_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.DONG 			= B.DONG,
+				A.HO 			= B.HO,
+				A.GRADE_CD 		= B.GRADE_CD,
+				A.APPOINT 		= B.APPOINT,
+				A.NAME 			= B.NAME,
+				A.REG_DATE 		= B.REG_DATE,
+				A.HP_NO 		= B.HP_NO,
+				A.BIRTH 		= B.BIRTH,
+				A.REMARKS 		= B.REMARKS
+			FROM
+				<choose>
+					<when test="PG_ID == 'dan03010'">
+						dbo.TME_EMP_COM
+					</when>
+					<when test="PG_ID == 'dan04010'">
+						dbo.TME_EMP_FLOOR
+					</when>
+					<when test="PG_ID == 'dan10010'">
+						dbo.TME_EMP_RENTCOM
+					</when>
+					<when test="PG_ID == 'dan11010'">
+						dbo.TME_HOEUI_120
+					</when>
+					<when test="PG_ID == 'dan12010'">
+						dbo.TME_HOEUI_130
+					</when>
+					<when test="PG_ID == 'dan13010'">
+						dbo.TME_HOEUI_140
+					</when>
+					<otherwise>
+						dbo.TME_EMP_COM
+					</otherwise>
+				</choose> AS A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.EMP_NO}          			AS EMP_NO,
+					#{row.DONG}       				AS DONG,
+					#{row.HO}         				AS HO,
+					#{row.GRADE_CD}     			AS GRADE_CD,
+					#{row.APPOINT}     				AS APPOINT,
+					#{row.NAME}            			AS NAME,
+					#{row.REG_DATE}            		AS REG_DATE,
+					#{row.HP_NO}           			AS HP_NO,
+					#{row.BIRTH}           			AS BIRTH,
+					#{row.REMARKS}         			AS REMARKS
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		</if>
+	</update>
+
+	<update id="updateList_dan004_disuse" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.DISUSE_YN		 = 'Y',
+				A.DISUSE_DATE    = B.DISUSE_DATE,
+				A.DISUSE_REASON  = B.DISUSE_REASON
+			FROM
+				<choose>
+					<when test="PG_ID == 'dan03010'">
+						dbo.TME_EMP_COM
+					</when>
+					<when test="PG_ID == 'dan04010'">
+						dbo.TME_EMP_FLOOR
+					</when>
+					<when test="PG_ID == 'dan10010'">
+						dbo.TME_EMP_RENTCOM
+					</when>
+					<when test="PG_ID == 'dan11010'">
+						dbo.TME_HOEUI_120
+					</when>
+					<when test="PG_ID == 'dan12010'">
+						dbo.TME_HOEUI_130
+					</when>
+					<when test="PG_ID == 'dan13010'">
+						dbo.TME_HOEUI_140
+					</when>
+					<otherwise>
+						dbo.TME_EMP_COM
+					</otherwise>
+				</choose> AS A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.EMP_NO}          			AS EMP_NO
+					#{row.DISUSE_DATE}          	AS DISUSE_DATE
+					#{row.DISUSE_REASON}          	AS DISUSE_REASON
+			</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		</if>
+	</update>
+
+	<select id="selectList_dan003_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.EMP_NO,
+			A.REG_DATE,
+			A.DONG,
+			A.HO,
+			A.GRADE_CD,
+			A.APPOINT,
+			A.NAME,
+			A.HP_NO,
+			A.BIRTH,
+			A.DISUSE_DATE,
+			A.DISUSE_REASON
+		FROM
+			<choose>
+				<when test="PG_ID == 'dan03010'">
+					dbo.TME_EMP_COM
+				</when>
+				<when test="PG_ID == 'dan04010'">
+					dbo.TME_EMP_FLOOR
+				</when>
+				<when test="PG_ID == 'dan10010'">
+					dbo.TME_EMP_RENTCOM
+				</when>
+				<when test="PG_ID == 'dan11010'">
+					dbo.TME_HOEUI_120
+				</when>
+				<when test="PG_ID == 'dan12010'">
+					dbo.TME_HOEUI_130
+				</when>
+				<when test="PG_ID == 'dan13010'">
+					dbo.TME_HOEUI_140
+				</when>
+				<otherwise>
+					dbo.TME_EMP_COM
+				</otherwise>
+			</choose> AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_YN = 'Y' AND A.DISUSE_DATE IS NOT NULL)
+		<if test="TEXT != null and TEXT != '' ">
+			<choose>
+				<when test="WHAT == 'name'">
+					AND A.NAME LIKE '%' + #{TEXT} + '%'
+				</when>
+				<when test="WHAT == 'dong'">
+					AND A.DONG = #{TEXT}
+				</when>
+				<when test="WHAT == 'ho'">
+					AND A.HO = #{TEXT}
+				</when>
+			</choose>
+		</if>
+		ORDER BY CONVERT(INT, A.EMP_NO), A.DISUSE_DATE, A.NAME
+	</select>
+
+	<update id="updateList_dan003_cancelDisuse" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.DISUSE_YN		 = 'N',
+				A.DISUSE_DATE    = NULL,
+				A.DISUSE_REASON  = NULL
+			FROM
+				<choose>
+					<when test="PG_ID == 'dan03010'">
+						dbo.TME_EMP_COM
+					</when>
+					<when test="PG_ID == 'dan04010'">
+						dbo.TME_EMP_FLOOR
+					</when>
+					<when test="PG_ID == 'dan10010'">
+						dbo.TME_EMP_RENTCOM
+					</when>
+					<when test="PG_ID == 'dan11010'">
+						dbo.TME_HOEUI_120
+					</when>
+					<when test="PG_ID == 'dan12010'">
+						dbo.TME_HOEUI_130
+					</when>
+					<when test="PG_ID == 'dan13010'">
+						dbo.TME_HOEUI_140
+					</when>
+					<otherwise>
+						dbo.TME_EMP_COM
+					</otherwise>
+				</choose> AS A
+			JOIN (
+				<foreach collection="list" item="row" separator=" UNION ALL ">
+					SELECT
+					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.EMP_NO}          			AS EMP_NO
+				</foreach>
+			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
+		</if>
+	</update>
 
 
 

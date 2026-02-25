@@ -1,32 +1,18 @@
 package egovframework.com.baseCrud.service;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-
-import javax.annotation.Resource;
-import javax.servlet.http.*;
-
-import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
-import org.egovframe.rte.psl.dataaccess.EgovAbstractMapper;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import egovframework.com.baseCrud.dao.BaseCrudMapper;
+import egovframework.com.baseCrud.support.BaseServiceSupport;
+import egovframework.com.exception.BaseCrudFailException;
+import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import egovframework.com.baseCrud.dao.BaseCrudMapper;
-import egovframework.com.exception.BaseCrudFailException;
-import egovframework.com.login.dao.LoginMapper;
-import egovframework.com.login.model.LoginVO;
-
-import static egovframework.com.util.Util.*;
-
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service("baseBoardService")
-public class BaseBoardServiceImpl implements BaseBoardService {
+public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoardService {
 
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
@@ -34,22 +20,17 @@ public class BaseBoardServiceImpl implements BaseBoardService {
     //게시글 검색
     @Override
     @Transactional
-    public Map<String, Object> boardSelectOne(String sectionId, String component, Map<String, Object> param) {
+    public Map<String, Object> boardSelectOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
-        String mapper = sectionId.replaceAll("[^A-Za-z]", "") + "Mapper";
-        String methodName = "boardSelectOne_" + component;
-        String statement = mapper + "." + methodName;
-
-        LoginVO loginUser = (LoginVO) param.get("loginUser");
-        if (loginUser != null) {
-            param = setUserToParam(loginUser, param);
-        }
+        String statement = buildStatement(sectionId, component, "boardSelectOne");
+        setLoginParam(param, loginUser);
+        setPgIdParam(param, pgId);
         System.out.println(param);
 
         Map<String, Object> result = baseCrudMapper.selectOne(statement, param);
 
         if ("Y".equals(param.get("cnt")) && param.get("LOGINUSER_ID") != result.get("USER_ID")) {
-            String cntUpStatement = mapper + ".boardCntUp_" + component;
+            String cntUpStatement = buildStatement(sectionId, component, "boardCntUp");
             int cntUp = baseCrudMapper.updateOne(cntUpStatement, param);
             if (cntUp <= 0) {
                 throw new BaseCrudFailException(
@@ -64,50 +45,35 @@ public class BaseBoardServiceImpl implements BaseBoardService {
     //게시글 저장 + 수정
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> boardSave(String sectionId, String component, Map<String, Object> param) {
-
-        String mapper = sectionId.replaceAll("[^A-Za-z]", "") + "Mapper";
-        String methodName = "";
+    public Map<String, Object> boardSave(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
         Map<String, Object> insertParam = (Map<String, Object>) param.get("insertParam");
         Map<String, Object> updateParam = (Map<String, Object>) param.get("updateParam");
-        LoginVO loginUser = (LoginVO) param.get("loginUser");
 
         int resultInsertRowCount = 0;
         int resultUpdateRowCount = 0;
 
         if (insertParam != null && !insertParam.isEmpty()) {
-            if (loginUser != null) {
-                insertParam = setUserToParam(loginUser, insertParam);
+            resultInsertRowCount = processInsert(sectionId, component, loginUser, insertParam, pgId);
+            if (resultInsertRowCount <= 0) {
+                throw new BaseCrudFailException(
+                        "FAIL INSERT " + component + " : \n" + param,
+                        "저장 실패 : " + (resultInsertRowCount) + "건",
+                        BaseCrudFailException.CrudType.INSERT);
             }
-            System.out.println(insertParam);
-
-            methodName = "boardInsertOne_" + component;
-            String statement = mapper + "." + methodName;
-            resultInsertRowCount = baseCrudMapper.insertOne(statement, insertParam);
         }
 
         if (updateParam != null && !updateParam.isEmpty()) {
-            if (loginUser != null) {
-                updateParam = setUserToParam(loginUser, updateParam);
+            resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId);
+            if (resultUpdateRowCount <= 0) {
+                throw new BaseCrudFailException(
+                        "FAIL UPDATE " + component + " : \n" + param,
+                        "저장 실패 : " + (resultUpdateRowCount) + "건",
+                        BaseCrudFailException.CrudType.UPDATE);
             }
-            System.out.println(updateParam);
-
-            methodName = "boardUpdateOne_" + component;
-            String statement = mapper + "." + methodName;
-
-            resultUpdateRowCount = baseCrudMapper.updateOne(statement, updateParam);
         }
 
         Map<String, Object> result = new HashMap<>();
-
-        if (resultInsertRowCount <= 0 && resultUpdateRowCount <= 0) {
-            throw new BaseCrudFailException(
-                    "FAIL SAVE " + component + " : \n" + param,
-                    "저장 실패 : " + (resultInsertRowCount + resultUpdateRowCount) + "건",
-                    BaseCrudFailException.CrudType.SAVE);
-
-        }
 
         result.put("O_STATUS", "SUCCESS");
         result.put("O_RESULT", (resultInsertRowCount + resultUpdateRowCount));
@@ -117,20 +83,34 @@ public class BaseBoardServiceImpl implements BaseBoardService {
         return result;
     }
 
+    private int processInsert(String sectionId, String component, LoginVO loginUser, Map<String, Object> insertParam, String pgId) {
+        //loginUser set
+        setLoginParam(insertParam, loginUser);
+        setPgIdParam(insertParam, pgId);
+        System.out.println(insertParam);
+        String statement = buildStatement(sectionId, component, "insertList");
+        return baseCrudMapper.insertOne(statement, insertParam);
+    }
+
+
+    private int processUpdate(String sectionId, String component, LoginVO loginUser, Map<String, Object> updateParam, String pgId) {
+        //loginUser set
+        setLoginParam(updateParam, loginUser);
+        setPgIdParam(updateParam, pgId);
+        System.out.println(updateParam);
+        String statement = buildStatement(sectionId, component, "boardUpdateOne");
+        return baseCrudMapper.updateOne(statement, updateParam);
+    }
+
+
     //게시글 삭제
     @Override
-    public Map<String, Object> boardDeleteOne(String sectionId, String component, Map<String, Object> param) {
+    public Map<String, Object> boardDeleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
-        String mapper = sectionId.replaceAll("[^A-Za-z]", "") + "Mapper";
-        String methodName = "boardDeleteOne_" + component;
-        String statement = mapper + "." + methodName;
-
+        String statement = buildStatement(sectionId, component, "boardDeleteOne");
         Map<String, Object> deleteParam = (Map<String, Object>) param.get("deleteParam");
-        LoginVO loginUser = (LoginVO) param.get("loginUser");
-
-        if (loginUser != null) {
-            deleteParam = setUserToParam(loginUser, deleteParam);
-        }
+        setLoginParam(deleteParam, loginUser);
+        setPgIdParam(deleteParam, pgId);
 
         int resultRowCount = baseCrudMapper.deleteOne(statement, deleteParam);
 
