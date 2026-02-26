@@ -48,7 +48,7 @@
          */
 
         //변수 선언
-        const pgId = "soj07020";	//프로그램ID
+        const pgId = "${pgId}";	//프로그램ID
         let grid1;	// 그리드 컴포넌트
         let focus = 0;	//그리드 컴포넌트 포커스
         const search_usergroupId = document.querySelector("#search_usergroupId");	//select 컴포넌트 : 권한그룹

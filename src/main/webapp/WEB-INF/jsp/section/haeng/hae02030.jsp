@@ -41,7 +41,7 @@
      */
 
         //변수 선언
-    const pgId = "hae02030";	//프로그램ID
+    const pgId = "${pgId}";	//프로그램ID
 
 
     //crud 권한 처리 함수

@@ -44,7 +44,7 @@
      */
 
         //변수 선언
-    const pgId = "dan05010";	//프로그램ID
+    const pgId = "${pgId}";	//프로그램ID
 
     //crud 권한 처리 함수
     function checkCrudPermission(pgId){

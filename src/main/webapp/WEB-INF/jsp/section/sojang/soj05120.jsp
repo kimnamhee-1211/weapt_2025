@@ -57,7 +57,7 @@
      */
 
         //변수 선언
-    const pgId = "soj05120";	//프로그램ID
+    const pgId = "${pgId}";	//프로그램ID
     const popupId = "pop_write_ad";
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스

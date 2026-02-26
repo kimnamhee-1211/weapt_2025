@@ -55,7 +55,7 @@
      */
 
         //변수 선언
-    const pgId = "hae05030";	//프로그램ID
+    const pgId = "${pgId}";	//프로그램ID
     let grid1;	// 그리드 컴포넌트
     let grid2;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스

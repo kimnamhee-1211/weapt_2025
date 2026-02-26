@@ -44,7 +44,7 @@
      */
 
         //변수 선언
-    const pgId = "dan01010";	//프로그램ID
+    const pgId = "${pgId}";	//프로그램ID
 
     //crud 권한 처리 함수
     function checkCrudPermission(pgId){
@@ -58,6 +58,7 @@
 
     //로드
     window.onload = function() {
+
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, add: true, save: true});
         checkCrudPermission(pgId);

@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem('nav_focus_scroll', tree.scrollTop);
 
             pg = e.target;
-            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id;
+            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id + "?title=" + pg.innerHTML;
         }else if(e.target.tagName == 'A'){
             //포커스
             nav_focus = e.target.closest('li').id;
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem('nav_focus_scroll', tree.scrollTop);
 
             pg = e.target.closest('li');
-            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id;
+            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id+ "?title=" + pg.innerHTML;
         }
     });
 

@@ -48,7 +48,7 @@
      */
 
         //변수 선언
-    const pgId = "hwa02010";	//프로그램ID
+    const pgId = "${pgId}";	//프로그램ID
 
 
 
