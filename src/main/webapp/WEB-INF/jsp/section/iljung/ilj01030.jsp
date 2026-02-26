@@ -63,7 +63,7 @@
         let pop_item = {
             pgId : pgId,
             querySet : "ilj01015",
-            initialView : 'dayGridWeek',
+            initialView : 'dayGridDay',
         };
         pop_onload(pop_item);
     }

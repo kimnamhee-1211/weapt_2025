@@ -6,7 +6,7 @@
             <span>검색조건 :&nbsp;</span>
             <span class="select-container">
                 <select class="select_cont100" id="search_option">
-                    <option value="name">성명</option>
+                    <option value="name" selected>성명</option>
                     <option value="name">동</option>
                     <option value="name">호</option>
                 </select>
@@ -46,9 +46,9 @@
     let querySet;
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
-    const search_option = document.querySelector("search_option")	//select 컴포넌트
+    const search_option = document.querySelector("#search_option")	//select 컴포넌트
     const search_text = document.querySelector("#search_text")	//select 컴포넌트
-    let DS_GRADE_CD = [];
+    let DS_DUTY_CD = [];
 
     //그리드 설정
     const grid1ColumnLayout = [
@@ -68,17 +68,17 @@
             dataType: "text",
             width : "8%",
         },
-        { dataField: "GRADE_CD",
+        { dataField: "DUTY_CD",
             headerText: "직위",
             dataType: "text",
             width : "15%",
             renderer: {
                 type: "DropDownListRenderer",
                 listFunction: function (rowIndex, columnIndex, item, dataField) {
-                    return DS_GRADE_CD;
+                    return DS_DUTY_CD;
                 },
-                keyField: "GRADE_CD", // key 에 해당되는 필드명
-                valueField: "GRADE_NAME", // value 에 해당되는 필드명
+                keyField: "DUTY_CD", // key 에 해당되는 필드명
+                valueField: "DUTY_NAME", // value 에 해당되는 필드명
             }
         },
         { dataField: "NAME",
@@ -204,7 +204,7 @@
 
         we_save( saveData ,{
             successSave : (data) => {
-                alert(data.O_RESULT);
+                alert(data.O_MSG);
                 if(data.O_RESULT > 0){
                     search_grid1_onclick();
                 }else return;
@@ -250,7 +250,7 @@
 
         we_delete(deleteData,{
             successDelete : (data) => {
-                alert(data.O_RESULT);
+                alert(data.O_MSG);
                 if(data.O_RESULT > 0){
                     search_grid1_onclick();
                 }else return;
@@ -345,9 +345,9 @@
         let  code = await we_getCode('126');
         code.forEach(row=>{
             let item = {};
-            item.GRADE_CD = row.CODE_NO;
-            item.GRADE_NAME = row.CODEDTL_NM;
-            DS_GRADE_CD.push(item);
+            item.DUTY_CD = row.CODE_NO;
+            item.DUTY_NAME = row.CODEDTL_NM;
+            DS_DUTY_CD.push(item);
         });
 
     }

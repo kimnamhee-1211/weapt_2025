@@ -43,7 +43,7 @@
                                 </tr>
                                 <tr>
                                     <th>기안일자</th>
-                                    <td><input type="date" id="today" value="<%= today %>"></td>
+                                    <td><input type="date" id="today" value=""></td>
                                 </tr>
                                     <th>시행기간</th>
                                     <td><input type="text" id="" value=""></td>

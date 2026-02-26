@@ -69,6 +69,7 @@
 
         let pop_item = {
             pgId : pgId,
+            querySet : "dan006",
         };
         pop_onload(pop_item);
     };

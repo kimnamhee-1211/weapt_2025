@@ -8,17 +8,17 @@
                 <input type="checkbox" id="root2" class="tree_cb">
                 <label for="root2">관리소장</label>
                 <ul class="tree_nav">
-                    <li id="soj01010"><a>관리업무마감</a></li>
+                    <li id="soj01010">관리업무마감</li>
                 </ul>
             </li>
             <li id="soj03">
                 <input type="checkbox" id="root3" class="tree_cb">
                 <label for="root3">관리자</label>
                 <ul class="tree_nav">
-                    <li id="soj03010"><a>사용자관리</a></li>
-                    <li id="soj03020"><a>사용자권한등록</a></li>
-                    <li id="soj03030"><a>결재선등록</a></li>
-                    <li id="soj03040"><a>메시지충전</a></li>
+                    <li id="soj03010">사용자관리</li>
+                    <li id="soj03020">사용자권한등록</li>
+                    <li id="soj03030">결재선등록</li>
+                    <li id="soj03040">메시지충전</li>
                     <li id="soj03050"><a href="soj03050.jsp">Data Conversion</a></li>
                     <li id="soj03060"><a href="soj03060.jsp">마감해지</a></li>
                 </ul>
@@ -47,15 +47,15 @@
                     <li id="soj05010"><a href="soj05010.jsp">장기수선항목등록</a></li>
                     <li id="soj05020"><a href="soj05020.jsp">공종별단가기준예시</a></li>
                     <li id="soj05030"><a href="soj05030.jsp">휴무일등록</a></li>
-                    <li id="soj05040"><a>전산회사등록</a></li>
-                    <li id="soj05050"><a>관리자등록</a></li>
-                    <li id="soj05060"><a>관리회사등록</a></li>
-                    <li id="soj05070"><a>관리소등록</a></li>
-                    <li id="soj05080"><a>관리소현황</a></li>
-                    <li id="soj05090"><a>부서직책설정(공통)</a></li>
+                    <li id="soj05040">전산회사등록</li>
+                    <li id="soj05050">관리자등록</li>
+                    <li id="soj05060">관리회사등록</li>
+                    <li id="soj05070">관리소등록</li>
+                    <li id="soj05080">관리소현황</li>
+                    <li id="soj05090">부서직책설정(공통)</li>
                     <li id="soj05100"><a href="soj05100.jsp">하드용량관리</a></li>
-                    <li id="soj05110"><a>관리자메뉴얼</a></li>
-                    <li id="soj05120"><a>수정사항</a></li>
+                    <li id="soj05110">관리자메뉴얼</li>
+                    <li id="soj05120">수정사항</li>
                 </ul>
             </li>
             <li id="soj06">
@@ -71,11 +71,11 @@
                 <input type="checkbox" id="root7" class="tree_cb">
                 <label for="root7">시스템관리</label>
                 <ul class="tree_nav">
-                    <li id="soj07010"><a>메뉴관리</a></li>
-                    <li id="soj07020"><a>그룹별메뉴관리</a></li>
-                    <li id="soj07030"><a>세부그룹별메뉴관리</a></li>
-                    <li id="soj07040"><a>공통코드관리</a></li>
-                    <li id="soj07050"><a>Conversion 관리</a></li>
+                    <li id="soj07010">메뉴관리</li>
+                    <li id="soj07020">그룹별메뉴관리</li>
+                    <li id="soj07030">세부그룹별메뉴관리</li>
+                    <li id="soj07040">공통코드관리</li>
+                    <li id="soj07050">Conversion 관리</li>
                 </ul>
             </li>
         </ul>

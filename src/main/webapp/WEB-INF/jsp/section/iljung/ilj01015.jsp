@@ -33,6 +33,7 @@
 
 </style>
 <script>
+    let parentPgId;
     let querySet;
     let calendarEl;
     let calendar;
@@ -47,6 +48,9 @@
             data: {
                 start: info.startStr.substring(0, 10),
                 end: info.endStr.substring(0, 10)
+            },
+            headers: {
+                "X-PG-ID": parentPgId,
             },
             success: res => successCallback(res),
             error: err => failureCallback(err)
@@ -89,6 +93,7 @@
     }
 
     function pop_onload(pop_item){
+        parentPgId = isNull(pop_item.pgId) ? "" : pop_item.pgId;
         querySet = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
         initialView = pop_item.initialView ? pop_item.initialView : 'dayGridMonth';
 

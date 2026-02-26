@@ -354,7 +354,7 @@
         if(Array.isArray(object)) {
             if (object == null || object.length < 1) return true;
         }else{
-            if (object == null || object == undefined || object == '' || object == "") return true;
+            if (object == null || object == undefined || object.trim() == '' || object.trim() == "") return true;
         }
         return false;
     }

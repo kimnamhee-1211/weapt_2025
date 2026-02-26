@@ -8,10 +8,10 @@
                 <input type="checkbox" id="root1" class="tree_cb">
                 <label for="root1">TEMPLATE</label>
                 <ul class="tree_nav">
-                    <li id="tem_crud"><a>tem_crud</a></li>
-                    <li id="tem_popup"><a>tem_popup</a></li>
-                    <li id="tem_grid2"><a>tem_grid2</a></li>
-                    <li id="tem_board"><a>tem_board</a></li>
+                    <li id="tem_crud">tem_crud</li>
+                    <li id="tem_popup">tem_popup</li>
+                    <li id="tem_grid2">tem_grid2</li>
+                    <li id="tem_board">tem_board</li>
                 </ul>
             </li>
         </ul>

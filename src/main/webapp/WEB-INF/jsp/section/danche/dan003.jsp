@@ -46,7 +46,7 @@
     let querySet;
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
-    const search_what = document.querySelector("search_what")	//select 컴포넌트
+    const search_what = document.querySelector("#search_what")	//select 컴포넌트
     const search_text = document.querySelector("#search_text")	//select 컴포넌트
 
     //그리드 설정
@@ -66,7 +66,7 @@
             dataType: "text",
             width : "8%",
         },
-        { dataField: "GRADE_CD",
+        { dataField: "DUTY_NAME",
             headerText: "직위",
             dataType: "text",
             width : "10%",

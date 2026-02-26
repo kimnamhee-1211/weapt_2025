@@ -30,22 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
     //메뉴 이동
     tree.addEventListener('click', (e) => {
         let pg = "";
-        if(e.target.tagName == 'LI' && e.target.id != null){
+        if(e.target.tagName == 'LI' && !isNull(e.target.id)){
             nav_focus = e.target.id;
             localStorage.setItem('nav_focus', nav_focus);
             localStorage.setItem('nav_focus_scroll', tree.scrollTop);
 
             pg = e.target;
-            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id
-            ;
-        }else if(e.target.tagName == 'A'){
-            //포커스
-            nav_focus = e.target.closest('li').id;
-            localStorage.setItem('nav_focus', nav_focus);
-            localStorage.setItem('nav_focus_scroll', tree.scrollTop);
-
-            pg = e.target.closest('li');
-            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id+ "?title=" + pg.innerHTML;
+            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id + "?title=" + encodeURIComponent(pg.innerText);
         }
     });
 
@@ -55,11 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
         nav_focus_scroll = localStorage.getItem('nav_focus_scroll');
 
         if (nav_focus !== null) {
-            const focus_tag = document.getElementById(nav_focus).querySelector("a");
+            const focus_tag = document.getElementById(nav_focus);
             focus_tag.classList.add("focus");
             tree.scrollTop = parseInt(nav_focus_scroll , 10);
         }else{
-            const focus_tag = tree.querySelector("a");
+            const focus_tag = tree.querySelector("li");
             if(focus_tag){
                 focus_tag.classList.add("focus");
             }

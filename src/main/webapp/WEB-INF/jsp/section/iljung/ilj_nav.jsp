@@ -8,32 +8,31 @@
                 <input type="checkbox" id="root" class="tree_cb">
                 <label for="root">일정관리</label>
                 <ul class="tree_nav">
-                    <li id="ilj01010"><a>월간일정</a></li>
-                    <li id="ilj01020"><a>주간일정</a></li>
-                    <li id="ilj01030"><a>일일일정</a></li>
-                    <li id="ilj01040"><a>일정조회</a></li>
-                    <li id="ilj01050"><a>업무일지조회</a></li>
-                    <li id="ilj01060"><a>업무일지결재</a></li>
+                    <li id="ilj01010">월간일정</li>
+                    <li id="ilj01020">주간일정</li>
+                    <li id="ilj01030">일일일정</li>
+                    <li id="ilj01040">일정조회</li>
+                    <li id="ilj01050">업무일지조회</li>
+                    <li id="ilj01060">업무일지결재</li>
                 </ul>
             </li>
             <li>
                 <input type="checkbox" id="root2" class="tree_cb">
                 <label for="root2">계획관리</label>
                 <ul class="tree_nav">
-                    <li id="ilj02010"><a>월중관리계획</a></li>
-                    <li id="ilj02020"><a>연중관리계획</a></li>
-                    <li id="ilj02030"><a>월중핵심과제등록</a></li>
-                    <li id="ilj02040"><a>구분설정</a></li>
+                    <li id="ilj02010">월중관리계획</li>
+                    <li id="ilj02020">연중관리계획</li>
+                    <li id="ilj02030">월중핵심과제등록</li>
+                    <li id="ilj02040">구분설정</li>
                 </ul>
             </li>
         </ul>
     </div>
 </div>
 
+<script>
 
-    <script>
+    const sectionId = "iljung";
+    const navId = "aside_iljung";
 
-        const sectionId = "iljung";
-        const navId = "aside_iljung";
-
-    </script>
+</script>

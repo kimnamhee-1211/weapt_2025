@@ -36,14 +36,14 @@ public class MenuController {
 	@RequestMapping(value = "/goMenu/{sectionId}/{pgId}", method = { RequestMethod.GET })
 	public String goMenu(@PathVariable("sectionId") String sectionId,
 						 @PathVariable("pgId") String pgId,
-						 @RequestParam String title,
+						 @RequestParam(required = false) String title,
 						 @RequestParam Map<String, Object> paramMap,
 						 Model model) throws Exception {
 
 		model.addAttribute("paramMap", paramMap);
 		model.addAttribute("pgId", pgId);
 		model.addAttribute("title", title);
-
+		System.out.println("pgId :" + pgId + "/" + title);
 		String goPgId = setPgId(sectionId, pgId);
 
 		return "section/" + sectionId + "/" + goPgId;

@@ -197,7 +197,7 @@
 
         we_save( saveData ,{
             successSave : (data) => {
-                alert(data.O_RESULT);
+                alert(data.O_MSG);
                 if(data.O_RESULT > 0){
                     getSelectOption_search_mstDate();
                     search_grid1_onclick();
@@ -244,7 +244,7 @@
 
         we_delete(deleteData,{
             successDelete : (data) => {
-                alert(data.O_RESULT);
+                alert(data.O_MSG);
                 if(data.O_RESULT > 0){
                     search_grid1_onclick();
                 }else return;

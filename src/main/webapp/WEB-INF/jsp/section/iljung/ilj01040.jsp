@@ -34,7 +34,7 @@
                     <div>
                         <span class="search-box">제목&내용 :&nbsp;
                             <input style="width:713px; height:20px;" type="text" placeholder=" 검색어를 입력하십시오." id="search_text">
-                        </span>TXT
+                        </span>
                     </div>
                 </div>
             </div>
@@ -99,14 +99,7 @@
             style : "text-align-left",
         },
         { dataField: "START_DATE",
-            headerText: "시작일",
-            width : "10%",
-            dataType: "date",
-            formatString: "yyyy-mm-dd",
-            editable : false
-        },
-        { dataField: "END_DATE",
-            headerText: "종료일",
+            headerText: "일자",
             width : "10%",
             dataType: "date",
             formatString: "yyyy-mm-dd",

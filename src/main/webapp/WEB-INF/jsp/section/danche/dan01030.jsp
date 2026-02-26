@@ -8,16 +8,9 @@
         <div class="section1">
             <div class="section1_nav"><i class="icon-user-add"></i>전임동대표</div>
             <div class="section1_btn" id="section1_btn"></div>
-        </div>
-        <div class="section2">
-            <div class="section2_block">
-                <span class="section1_nav_mic">
-                    <i class="icon-mic"></i>복귀 버튼을 사용하여 회의단체 명단에 복귀 처리합니다.
-                </span>
-                <span class="search-box section1_btn">
-                    <button id="cancelDisuse_btn_grid1" class="del_btn" onclick="cancelDisuse_onclick()">복귀</button>
-                </span>
-            </div>
+            <span class="search-box" style="float: right;">
+                <button id="cancelDisuse_btn_grid1" class="del_btn" onclick="cancelDisuse_onclick()">복귀</button>
+            </span>
         </div>
         <jsp:include page="/WEB-INF/jsp/section/danche/dan003.jsp" />
     </div>
@@ -69,6 +62,7 @@
 
         let pop_item = {
             pgId : pgId,
+            querySet : "dan003",
         };
         pop_onload(pop_item);
     };

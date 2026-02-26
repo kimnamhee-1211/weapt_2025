@@ -38,7 +38,6 @@
 			A.MY_SCHEDULE		AS MY_SCHEDULE,
 			A.TITLE				AS TITLE,
 			A.START_DATE		AS START_DATE,
-			A.END_DATE			AS END_DATE,
 			A.SCH_GBN			AS SCH_GBN,
 			B.GBN_NAME      	AS GBN_NAME,
 			A.MAIN_DEPT_CD		AS MAIN_DEPT_CD,
@@ -52,11 +51,11 @@
 				AND A.START_DATE &gt;= #{START_DATE}
 			</if>
 			<if test="END_DATE != null and END_DATE != ''">
-				AND A.END_DATE  &lt;= #{END_DATE}
+				AND A.START_DATE  &lt;= #{END_DATE}
 			</if>
 			<if test="START_DATE != null and START_DATE != '' and END_DATE != null and END_DATE != ''">
 				AND A.START_DATE &gt;= #{START_DATE}
-				AND A.END_DATE  &lt;= #{END_DATE}
+				AND A.START_DATE  &lt;= #{END_DATE}
 			</if>
 			<if test="SCH_GBN != null and SCH_GBN != ''">
 				AND A.SCH_GBN = #{SCH_GBN}
@@ -91,7 +90,7 @@
 			A.GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, 'Y') = 'Y'
-		ORDER BY CONVERT(INT, A.ODER_SEQ)
+		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
 
 	<select id="getSelectOption_ilj02010_grid1_deptCd" parameterType="map" resultType="map">

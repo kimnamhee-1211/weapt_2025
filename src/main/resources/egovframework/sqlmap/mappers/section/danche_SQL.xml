@@ -9,7 +9,7 @@
 			A.REG_DATE,
 			A.DONG,
 			A.HO,
-			A.GRADE_CD,
+			A.DUTY_CD,
 			A.NAME,
 			A.HP_NO,
 			A.BIRTH,
@@ -41,7 +41,7 @@
 				dbo.TME_EMP_TOWN
 			</otherwise>
 		</choose> AS A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_YN = '' OR ISNULL(A.DISUSE_YN,'N') = 'N')
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_GBN = '' OR ISNULL(A.DISUSE_GBN,'N') = 'N')
 		<if test="TEXT != null and TEXT != '' ">
 			<choose>
 				<when test="WHAT == 'name'">
@@ -95,25 +95,25 @@
 		<if test="list != null and list.size > 0">
 			INSERT INTO
 				<choose>
-					<when test="PG_ID == 'dan01010'">
+					<when test="list[0].PG_ID == 'dan01010'">
 						dbo.TME_EMP_TOWN
 					</when>
-					<when test="PG_ID == 'dan02010'">
+					<when test="list[0].PG_ID == 'dan02010'">
 						dbo.TME_EMP_WITH
 					</when>
-					<when test="PG_ID == 'dan05010'">
+					<when test="list[0].PG_ID == 'dan05010'">
 						dbo.TME_EMP_CLASS
 					</when>
-					<when test="PG_ID == 'dan06010'">
+					<when test="list[0].PG_ID == 'dan06010'">
 						dbo.TME_EMP_WOMEN
 					</when>
-					<when test="PG_ID == 'dan07010'">
+					<when test="list[0].PG_ID == 'dan07010'">
 						dbo.TME_EMP_CITIZEN
 					</when>
-					<when test="PG_ID == 'dan08010'">
+					<when test="list[0].PG_ID == 'dan08010'">
 						dbo.TME_EMP_PROSPER
 					</when>
-					<when test="PG_ID == 'dan09010'">
+					<when test="list[0].PG_ID == 'dan09010'">
 						dbo.TME_EMP_RENT
 					</when>
 					<otherwise>
@@ -126,7 +126,7 @@
 				REG_DATE,
 				DONG,
 				HO,
-				GRADE_CD,
+				DUTY_CD,
 				NAME,
 				HP_NO,
 				BIRTH,
@@ -139,7 +139,7 @@
 					#{row.REG_DATE},
 					#{row.DONG},
 					#{row.HO},
-					#{row.GRADE_CD},
+					#{row.DUTY_CD},
 					#{row.NAME},
 					#{row.HP_NO},
 					#{row.BIRTH},
@@ -154,7 +154,7 @@
 			SET
 				A.DONG 			= B.DONG,
 				A.HO 			= B.HO,
-				A.GRADE_CD 		= B.GRADE_CD,
+				A.DUTY_CD 		= B.DUTY_CD,
 				A.NAME 			= B.NAME,
 				A.REG_DATE 		= B.REG_DATE,
 				A.HP_NO 		= B.HP_NO,
@@ -162,25 +162,25 @@
 				A.REMARKS 		= B.REMARKS
 			FROM
 				<choose>
-					<when test="PG_ID == 'dan01010'">
+					<when test="list[0].PG_ID == 'dan01010'">
 						dbo.TME_EMP_TOWN
 					</when>
-					<when test="PG_ID == 'dan02010'">
+					<when test="list[0].PG_ID == 'dan02010'">
 						dbo.TME_EMP_WITH
 					</when>
-					<when test="PG_ID == 'dan05010'">
+					<when test="list[0].PG_ID == 'dan05010'">
 						dbo.TME_EMP_CLASS
 					</when>
-					<when test="PG_ID == 'dan06010'">
+					<when test="list[0].PG_ID == 'dan06010'">
 						dbo.TME_EMP_WOMEN
 					</when>
-					<when test="PG_ID == 'dan07010'">
+					<when test="list[0].PG_ID == 'dan07010'">
 						dbo.TME_EMP_CITIZEN
 					</when>
-					<when test="PG_ID == 'dan08010'">
+					<when test="list[0].PG_ID == 'dan08010'">
 						dbo.TME_EMP_PROSPER
 					</when>
-					<when test="PG_ID == 'dan09010'">
+					<when test="list[0].PG_ID == 'dan09010'">
 						dbo.TME_EMP_RENT
 					</when>
 					<otherwise>
@@ -194,7 +194,7 @@
 				#{row.EMP_NO}          			AS EMP_NO,
 				#{row.DONG}       				AS DONG,
 				#{row.HO}         				AS HO,
-				#{row.GRADE_CD}     			AS GRADE_CD,
+				#{row.DUTY_CD}     				AS DUTY_CD,
 				#{row.NAME}            			AS NAME,
 				#{row.REG_DATE}            		AS REG_DATE,
 				#{row.HP_NO}           			AS HP_NO,
@@ -209,30 +209,30 @@
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
-				A.DISUSE_YN		 = 'Y',
+				A.DISUSE_GBN	 = 'Y',
 				A.DISUSE_DATE    = B.DISUSE_DATE,
 				A.DISUSE_REASON  = B.DISUSE_REASON
 			FROM
 				<choose>
-					<when test="PG_ID == 'dan01010'">
+					<when test="list[0].PG_ID == 'dan01010'">
 						dbo.TME_EMP_TOWN
 					</when>
-					<when test="PG_ID == 'dan02010'">
+					<when test="list[0].PG_ID == 'dan02010'">
 						dbo.TME_EMP_WITH
 					</when>
-					<when test="PG_ID == 'dan05010'">
+					<when test="list[0].PG_ID == 'dan05010'">
 						dbo.TME_EMP_CLASS
 					</when>
-					<when test="PG_ID == 'dan06010'">
+					<when test="list[0].PG_ID == 'dan06010'">
 						dbo.TME_EMP_WOMEN
 					</when>
-					<when test="PG_ID == 'dan07010'">
+					<when test="list[0].PG_ID == 'dan07010'">
 						dbo.TME_EMP_CITIZEN
 					</when>
-					<when test="PG_ID == 'dan08010'">
+					<when test="list[0].PG_ID == 'dan08010'">
 						dbo.TME_EMP_PROSPER
 					</when>
-					<when test="PG_ID == 'dan09010'">
+					<when test="list[0].PG_ID == 'dan09010'">
 						dbo.TME_EMP_RENT
 					</when>
 					<otherwise>
@@ -243,8 +243,8 @@
 				<foreach collection="list" item="row" separator=" UNION ALL ">
 					SELECT
 					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
-					#{row.EMP_NO}          			AS EMP_NO
-					#{row.DISUSE_DATE}          	AS DISUSE_DATE
+					#{row.EMP_NO}          			AS EMP_NO,
+					#{row.DISUSE_DATE}          	AS DISUSE_DATE,
 					#{row.DISUSE_REASON}          	AS DISUSE_REASON
 				</foreach>
 			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
@@ -359,7 +359,8 @@
 			A.REG_DATE,
 			A.DONG,
 			A.HO,
-			A.GRADE_CD,
+			A.DUTY_CD,
+			dbo.getCode_nm(A.DUTY_CD) as DUTY_NM,
 			A.NAME,
 			A.HP_NO,
 			A.BIRTH,
@@ -392,7 +393,7 @@
 					dbo.TME_EMP_TOWN
 				</otherwise>
 			</choose> AS A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_YN = 'Y' AND A.DISUSE_DATE IS NOT NULL)
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_GBN = 'Y' AND A.DISUSE_DATE IS NOT NULL)
 		<if test="TEXT != null and TEXT != '' ">
 			<choose>
 				<when test="WHAT == 'name'">
@@ -413,30 +414,30 @@
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
-				A.DISUSE_YN		 = 'N',
+				A.DISUSE_GBN		 = 'N',
 				A.DISUSE_DATE    = NULL,
 				A.DISUSE_REASON  = NULL
 			FROM
 				<choose>
-					<when test="PG_ID == 'dan01030'">
+					<when test="list[0].PG_ID == 'dan01030'">
 						dbo.TME_EMP_TOWN
 					</when>
-					<when test="PG_ID == 'dan02030'">
+					<when test="list[0].PG_ID == 'dan02030'">
 						dbo.TME_EMP_WITH
 					</when>
-					<when test="PG_ID == 'dan05030'">
+					<when test="list[0].PG_ID == 'dan05030'">
 						dbo.TME_EMP_CLASS
 					</when>
-					<when test="PG_ID == 'dan06030'">
+					<when test="list[0].PG_ID == 'dan06030'">
 						dbo.TME_EMP_WOMEN
 					</when>
-					<when test="PG_ID == 'dan07030'">
+					<when test="list[0].PG_ID == 'dan07030'">
 						dbo.TME_EMP_CITIZEN
 					</when>
-					<when test="PG_ID == 'dan08030'">
+					<when test="list[0].PG_ID == 'dan08030'">
 						dbo.TME_EMP_PROSPER
 					</when>
-					<when test="PG_ID == 'dan09030'">
+					<when test="list[0].PG_ID == 'dan09030'">
 						dbo.TME_EMP_RENT
 					</when>
 					<otherwise>
@@ -463,7 +464,7 @@
 			A.REG_DATE,
 			A.DONG,
 			A.HO,
-			A.GRADE_CD,
+			A.DUTY_CD,
 			A.APPOINT,
 			A.NAME,
 			A.HP_NO,
@@ -493,7 +494,7 @@
 					dbo.TME_EMP_COM
 				</otherwise>
 			</choose> AS A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_YN = '' OR ISNULL(A.DISUSE_YN,'N') = 'N')
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_GBN = '' OR ISNULL(A.DISUSE_GBN,'N') = 'N')
 		<if test="TEXT != null and TEXT != '' ">
 			<choose>
 				<when test="WHAT == 'name'">
@@ -544,22 +545,22 @@
 		<if test="list != null and list.size > 0">
 			INSERT INTO
 				<choose>
-					<when test="PG_ID == 'dan03010'">
+					<when test="list[0].PG_ID == 'dan03010'">
 						dbo.TME_EMP_COM
 					</when>
-					<when test="PG_ID == 'dan04010'">
+					<when test="list[0].PG_ID == 'dan04010'">
 						dbo.TME_EMP_FLOOR
 					</when>
-					<when test="PG_ID == 'dan10010'">
+					<when test="list[0].PG_ID == 'dan10010'">
 						dbo.TME_EMP_RENTCOM
 					</when>
-					<when test="PG_ID == 'dan11010'">
+					<when test="list[0].PG_ID == 'dan11010'">
 						dbo.TME_HOEUI_120
 					</when>
-					<when test="PG_ID == 'dan12010'">
+					<when test="list[0].PG_ID == 'dan12010'">
 						dbo.TME_HOEUI_130
 					</when>
-					<when test="PG_ID == 'dan13010'">
+					<when test="list[0].PG_ID == 'dan13010'">
 						dbo.TME_HOEUI_140
 					</when>
 					<otherwise>
@@ -572,7 +573,7 @@
 				REG_DATE,
 				DONG,
 				HO,
-				GRADE_CD,
+				DUTY_CD,
 				APPOINT,
 				NAME,
 				HP_NO,
@@ -586,7 +587,7 @@
 					#{row.REG_DATE},
 					#{row.DONG},
 					#{row.HO},
-					#{row.GRADE_CD},
+					#{row.DUTY_CD},
 					#{row.APPOINT},
 					#{row.NAME},
 					#{row.HP_NO},
@@ -602,7 +603,7 @@
 			SET
 				A.DONG 			= B.DONG,
 				A.HO 			= B.HO,
-				A.GRADE_CD 		= B.GRADE_CD,
+				A.DUTY_CD 		= B.DUTY_CD,
 				A.APPOINT 		= B.APPOINT,
 				A.NAME 			= B.NAME,
 				A.REG_DATE 		= B.REG_DATE,
@@ -611,22 +612,22 @@
 				A.REMARKS 		= B.REMARKS
 			FROM
 				<choose>
-					<when test="PG_ID == 'dan03010'">
+					<when test="list[0].PG_ID == 'dan03010'">
 						dbo.TME_EMP_COM
 					</when>
-					<when test="PG_ID == 'dan04010'">
+					<when test="list[0].PG_ID == 'dan04010'">
 						dbo.TME_EMP_FLOOR
 					</when>
-					<when test="PG_ID == 'dan10010'">
+					<when test="list[0].PG_ID == 'dan10010'">
 						dbo.TME_EMP_RENTCOM
 					</when>
-					<when test="PG_ID == 'dan11010'">
+					<when test="list[0].PG_ID == 'dan11010'">
 						dbo.TME_HOEUI_120
 					</when>
-					<when test="PG_ID == 'dan12010'">
+					<when test="list[0].PG_ID == 'dan12010'">
 						dbo.TME_HOEUI_130
 					</when>
-					<when test="PG_ID == 'dan13010'">
+					<when test="list[0].PG_ID == 'dan13010'">
 						dbo.TME_HOEUI_140
 					</when>
 					<otherwise>
@@ -640,7 +641,7 @@
 					#{row.EMP_NO}          			AS EMP_NO,
 					#{row.DONG}       				AS DONG,
 					#{row.HO}         				AS HO,
-					#{row.GRADE_CD}     			AS GRADE_CD,
+					#{row.DUTY_CD}     				AS DUTY_CD,
 					#{row.APPOINT}     				AS APPOINT,
 					#{row.NAME}            			AS NAME,
 					#{row.REG_DATE}            		AS REG_DATE,
@@ -656,27 +657,27 @@
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
-				A.DISUSE_YN		 = 'Y',
+				A.DISUSE_GBN		 = 'Y',
 				A.DISUSE_DATE    = B.DISUSE_DATE,
 				A.DISUSE_REASON  = B.DISUSE_REASON
 			FROM
 				<choose>
-					<when test="PG_ID == 'dan03010'">
+					<when test="list[0].PG_ID == 'dan03010'">
 						dbo.TME_EMP_COM
 					</when>
-					<when test="PG_ID == 'dan04010'">
+					<when test="list[0].PG_ID == 'dan04010'">
 						dbo.TME_EMP_FLOOR
 					</when>
-					<when test="PG_ID == 'dan10010'">
+					<when test="list[0].PG_ID == 'dan10010'">
 						dbo.TME_EMP_RENTCOM
 					</when>
-					<when test="PG_ID == 'dan11010'">
+					<when test="list[0].PG_ID == 'dan11010'">
 						dbo.TME_HOEUI_120
 					</when>
-					<when test="PG_ID == 'dan12010'">
+					<when test="list[0].PG_ID == 'dan12010'">
 						dbo.TME_HOEUI_130
 					</when>
-					<when test="PG_ID == 'dan13010'">
+					<when test="list[0].PG_ID == 'dan13010'">
 						dbo.TME_HOEUI_140
 					</when>
 					<otherwise>
@@ -687,22 +688,23 @@
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
 					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
-					#{row.EMP_NO}          			AS EMP_NO
-					#{row.DISUSE_DATE}          	AS DISUSE_DATE
+					#{row.EMP_NO}          			AS EMP_NO,
+					#{row.DISUSE_DATE}          	AS DISUSE_DATE,
 					#{row.DISUSE_REASON}          	AS DISUSE_REASON
 			</foreach>
 			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
 		</if>
 	</update>
 
-	<select id="selectList_dan003_grid1" parameterType="map" resultType="map">
+	<select id="selectList_dan006_grid1" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE,
 			A.EMP_NO,
 			A.REG_DATE,
 			A.DONG,
 			A.HO,
-			A.GRADE_CD,
+			A.DUTY_CD,
+			dbo.getCode_nm(A.DUTY_CD) as DUTY_NM,
 			A.APPOINT,
 			A.NAME,
 			A.HP_NO,
@@ -733,7 +735,7 @@
 					dbo.TME_EMP_COM
 				</otherwise>
 			</choose> AS A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_YN = 'Y' AND A.DISUSE_DATE IS NOT NULL)
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_GBN = 'Y' AND A.DISUSE_DATE IS NOT NULL)
 		<if test="TEXT != null and TEXT != '' ">
 			<choose>
 				<when test="WHAT == 'name'">
@@ -750,31 +752,31 @@
 		ORDER BY CONVERT(INT, A.EMP_NO), A.DISUSE_DATE, A.NAME
 	</select>
 
-	<update id="updateList_dan003_cancelDisuse" parameterType="list">
+	<update id="updateList_dan006_cancelDisuse" parameterType="list">
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
-				A.DISUSE_YN		 = 'N',
+				A.DISUSE_GBN		 = 'N',
 				A.DISUSE_DATE    = NULL,
 				A.DISUSE_REASON  = NULL
 			FROM
 				<choose>
-					<when test="PG_ID == 'dan03010'">
+					<when test="list[0].PG_ID == 'dan03010'">
 						dbo.TME_EMP_COM
 					</when>
-					<when test="PG_ID == 'dan04010'">
+					<when test="list[0].PG_ID == 'dan04010'">
 						dbo.TME_EMP_FLOOR
 					</when>
-					<when test="PG_ID == 'dan10010'">
+					<when test="list[0].PG_ID == 'dan10010'">
 						dbo.TME_EMP_RENTCOM
 					</when>
-					<when test="PG_ID == 'dan11010'">
+					<when test="list[0].PG_ID == 'dan11010'">
 						dbo.TME_HOEUI_120
 					</when>
-					<when test="PG_ID == 'dan12010'">
+					<when test="list[0].PG_ID == 'dan12010'">
 						dbo.TME_HOEUI_130
 					</when>
-					<when test="PG_ID == 'dan13010'">
+					<when test="list[0].PG_ID == 'dan13010'">
 						dbo.TME_HOEUI_140
 					</when>
 					<otherwise>
