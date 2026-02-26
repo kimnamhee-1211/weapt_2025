@@ -36,7 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem('nav_focus_scroll', tree.scrollTop);
 
             pg = e.target;
-            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id + "?title=" + pg.innerHTML;
+            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id
+            ;
         }else if(e.target.tagName == 'A'){
             //포커스
             nav_focus = e.target.closest('li').id;
