@@ -6,7 +6,7 @@
 
         <div id="section">
             <div class="section1">
-                <div class="section1_nav"><i class="icon-user-add"></i>동대표명단</div>
+                <div class="section1_nav" id="pg_title"><i class="icon-user-add"></i>동대표명단</div>
                 <div class="section1_btn" id="section1_btn"></div>
                 <span class="search-box" style="float: right;">
                     퇴사일 :
@@ -58,6 +58,13 @@
 
     //로드
     window.onload = function() {
+
+        let pg_title = document.getElementById("pg_title");
+        const title = "${title}";
+        if(!isNull(title)){
+            pg_title.innerHTML = '<i class="icon-user-add"></i>';
+            pg_title.append(document.createTextNode(title));
+        }
 
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, add: true, save: true});

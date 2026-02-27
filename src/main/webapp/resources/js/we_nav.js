@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem('nav_focus_scroll', tree.scrollTop);
 
             pg = e.target;
-            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id + "?title=" + encodeURIComponent(pg.innerText);
+            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id + "?title=" + encodeURIComponent(pg.textContent);
         }
     });
 
