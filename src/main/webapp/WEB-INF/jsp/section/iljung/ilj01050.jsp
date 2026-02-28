@@ -29,7 +29,7 @@
                             </select>
                         </span>
                         <span class="">&emsp;
-                            <input  type="checkbox">&nbsp;중요 해당업무만&emsp;
+                            <input  type="checkbox">&nbsp;중요 업무&emsp;
                         </span>
                     </form>                                               
                 </div> 

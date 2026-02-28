@@ -332,7 +332,7 @@
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, add: true, del: true, save: true});
+        btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, add: true, del: true, save: true, print : true});
 
         document.querySelector("#section1_btn").insertAdjacentHTML("afterbegin", "<button id='regist_btn' onclick='regist_onclick()' class='admin_btn'>기본 등록</button>");
         //crud 권한 처리 함수
