@@ -6,7 +6,7 @@
 
         <div id="section">
             <div class="section1">
-                <div class="section1_nav"><i class="icon-calendar-plus-o"></i>tem_crud</div>
+                <div class="section1_nav"><i class="icon-calendar-plus-o"></i>tem_grid1</div>
                 <div class="section1_btn" id="section1_btn"></div>
             </div>
             <div class="section2">

@@ -26,6 +26,16 @@
                     <li id="ilj02040">구분설정</li>
                 </ul>
             </li>
+            <li>
+                <input type="checkbox" id="root1" class="tree_cb">
+                <label for="root1">TEMPLATE</label>
+                <ul class="tree_nav">
+                    <li id="tem_grid1">tem_grid1</li>
+                    <li id="tem_popup">tem_popup</li>
+                    <li id="tem_grid2">tem_grid2</li>
+                    <li id="tem_board">tem_board</li>
+                </ul>
+            </li>
         </ul>
     </div>
 </div>
