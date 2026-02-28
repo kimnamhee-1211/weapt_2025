@@ -9,6 +9,7 @@
                 <label for="root">일정관리</label>
                 <ul class="tree_nav">
                     <li id="ilj01010">월간일정</li>
+                    <li id="ilj01010_pop">월간일정_pop폴더로 가고 삭제하기</li>
                     <li id="ilj01020">주간일정</li>
                     <li id="ilj01030">일일일정</li>
                     <li id="ilj01040">일정조회</li>

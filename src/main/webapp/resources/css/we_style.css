@@ -587,6 +587,15 @@ textarea {
     height: 300px;
     font-size: 14px;
 }
+
+.pop_ilj01010_textarea{
+    padding: 5px;
+    border: 1px solid #bcbcbc;
+    width : 100%;
+    height: 100%;
+    font-size: 14px;
+}
+
 /* 질문/건의 작성 하단 해설 */
 .question_mic{
     margin-top: -8px;
