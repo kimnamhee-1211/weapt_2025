@@ -590,9 +590,10 @@ textarea {
 
 .pop_ilj01010_textarea{
     padding: 5px;
+    margin-bottom: 10px;
     border: 1px solid #bcbcbc;
-    width : 100%;
-    height: 100%;
+    width : 770px;
+    height: 340px;
     font-size: 14px;
 }
 

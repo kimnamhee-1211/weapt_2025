@@ -31,11 +31,11 @@
     <div class="section1">
         <%-- 추가 팝업시작--%>
         <div class="layer_bg" id="grid1_popup" onchange="inputToGrid(grid1, popupId)" >>
-            <div class="popup" style="width:980px;">
+            <div class="popup" style="width:800px">
                 <div class="pop_title">&#10004;일정등록</div>
                 <div>
-                    <span> &#9726&nbsp; 제 목 : </span>
-                    <span><input type="text" id="" name="title" disabled></span> <!-- 추가하면 자동계산 생성-->
+                    <span> &#9726&nbsp; 제 목 : &nbsp;&nbsp;</span>
+                    <span><input type="text" style="width:708px" id="" name="title" ></span>
                 </div>
                 <div class="pop_ilj01010_textarea">
                     <textarea></textarea>
@@ -55,10 +55,12 @@
                             <th style="width: 90px;">시작일자</th>
                             <td style="width: 150px;"><input type="date" id="" name="START_DATE" data-format="date"></td>
 
-                            <td colspan="4">
-                                <input type="checkbox" id="" name="my_" > 반복
-                                <select id="input_part1" name="PART1"></select>
-                                <input type="date" id="input_endDate" name="END_DATE" data-format="date">
+                            <td colspan="4" style="font-size: 14px">
+                                <span><input type="checkbox" id="" name="my_" ></span>
+                                <span>&nbsp;&nbsp; 반복 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                <span><select style="width:80px;" id="input_part1" name="PART1"></select></span>
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료일자&nbsp; </span>
+                                <span><input type="date" id="input_endDate" name="END_DATE" data-format="date"></span>
                             </td>
                         </tr>
                         <tr>
