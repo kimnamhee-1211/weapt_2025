@@ -1,88 +1,56 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<%@ include file = "../../inc_head.jsp" %>
-<%@ include file = "../../inc_nav.jsp" %>
-<jsp:include page="/WEB-INF/jsp/section/iljung/ilj_nav.jsp" />
-
-<div id="section">
-    <div class="section1">
-        <div class="section1_nav">
-            <i class="icon-star-filled"></i>20260228
-        </div>
-        <div class="section1_btn" id="section1_btn"></div>
-    </div>
-    <div class="section2">
-        <div class="section2_line1">
-                <span class="select-container">관리소상태 :&nbsp;
-                    <select id="search_status" name="STATUS" class="select_cont100">
-                    </select>
-                </span>
-            <span class="select-container">&emsp;계약유형 :&nbsp;
-                    <select id="search_contKindCd" name="CONT_KIND_CD" class="select_cont100">
-                    </select>
-                </span>
-            <span class="search-box">&emsp;계약만료일 :&nbsp;
-                    <input class="search-txt100" type="date" id="search_endDate1" name = "END_DATE1">&nbsp;~&nbsp;
-                    <input class="search-txt100" type="date" id="search_endDate2" name = "END_DATE2">
-                </span>
-        </div>
-    </div>
-    <div id="grid1"></div>
-    <div class="section1">
-        <%-- 추가 팝업시작--%>
-        <div class="layer_bg" id="grid1_popup" onchange="inputToGrid(grid1, popupId)" >>
-            <div class="popup" style="width:800px">
-                <div class="pop_title">&#10004;일정등록</div>
-                <div>
-                    <span> &#9726&nbsp; 제 목 : &nbsp;&nbsp;</span>
-                    <span><input type="text" style="width:708px" id="" name="title" ></span>
-                </div>
-                <div class="pop_ilj01010_textarea">
-                    <textarea></textarea>
-                </div>
-                <div>
-                    <table>
-                        <tbody>
-                        <tr>
-                            <th style="width: 90px;">일정</th>
-                            <td style="width: 150px;"><select id="input_part1" name="PART1"></select></td>
-                            <th style="width: 90px;">일정구분</th>
-                            <td style="width: 150px;"><input type="date" id="" name="START_DATE" data-format="date"></td>
-                            <th style="width: 90px;">주무부서</th>
-                            <td style="width: 150px;"><input type="text" id="" name="OFFICE_CNT" ></td>
-                        </tr>
-                        <tr>
-                            <th style="width: 90px;">시작일자</th>
-                            <td style="width: 150px;"><input type="date" id="" name="START_DATE" data-format="date"></td>
-
-                            <td colspan="4" style="font-size: 14px">
-                                <span><input type="checkbox" id="" name="my_" ></span>
-                                <span>&nbsp;&nbsp; 반복 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                <span><select style="width:80px;" id="input_part1" name="PART1"></select></span>
-                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료일자&nbsp; </span>
-                                <span><input type="date" id="input_endDate" name="END_DATE" data-format="date"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th style="width: 90px;">일정상태</th>
-                            <td style="width: 150px;"><select id="input_part1" name="PART1"></select></td>
-                            <th style="width: 90px;">처리자</th>
-                            <td style="width: 150px;"><select id="input_part1" name="PART1"></select></td>
-
-                            <td colspan="2"><input type="text" id="" name="OFFICE_AREAR" ></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="pop_btn">
-                    <button id="save_btn1" onclick="save_grid1_onclick()">저장</button>
-                    <button id="delete_btn1" onclick="delete_grid1_onclick()">삭제</button>
-                    <button id="close_btn1" onclick="close_popup_onclick()">닫기</button>
-                </div>
+    <%-- 추가 팝업시작--%>
+    <div class="layer_bg" id="pop_iljung" onchange="inputToGrid(grid1, popupId)" >
+        <div class="popup" style="width:800px">
+            <div class="pop_title">&#10004;일정등록</div>
+            <div class="section1_btn" id="pop1_btn"></div>
+            <div>
+                <span> &#9726&nbsp; 제 목 : &nbsp;&nbsp;</span>
+                <span><input type="text" style="width:708px" id="input_title" name="TITLE" ></span>
             </div>
-        </div>  <%-- 팝업끝--%>
-    </div>
-</div>
+            <div class="pop_ilj01010_textarea">
+                <textarea id="input_descr" name=DESCR"></textarea>
+            </div>
+            <div>
+                <table>
+                    <tbody>
+                    <tr>
+                        <th style="width: 90px;">일정일</th>
+                        <td style="width: 150px;"><input type="date" id="input_scDate" name="SC_DATE" data-format="date"></td>
+                        <th style="width: 90px;">일정구분</th>
+                        <td style="width: 150px;"><select id="input_schGbn" name="SCH_GBN"></select></td>
+                        <th style="width: 90px;">주무부서</th>
+                        <td style="width: 150px;"><select id="input_mainDeptCd" name="MAIN_DEPT_CD"></select></td>
+                    </tr>
+                    <tr>
+                        <th style="width: 90px;">시작일자</th>
+                        <td style="width: 150px;"><input type="date" id="input_startDate" name="START_DATE" data-format="date"></td>
+                        <td colspan="4" style="font-size: 14px">
+                            <span><input type="checkbox" id="input_reWorkYn" name="RE_WORK_YN"></span>
+                            <span>&nbsp;&nbsp; 반복 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <span>
+                                <select style="width:80px;" id="input_reWorkGbn" name="RE_WORK_GBN">
+                                    <option value="month"></option>
+                                    <option value="week"></option>
+                                    <option value="day"></option>
+                                </select>
+                            </span>
+                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료일자&nbsp; </span>
+                            <span><input type="date" id="input_endDate" name="END_DATE" data-format="date"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="width: 90px;">일정상태</th>
+                        <td style="width: 150px;"><select id="input_statusCd" name="STATUS_CD"></select></td>
+                        <th style="width: 90px;">처리자</th>
+                        <td style="width: 150px;"><select id="input_workUserId" name="WORK_USER_ID"></select></td>
+                        <td colspan="2"><input type="text" id="" name="OFFICE_AREAR" ></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>  <%-- 팝업끝--%>
 
 
 <script>
@@ -112,123 +80,23 @@
      *
      */
 
-        //변수 선언
-    const pgId = "${pgId}";	//프로그램ID
-    let grid1;	// 그리드 컴포넌트
-    let focus = 0;	//그리드 컴포넌트 포커스
-    const popupId = "grid1_popup"; //팝업 컴포넌트
+    //변수 선언
+    const popupId = "pop_iljung";
     const pop1_btn = document.querySelector("#pop1_btn"); //팝업버튼 컴포넌트
-
-    //그리드 설정
-    const grid1ColumnLayout = [
-        { dataField: "OFFICE_CODE",
-            headerText: "코드",
-            dataType: "text",
-            width : "8%",
-            editable : false,
-        },
-        { dataField: "OFFICE_NAME",
-            headerText: "관리소명",
-            dataType: "text",
-            width : "20%",
-            editable : false,
-            style : "text-align-left",
-        },
-        { dataField: "OFFICE_CNT",
-            headerText: "세대수",
-            dataType: "numeric",
-            width : "8%",
-            editable : false,
-        },
-        { dataField: "TEL",
-            headerText: "전화번호",
-            dataType: "text",
-            width : "10%",
-            editable : false,
-        },
-        { dataField: "OFFICE_HARD_SIZE",
-            headerText: "사용기가",
-            dataType: "numeric",
-            width : "8%",
-            editable : false,
-        },
-        { dataField: "OFFICE_USER_CNT",
-            headerText: "사용자수",
-            dataType: "numeric",
-            width : "8%",
-            editable : false,
-        },
-        { dataField: "STATUS_NM",
-            headerText: "상태",
-            dataType: "text",
-            width : "10%",
-        },
-        { dataField: "START_DATE",
-            headerText: "계약시작일",
-            dataType: "date",
-            formatString: "yyyy-mm-dd",
-            width : "12%",
-            editable : false,
-        },
-        { dataField: "END_DATE",
-            headerText: "계약만료일",
-            dataType: "date",
-            formatString: "yyyy-mm-dd",
-            width : "12%",
-            editable : false,
-        },
-        { dataField: "CONT_KIND_NM",
-            headerText: "계약유형",
-            dataType: "text",
-            width : "15%",
-        },
-        { dataField: "CONT_AMT",
-            headerText: "계약금액",
-            dataType: "numeric",
-            width : "10%",
-            editable : false,
-            formatString : "#,###"
-        },
-    ];
-
-    //그리드 생성
-    grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
-        Object.assign({}, we_grid_Props,
-            {
-                editable : false,
-            })
-    );
-
-
-    //그리드 이벤트
-    //체크박스 클릭 시
-    AUIGrid.bind(grid1, "rowCheckClick", function(event) {
-        AUIGrid.setSelectionByIndex(grid1, event.rowIndex, 0);
-    });
-    //행 클릭 시
-    AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        if(!isNull(AUIGrid.getSelectedRows(grid1)[0].COMP_CODE)) {
-            getSelectOption_input_mgmuserId();
-        }
-        //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
-        //팝업 열기 이벤트
-        popupOpen(popupId);
-    });
-
-    //팝업 이벤트
-    //주소찾기 이벤트
-    function search_addr_onclick(){
-        addrPopup(popupId);
-    }
-    //팝업 닫기 이벤트
-    function close_popup_onclick(){
-        popupClose(popupId);
-        clearInput(popupId);
-    }
+    const input_title = document.querySelector("#input_title"); //select 컴포넌트
+    const input_descr = document.querySelector("#input_descr"); //select 컴포넌트
+    const input_scDate = document.querySelector("#input_scDate"); //select 컴포넌트
+    const input_schGbn = document.querySelector("#input_schGbn"); //select 컴포넌트
+    const input_mainDeptCd = document.querySelector("#input_mainDeptCd"); //select 컴포넌트
+    const input_startDate = document.querySelector("#input_startDate"); //select 컴포넌트
+    const input_reWorkYn = document.querySelector("#input_reWorkYn"); //select 컴포넌트
+    const input_reWorkGbn = document.querySelector("#input_reWorkGbn"); //select 컴포넌트
+    const input_endDate = document.querySelector("#input_endDate"); //select 컴포넌트
+    const input_statusCd = document.querySelector("#input_statusCd"); //select 컴포넌트
+    const input_workUserId = document.querySelector("#input_workUserId"); //select 컴포넌트
 
     //그리드 조회 함수
-    function search_grid1_onclick(){
+    function search_pop1_onclick(){
         //검색데이터
         let selectParam = {
             STATUS : search_status.value,
@@ -246,26 +114,10 @@
 
         we_select( selectData,{
             successSelect : (data) => {
-                //그리드 데이터 세팅
-                AUIGrid.setGridData(grid1, data);
-                //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
-                AUIGrid.setSelectionByIndex(grid1, focus, 0);
-                focus = 0;
+                dataToInput(data, popupId);
+                search_file1_onclick();
             }
         });
-    }
-
-    //그리드 추가 함수
-    function add_grid1_onclick(){
-        // 그리드의 편집 인푸터가 열린 경우 에디팅 완료 상태로 만듬.
-        AUIGrid.forceEditingComplete(grid1, null);
-        //새행 만들기
-        const item = {};
-        AUIGrid.addRow(grid1, item, "last");
-        //팝업 열기 이벤트
-        popupOpen(popupId);
-        //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
     }
 
 
@@ -385,15 +237,6 @@
         return isValid;
     }
 
-    //crud 권한 처리 함수
-    function checkCrudPermission(pgId){
-        we_checkCrudPermission(pgId,{
-            successPer : (data) => {
-                //권한에 따라 버튼 숨김
-                btnPermission(data)
-            }
-        });
-    }
 
     async function getSelectOption_input_compCode(){
         input_compCode.innerHTML = "";
@@ -443,22 +286,16 @@
         input_mgmuserId.value = AUIGrid.getSelectedRows(grid1)[0].MGMUSER_ID
     }
 
-    // input_compCode.addEventListener("change", async () => {
-    //     if(!isNull(AUIGrid.getSelectedRows(grid1)[0].COMP_CODE)) {
-    //         getSelectOption_input_mgmuserId();
-    //     }
-    // });
 
 
     //로드
-    window.onload = function() {
+    function pop_onload(pop_item){
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        btnMaker({ tag: "#section1_btn", grid: "grid1", search : true, add : true, print : true});
-        btnMaker({ tag: "#pop1_btn", grid: "grid1", save : true});
+        btnMaker({ tag: "#pop1_btn", grid: "grid1", save : true, del: true});
         pop1_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
-        //crud 권한 처리 함수
-        checkCrudPermission(pgId);
+
+
         Promise.all([
             //공통코드 가져오기
            // selectOptionMaker("104", search_status, "전체", false),

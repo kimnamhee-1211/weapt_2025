@@ -165,7 +165,6 @@
         clearInput(popupId);
     }
 
-
     //그리드 조회 함수
     function search_grid1_onclick(){
         //검색데이터

@@ -329,6 +329,39 @@
     */
 
 
+   //표준 그리드 속성
+   const we_appr_Props = {
+      editable: false,                     // 수정가능여부 (true: 가능, false: 불가)
+      enableMovingColumn: false,          // 컬럼이동가능여부 (true: 가능, false: 불가)
+      applyRestPercentWidth: true,
+      headerHeight: 32,                   // 헤더 높이(단위: px)
+      rowHeight: 32,                      // 행 높이 (단위: px)
+      softRemovePolicy: "exceptNew",
+      selectionMode: "singleCell",         // 셀 선택 모드 (singleCell, singleRow, multipleCells, multipleRows, none)
+      hoverMode: "singleCell",             // 마우스 오버 모드
+      usePaging: false,                   // 페이징 사용 (true: 사용, false: 미사용)
+      pagingMode: "simple",               // 페이징 모드(그리드가 극단적으로 좁은 겨우가 있어서 simple 사용)
+      enableHScrollByWheel : false,
+      showRowCheckColumn: false,           // 엑스트라 컬럼의 행 체크박스 출력 여부를 지정합니다.
+      showRowNumColumn: false,             // 행 줄번호(로우 넘버링) 칼럼의 출력 여부를 지정합니다.
+      showTooltip : false,                // 툴팁 출력 지정
+      enableFilter: true,
+      onlyEnterKeyEditEnd: true,         // 엔터키가 편집 완료 역할만 할 뿐 다음 행으로 이동하지 않음
+      keepEditing : false,                 // 탭이나 엔터키로 완료할 때 다음 셀 편집가능
+      showAutoNoDataMessage : true,       // 데이터가 존재 하지 않을 때 자동으로 메세지를 출력할지 여부
+      noDataMessage : "결재 담당자가 없습니다..",
+      wrapSelectionMove: true,            // 칼럼 끝에서 오른쪽 이동 시 다음 행, 처음 칼럼으로 이동할지 여부
+      autoGridHeight : false,
+      height : 614,                       // autoGridHeight : false 함께 쓰임
+      showSelectionBorder : true,         // 셀 선택 시 선택된 셀에 테두리(border) 를 표시할지 여부,
+      editingOnKeyDown : false,           // 키보드 입력으로 바로 편집할 수 있는지 여부
+      enterKeyColumnBase : false,          // 엔터키가 다음 행이 아닌 다음 컬럼으로 이동함
+      softRemoveRowMode : true
+   }
+
+   /* 사용법
+      Object.assign({}, we_appr_Props, { 개별 그리드 속성 })
+    */
 
 
 
