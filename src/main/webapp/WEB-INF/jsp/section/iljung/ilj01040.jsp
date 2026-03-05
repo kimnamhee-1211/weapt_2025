@@ -82,6 +82,15 @@
         { dataField: "MST_NO",
             visible : false
         },
+        { dataField: "MST_MONTH",
+            visible : false
+        },
+        { dataField: "SC_DATE",
+            headerText: "일자",
+            width : "10%",
+            dataType: "date",
+            formatString: "yyyy-mm-dd",
+        },
         { dataField: "IMPORTANT_YN",
             headerText: "중요",
             width : "5%",
@@ -97,13 +106,6 @@
             dataType: "text",
             width : "*%",
             style : "text-align-left",
-        },
-        { dataField: "START_DATE",
-            headerText: "일자",
-            width : "10%",
-            dataType: "date",
-            formatString: "yyyy-mm-dd",
-            editable : false
         },
         { dataField: "GBN_NAME",
             headerText: "일정구분",
@@ -126,12 +128,28 @@
     grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
-                editable : false
+                editable : false,
+                showRowCheckColumn: false,
             })
     );
 
     //그리드 이벤트
-
+    //행 클릭 시
+    AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
+        //그리드-input 태그 바인딩
+        let pop_item = {
+            pgId : pgId,
+            saveKey : "U",
+            searchItem : {
+                SC_DATE : event.item.SC_DATE,
+                MST_NO : event.item.MST_NO,
+                MST_MONTH :  event.item.MST_MONTH,
+            },
+        };
+        pop_onload(pop_item);
+        //팝업 열기 이벤트
+        popupOpen(popupId);
+    });
 
 
     //그리드 조회 함수
@@ -194,6 +212,7 @@
         checkCrudPermission(pgId);
         //로드 시 그리드 바로 조회
         search_grid1_onclick();
+
     };
 
 </script>

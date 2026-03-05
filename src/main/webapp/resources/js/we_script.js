@@ -252,6 +252,32 @@
         }
     }
 
+    //input-그리그 태그 바인딩
+    function inputToData(inputDivId){
+        const inputDiv = document.querySelector("#" + inputDivId);
+        const namedElements = inputDiv.querySelectorAll('[name]');
+        let item= {};
+        for(let el of namedElements){
+            let key = el.name;
+            let value = "";
+            // checkbox
+            if(el.type === "checkbox"){
+                value = el.checked ? "Y" : "N";
+            }
+
+            if(el.dataset.format === "date"){
+                value = el.value.replace(/\D/g, '');
+            }else if(el.dataset.format === "licenseNo"){
+                value = el.value.replace(/\D/g, '');
+            }else{
+                value = el.value;
+            }
+            item[key] = value;
+        }
+        return item;
+    }
+
+
     //그리그-input 태그 바인딩
     function gridToInput(grid, inputDivId){
         let selectedRow = AUIGrid.getSelectedRows(grid)[0];
@@ -308,7 +334,7 @@
 
 
 
-//팝업 열기 이벤트
+    //팝업 열기 이벤트
     function popupOpen(popupTagId){
         const popupTag = document.querySelector("#" + popupTagId);
         popupTag.style.display = 'block';

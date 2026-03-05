@@ -94,61 +94,61 @@
     const input_endDate = document.querySelector("#input_endDate"); //select 컴포넌트
     const input_statusCd = document.querySelector("#input_statusCd"); //select 컴포넌트
     const input_workUserId = document.querySelector("#input_workUserId"); //select 컴포넌트
+    let saveKey = "U";
+    let searchItem;
+
+    //팝업 이벤트
+    //팝업 닫기 이벤트
+    function close_popup_onclick(){
+        popupClose(popupId);
+        clearInput(popupId);
+    }
 
     //그리드 조회 함수
     function search_pop1_onclick(){
         //검색데이터
-        let selectParam = {
-            STATUS : search_status.value,
-            CONT_KIND_CD : search_contKindCd.value,
-            END_DATE1 : search_endDate1.value.replace(/-/g, ""),
-            END_DATE2 : search_endDate2.value.replace(/-/g, "")
-        }
+        let selectParam = searchItem
 
         //파라미터
         let selectData = {
             sectionId : sectionId,
-            component : pgId + "_grid1",
+            component : pgId + "_pop1",
             param: selectParam,
         }
 
         we_select( selectData,{
             successSelect : (data) => {
+                saveKey == "U"
                 dataToInput(data, popupId);
-                search_file1_onclick();
             }
         });
     }
 
-
     //그리드 저장 함수
     function save_grid1_onclick(){
-        // 추가된 행 아이템들(배열)
-        let addedRowItems = AUIGrid.getAddedRowItems(grid1);
-        // 수정된 행 아이템들(배열) : 수정된 필드와 수정안된 필드 모두를 얻음.
-        let editedRowItems = AUIGrid.getEditedRowItems(grid1);
 
         //검증
-        let itemCount = addedRowItems.length + editedRowItems.length;
-        if(itemCount == 0){
-            alert("변경된 항목이 없습니다");
-            return;
-        }
-        if(itemCount > 100){
-            alert("변경사항 저장은 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
-            return;
-        }
-        if(!confirm("총 " + itemCount + "건의 변경사항을 저장하시겠습니까?")) return;
+        if(!confirm("일정을 저장하시겠습니까?")) return;
         if(!requireCheck("SAVE_GRID1")) return;
 
+        let addItem = null;
+        let editItem = null;
+        let item = inputToData(popupId);
+
+        if(saveKey == "U") {
+            editItem = [...item];
+        }else{
+            addItem  = [...item];
+        }
+
         //포커스 지정
-        focus = gridFocus(grid1);
+        focus = AUIGrid.getSelectedIndex(grid1)[0];
 
         //저장 데이터
         let saveParam = {
-            insertParam : addedRowItems,
-            updateParam : editedRowItems,
-            key : ["OFFICE_CODE"],
+            insertParam : addItem,
+            updateParam : editItem,
+            key : ["MST_NO"],
             before : {}
         }
 
@@ -163,8 +163,9 @@
             successSave : (data) => {
                 alert(data.O_MSG);
                 if(data.O_RESULT > 0){
+                    saveKey = "U";
                     //팝업 닫기
-                    search_grid1_onclick()
+                    search_grid1_onclick();
                 }else return;
             }
         });
@@ -172,29 +173,23 @@
 
     //그리드 삭제 함수
     function delete_grid1_onclick(){
+
+        let item = inputToData(popupId);
+        let items = [...item];
+
         //검증
-        const checkedItems = AUIGrid.getCheckedRowItems(grid1);
-        let itemCount = checkedItems.length;
-        if (itemCount=== 0) {
-            alert("체크된 항목이 없습니다");
-            return;
-        }
-        if(itemCount > 100){
-            alert("삭제는 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
-            return;
-        }
-        let delItemsName = checkedItems.map(row => row.item.COMP_NAME).join(", ");
-        if (!confirm( delItemsName + "을/를(총 " + itemCount +"건) 삭제하시겠습니까?")) return;
+        if (!confirm("일정을 삭제하시겠습니까?")) return;
 
         //포커스 지정
-        focus = (checkedItems[0].rowIndex -1) < 1 ? 0 : (checkedItems[0].rowIndex -1);
+        let selctedRowIndex = AUIGrid.getSelectedIndex(grid1)[0];
+        focus = (selctedRowIndex -1) < 1 ? 0 : (selctedRowIndex -1);
 
         // 체크된 행 삭제 처리
         AUIGrid.removeCheckedRows(grid1);
 
         // 삭제된 행 아이템들(배열) -> 삭제 데이터
         let param = {
-            deleteParam : AUIGrid.getRemovedItems(grid1),
+            deleteParam : items,
             before : {}
         };
         //공통 저장 트렌젝션용 데이터
@@ -238,52 +233,50 @@
     }
 
 
-    async function getSelectOption_input_compCode(){
-        input_compCode.innerHTML = "";
+    async function getSelectOption_input_mainDeptCd(){
+        input_mainDeptCd.innerHTML = "";
         //검색데이터
         let param = {
         }
         //파라미터
         let data = {
             sectionId : sectionId,
-            component : pgId + "_input_compCode",
+            component : pgId + "_input_mainDeptCd",
             param: param,
         }
         let list = await we_getSelectOption(data);
 
         if(list){
-            input_compCode.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
+            input_mainDeptCd.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
             list.forEach(row => {
-                input_compCode.insertAdjacentHTML("beforeend",
-                    "<option value='" + row.COMP_CODE + "'>" + row.COMP_NAME + "</option>");
+                input_mainDeptCd.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.DEPT_CD + "'>" + row.DEPT_NAME + "</option>");
             })
         }
-        input_compCode.selectedIndex = 0;
-
+        input_mainDeptCd.selectedIndex = 0;
     }
 
-    async function getSelectOption_input_mgmuserId(){
-        input_mgmuserId.innerHTML = "";
+    async function getSelectOption_input_workUserId(){
+        input_workUserId.innerHTML = "";
         //검색데이터
         let param = {
-            COMP_CODE :  AUIGrid.getSelectedRows(grid1)[0].COMP_CODE
         }
         //파라미터
         let data = {
             sectionId : sectionId,
-            component : pgId + "_input_mgmuserId",
+            component : pgId + "_input_workUserId",
             param: param,
         }
         let list = await we_getSelectOption(data);
 
         if(list) {
-            input_mgmuserId.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
+            input_workUserId.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
             list.forEach(row => {
-                input_mgmuserId.insertAdjacentHTML("beforeend",
-                    "<option value='" + row.MGMUSER_ID + "'>" + row.MGMUSER_ID + "</option>");
+                input_workUserId.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.EMP_NO + "'>" + row.NAME + "</option>");
             })
         }
-        input_mgmuserId.value = AUIGrid.getSelectedRows(grid1)[0].MGMUSER_ID
+        input_workUserId.selectedIndex = 0;
     }
 
 
@@ -295,19 +288,18 @@
         pop1_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
 
-
         Promise.all([
-            //공통코드 가져오기
-           // selectOptionMaker("104", search_status, "전체", false),
-           // selectOptionMaker("129", search_contKindCd, "전체", false),
-          //  selectOptionMaker("104", input_status, "", false),
-           // selectOptionMaker("102", input_part1, "", false),
-           // selectOptionMaker("103", input_part2, "", false),
             //그리드 DDL
-          //  getSelectOption_input_compCode(),
+            getSelectOption_input_mainDeptCd(),
+            getSelectOption_input_workUserId()
         ]).then(function (){
-            //로드 시 그리드 바로 조회
-            search_grid1_onclick();
+            if(pop_item.saveKey == "U"){
+                //로드 시 그리드 바로 조회
+                searchItem = pop_item.searchItem;
+                search_pop1_onclick();
+            }else{
+                dataToInput(pop_item.addItem, popupId);
+            }
         })
     };
 
