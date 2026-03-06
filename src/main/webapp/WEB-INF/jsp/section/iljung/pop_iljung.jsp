@@ -129,8 +129,13 @@
 
         we_select( selectData,{
             successSelect : (data) => {
-                saveKey == "U";
-                dataToInput(data[0], popupId);
+                if(isNull(data)){
+                    alert("일정 정보가 존재하지 않습니다.")
+                    close_popup_onclick();
+                }else{
+                    saveKey == "U";
+                    dataToInput(data[0], popupId);
+                }
             }
         });
     }
@@ -409,6 +414,7 @@
                 //로드 시 그리드 바로 조회
                 searchItem = pop_item.searchItem;
                 search_pop1_onclick();
+
                 inputTr_reWork.style.display = "none";
                 input_scDate.disabled = true
             }else{
@@ -416,6 +422,7 @@
                 inputTr_reWork.style.display =  "table-row";
                 input_scDate.disabled = false
             }
+
         })
     };
 
