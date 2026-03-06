@@ -133,9 +133,9 @@
 
         //검색데이터
         let selectParam = {
-            ST_DATE : search_stDate.value.replace(/-g/,""),
-            END_DATE :search_endDate.value.replace(/-g/,""),
-            EQU_NAME :search_equName.value.replace(/-g/,""),
+            ST_DATE : search_stDate.value.replace(/-/g,""),
+            END_DATE :search_endDate.value.replace(/-/g,""),
+            EQU_NAME :search_equName.value.replace(/-/g,""),
         }
 
         //파라미터

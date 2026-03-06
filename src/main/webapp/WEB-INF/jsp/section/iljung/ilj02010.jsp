@@ -8,6 +8,9 @@
         <div class="section1">
             <span class="section1_nav"><i class="icon-calendar-plus-o"></i>월중관리계획</span>
             <div class="section1_btn" id="section1_btn"></div>
+            <span class="search-box section1_btn">
+                <button id="schedule_btn_grid1" class="del_btn" onclick="schedule_onclick()">일정등록</button>
+            </span>
         </div>
         <div class="section2">
             <div class="section2_line1">
@@ -34,6 +37,44 @@
             </div>
         </div>
         <div id="grid1"></div>
+        <div class="section1">
+            <%-- 추가 팝업시작--%>
+            <div class="layer_bg" id="grid1_popup">
+                <div class="popup" style="width:500px;">
+                    <div>
+                        <span>&nbsp;&#9726 일정등록</span>
+                        <span id="pop1_btn" style="float: right;">
+                            <button id="schedule_btn_pop1" class="btn_left3" onclick="schedule_save_onclick()">등록</button>
+                            <button id='close_btn1' class='btn_left3' onclick="close_popup_onclick()">닫기</button>
+                        </span>
+                    </div>
+                    <div>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th style="width: 90px;">등록일</th>
+                                    <td style="width: 150px;"><input type="date" id="input_scDate" name="SC_DATE" data-format="date"></td>
+                                    <th style="width: 90px;">반복</th>
+                                    <td style="width: 150px;"><input type="checkbox" id="input_reWorkYn" name="RE_WORK_YN"></td>
+                                </tr>
+                                <tr id="inputTr_Re" style="display: none">
+                                    <th style="width: 90px;">반복주기</th>
+                                    <td style="width: 150px;">
+                                        <select id="input_reWorkTime" name="RE_WORK_TIME">
+                                            <option value="month" selected>매월</option>
+                                            <option value="week" >매주</option>
+                                            <option value="day" selected>매일</option>
+                                        </select>
+                                    </td>
+                                    <th style="width: 90px;">종료일</th>
+                                    <td style="width: 150px;"><input type="date" id="input_endDate" name="END_DATE" data-format="date"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 <script>
@@ -42,7 +83,7 @@
      * 변수 선언 :  pgId, 컴포넌트, 컴포넌트 포커스
      * 그리드 설정
      * 그리드 생성
-     * 그리드 이벤트 : 체크박스 클릭 시 셀렉트 이벤트(엑스트라 체크박스 있을 시) + 필요 시
+     * 그리드 이벤트 : 체크박스 클릭 시 셀렉트 이벤트(엑스트라 체크박스 있을 시) + 필요 시v
      * 그리드 조회 함수
      * 그리드 추가 함수    (미사용시 생략)
      * 그리드 저장 함수    (미사용시 생략)
@@ -63,8 +104,14 @@
     const pgId = "${pgId}";	//프로그램ID
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
+    const popupId = "grid1_popup"; //팝업 컴포넌트
     const search_mstDate = document.querySelector("#search_mstDate")	//select 컴포넌트
     const search_mstMonth = document.querySelector("#search_mstMonth")	//select 컴포넌트
+    const input_scDate = document.querySelector("#input_scDate")	//popup 컴포넌트
+    const input_reWorkYn = document.querySelector("#input_reWorkYn")	//popup 컴포넌트
+    const input_reWorkTime = document.querySelector("#input_reWorkTime")	//popup 컴포넌트
+    const input_endDate = document.querySelector("#input_endDate")	//popup 컴포넌트
+    const inputTr_Re = document.querySelector("#inputTr_Re")	//popup 컴포넌트
     let DS_SCH_GBN =[];
     let DS_DEPT_CD = [];
 
@@ -92,13 +139,13 @@
         { dataField: "TITLE",
             headerText: "일정제목",
             dataType: "text",
-            width : "20%",
+            width : "*%",
             style : "text-align-left",
         },
         { dataField: "MAIN_DEPT_CD",
             headerText: "주무부서",
             dataType: "text",
-            width : "10%",
+            width : "15%",
             renderer: {
                 type: "DropDownListRenderer",
                 listFunction: function (rowIndex, columnIndex, item, dataField) {
@@ -107,17 +154,6 @@
                 keyField: "DEPT_CD", // key 에 해당되는 필드명
                 valueField: "DEPT_NAME", // value 에 해당되는 필드명
             }
-        },
-        { dataField: "DESCR",
-            headerText: "내용",
-            dataType: "text",
-            width : "*%",
-            style : "text-align-left",
-        },
-        { dataField: "IMPORTANT_YN",
-            headerText: "중요일정",
-            width : "8%",
-            renderer : we_cb_10_Renderer
         },
         { dataField: "MST_DATE",
             visible : false
@@ -128,6 +164,7 @@
     grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
+                rowCheckToRadio  : true
             })
     );
 
@@ -136,6 +173,33 @@
     AUIGrid.bind(grid1, "rowCheckClick", function(event) {
         AUIGrid.setSelectionByIndex(grid1, event.rowIndex, 0);
     });
+
+
+    //팝업 이벤트
+    //팝업 닫기 이벤트
+    function close_popup_onclick(){
+        popupClose(popupId);
+        clearInput(popupId);
+    }
+    //반복 클릭 시 입력부 보이기
+    input_reWorkYn.addEventListener("change", () => {
+        input_reWorkYn.value = input_reWorkYn.checked ? "Y" : "N";
+        if(input_reWorkYn.checked){
+            inputTr_Re.style.display = "table-row"
+        }else{
+            inputTr_Re.style.display = "none"
+        }
+    })
+
+    //반복 클릭 시 입력부 보이기
+    function change_input_reWorkYn(){
+        if(input_reWorkYn.value == "Y"){
+            inputTr_Re.style.display = "table-row"
+        }else{
+            inputTr_Re.style.display = "none"
+        }
+    }
+
 
     //그리드 조회 함수
     function search_grid1_onclick(){
@@ -172,7 +236,7 @@
         let selectRowItem = AUIGrid.getSelectedRows(grid1)[0];
         const item = {};
         item.REG_DATE = getToday("yyyyMMdd");
-        item.MST_DATE = search_mstDate.value;
+        item.MST_DATE = search_mstDate.value.replace(/-/g, "");
         item.MST_MONTH = search_mstMonth.value;
         AUIGrid.addRow(grid1, item, "selectionDown");
     }
@@ -205,11 +269,7 @@
             insertParam : addedRowItems,
             updateParam : editedRowItems,
             key : ["MST_NO"],
-            before : {
-                // action : "insert",
-                // saveMode : "I",
-                // beforeParam : addedRowItems
-            }
+            before : {}
         };
 
         //파라미터
@@ -223,7 +283,6 @@
             successSave : (data) => {
                 alert(data.O_MSG);
                 if(data.O_RESULT > 0){
-                    getSelectOption_search_mstDate();
                     search_grid1_onclick();
                 }else return;
             }
@@ -276,6 +335,96 @@
         });
     }
 
+
+    //그리드 저장 함수
+    function schedule_onclick(){
+
+        const checkedItems = AUIGrid.getCheckedRowItemsAll(grid1);
+
+        let itemCount = checkedItems.length;
+        if (itemCount=== 0) {
+            alert("체크된 항목이 없습니다");
+            return;
+        }
+
+        //포커스 지정
+        focus = gridFocus(grid1);
+
+        popupOpen(popupId);
+    }
+
+    function schedule_save_onclick(){
+
+        const checkedItems = AUIGrid.getCheckedRowItemsAll(grid1);
+
+        if(!confirm(checkedItems[0].TITLE + "을 일정에 등록하시겠습니까?")) return;
+        if(!requireCheck("SAVE_SCHEDULE")) return;
+
+        if(input_reWorkYn.value == 'Y'){
+            let scDate =  parseDate(input_scDate.value);
+            let endDate = parseDate(input_endDate.value);
+            let current = new Date(scDate);
+            let type = input_reWorkTime.value
+            let dates = []
+            while (current <= endDate) {
+                let strDate = formatDate(new Date(current))
+                dates.push(strDate);
+                if(type == "month"){
+                    let day = current.getDate();
+                    current.setMonth(current.getMonth() + 1);
+                    // 말일 보정
+                    if (current.getDate() < day) {
+                        current.setDate(0); // 이전달 마지막날
+                    }
+                }
+                else if(type == "week"){
+                    current.setDate(current.getDate() + 7);
+                }
+                else if(type == "day"){
+                    current.setDate(current.getDate() + 1);
+                }else break;
+            }
+
+            let items = [];
+            dates.forEach(strDate =>{
+                let item =  {}
+                item.SC_DATE = strDate;
+                item.SCH_GBN = checkedItems[0].SCH_GBN;
+                item.TITLE = checkedItems[0].TITLE;
+                item.MAIN_DEPT_CD = checkedItems[0].MAIN_DEPT_CD;
+                items.push(item);
+            })
+        }
+
+
+        //저장 데이터
+        let saveParam = {
+            insertParam : items,
+            updateParam : null,
+            key : ["MST_NO"],
+            before : {}
+        }
+
+        //파라미터
+        let saveData  = {
+            sectionId : sectionId,
+            component : pgId + "_pop1",
+            param: saveParam,
+        }
+
+        we_save( saveData ,{
+            successSave : (data) => {
+                alert(data.O_MSG);
+                if(data.O_RESULT > 0){
+                    //팝업 닫기
+                    close_popup_onclick();
+                    search_grid1_onclick();
+                }else return;
+            }
+        });
+
+    }
+
     //컴포넌트 필수항목 입력 체크
     function requireCheck(require){
         let isValid = true;
@@ -286,6 +435,17 @@
                 let items = [...addedRowItems,...editedRowItems];
                 for(const row of items){
                     if(isNull(row.TITLE)){
+                        alert("제목은 반드시 입력해야 합니다.");
+                        isValid = false;
+                        break;
+                    }
+                }
+                break;
+            case "SAVE_SCHEDULE":
+                let checkedRowItems = AUIGrid.getCheckedRowItems(grid1);
+                let items2 = [...checkedRowItems];
+                for(const row of items2){
+                    if(isNull(input_scDate.value)){
                         alert("제목은 반드시 입력해야 합니다.");
                         isValid = false;
                         break;

@@ -86,14 +86,6 @@
 
 <script>
 
-    function search_addr_onclick(){
-        new daum.Postcode({
-            oncomplete: function(data) {
-                document.getElementById("input_zip").value = data.zonecode;
-                document.getElementById("input_addr1").value = data.address;
-            }
-        }).open();
-    }
 
 
 

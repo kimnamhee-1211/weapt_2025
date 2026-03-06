@@ -5,31 +5,201 @@
 	<select id="selectList_ilj01015_calendar" parameterType="map" resultType="map">
 		SELECT
 			A.MST_NO		AS id,
+			A.SEQ			AS seq,
+			'STATUS_CD' + A.STATUS_CD AS className,
+			F.GBN_NAME		AS gbn_name,
 			A.TITLE			AS title,
-			CONVERT(varchar(10), CONVERT(date, A.START_DATE, 112), 23) AS start,
-		    CONVERT(varchar(10), CONVERT(date, A.START_DATE, 112), 23) AS [end]
+			CONVERT(varchar(10), CONVERT(date, A.SC_DATE, 112), 23) AS start,
+		    CONVERT(varchar(10), CONVERT(date, A.SC_DATE, 112), 23) AS [end]
 		FROM dbo.TWK_SCHEDULE_NEW A
+		LEFT JOIN dbo.TWK_SCHEDULE_GBN AS F ON(A.OFFICE_CODE = F.OFFICE_CODE AND A.SCH_GBN = F.SCH_GBN)
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 			<if test="start != null and start != '' and end != null and end != ''">
-				AND CONVERT(date, A.START_DATE)  &gt;= #{start}
-				AND CONVERT(date, A.START_DATE)  &lt;= #{end}
+				AND A.SC_DATE  &gt;= #{start}
+				AND A.SC_DATE  &lt;= #{end}
 			</if>
 		UNION
 		SELECT
 			99999999							AS id,
-			B.NAME + '(' + E.ABSENT_NAME + ')'	AS title,
-			CONVERT(varchar(10), CONVERT(date, A.START_DATE, 112), 23) AS start,
-			CONVERT(varchar(10), CONVERT(date, A.END_DATE,   112), 23) AS [end]
-		FROM dbo.TAD_ABSENT AS A
-		LEFT JOIN dbo.TAD_EMP AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
-		LEFT JOIN dbo.TAD_ABSENT_ITEM AS E ON A.ABSENT_CD = E.ABSENT_CD AND A.OFFICE_CODE = E.OFFICE_CODE
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			99999999							AS seq,
+			'absent'							AS className,
+			'근태'								AS gbn_name,
+			C.NAME + '(' + D.ABSENT_NAME + ')'	AS title,
+			CONVERT(varchar(10), CONVERT(date, B.START_DATE, 112), 23) AS start,
+			CONVERT(varchar(10), CONVERT(date, B.END_DATE,   112), 23) AS [end]
+		FROM dbo.TAD_ABSENT AS B
+		LEFT JOIN dbo.TAD_EMP AS C ON B.OFFICE_CODE = C.OFFICE_CODE AND B.EMP_NO = C.EMP_NO
+		LEFT JOIN dbo.TAD_ABSENT_ITEM AS D ON B.ABSENT_CD = D.ABSENT_CD AND B.OFFICE_CODE = D.OFFICE_CODE
+		WHERE B.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 			<if test="start != null and start != '' and end != null and end != ''">
-				AND CONVERT(date, A.START_DATE)  &gt;= #{start}
-				AND CONVERT(date, A.END_DATE)  &lt;= #{end}
+				AND B.START_DATE  &gt;= #{start}
+				AND B.END_DATE  &lt;= #{end}
 			</if>
+		UNION
+		SELECT
+			0							AS id,
+			0							AS seq,
+			'holiday'					AS className,
+			'공휴일'						AS gbn_name,
+			E.H_NAME					AS title,
+			CONVERT(varchar(10), CONVERT(date, E.H_DATE, 112), 23) AS start,
+			CONVERT(varchar(10), CONVERT(date, E.H_DATE, 112), 23) AS [end]
+		FROM dbo.TPM_HOLY AS E
+		WHERE 1 = 1
+		<if test="start != null and start != '' and end != null and end != ''">
+			AND E.H_DATE  &gt;= #{start}
+			AND E.H_DATE  &lt;= #{end}
+		</if>
 		ORDER BY id
 	</select>
+
+
+	<select id="getSelectOption_ilj01015_input_schGbn" parameterType="map" resultType="map">
+		SELECT
+			A.SCH_GBN,
+			A.GBN_NAME
+		FROM dbo.TWK_SCHEDULE_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
+		ORDER BY CONVERT(INT, A.ORDER_SEQ)
+	</select>
+
+
+	<select id="getSelectOption_ilj01015_input_mainDeptCd" parameterType="map" resultType="map">
+		SELECT
+			A.DEPT_CD,
+			A.DEPT_NAME
+		FROM dbo.THR_DEPT A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
+		ORDER BY A.SORT_ORDER
+	</select>
+
+	<select id="getSelectOption_ilj01015_input_workUserId" parameterType="map" resultType="map">
+		SELECT
+			A.EMP_NO,
+			A.NAME
+		FROM dbo.TAD_EMP A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  AND (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR CONVERT(DATE, A.RESIGN_DATE, 112) &gt;= CAST(GETDATE() AS DATE))
+		ORDER BY A.EMP_NO
+	</select>
+
+
+	<select id="selectList_ilj01015_pop1" parameterType="map" resultType="map">
+		SELECT
+			A.MST_NO		AS MST_NO,
+			A.MST_MONTH		AS MST_MONTH,
+			A.SEQ			AS SEQ,
+			A.TITLE			AS TITLE,
+			A.DESCR			AS DESCR,
+			A.SC_DATE		AS SC_DATE,
+			A.SCH_GBN		AS SCH_GBN,
+			A.MAIN_DEPT_CD	AS MAIN_DEPT_CD,
+			A.STATUS_CD		AS STATUS_CD,
+			A.WORK_USER_ID	AS WORK_USER_ID,
+			A.WORKER_NAME	AS WORKER_NAME
+			FROM dbo.TWK_SCHEDULE_NEW A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			AND A.MST_NO = #{MST_NO} AND A.MST_MONTH = #{MST_MONTH}
+			AND A.SEQ = #{SEQ} AND A.SC_DATE = #{SC_DATE}
+	</select>
+
+	<update id="updateList_ilj01015_pop1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.TITLE   			= U.TITLE,
+				A.DESCR    			= U.DESCR,
+				A.MAIN_DEPT_CD    	= U.MAIN_DEPT_CD,
+				A.SCH_GBN     		= U.SCH_GBN,
+				A.STATUS_CD     	= U.STATUS_CD,
+				A.WORK_USER_ID 		= U.WORK_USER_ID,
+				A.WORKER_NAME 		= U.WORKER_NAME
+			FROM dbo.TWK_SCHEDULE_NEW A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.SC_DATE} 			 	 AS SC_DATE,
+					#{row.MST_NO} 				 AS MST_NO,
+					#{row.MST_MONTH}  			 AS MST_MONTH,
+					#{row.TITLE}   		 		 AS TITLE,
+					#{row.DESCR}   		 		 AS DESCR,
+					#{row.SCH_GBN}   	 		 AS SCH_GBN,
+					#{row.MAIN_DEPT_CD} 	 	 AS MAIN_DEPT_CD,
+					#{row.STATUS_CD} 	 	 	 AS STATUS_CD,
+					#{row.WORK_USER_ID}   		 AS WORK_USER_ID,
+					#{row.WORKER_NAME}   	 	 AS WORKER_NAME
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE
+			AND A.SC_DATE = U.SC_DATE AND A.MST_NO = U.MST_NO AND A.MST_MONTH = U.MST_MONTH
+		</if>
+	</update>
+
+	<select id="getKey_ilj01015_pop1" parameterType="map" resultType="map">
+		SELECT
+			ISNULL(MAX(A.MST_NO), 10000) AS MST_NO
+		FROM dbo.TWK_SCHEDULE_NEW A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+	<insert id="insertList_ilj01015_pop1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TWK_SCHEDULE_NEW (
+				OFFICE_CODE,
+				SC_DATE,
+				MST_MONTH,
+				MST_NO,
+				SEQ,
+				TITLE,
+				DESCR,
+				SCH_GBN,
+				MAIN_DEPT_CD,
+				STATUS_CD,
+				WORK_USER_ID,
+				WORKER_NAME,
+				REG_USER,
+				REG_DATE)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				<foreach collection="row.SC_DATE" item="date" separator=" UNION ALL ">
+					SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{date},
+					#{row.MST_MONTH},
+					#{row.MST_NO},
+					1,
+					#{row.TITLE},
+					#{row.DESCR},
+					#{row.SCH_GBN},
+					#{row.MAIN_DEPT_CD},
+					#{row.STATUS_CD},
+					#{row.WORK_USER_ID},
+					#{row.WORKER_NAME},
+					#{row.LOGINUSER_ID},
+					#{row.REG_DATE}
+				</foreach>
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="deleteList_ilj01015_pop1" parameterType="list">
+		DELETE FROM dbo.TWK_SCHEDULE_NEW
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.SC_DATE} AS SC_DATE,
+					#{row.MST_MONTH} AS MST_MONTH, #{row.MST_NO} AS MST_NO
+				</foreach>
+			) AS temp
+		WHERE temp.OFFICE_CODE = TWK_SCHEDULE_NEW.OFFICE_CODE AND temp.SC_DATE = TWK_SCHEDULE_NEW.SC_DATE
+		AND temp.MST_MONTH = TWK_SCHEDULE_NEW.MST_MONTH AND temp.MST_NO = TWK_SCHEDULE_NEW.MST_NO
+		)
+	</delete>
+
+
+
+
+
 
 	<select id="selectList_ilj01040_grid1" parameterType="map" resultType="map">
 		SELECT
@@ -37,7 +207,7 @@
 			A.IMPORTANT_YN		AS IMPORTANT_YN,
 			A.MY_SCHEDULE		AS MY_SCHEDULE,
 			A.TITLE				AS TITLE,
-			A.START_DATE		AS START_DATE,
+			A.SC_DATE		AS START_DATE,
 			A.SCH_GBN			AS SCH_GBN,
 			B.GBN_NAME      	AS GBN_NAME,
 			A.MAIN_DEPT_CD		AS MAIN_DEPT_CD,
@@ -48,14 +218,14 @@
 		LEFT JOIN dbo.THR_DEPT AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MAIN_DEPT_CD = C.DEPT_CD
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 			<if test="START_DATE != null and START_DATE != ''">
-				AND A.START_DATE &gt;= #{START_DATE}
+				AND A.SC_DATE &gt;= #{START_DATE}
 			</if>
 			<if test="END_DATE != null and END_DATE != ''">
-				AND A.START_DATE  &lt;= #{END_DATE}
+				AND A.SC_DATE  &lt;= #{END_DATE}
 			</if>
 			<if test="START_DATE != null and START_DATE != '' and END_DATE != null and END_DATE != ''">
-				AND A.START_DATE &gt;= #{START_DATE}
-				AND A.START_DATE  &lt;= #{END_DATE}
+				AND A.SC_DATE &gt;= #{START_DATE}
+				AND A.SC_DATE  &lt;= #{END_DATE}
 			</if>
 			<if test="SCH_GBN != null and SCH_GBN != ''">
 				AND A.SCH_GBN = #{SCH_GBN}
@@ -89,7 +259,7 @@
 			A.SCH_GBN,
 			A.GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, 'Y') = 'Y'
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
 
@@ -152,7 +322,7 @@
 			ISNULL(MAX(A.MST_NO), 10000) AS MST_NO
 		FROM dbo.TWK_MONTH_SCHEDULE A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
-		 	 AND A.MST_DATE = U.MST_DATE AND A.MST_MONTH = U.MST_MONTH
+		 	 AND A.MST_DATE = #{MST_DATE} AND A.MST_MONTH = #{MST_MONTH}
 	</select>
 
 	<insert id="insertList_ilj02010_grid1" parameterType="list">
@@ -202,11 +372,50 @@
 	</delete>
 
 
+	<select id="getSelectOption_ilj02020_search_mstDate" parameterType="map" resultType="map">
+		SELECT
+			A.MST_DATE,
+			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
+		FROM dbo.TWK_MONTH_BASIC A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY CONVERT(INT, A.MST_DATE) DESC
+	</select>
+
+	<select id="getSelectOption_ilj02020_grid1_column" parameterType="map" resultType="map">
+		SELECT
+			A.SCH_GBN,
+			A.GBN_NAME
+		FROM dbo.TWK_SCHEDULE_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'1') = '1'
+		ORDER BY A.ODER_SEQ
+	</select>
+
+	<select id="selectList_ilj02020_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.MST_DATE			AS MST_DATE,
+			A.MST_MONTH			AS MST_MONTH,
+			A.MST_NO			AS MST_NO,
+			A.TITLE 			AS TITLE,
+			A.IMPORTANT_YN		AS IMPORTANT_YN,
+			A.DESCR				AS DESCR,
+			A.SCH_GBN 			AS SCH_GBN,
+			A.MAIN_DEPT_CD		AS MAIN_DEPT_CD
+		FROM dbo.TWK_MONTH_SCHEDULE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  AND A.MST_DATE = #{MST_DATE} AND A.MST_MONTH = #{MST_MONTH}
+		ORDER BY A.SCH_GBN, A.MST_NO
+	</select>
+
+
+
+
+
 	<select id="getSelectOption_ilj02030_search_mstDate" parameterType="map" resultType="map">
 		SELECT
 			A.MST_DATE,
 			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
-		FROM dbo.TWK_MONTH_BASIC_JOB A
+		FROM dbo.TWK_MONTH_BASIC A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 		ORDER BY CONVERT(INT, A.MST_DATE) DESC
 	</select>
@@ -218,9 +427,9 @@
 			A.MST_MONTH			AS MST_MONTH,
 			A.MST_NO			AS MST_NO,
 			A.TITLE 			AS TITLE
-		FROM dbo.TWK_MONTH_BASIC_JOB A
+		FROM dbo.TWK_MONTH_MAJOR_JOB A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
-		  AND A.MST_DATE = #{MST_DATE} AND A.MST_MONTH = #{MST_MONTH}
+		  AND A.MST_DATE = #{MST_DATE}
 		ORDER BY A.SCH_GBN, A.MST_NO
 	</select>
 
@@ -229,7 +438,7 @@
 			UPDATE A
 			SET
 				A.TITLE   			= U.TITLE
-			FROM dbo.TWK_MONTH_BASIC_JOB A
+			FROM dbo.TWK_MONTH_MAJOR_JOB A
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
@@ -246,15 +455,15 @@
 
 	<select id="getKey_ilj02030_grid1" parameterType="map" resultType="map">
 		SELECT
-			ISNULL(MAX(A.MST_NO), 10000) AS MST_NO
-		FROM dbo.TWK_MONTH_BASIC_JOB A
+			ISNULL(MAX(A.MST_NO), 0) AS MST_NO
+		FROM dbo.TWK_MONTH_MAJOR_JOB A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
-		  AND A.MST_DATE = U.MST_DATE AND A.MST_MONTH = U.MST_MONTH
+		  AND A.MST_DATE = #{MST_DATE} AND A.MST_MONTH = #{MST_MONTH}
 	</select>
 
 	<insert id="insertList_ilj02030_grid1" parameterType="list">
 		<if test="list != null and list.size > 0">
-			INSERT INTO dbo.TWK_MONTH_BASIC_JOB (
+			INSERT INTO dbo.TWK_MONTH_MAJOR_JOB (
 				OFFICE_CODE,
 				MST_DATE,
 				MST_MONTH,
@@ -276,7 +485,7 @@
 	</insert>
 
 	<delete id="deleteList_ilj02030_grid1" parameterType="list">
-		DELETE FROM dbo.TWK_MONTH_BASIC_JOB
+		DELETE FROM dbo.TWK_MONTH_MAJOR_JOB
 		WHERE EXISTS (
 			SELECT 1
 			FROM (

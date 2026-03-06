@@ -149,11 +149,11 @@
     const search_contKindCd = document.querySelector("#search_contKindCd"); //select 컴포넌트
     const search_endDate1 = document.querySelector("#search_endDate1"); //select 컴포넌트
     const search_endDate2 = document.querySelector("#search_endDate2"); //select 컴포넌트
-    const input_status = document.querySelector("#input_status"); //select 컴포넌트
-    const input_part1 = document.querySelector("#input_part1"); //select 컴포넌트
-    const input_part2 = document.querySelector("#input_part2"); //select 컴포넌트
-    const input_compCode = document.querySelector("#input_compCode"); //select 컴포넌트
-    const input_mgmuserId = document.querySelector("#input_mgmuserId"); //select 컴포넌트
+    const input_status = document.querySelector("#input_status"); //input 컴포넌트
+    const input_part1 = document.querySelector("#input_part1"); //input 컴포넌트
+    const input_part2 = document.querySelector("#input_part2"); //input 컴포넌트
+    const input_compCode = document.querySelector("#input_compCode"); //input 컴포넌트
+    const input_mgmuserId = document.querySelector("#input_mgmuserId"); //input 컴포넌트
 
     //그리드 설정
     const grid1ColumnLayout = [
@@ -253,10 +253,7 @@
     });
 
     //팝업 이벤트
-    //주소찾기 이벤트
-    function search_addr_onclick(){
-        addrPopup(popupId);
-    }
+
     //팝업 닫기 이벤트
     function close_popup_onclick(){
         popupClose(popupId);
@@ -347,7 +344,6 @@
             successSave : (data) => {
                 alert(data.O_MSG);
                 if(data.O_RESULT > 0){
-                    //팝업 닫기
                     search_grid1_onclick()
                 }else return;
             }

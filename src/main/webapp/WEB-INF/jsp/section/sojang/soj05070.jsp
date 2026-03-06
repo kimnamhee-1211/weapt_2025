@@ -351,10 +351,7 @@
     });
 
     //팝업 이벤트
-    //주소찾기 이벤트
-    function search_addr_onclick(){
-        addrPopup(popupId);
-    }
+
     //팝업 닫기 이벤트
     function close_popup_onclick(){
         popupClose(popupId);

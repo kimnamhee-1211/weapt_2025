@@ -253,10 +253,7 @@
     });
 
     //팝업 이벤트
-    //주소찾기 이벤트
-    function search_addr_onclick(){
-        addrPopup(popupId);
-    }
+
     //팝업 닫기 이벤트
     function close_popup_onclick(){
         popupClose(popupId);
@@ -479,13 +476,6 @@
         input_mgmuserId.value = AUIGrid.getSelectedRows(grid1)[0].MGMUSER_ID
     }
 
-    input_compCode.addEventListener("change", async () => {
-        if(!isNull(AUIGrid.getSelectedRows(grid1)[0].COMP_CODE)) {
-            getSelectOption_input_mgmuserId();
-        }
-    });
-
-
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
@@ -495,6 +485,7 @@
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
+        
         Promise.all([
             //공통코드 가져오기
             selectOptionMaker("104", search_status, "전체", false),

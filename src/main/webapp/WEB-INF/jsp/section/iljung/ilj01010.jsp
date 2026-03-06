@@ -65,7 +65,7 @@
             querySet : "ilj01015",
             initialView : 'dayGridMonth',
         };
-        pop_onload(pop_item);
+        calendar_onload(pop_item);
 
     }
 

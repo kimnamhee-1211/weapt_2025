@@ -23,8 +23,6 @@
  * function gridToInput(grid, inputDivId) : 그리그-input 태그 바인딩
  * function inputToGrid(grid, inputDivId) : input-그리드 태그 바인딩
  *
- *
- *
  * ----------------------------------------------------------------
  * function popupOpen(popupTagId) : 팝업 열기 이벤트
  * function popupClose(popupTagId) : 팝업 닫기 이벤트
@@ -105,6 +103,12 @@
     }
 
     //공통코드 select 태그 option 설정
+    /*
+     * CODEDV_NO(str) :  공통코드
+     * selectId(odj) : select tag id
+     * all(str): "전체"(필수 아님) / "" (필수)
+     * short(boolean) : true 약어명 / false 상세명
+     */
     async function selectOptionMaker(CODEDV_NO, selectId, all, short = false) {
         let selectOptions = await we_getCode(CODEDV_NO);
         if (selectOptions) {
@@ -125,6 +129,7 @@
 
             }
         }
+        selectId.selectedIndex = 0;
     }
 
     //USERGROUP_ID select 태그 option 설정
@@ -140,9 +145,8 @@
                     `<option value="${row.USERGROUP_ID}">${row.USERGROUP_NM}</option>`);
             })
         }
+        selectId.selectedIndex = 0;
     }
-
-
 
 
     //입력부 text 날짜 포멧
@@ -229,8 +233,6 @@
         }
     }
 
-
-
     //data-input 태그 바인딩
     function dataToInput(data, inputDivId){
         const inputDiv = document.querySelector("#" + inputDivId);
@@ -251,31 +253,6 @@
             }
         }
     }
-
-    //input-그리그 태그 바인딩
-    function inputToData(inputDivId){
-        const inputDiv = document.querySelector("#" + inputDivId);
-        const namedElements = inputDiv.querySelectorAll('[name]');
-        let item= {};
-        for(let el of namedElements){
-            let key = el.name;
-            let value = "";
-            // checkbox
-            if(el.type === "checkbox"){
-                value = el.checked ? "Y" : "N";
-            }
-            if(el.dataset.format === "date"){
-                value = el.value.replace(/\D/g, '');
-            }else if(el.dataset.format === "licenseNo"){
-                value = el.value.replace(/\D/g, '');
-            }else{
-                value = el.value;
-            }
-            item[key] = value;
-        }
-        return item;
-    }
-
 
     //그리그-input 태그 바인딩
     function gridToInput(grid, inputDivId){
@@ -315,6 +292,30 @@
         AUIGrid.updateRow(grid, item, "selectedIndex");
     }
 
+
+    //input-object 태그 바인딩
+    function inputToData(inputDivId){
+        const inputDiv = document.querySelector("#" + inputDivId);
+        const namedElements = inputDiv.querySelectorAll('[name]');
+        let item= {};
+        for(let el of namedElements){
+            let key = el.name;
+            let value = "";
+            if(el.dataset.format === "date"){
+                value = el.value.replace(/\D/g, '');
+            }else if(el.dataset.format === "licenseNo"){
+                value = el.value.replace(/\D/g, '');
+            }else{
+                value = el.value;
+            }
+            item[key] = value;
+        }
+        return item;
+    }
+
+
+
+
     function clearInput(inputDivId){
         const inputDiv = document.querySelector("#" + inputDivId);
         const namedElements = inputDiv.querySelectorAll('[name]');
@@ -332,7 +333,6 @@
     }
 
 
-
     //팝업 열기 이벤트
     function popupOpen(popupTagId){
         const popupTag = document.querySelector("#" + popupTagId);
@@ -345,96 +345,7 @@
         popupTag.style.display = 'none';
     }
 
-    //date return String
-    function getToday(format) {
-        const today = new Date();
-        const todayYr = today.getFullYear();        // 2025
-        const todayMonth = String(today.getMonth() + 1).padStart(2, '0');
-        const todayDay = String(today.getDate()).padStart(2, '0');
 
-        switch (format) {
-            case "yyyy-MM-dd"    :
-                return `${todayYr}-${todayMonth}-${todayDay}`;
-            case "yyyy/MM/dd"    :
-                return `${todayYr}/${todayMonth}/${todayDay}`;
-            case "yyyyMMdd"        :
-                return `${todayYr}${todayMonth}${todayDay}`;
-            case "yyyy.MM.dd"    :
-                return `${todayYr}.${todayMonth}.${todayDay}`;
-            case "kor"            :
-                return `${todayYr}년 ${todayMonth}월 ${todayDay}일`;
-            case "yyyy"            :
-                return `${todayYr}`;
-            case "MM"            :
-                return `${todayMonth}`;
-            case "dd"            :
-                return `${todayDay}`;
-            default                :
-                return `${todayYr}-${todayMonth}-${todayDay}`;
-        }
-    }
-
-    //null 체크
-    function isNull(object) {
-        if(Array.isArray(object)) {
-            if (object == null || object.length < 1) return true;
-        }else{
-            if (object == null || object == undefined || object.trim() == '' || object.trim() == "") return true;
-        }
-        return false;
-    }
-
-    //text date 포멧
-    function dateFormat(obj){
-        if(!isNull(obj) && obj.length == 8){
-            obj = String(obj);
-            obj = obj.slice(0,4) + '-' + obj.slice(4,6) + '-' + obj.slice(6);
-            return obj;
-        }
-    }
-
-    //HTML 태그 제거-순수 텍스트 추출
-    function stripHtml(html){
-        const hasTags = /<\/?[a-z][\s\S]*>/i.test(html);
-        if (!hasTags) {
-            return html;
-        }
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = html;
-        return tempDiv.textContent || tempDiv.innerText || "";
-    }
-
-    // 알파벳 조합 최대값 구하기
-    function nextAlpha(str) {
-        let chars = (str.slice(0, 2)).split('');
-        let carry = 1;
-        for (let i = chars.length - 1; i >= 0; i--) {
-            if (carry === 0) break;
-            let code = chars[i].charCodeAt(0) + carry;
-            if (code > 122) { // 'z'를 넘으면 a로 돌리고 캐리
-                code = 97;
-                carry = 1;
-            } else {
-                carry = 0;
-            }
-            chars[i] = String.fromCharCode(code);
-        }
-        return chars.join('');
-    }
-
-
-
-    //신규 추가용 pk max 구하기
-    function getMaxSeq(data, dataField){
-        let maxNo = 0;
-        data.forEach(row=> {
-            let no = parseInt(row[dataField])
-            if (no > maxNo) {
-                maxNo = no;
-            }
-        })
-        return maxNo;
-    }
 
 
 

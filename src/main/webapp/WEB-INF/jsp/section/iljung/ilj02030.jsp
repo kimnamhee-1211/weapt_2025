@@ -14,23 +14,6 @@
                     <span>수립기준일 :&nbsp;
                         <select id="search_mstDate" name="" class="select_cont100"></select>
                     </span>
-                    <span class="select-container">&emsp;해당월 :&nbsp;
-                        <select name="month" id="search_mstMonth">
-                          <option value="01">1</option>
-                          <option value="02">2</option>
-                          <option value="03">3</option>
-                          <option value="04">4</option>
-                          <option value="05">5</option>
-                          <option value="06">6</option>
-                          <option value="07">7</option>
-                          <option value="08">8</option>
-                          <option value="09">9</option>
-                          <option value="10">10</option>
-                          <option value="11">11</option>
-                          <option value="12">12</option>
-                        </select>
-                        월
-                </span>
                 </div>
             </div>
             <div id="grid1"></div>
@@ -66,7 +49,6 @@
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const search_mstDate = document.querySelector("#search_mstDate")	//select 컴포넌트
-    const search_mstMonth = document.querySelector("#search_mstMonth")	//select 컴포넌트
 
     //그리드 설정
     const grid1ColumnLayout = [
@@ -75,12 +57,15 @@
         },
         { dataField: "MST_MONTH",
             headerText: "등록월",
-            dataType: "date",
+            dataType: "text",
             width : "10%",
-            formatString : "yyyy-mm", // 실제 데이터 형식을 어떻게 표시할지 지정
-            editRenderer : {
-                type : "CalendarRenderer",
-                defaultFormat : "yyyymm", // 달력 선택 시 데이터에 적용되는 날짜 형식
+            renderer: {
+                type: "DropDownListRenderer",
+                listFunction: function (rowIndex, columnIndex, item, dataField) {
+                    return DS_MONTH;
+                },
+                keyField: "DS_MONTH_CD", // key 에 해당되는 필드명
+                valueField: "DS_MONTH", // value 에 해당되는 필드명
             }
         },
         { dataField: "TITLE",
@@ -88,13 +73,6 @@
             dataType: "text",
             width : "*%",
             style : "text-align-left",
-        },
-        { dataField: "MST_DATE",
-            headerText: "수립일",
-            dataType: "date",
-            formatString: "yyyy-mm-dd",
-            width : "12%",
-            editable: false
         },
     ];
 
@@ -117,7 +95,6 @@
         //검색데이터
         let selectParam = {
             MST_DATE : search_mstDate.value,
-            MST_MONTH : search_mstMonth.value,
         }
 
         //파라미터
@@ -146,8 +123,7 @@
         let selectRowItem = AUIGrid.getSelectedRows(grid1)[0];
         const item = {};
         item.REG_DATE = getToday("yyyyMMdd");
-        item.MST_DATE = search_mstDate.value;
-        item.MST_MONTH = search_mstMonth.value;
+        item.MST_DATE = search_mstDate.value.replace(/-/g, "");
         AUIGrid.addRow(grid1, item, "selectionDown");
     }
 
@@ -179,11 +155,7 @@
             insertParam : addedRowItems,
             updateParam : editedRowItems,
             key : ["MST_NO"],
-            before : {
-                // action : "insert",
-                // saveMode : "I",
-                // beforeParam : addedRowItems
-            }
+            before : {}
         };
 
         //파라미터
@@ -197,7 +169,6 @@
             successSave : (data) => {
                 alert(data.O_MSG);
                 if(data.O_RESULT > 0){
-                    getSelectOption_search_mstDate();
                     search_grid1_onclick();
                 }else return;
             }

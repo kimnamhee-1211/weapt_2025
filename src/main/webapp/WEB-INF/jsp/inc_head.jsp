@@ -62,7 +62,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_script.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_grid_script.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_crud_script.js"></script>
-
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_unit_script.js"></script>
 
     <script>
         //ContextPath

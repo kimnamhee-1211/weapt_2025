@@ -198,21 +198,12 @@
     });
 
     //팝업 이벤트
-    //주소찾기 이벤트
-    function search_addr_onclick(){
-        new daum.Postcode({
-            oncomplete: function(data) {
-                document.getElementById("input_zip").value = data.zonecode;
-                document.getElementById("input_addr1").value = data.address;
-            }
-        }).open();
-    }
+
     //팝업 닫기 이벤트
     function close_popup_onclick(){
         popupClose(popupId);
         clearInput(popupId);
     }
-
 
     //그리드 조회 함수
     function search_grid1_onclick(){

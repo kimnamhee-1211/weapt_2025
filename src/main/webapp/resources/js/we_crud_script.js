@@ -596,8 +596,6 @@
 
 
 
-
-
    //프로그램별 crud 권한 데이터 select 함수
    async function we_checkCrudPermission(pgId, { successPer } = {}, timeout = 60_000) {
 
