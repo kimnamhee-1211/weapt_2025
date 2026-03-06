@@ -264,7 +264,6 @@
             if(el.type === "checkbox"){
                 value = el.checked ? "Y" : "N";
             }
-
             if(el.dataset.format === "date"){
                 value = el.value.replace(/\D/g, '');
             }else if(el.dataset.format === "licenseNo"){
@@ -346,7 +345,7 @@
         popupTag.style.display = 'none';
     }
 
-    //날짜 return String
+    //date return String
     function getToday(format) {
         const today = new Date();
         const todayYr = today.getFullYear();        // 2025
@@ -385,7 +384,7 @@
         return false;
     }
 
-    //text 날짜 포멧
+    //text date 포멧
     function dateFormat(obj){
         if(!isNull(obj) && obj.length == 8){
             obj = String(obj);
@@ -393,7 +392,6 @@
             return obj;
         }
     }
-
 
     //HTML 태그 제거-순수 텍스트 추출
     function stripHtml(html){

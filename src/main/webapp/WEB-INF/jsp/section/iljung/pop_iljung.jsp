@@ -15,6 +15,9 @@
                 <table>
                     <tbody>
                     <tr>
+                        <input type="text" id="input_mstNo" name="MST_NO" hidden="hidden">
+                        <input type="text" id="input_mstMonth" name="MST_MONTH" hidden="hidden">
+                        <input type="text" id="input_seq" name="SEQ" hidden="hidden">
                         <th style="width: 90px;">일정일</th>
                         <td style="width: 150px;"><input type="date" id="input_scDate" name="SC_DATE" data-format="date"></td>
                         <th style="width: 90px;">일정구분</th>
@@ -23,18 +26,20 @@
                         <td style="width: 150px;"><select id="input_mainDeptCd" name="MAIN_DEPT_CD"></select></td>
                     </tr>
                     <tr>
-                        <th style="width: 90px;">시작일자</th>
-                        <td style="width: 150px;"><input type="date" id="input_startDate" name="START_DATE" data-format="date"></td>
-                        <td colspan="4" style="font-size: 14px">
-                            <span><input type="checkbox" id="input_reWorkYn" name="RE_WORK_YN"></span>
-                            <span>&nbsp;&nbsp; 반복 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <th style="width: 90px;">반복&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <td style="width: 150px;"><input type="checkbox" id="input_reWorkYn" name="RE_WORK_YN"></td>
+                        <td colspan="4" style="font-size: 14px; display : none;" id="inputTr_reWork">
+                            <!-- <span><input type="checkbox" id="input_reWorkYn" name="RE_WORK_YN"></span>
+                            <span>&nbsp;&nbsp; 반복 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
                             <span>
                                 <select style="width:80px;" id="input_reWorkGbn" name="RE_WORK_GBN">
-                                    <option value="month"></option>
-                                    <option value="week"></option>
-                                    <option value="day"></option>
+                                    <option value="month">매달</option>
+                                    <option value="week">매주</option>
+                                    <option value="day">매일</option>
                                 </select>
                             </span>
+                            <span>시작일자</span>
+                            <span><input type="date" id="input_startDate" name="START_DATE" data-format="date"></span>
                             <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;종료일자&nbsp; </span>
                             <span><input type="date" id="input_endDate" name="END_DATE" data-format="date"></span>
                         </td>
@@ -94,8 +99,11 @@
     const input_endDate = document.querySelector("#input_endDate"); //select 컴포넌트
     const input_statusCd = document.querySelector("#input_statusCd"); //select 컴포넌트
     const input_workUserId = document.querySelector("#input_workUserId"); //select 컴포넌트
+    const inputTr_reWork = document.querySelector("#inputTr_reWork"); //select 컴포넌트
+
     let saveKey = "U";
     let searchItem;
+    let oldReWorkYn;
 
     //팝업 이벤트
     //팝업 닫기 이벤트
@@ -118,8 +126,9 @@
 
         we_select( selectData,{
             successSelect : (data) => {
-                saveKey == "U"
-                dataToInput(data, popupId);
+                oldReWorkYn = data[0].RE_WORK_YN;
+                saveKey == "U";
+                dataToInput(data[0], popupId);
             }
         });
     }
@@ -134,11 +143,15 @@
         let addItem = null;
         let editItem = null;
         let item = inputToData(popupId);
+        if(saveKey == "U" && oldReWorkYn == "N" && input_reWorkYn == "Y"){
+            addItem = setItemReWork(item);
+            editItem = [{ ...item }];
+        }else if(saveKey == "I" && input_reWorkYn == "Y"){
+            addItem =  [...setItemReWork(item), { ...item }];
 
-        if(saveKey == "U") {
-            editItem = [...item];
         }else{
-            addItem  = [...item];
+            if(saveKey == "U") editItem = [{ ...item }];
+            else addItem  = [{ ...item }];
         }
 
         //포커스 지정
@@ -171,6 +184,54 @@
         });
     }
 
+
+    function setItemReWork(item){
+        let type = input_reWorkGbn.value
+        let [y, m, d] = input_startDate.value.split("-");
+        let startDate = new Date(y, m - 1, d);
+        [y, m, d] = input_endDate.value.split("-");
+        let endDate = new Date(y, m - 1, d);
+        [y, m, d] = input_scDate.value.split("-");
+        let scDate = new Date(y, m - 1, d);
+        let items = [];
+        let inDate;
+
+        if(scDate > startDate){
+            inDate = new Date(scDate);
+            if(type == "month") inDate.setMonth(inDate.getMonth() - 1);
+            else if(type == "week") inDate.setDate(inDate.getDate() - 7);
+            else if(type == "day") inDate.setDate(inDate.getDate() - 1);
+
+            while (inDate > startDate){
+                let dateItem =  { ...item };
+                dateItem.SC_DATE = new Date(inDate);
+                items.push(dateItem);
+                if(type == "month") inDate.setMonth(inDate.getMonth() - 1);
+                else if(type == "week") inDate.setDate(inDate.getDate() - 7);
+                else if(type == "day") inDate.setDate(inDate.getDate() - 1);
+            }
+        }
+        if(scDate <= endDate){
+            inDate = new Date(scDate);
+            if(type == "month") inDate.setMonth(inDate.getMonth() + 1);
+            else if(type == "week") inDate.setDate(inDate.getDate() + 7);
+            else if(type == "day") inDate.setDate(inDate.getDate() + 1);
+
+            while (inDate <= endDate){
+                let dateItem =  { ...item };
+                dateItem.SC_DATE = new Date(inDate);
+                items.push(dateItem);
+                if(type == "month") inDate.setMonth(inDate.getMonth() + 1);
+                else if(type == "week") inDate.setDate(inDate.getDate() + 7);
+                else if(type == "day") inDate.setDate(inDate.getDate() + 1);
+            }
+        }
+        return items;
+    }
+
+
+
+
     //그리드 삭제 함수
     function delete_grid1_onclick(){
 
@@ -178,6 +239,7 @@
         let items = [...item];
 
         //검증
+        if(saveKey == 'I') alert("삭제할 일정이 없습니다.");
         if (!confirm("일정을 삭제하시겠습니까?")) return;
 
         //포커스 지정
@@ -216,12 +278,34 @@
         let isValid = true;
         switch(require){
             case "SAVE_GRID1":
-                let addedRowItems = AUIGrid.getAddedRowItems(grid1);
-                let editedRowItems = AUIGrid.getEditedRowItems(grid1);
-                let items = [...addedRowItems,...editedRowItems];
-                for(const row of items){
-                    if(isNull(row.OFFICE_NAME)){
-                        alert("관리소명은 반드시 입력해야 합니다.");
+                if(isNull(input_title.value)){
+                    alert("제목은 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
+                }
+                if(isNull(input_schGbn.value)){
+                    alert("일정구분은 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
+                }
+                if(isNull(input_statusCd.value)){
+                    alert("일정상태는 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
+                }
+                if(input_reWorkYn.value == "Y"){
+                    if(isNull(input_reWorkGbn.value)){
+                        alert("반복주기는 반드시 입력해야 합니다.");
+                        isValid = false;
+                        break;
+                    }
+                    if(isNull(input_startDate.value)){
+                        alert("시작일자는 반드시 입력해야 합니다.");
+                        isValid = false;
+                        break;
+                    }
+                    if(isNull(input_endDate.value)){
+                        alert("종료일자는 반드시 입력해야 합니다.");
                         isValid = false;
                         break;
                     }
@@ -230,6 +314,50 @@
 
         }
         return isValid;
+    }
+
+    async function getSelectOption_input_schGbn(){
+        input_schGbn.innerHTML = "";
+        //검색데이터
+        let param = {
+        }
+        //파라미터
+        let data = {
+            sectionId : sectionId,
+            component : pgId + "_input_schGbn",
+            param: param,
+        }
+        let list = await we_getSelectOption(data);
+
+        if(list){
+            list.forEach(row => {
+                input_schGbn.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.SCH_GBN + "'>" + row.GBN_NAME + "</option>");
+            })
+        }
+        input_schGbn.selectedIndex = 0;
+    }
+
+    async function getSelectOption_input_statusCd(){
+        input_statusCd.innerHTML = "";
+        //검색데이터
+        let param = {
+        }
+        //파라미터
+        let data = {
+            sectionId : sectionId,
+            component : pgId + "_input_statusCd",
+            param: param,
+        }
+        let list = await we_getSelectOption(data);
+
+        if(list){
+            list.forEach(row => {
+                input_statusCd.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.STATUS_CD + "'>" + row.STATUS_NAME + "</option>");
+            })
+        }
+        input_statusCd.selectedIndex = 0;
     }
 
 
@@ -279,6 +407,14 @@
         input_workUserId.selectedIndex = 0;
     }
 
+    input_reWorkYn.addEventListener("change", () =>{
+        input_reWorkYn.valu = input_reWorkYn.checked ? "Y" : "N";
+        if(input_reWorkYn.value == "Y" ){
+            inputTr_reWork.style.display = "table-row"
+            input_startDate.value =  input_scDate.value
+        }else inputTr_reWork.style.display = "none"
+    });
+
 
 
     //로드
@@ -287,13 +423,13 @@
         btnMaker({ tag: "#pop1_btn", grid: "grid1", save : true, del: true});
         pop1_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
-
         Promise.all([
             //그리드 DDL
             getSelectOption_input_mainDeptCd(),
-            getSelectOption_input_workUserId()
+            getSelectOption_input_workUserId(),
+            saveKey = pop_item.saveKey
         ]).then(function (){
-            if(pop_item.saveKey == "U"){
+            if(saveKey == "U"){
                 //로드 시 그리드 바로 조회
                 searchItem = pop_item.searchItem;
                 search_pop1_onclick();
