@@ -70,6 +70,11 @@
     );
 
     //그리드 이벤트
+    //체크박스 클릭 시
+    AUIGrid.bind(grid1, "rowCheckClick", function(event) {
+        AUIGrid.setSelectionByIndex(grid1, event.rowIndex, 0);
+    });
+
     async function grid1_column_make(){
         let columns = [];
 
@@ -163,7 +168,7 @@
         if(list){
             list.forEach(row => {
                 search_mstDate.insertAdjacentHTML("beforeend",
-                    "<option value='" + row.MST_DATE + "'>" + row.MST_DATE + "</option>");
+                    "<option value='" + row.MST_DATE + "'>" + row.MST_DATE_FORMAT + "</option>");
             })
         }
         search_mstDate.selectedIndex = 0;

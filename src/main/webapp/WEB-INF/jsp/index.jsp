@@ -298,7 +298,6 @@
 	        alert("<spring:message code="comUatUia.validate.passCheck" />");
 	    } else {
 	    	loginForm.password.value = encryptWithJS();
-	    	
 	    	loginForm.action="<c:url value='/login'/>";
 	    	loginForm.submit();
 	    }

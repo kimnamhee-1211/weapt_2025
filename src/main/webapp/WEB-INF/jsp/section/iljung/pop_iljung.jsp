@@ -113,6 +113,9 @@
     function close_popup_onclick(){
         popupClose(popupId);
         clearInput(popupId);
+        input_statusCd.innerHTML = "";
+        input_reWorkYn.checked = false;
+        inputTd_reWork.style.visibility = "hidden";
     }
 
     //그리드 조회 함수
@@ -155,9 +158,9 @@
         let editItem = null;
         let item = inputToData(popupId);
         item.REG_DATE = getToday("yyyyMMdd")
-        if(saveKey == "I" && input_reWorkYn == "Y"){
+        if(saveKey == "I" && input_reWorkYn.value == "Y"){
             item.SC_DATE = setItemReWork();
-        }else{
+        }else if(saveKey == "I" && input_reWorkYn.value != "Y"){
             item.SC_DATE = [item.SC_DATE];
         }
 
@@ -205,7 +208,7 @@
             else if(type == "week") inDate.setDate(inDate.getDate() - 7);
             else if(type == "day") inDate.setDate(inDate.getDate() - 1);
 
-            while (inDate > startDate){
+            while (inDate >= startDate){
                 items.push(dateToStr(new Date(inDate), "yyyyMMdd"));
                 if(type == "month") inDate.setMonth(inDate.getMonth() - 1);
                 else if(type == "week") inDate.setDate(inDate.getDate() - 7);
@@ -229,7 +232,7 @@
     function delete_pop1_onclick(){
 
         let item = inputToData(popupId);
-        let items = [...item];
+        let items =  [{ ...item }];
 
         //검증
         if(saveKey == 'I') alert("삭제할 일정이 없습니다.");
@@ -375,6 +378,7 @@
         }
         input_workUserId.selectedIndex = 0;
     }
+
     input_workUserId.addEventListener("change", () =>{
         if(input_workUserId.value == '999999'){
             input_workerName.disabled = false;
@@ -383,7 +387,6 @@
             input_workerName.disabled = true;
         }
     });
-
 
     input_reWorkYn.addEventListener("change", () =>{
         input_reWorkYn.value = input_reWorkYn.checked ? "Y" : "N";
@@ -414,7 +417,6 @@
                 //로드 시 그리드 바로 조회
                 searchItem = pop_item.searchItem;
                 search_pop1_onclick();
-
                 inputTr_reWork.style.display = "none";
                 input_scDate.disabled = true
             }else{
@@ -422,7 +424,6 @@
                 inputTr_reWork.style.display =  "table-row";
                 input_scDate.disabled = false
             }
-
         })
     };
 

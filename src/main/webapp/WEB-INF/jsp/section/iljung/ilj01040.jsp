@@ -91,16 +91,6 @@
             dataType: "date",
             formatString: "yyyy-mm-dd",
         },
-        { dataField: "IMPORTANT_YN",
-            headerText: "중요",
-            width : "5%",
-            renderer : we_cb_YN_Renderer
-        },
-        { dataField: "MY_SCHEDULE",
-            headerText: "나의 일정",
-            width : "8%",
-            renderer : we_cb_YN_Renderer
-        },
         { dataField: "TITLE",
             headerText: "일정명",
             dataType: "text",
@@ -112,7 +102,7 @@
             width : "8%",
             dataType: "text",
         },
-        { dataField: "STATUS_CD",
+        { dataField: "STATUS_NM",
             headerText: "일정상태",
             width : "8%",
             dataType: "text",
@@ -136,14 +126,15 @@
     //그리드 이벤트
     //행 클릭 시
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        //그리드-input 태그 바인딩
         let pop_item = {
             pgId : pgId,
+            querySet : querySet,
             saveKey : "U",
             searchItem : {
-                SC_DATE : event.item.SC_DATE,
                 MST_NO : event.item.MST_NO,
-                MST_MONTH :  event.item.MST_MONTH,
+                SC_DATE : event.item.SC_DATE,
+                MST_MONTH : event.item.MST_MONTH,
+                SEQ : event.item.SEQ,
             },
         };
         pop_onload(pop_item);
@@ -155,10 +146,13 @@
     //그리드 조회 함수
     function search_grid1_onclick(){
 
+        if(!requireCheck("SEARCH_GRID1")) return;
+
         //검색데이터
         let selectParam = {
-            START_DATE : search_startDate.value,
-            END_DATE : search_schGbn.value,
+            START_DATE : search_startDate.value.replace(/-/g,''),
+            END_DATE : search_endDate.value.replace(/-/g,''),
+            SCH_GBN : search_schGbn.value,
             MAIN_DEPT_CD : search_mainDeptCd.value,
             STATUS_CD : search_statusCd.value,
             IMPORTANT_YN : search_importantYn.value,
@@ -187,7 +181,13 @@
     function requireCheck(require){
         let isValid = true;
         switch(require){
-
+            case "SEARCH_GRID1":
+                if(isNull(search_startDate.value)){
+                    alert("시작 기간은 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
+                }
+                break;
         }
     }
 
@@ -201,17 +201,71 @@
         });
     }
 
+    async function getSelectOption_search_schGbn(){
+        search_schGbn.innerHTML = "";
+        //검색데이터
+        let param = {
+        }
+        //파라미터
+        let data = {
+            sectionId : sectionId,
+            component : querySet + "_input_schGbn",
+            param: param,
+        }
+        let list = await we_getSelectOption(data);
+
+        if(list){
+            search_schGbn.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
+            list.forEach(row => {
+                search_schGbn.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.SCH_GBN + "'>" + row.GBN_NAME + "</option>");
+            })
+        }
+        search_schGbn.value = search_schGbn.options[0].value;
+    }
+
+
+    async function getSelectOption_search_mainDeptCd(){
+        search_mainDeptCd.innerHTML = "";
+        //검색데이터
+        let param = {
+        }
+        //파라미터
+        let data = {
+            sectionId : sectionId,
+            component : querySet + "_input_mainDeptCd",
+            param: param,
+        }
+        let list = await we_getSelectOption(data);
+
+        if(list){
+            search_mainDeptCd.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
+            list.forEach(row => {
+                search_mainDeptCd.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.DEPT_CD + "'>" + row.DEPT_NAME + "</option>");
+            })
+        }
+        search_mainDeptCd.selectedIndex = 0;
+    }
+
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn1", grid:"grid1", search: true, print:true});
-        search_startDate.value = getToday("yyyyMMdd");
-        search_endDate.value = getToday("yyyyMMdd");
-
+        search_startDate.value = getToday("yyyy-MM-dd");
+        search_endDate.value = getToday("yyyy-MM-dd");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
-        //로드 시 그리드 바로 조회
-        search_grid1_onclick();
+        Promise.all([
+            //공통코드 가져오기
+            selectOptionMaker("120", search_statusCd, "(전체)", false),
+            //그리드 DDL
+            getSelectOption_search_schGbn(),
+            getSelectOption_search_mainDeptCd(),
+        ]).then(function (){
+            //로드 시 그리드 바로 조회
+            search_grid1_onclick();
+        })
 
     };
 

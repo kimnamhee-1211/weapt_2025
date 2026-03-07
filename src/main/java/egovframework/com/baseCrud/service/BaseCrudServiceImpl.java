@@ -103,8 +103,8 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
         String statement = buildStatement(sectionId, component, "deleteList");
         List<Map<String, Object>> deleteParam = (List<Map<String, Object>>) param.get("deleteParam");
-        setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setLoginParam(deleteParam, loginUser);
+        setPgIdParam(deleteParam, pgId);
 
         //사전 함수 호출
         Map<String, Object> before = (Map<String, Object>) param.get("before");

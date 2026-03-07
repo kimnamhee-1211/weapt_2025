@@ -9,7 +9,7 @@
             <span class="section1_nav"><i class="icon-calendar-plus-o"></i>월중관리계획</span>
             <div class="section1_btn" id="section1_btn"></div>
             <span class="search-box section1_btn">
-                <button id="schedule_btn_grid1" class="del_btn" onclick="schedule_onclick()">일정등록</button>
+                <button id="schedule_btn_grid1" class="del_btn" onclick="add_schedule_onclick()">일정등록</button>
             </span>
         </div>
         <div class="section2">
@@ -44,7 +44,7 @@
                     <div>
                         <span>&nbsp;&#9726 일정등록</span>
                         <span id="pop1_btn" style="float: right;">
-                            <button id="schedule_btn_pop1" class="btn_left3" onclick="schedule_save_onclick()">등록</button>
+                            <button id="schedule_btn_pop1" class="btn_left3" onclick="save_schedule_onclick()">등록</button>
                             <button id='close_btn1' class='btn_left3' onclick="close_popup_onclick()">닫기</button>
                         </span>
                     </div>
@@ -60,7 +60,7 @@
                                 <tr id="inputTr_Re" style="display: none">
                                     <th style="width: 90px;">반복주기</th>
                                     <td style="width: 150px;">
-                                        <select id="input_reWorkTime" name="RE_WORK_TIME">
+                                        <select id="input_reWorkGbn" name="RE_WORK_GBN">
                                             <option value="month" selected>매월</option>
                                             <option value="week" >매주</option>
                                             <option value="day" selected>매일</option>
@@ -109,7 +109,7 @@
     const search_mstMonth = document.querySelector("#search_mstMonth")	//select 컴포넌트
     const input_scDate = document.querySelector("#input_scDate")	//popup 컴포넌트
     const input_reWorkYn = document.querySelector("#input_reWorkYn")	//popup 컴포넌트
-    const input_reWorkTime = document.querySelector("#input_reWorkTime")	//popup 컴포넌트
+    const input_reWorkGbn = document.querySelector("#input_reWorkGbn")	//popup 컴포넌트
     const input_endDate = document.querySelector("#input_endDate")	//popup 컴포넌트
     const inputTr_Re = document.querySelector("#inputTr_Re")	//popup 컴포넌트
     let DS_SCH_GBN =[];
@@ -180,6 +180,8 @@
     function close_popup_onclick(){
         popupClose(popupId);
         clearInput(popupId);
+        input_reWorkYn.checked = false;
+        inputTr_Re.style.display = "none"
     }
     //반복 클릭 시 입력부 보이기
     input_reWorkYn.addEventListener("change", () => {
@@ -190,16 +192,6 @@
             inputTr_Re.style.display = "none"
         }
     })
-
-    //반복 클릭 시 입력부 보이기
-    function change_input_reWorkYn(){
-        if(input_reWorkYn.value == "Y"){
-            inputTr_Re.style.display = "table-row"
-        }else{
-            inputTr_Re.style.display = "none"
-        }
-    }
-
 
     //그리드 조회 함수
     function search_grid1_onclick(){
@@ -238,7 +230,7 @@
         item.REG_DATE = getToday("yyyyMMdd");
         item.MST_DATE = search_mstDate.value.replace(/-/g, "");
         item.MST_MONTH = search_mstMonth.value;
-        AUIGrid.addRow(grid1, item, "selectionDown");
+        AUIGrid.addRow(grid1, item, "first");
     }
 
     //그리드 저장 함수
@@ -336,11 +328,10 @@
     }
 
 
-    //그리드 저장 함수
-    function schedule_onclick(){
+    //일정등록 함수
+    function add_schedule_onclick(){
 
         const checkedItems = AUIGrid.getCheckedRowItemsAll(grid1);
-
         let itemCount = checkedItems.length;
         if (itemCount=== 0) {
             alert("체크된 항목이 없습니다");
@@ -349,57 +340,32 @@
 
         //포커스 지정
         focus = gridFocus(grid1);
-
         popupOpen(popupId);
     }
 
-    function schedule_save_onclick(){
+    function save_schedule_onclick(){
 
         const checkedItems = AUIGrid.getCheckedRowItemsAll(grid1);
 
         if(!confirm(checkedItems[0].TITLE + "을 일정에 등록하시겠습니까?")) return;
         if(!requireCheck("SAVE_SCHEDULE")) return;
 
+        let items = [];
+        let item = {}
         if(input_reWorkYn.value == 'Y'){
-            let scDate =  parseDate(input_scDate.value);
-            let endDate = parseDate(input_endDate.value);
-            let current = new Date(scDate);
-            let type = input_reWorkTime.value
-            let dates = []
-            while (current <= endDate) {
-                let strDate = formatDate(new Date(current))
-                dates.push(strDate);
-                if(type == "month"){
-                    let day = current.getDate();
-                    current.setMonth(current.getMonth() + 1);
-                    // 말일 보정
-                    if (current.getDate() < day) {
-                        current.setDate(0); // 이전달 마지막날
-                    }
-                }
-                else if(type == "week"){
-                    current.setDate(current.getDate() + 7);
-                }
-                else if(type == "day"){
-                    current.setDate(current.getDate() + 1);
-                }else break;
-            }
-
-            let items = [];
-            dates.forEach(strDate =>{
-                let item =  {}
-                item.SC_DATE = strDate;
-                item.SCH_GBN = checkedItems[0].SCH_GBN;
-                item.TITLE = checkedItems[0].TITLE;
-                item.MAIN_DEPT_CD = checkedItems[0].MAIN_DEPT_CD;
-                items.push(item);
-            })
+            item.SC_DATE = setItemReWork();
+        }else{
+            item.SC_DATE = [{...item}];
+            item.SEQ = "1";
+            item.TITLE = checkedItems[0].TITLE;
+            item.DESCR = checkedItems[0].TITLE;
+            item.SCH_GBN = checkedItems[0].SCH_GBN;
+            item.MAIN_DEPT_CD = checkedItems[0].MAIN_DEPT_CD;
         }
-
 
         //저장 데이터
         let saveParam = {
-            insertParam : items,
+            insertParam : checkedItems,
             updateParam : null,
             key : ["MST_NO"],
             before : {}
@@ -408,7 +374,7 @@
         //파라미터
         let saveData  = {
             sectionId : sectionId,
-            component : pgId + "_pop1",
+            component : "ilj01015_pop1",
             param: saveParam,
         }
 
@@ -418,12 +384,31 @@
                 if(data.O_RESULT > 0){
                     //팝업 닫기
                     close_popup_onclick();
-                    search_grid1_onclick();
                 }else return;
             }
         });
 
     }
+
+    function setItemReWork(){
+        let type = input_reWorkGbn.value
+        let endDate = strToDate(input_endDate.value);
+        let scDate = strToDate(input_scDate.value);
+        let items = [];
+        let inDate;
+
+        if(scDate <= endDate){
+            inDate = new Date(scDate);
+            while (inDate <= endDate){
+                items.push(dateToStr(new Date(inDate), "yyyyMMdd"));
+                if(type == "month") inDate.setMonth(inDate.getMonth() + 1);
+                else if(type == "week") inDate.setDate(inDate.getDate() + 7);
+                else if(type == "day") inDate.setDate(inDate.getDate() + 1);
+            }
+        }
+        return items;
+    }
+
 
     //컴포넌트 필수항목 입력 체크
     function requireCheck(require){
@@ -442,14 +427,10 @@
                 }
                 break;
             case "SAVE_SCHEDULE":
-                let checkedRowItems = AUIGrid.getCheckedRowItems(grid1);
-                let items2 = [...checkedRowItems];
-                for(const row of items2){
-                    if(isNull(input_scDate.value)){
-                        alert("제목은 반드시 입력해야 합니다.");
-                        isValid = false;
-                        break;
-                    }
+                if(isNull(input_scDate.value)){
+                    alert("등록일은 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
                 }
                 break;
         }

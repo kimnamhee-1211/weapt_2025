@@ -57,7 +57,7 @@
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        btnMaker({ tag: "#section1_btn", grid:"calendar1", add : true, print : true});
+        btnMaker({ tag: "#section1_btn", grid:"calendar1", print : true});
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
         let pop_item = {

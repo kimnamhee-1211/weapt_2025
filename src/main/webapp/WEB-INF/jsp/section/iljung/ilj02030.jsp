@@ -80,6 +80,7 @@
     grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
+                showRowNumColumn : false
             })
     );
 

@@ -127,8 +127,23 @@
         return chars.join('');
     }
 
+    const DS_MONTH = [
+        { DS_MONTH_CD: "01", DS_MONTH: "1월" },
+        { DS_MONTH_CD: "02", DS_MONTH: "2월" },
+        { DS_MONTH_CD: "03", DS_MONTH: "3월" },
+        { DS_MONTH_CD: "04", DS_MONTH: "4월" },
+        { DS_MONTH_CD: "05", DS_MONTH: "5월" },
+        { DS_MONTH_CD: "06", DS_MONTH: "6월" },
+        { DS_MONTH_CD: "07", DS_MONTH: "7월" },
+        { DS_MONTH_CD: "08", DS_MONTH: "8월" },
+        { DS_MONTH_CD: "09", DS_MONTH: "9월" },
+        { DS_MONTH_CD: "10", DS_MONTH: "10월" },
+        { DS_MONTH_CD: "11", DS_MONTH: "11월" },
+        { DS_MONTH_CD: "12", DS_MONTH: "12월" }
+    ];
 
-    	
+
+
     	
 
 

@@ -164,7 +164,7 @@
 					SELECT
 					#{row.LOGINUSER_OFFICE_CODE},
 					#{date},
-					#{row.MST_MONTH},
+					LEFT(#{date},6),
 					#{row.MST_NO},
 					1,
 					#{row.TITLE},
@@ -175,7 +175,7 @@
 					#{row.WORK_USER_ID},
 					#{row.WORKER_NAME},
 					#{row.LOGINUSER_ID},
-					#{row.REG_DATE}
+					CONVERT(VARCHAR(8), GETDATE(), 112)
 				</foreach>
 			</foreach>
 		</if>
@@ -188,31 +188,44 @@
 			FROM (
 				<foreach collection="list" item="row" separator="UNION ALL">
 					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.SC_DATE} AS SC_DATE,
-					#{row.MST_MONTH} AS MST_MONTH, #{row.MST_NO} AS MST_NO
+					#{row.MST_MONTH} AS MST_MONTH, #{row.MST_NO} AS MST_NO, #{row.SEQ} AS SEQ
 				</foreach>
 			) AS temp
 		WHERE temp.OFFICE_CODE = TWK_SCHEDULE_NEW.OFFICE_CODE AND temp.SC_DATE = TWK_SCHEDULE_NEW.SC_DATE
-		AND temp.MST_MONTH = TWK_SCHEDULE_NEW.MST_MONTH AND temp.MST_NO = TWK_SCHEDULE_NEW.MST_NO
+			AND temp.MST_MONTH = TWK_SCHEDULE_NEW.MST_MONTH AND temp.MST_NO = TWK_SCHEDULE_NEW.MST_NO
+			AND temp.SEQ = TWK_SCHEDULE_NEW.SEQ
 		)
 	</delete>
 
+	<select id="getSelectOption_ilj01040_search_schGbn" parameterType="map" resultType="map">
+		SELECT
+			A.SCH_GBN,
+			A.GBN_NAME
+		FROM dbo.TWK_SCHEDULE_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
+		ORDER BY CONVERT(INT, A.ORDER_SEQ)
+	</select>
 
-
-
-
+	<select id="getSelectOption_ilj01040_search_mainDeptCd" parameterType="map" resultType="map">
+		SELECT
+			A.DEPT_CD,
+			A.DEPT_NAME
+		FROM dbo.THR_DEPT A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
+		ORDER BY A.SORT_ORDER
+	</select>
 
 	<select id="selectList_ilj01040_grid1" parameterType="map" resultType="map">
 		SELECT
 			A.MST_NO			AS MST_NO,
-			A.IMPORTANT_YN		AS IMPORTANT_YN,
-			A.MY_SCHEDULE		AS MY_SCHEDULE,
 			A.TITLE				AS TITLE,
-			A.SC_DATE		AS START_DATE,
+			A.SC_DATE			AS START_DATE,
 			A.SCH_GBN			AS SCH_GBN,
 			B.GBN_NAME      	AS GBN_NAME,
 			A.MAIN_DEPT_CD		AS MAIN_DEPT_CD,
 			C.DEPT_NAME 		AS MAIN_DEPT_NAME,
-			A.STATUS_CD			AS STATUS_CD
+			A.STATUS_CD			AS STATUS_CD,
+			dbo.getCode_nm(A.STATUS_CD) as STATUS_NM,
 		FROM dbo.TWK_SCHEDULE_NEW A
 		LEFT JOIN dbo.TWK_SCHEDULE_GBN AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SCH_GBN = B.SCH_GBN
 		LEFT JOIN dbo.THR_DEPT AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MAIN_DEPT_CD = C.DEPT_CD
@@ -243,7 +256,6 @@
 				A.TITLE LIKE '%' + #{TEXT} + '%' OR A.DESCR LIKE '%' + #{TEXT} + '%'
 			</if>
 	</select>
-
 
 	<select id="getSelectOption_ilj02010_search_mstDate" parameterType="map" resultType="map">
 		SELECT
@@ -387,7 +399,7 @@
 			A.GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'1') = '1'
-		ORDER BY A.ODER_SEQ
+		ORDER BY A.ORDER_SEQ
 	</select>
 
 	<select id="selectList_ilj02020_grid1" parameterType="map" resultType="map">
@@ -430,7 +442,7 @@
 		FROM dbo.TWK_MONTH_MAJOR_JOB A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 		  AND A.MST_DATE = #{MST_DATE}
-		ORDER BY A.SCH_GBN, A.MST_NO
+		ORDER BY A.MST_NO
 	</select>
 
 	<update id="updateList_ilj02030_grid1" parameterType="list">
@@ -494,8 +506,8 @@
 					#{row.MST_MONTH} AS MST_MONTH, #{row.MST_NO} AS MST_NO
 				</foreach>
 			) AS temp
-			WHERE temp.OFFICE_CODE = TWK_MONTH_BASIC_JOB.OFFICE_CODE AND temp.MST_DATE = TWK_MONTH_BASIC_JOB.MST_DATE
-				AND temp.MST_MONTH = TWK_MONTH_BASIC_JOB.MST_MONTH AND temp.MST_NO = TWK_MONTH_BASIC_JOB.MST_NO
+			WHERE temp.OFFICE_CODE = TWK_MONTH_MAJOR_JOB.OFFICE_CODE AND temp.MST_DATE = TWK_MONTH_MAJOR_JOB.MST_DATE
+				AND temp.MST_MONTH = TWK_MONTH_MAJOR_JOB.MST_MONTH AND temp.MST_NO = TWK_MONTH_MAJOR_JOB.MST_NO
 		)
 	</delete>
 
