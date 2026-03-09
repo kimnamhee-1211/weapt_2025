@@ -16,7 +16,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         HttpSession session = request.getSession(false);
 
         if(session == null || session.getAttribute("loginUser") == null){
-            response.sendRedirect("/start");
+            response.sendRedirect("/Weapt2025/start");
             return false;
         }
         return true;

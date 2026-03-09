@@ -404,23 +404,13 @@
 
 	<select id="selectList_ilj02020_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE		AS OFFICE_CODE,
-			A.MST_DATE			AS MST_DATE,
 			A.MST_MONTH			AS MST_MONTH,
-			A.MST_NO			AS MST_NO,
 			A.TITLE 			AS TITLE,
-			A.IMPORTANT_YN		AS IMPORTANT_YN,
-			A.DESCR				AS DESCR,
-			A.SCH_GBN 			AS SCH_GBN,
-			A.MAIN_DEPT_CD		AS MAIN_DEPT_CD
+			A.SCH_GBN 			AS SCH_GBN
 		FROM dbo.TWK_MONTH_SCHEDULE A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
-		  AND A.MST_DATE = #{MST_DATE} AND A.MST_MONTH = #{MST_MONTH}
-		ORDER BY A.SCH_GBN, A.MST_NO
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.MST_DATE = #{MST_DATE}
+		ORDER BY A.MST_MONTH, A.MST_NO
 	</select>
-
-
-
 
 
 	<select id="getSelectOption_ilj02030_search_mstDate" parameterType="map" resultType="map">
@@ -510,6 +500,146 @@
 				AND temp.MST_MONTH = TWK_MONTH_MAJOR_JOB.MST_MONTH AND temp.MST_NO = TWK_MONTH_MAJOR_JOB.MST_NO
 		)
 	</delete>
+
+
+	<select id="selectList_ilj02040_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.MST_DATE			AS MST_DATE
+		FROM dbo.TWK_MONTH_BASIC A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY A.MST_DATE DESC
+	</select>
+
+	<update id="updateList_ilj02040_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.MST_DATE   			= U.MST_DATE
+			FROM dbo.TWK_MONTH_BASIC A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.MST_DATE} 			 AS MST_DATE
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.MST_DATE = U.MST_DATE
+		</if>
+	</update>
+
+	<insert id="insertList_ilj02040_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TWK_MONTH_BASIC (
+				OFFICE_CODE,
+				MST_DATE,
+				REG_USER,
+				REG_DATE)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.MST_DATE},
+					#{row.LOGINUSER_ID},
+					#{row.REG_DATE}
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="deleteList_ilj02040_grid1" parameterType="list">
+		DELETE FROM dbo.TWK_MONTH_BASIC
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.MST_DATE} AS MST_DATE
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TWK_MONTH_BASIC.OFFICE_CODE AND temp.MST_DATE = TWK_MONTH_BASIC.MST_DATE
+		)
+	</delete>
+
+
+	<select id="selectList_ilj02040_grid2" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE			AS OFFICE_CODE,
+			A.SCH_GBN				AS SCH_GBN,
+			A.GBN_NAME				AS GBN_NAME,
+			A.REG_DATE				AS REG_DATE,
+			A.GBN_DESCR				AS GBN_DESCR,
+			ISNULL(A.USE_YN, '1')	AS USE_YN,
+			A.ODER_SEQ				AS ODER_SEQ
+		FROM dbo.TWK_SCHEDULE_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY A.SCH_GBN
+	</select>
+
+	<update id="updateList_ilj02040_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.GBN_NAME   			= U.GBN_NAME,
+				A.GBN_DESCR   			= U.GBN_DESCR,
+				A.USE_YN   				= U.USE_YN,
+				A.ODER_SEQ   			= U.ODER_SEQ
+			FROM dbo.TWK_SCHEDULE_GBN A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.SCH_GBN} 			 	 AS SCH_GBN,
+					#{row.REG_DATE} 			 AS REG_DATE
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.MST_DATE = U.MST_DATE
+		</if>
+	</update>
+
+	<select id="getKey_ilj02040_grid0" parameterType="map" resultType="map">
+		SELECT
+			ISNULL(MAX(A.SCH_GBN), '100000') AS SCH_GBN
+		FROM dbo.TWK_SCHEDULE_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+	<insert id="insertList_ilj02040_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TWK_SCHEDULE_GBN (
+				OFFICE_CODE,
+				SCH_GBN,
+				GBN_NAME,
+				GBN_DESCR,
+				USE_YN,
+				ODER_SEQ,
+				REG_USER,
+				REG_DATE)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.SCH_GBN},
+					#{row.GBN_NAME},
+					#{row.GBN_DESCR},
+					#{row.USE_YN},
+					#{row.ODER_SEQ},
+					#{row.LOGINUSER_ID},
+					#{row.REG_DATE}
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="deleteList_ilj02040_grid2" parameterType="list">
+		DELETE FROM dbo.TWK_SCHEDULE_GBN
+			WHERE EXISTS (
+			SELECT 1
+			FROM (
+			<foreach collection="list" item="row" separator="UNION ALL">
+				SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.SCH_GBN} AS SCH_GBN,
+				#{row.REG_DATE} AS REG_DATE
+			</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TWK_SCHEDULE_GBN.OFFICE_CODE AND temp.SCH_GBN = TWK_SCHEDULE_GBN.SCH_GBN
+				AND temp.REG_DATE = TWK_SCHEDULE_GBN.REG_DATE
+		)
+	</delete>
+
+
 
 
 

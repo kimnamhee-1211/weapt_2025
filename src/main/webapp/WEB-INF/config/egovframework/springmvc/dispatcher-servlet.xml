@@ -68,28 +68,9 @@
 	<mvc:resources mapping="/resources/**" location="/resources/" />
     <mvc:view-controller path="/cmmn/validator" view-name="cmmn/validator"/>
 
-    <!-- pgId 주입용 -->
-    <bean id="SetParamInterceptor" class="egovframework.com.interceptor.SetParamInterceptor"/>
-    <mvc:interceptors>
-        <mvc:interceptor>
-            <mvc:mapping path="/selectList/**"/>
-            <mvc:mapping path="/selectMap/**"/>
-            <mvc:mapping path="/insertList/**"/>
-            <mvc:mapping path="/insertOne/**"/>
-            <mvc:mapping path="/updateList/**"/>
-            <mvc:mapping path="/updateOne/**"/>
-            <mvc:mapping path="/deleteList/**"/>
-            <mvc:mapping path="/deleteOne/**"/>
-            <mvc:mapping path="/saveList/**"/>
-            <mvc:mapping path="/boardSelectOne/**"/>
-            <mvc:mapping path="/boardSave/**"/>
-            <mvc:mapping path="/boardDeleteOne/**"/>
-            <ref bean="SetParamInterceptor"/>
-        </mvc:interceptor>
-    </mvc:interceptors>
 
-    <!-- 세션 확인용 -->
     <mvc:interceptors>
+        <!-- 세션 확인용 -->
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <!-- 로그인 제외 -->
@@ -97,11 +78,15 @@
             <mvc:exclude-mapping path="/login"/>
             <mvc:exclude-mapping path="/start"/>
             <mvc:exclude-mapping path="/captcha"/>
+            <!-- 정적 리소스 제외 -->
             <mvc:exclude-mapping path="/resources/**"/>
-            <mvc:exclude-mapping path="/css/**"/>
-            <mvc:exclude-mapping path="/js/**"/>
-            <mvc:exclude-mapping path="/images/**"/>
             <bean class="egovframework.com.interceptor.LoginInterceptor"/>
+        </mvc:interceptor>
+
+        <!-- pgId 주입용 -->
+        <mvc:interceptor>
+            <mvc:mapping path="/api/**"/>
+            <bean class="egovframework.com.interceptor.SetParamInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
  

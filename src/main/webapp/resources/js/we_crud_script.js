@@ -20,6 +20,8 @@
  *
  **/
 
+   const crudPrefix = "/api"
+
    //공통 select 함수
    async function we_select(data, { successSelect } = {}, timeout = 60_000) {
 
@@ -36,7 +38,7 @@
 
          method = "/selectList/";
          query = new URLSearchParams(data.param).toString();
-         url = ctx + method  + sectionId + "/" + component + "?" +  query;
+         url = ctx + crudPrefix + method  + sectionId + "/" + component + "?" +  query;
 
          const res = await fetch(
              url,
@@ -121,7 +123,7 @@
          const param = JSON.stringify(data.param);
 
          const res = await fetch(
-             ctx + method + sectionId + "/" + component,
+             ctx + crudPrefix + method + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -179,7 +181,7 @@
          const param = JSON.stringify(data.param)
 
          const res = await fetch(
-             ctx + method + sectionId + "/" + component,
+             ctx + crudPrefix + method + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -231,7 +233,7 @@
          const param = JSON.stringify(data.param);
 
          const res = await fetch(
-             ctx + method + sectionId + "/" + component,
+             ctx + crudPrefix + method + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -311,7 +313,7 @@
          const param =  JSON.stringify(data.param);
 
          const res = await fetch(
-             ctx + "/saveList/" + sectionId + "/" + component,
+             ctx + crudPrefix + "/saveList/" + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -389,7 +391,7 @@
 
          method = "/boardSelectOne/";
          query = new URLSearchParams(data.param).toString();
-         url = ctx + method + sectionId + "/" + component + "?" + query;
+         url = ctx + crudPrefix + method + sectionId + "/" + component + "?" + query;
 
          const res = await fetch(
              url,
@@ -465,7 +467,7 @@
          const param =  JSON.stringify(data.param);
 
          const res = await fetch(
-             ctx + "/boardSave/" + sectionId + "/" + component,
+             ctx + crudPrefix + "/boardSave/" + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -558,7 +560,7 @@
          const param = JSON.stringify(data.param);
 
          const res = await fetch(
-             ctx + method + sectionId + "/" + component,
+             ctx + crudPrefix + method + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -604,7 +606,7 @@
 
       try {
          const res = await fetch(
-             ctx + "/checkCrudPermission/" + pgId,
+             ctx + crudPrefix + "/checkCrudPermission/" + pgId,
              {
                 method: "GET",
                 headers: {
@@ -655,7 +657,7 @@
 
       try {
          const res = await fetch(
-             ctx + "/getCode/" + CODEDV_NO,
+             ctx + crudPrefix + "/getCode/" + CODEDV_NO,
              {
                 method: "GET",
                 headers: {
@@ -709,7 +711,7 @@
 
          method = "/getSelectOption/";
          query = new URLSearchParams(data.param).toString();
-         url = ctx + method + sectionId + "/" + component + "?" + query;
+         url = ctx + crudPrefix + method + sectionId + "/" + component + "?" + query;
 
          const res = await fetch(
              url,
@@ -751,7 +753,7 @@ async function we_getUsergroupId(timeout = 60_000) {
 
    try {
       const res = await fetch(
-          ctx + "/getUsergroupId",
+          ctx + crudPrefix + "/getUsergroupId",
           {
              method: "GET",
              headers: {

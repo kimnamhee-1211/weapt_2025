@@ -352,16 +352,17 @@
 
         let items = [];
         let item = {}
+        item.SEQ = "1";
+        item.TITLE = checkedItems[0].TITLE;
+        item.DESCR = checkedItems[0].TITLE;
+        item.SCH_GBN = checkedItems[0].SCH_GBN;
+        item.MAIN_DEPT_CD = checkedItems[0].MAIN_DEPT_CD;
         if(input_reWorkYn.value == 'Y'){
             item.SC_DATE = setItemReWork();
         }else{
-            item.SC_DATE = [{...item}];
-            item.SEQ = "1";
-            item.TITLE = checkedItems[0].TITLE;
-            item.DESCR = checkedItems[0].TITLE;
-            item.SCH_GBN = checkedItems[0].SCH_GBN;
-            item.MAIN_DEPT_CD = checkedItems[0].MAIN_DEPT_CD;
+            item.SC_DATE = [input_scDate];
         }
+        items.push(item)
 
         //저장 데이터
         let saveParam = {
@@ -431,6 +432,18 @@
                     alert("등록일은 반드시 입력해야 합니다.");
                     isValid = false;
                     break;
+                }
+                if(isNull(input_reWorkYn.value == 'Y')){
+                    if(isNull(input_reWorkGbn.value)){
+                        alert("반복주기는 반드시 입력해야 합니다.");
+                        isValid = false;
+                        break;
+                    }
+                    if(isNull(input_endDate.value)){
+                        alert("종료일은 반드시 입력해야 합니다.");
+                        isValid = false;
+                        break;
+                    }
                 }
                 break;
         }

@@ -57,6 +57,7 @@
             headerText: "등록월",
             dataType: "text",
             width : "8%",
+            cellMerge : true
         },
     ];
 
@@ -65,7 +66,8 @@
         Object.assign({}, we_grid_Props,
             {
                 showRowNumColumn: false,
-                editable: false
+                editable: false,
+                enableCellMerge : true
             })
     );
 
@@ -93,7 +95,7 @@
             item.dataField  = row.SCH_GBN;
             item.headerText = row.GBN_NAME;
             item.dataType  = "text";
-            item.width = "15%";
+            item.width = "20%";
             columns.push(item);
         });
         let new_cols = [...grid1ColumnLayout, ...columns];
@@ -118,18 +120,40 @@
 
         we_select( selectData,{
             successSelect : (data) => {
+                let items = {};
                 data.forEach(row =>{
-                    row[row.SCH_GBN] = row.TITLE;
+                    let month = row.MST_MONTH;
+                    let dept  = row.SCH_GBN;
+                    if(!items[month]){items[month] = {};}
+                    if(!items[month][dept]){items[month][dept] = [];}
+                    let item = {}
+                    item.TITLE = row.TITLE
+                    items[month][dept].push(item);
                 })
+                let rows = []
+                Object.keys(items).forEach(month => {
+                    let depts = items[month];
+                    let max = Math.max(...Object.values(depts).map(v => v.length));
+                    for(let i = 0; i < max; i++){
+                        let row = {}
+                        row.MST_MONTH = month;
+                        Object.keys(depts).forEach(dept => {
+                            row[dept] = depts[dept][i] ? depts[dept][i].TITLE : ""
+                        })
+                        rows.push(row);
+                    }
+                })
+                rows.sort((a, b) => a.MST_MONTH.localeCompare(b.MST_MONTH));
 
                 //그리드 데이터 세팅
-                AUIGrid.setGridData(grid1, data);
+                AUIGrid.setGridData(grid1, rows);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
                 AUIGrid.setSelectionByIndex(grid1, focus, 0);
                 focus = 0;
             }
         });
     }
+
 
     //컴포넌트 필수항목 입력 체크
     function requireCheck(require){

@@ -25,6 +25,7 @@ import java.util.Map;
  *  Copyright (C) by  All right reserved.
  */
 
+@RequestMapping("/api")
 @Controller
 public class BaseBoardController {
 

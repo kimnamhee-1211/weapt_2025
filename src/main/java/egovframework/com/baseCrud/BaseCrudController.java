@@ -29,6 +29,7 @@ import static egovframework.com.baseCrud.support.SetParam.setUserToParam;
  *  Copyright (C) by  All right reserved.
  */
 
+@RequestMapping("/api")
 @Controller
 public class BaseCrudController {
 
