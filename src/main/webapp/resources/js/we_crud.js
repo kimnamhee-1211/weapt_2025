@@ -34,7 +34,7 @@
          const component = encodeURIComponent(data.component);
 
          method = "/selectList/";
-         query = new URLSearchParams(data.param).toString();
+         query = new URLSearchParams(data.param)
          url = ctx + apiPrefix + method  + sectionId + "/" + component + "?" +  query;
 
          const res = await fetch(
@@ -387,7 +387,7 @@
          const component = encodeURIComponent(data.component);
 
          method = "/boardSelectOne/";
-         query = new URLSearchParams(data.param).toString();
+         query = new URLSearchParams(data.param)
          url = ctx + apiPrefix + method + sectionId + "/" + component + "?" + query;
 
          const res = await fetch(

@@ -15,6 +15,7 @@
       const timer = setTimeout(() => controller.abort(), timeout);
 
       let query = new UrlSearchParams(data.param).toString();
+
       try {
          const res = await fetch(
              ctx + apiPrefix + "/approval/" + pgId + ? ,
