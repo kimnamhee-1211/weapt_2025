@@ -252,7 +252,6 @@
     function search_grid1_onclick(){
         //검색데이터
         let selectParam = {
-            OFFICE_CODE : loginUser.officeCode,
             COMP_CODE : loginUser.compCode,
         }
 
@@ -487,9 +486,7 @@
     async function getSelectOption_input_deptCd(){
         input_deptCd.innerHTML = "";
         //검색데이터
-        let param = {
-            OFFICE_CODE : loginUser.officeCode,
-        }
+        let param = {}
         //파라미터
         let data = {
             sectionId : sectionId,

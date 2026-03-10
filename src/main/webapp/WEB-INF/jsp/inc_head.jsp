@@ -25,21 +25,6 @@
     String yearMonth = yearMonthFormat.format(cal.getTime());
 %>
 
-<%@ page import="egovframework.com.login.model.LoginVO" %>
-<%
-    // session 가져오기
-    LoginVO loginUser   = (LoginVO) session.getAttribute("loginUser");
-    String userId       = loginUser != null ? loginUser.getUserId() : "";
-    String userName     = loginUser != null ? loginUser.getUserName() : "";
-    String empNo        = loginUser != null ? loginUser.getEmpNo() : "";
-    String officeCode   = loginUser != null ? loginUser.getOfficeCode() : "";
-    String officeName   = loginUser != null ? loginUser.getOfficeName() : "";
-    String compCode     = loginUser != null ? loginUser.getCompCode() : "";
-    String compName     = loginUser != null ? loginUser.getCompName() : "";
-    String usergroupId  = loginUser != null ? loginUser.getUsergroupId() : "";
-%>
-
-
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -58,27 +43,32 @@
 	<!-- AUIGrid CSS 테마 파일 (원하는 테마로 변경 가능) -->
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/grid/AUIGrid/AUIGrid_style.css" />
 
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_code.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_crud.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_grid.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_nav.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_script.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_grid_script.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_crud_script.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_unit_script.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_permission.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_ui.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_unit.js"></script>
 
     <script>
         //ContextPath
         const ctx = "${pageContext.request.contextPath}";
+        //api prefix
+        const apiPrefix = "/api"
 
         //session loginUser
-        const loginUser = {
-            userId      : "<%= userId %>",
-            userName    : "<%= userName %>",
-            empNo       : "<%= empNo %>",
-            officeCode  : "<%= officeCode %>",
-            officeName  : "<%= officeName %>",
-            compCode    : "<%= compCode %>",
-            compName    : "<%= compName %>",
-            usergroupId    : "<%= usergroupId %>",
+        window.loginUser = {
+            userId      : "${sessionScope.loginUser.userId}",
+            userName    : "${sessionScope.loginUser.userName}",
+            empNo       : "${sessionScope.loginUser.empNo}",
+            officeCode  : "${sessionScope.loginUser.officeCode}",
+            officeName  : "${sessionScope.loginUser.officeName}",
+            compCode    : "${sessionScope.loginUser.compCode}",
+            compName    : "${sessionScope.loginUser.compName}",
+            usergroupId : "${sessionScope.loginUser.usergroupId}"
         };
+
 
     </script>
 

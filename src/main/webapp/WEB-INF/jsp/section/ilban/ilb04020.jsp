@@ -327,7 +327,6 @@
         search_empNo.innerHTML = "";
         //검색데이터
         let param = {
-            OFFICE_CODE : loginUser.officeCode,
             STATUS : search_status.value,
         }
         //파라미터

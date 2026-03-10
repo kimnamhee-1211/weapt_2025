@@ -111,9 +111,7 @@
         let columns = [];
 
         //검색데이터
-        let param = {
-            OFFICE_CODE : loginUser.officeCode,
-        }
+        let param = {}
         //파라미터
         let data = {
             sectionId : sectionId,

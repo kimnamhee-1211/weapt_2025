@@ -137,9 +137,7 @@
     //그리드 조회 함수
     function search_grid1_onclick(){
         //검색데이터
-        let selectParam = {
-            OFFICE_CODE : loginUser.officeCode,
-        }
+        let selectParam = {}
 
         //파라미터
         let selectData = {

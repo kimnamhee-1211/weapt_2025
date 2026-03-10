@@ -217,15 +217,17 @@
 
 	<select id="selectList_ilj01040_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.MST_NO			AS MST_NO,
-			A.TITLE				AS TITLE,
-			A.SC_DATE			AS START_DATE,
-			A.SCH_GBN			AS SCH_GBN,
-			B.GBN_NAME      	AS GBN_NAME,
-			A.MAIN_DEPT_CD		AS MAIN_DEPT_CD,
-			C.DEPT_NAME 		AS MAIN_DEPT_NAME,
-			A.STATUS_CD			AS STATUS_CD,
-			dbo.getCode_nm(A.STATUS_CD) as STATUS_NM,
+			A.MST_NO					AS MST_NO,
+			A.MST_MONTH					AS MST_MONTH,
+			A.SEQ						AS SEQ,
+			A.SC_DATE					AS SC_DATE,
+			A.TITLE						AS TITLE,
+			A.SCH_GBN					AS SCH_GBN,
+			B.GBN_NAME      			AS GBN_NAME,
+			A.MAIN_DEPT_CD				AS MAIN_DEPT_CD,
+			C.DEPT_NAME 				AS MAIN_DEPT_NAME,
+			A.STATUS_CD					AS STATUS_CD,
+			dbo.getCode_nm(A.STATUS_CD) as STATUS_NM
 		FROM dbo.TWK_SCHEDULE_NEW A
 		LEFT JOIN dbo.TWK_SCHEDULE_GBN AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SCH_GBN = B.SCH_GBN
 		LEFT JOIN dbo.THR_DEPT AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MAIN_DEPT_CD = C.DEPT_CD
@@ -246,9 +248,6 @@
 			<if test="MAIN_DEPT_CD != null and MAIN_DEPT_CD != ''">
 				AND A.MAIN_DEPT_CD = #{MAIN_DEPT_CD}
 			</if>
-			<if test="IMPORTANT_YN != null and IMPORTANT_YN != ''">
-				AND ISNULL(A.IMPORTANT_YN, 'Y') = #{IMPORTANT_YN}
-			</if>
 			<if test="STATUS_CD != null and STATUS_CD != ''">
 				AND A.STATUS_CD = #{STATUS_CD}
 			</if>
@@ -256,6 +255,54 @@
 				A.TITLE LIKE '%' + #{TEXT} + '%' OR A.DESCR LIKE '%' + #{TEXT} + '%'
 			</if>
 	</select>
+
+
+	<select id="selectList_ilj01050_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.MST_NO					AS MST_NO,
+			A.MST_MONTH					AS MST_MONTH,
+			A.SEQ						AS SEQ,
+			A.SC_DATE					AS SC_DATE,
+			A.TITLE	+ '<br>' + A.DESCR	AS TITLE,
+			A.SCH_GBN 					AS SCH_GBN,
+			B.GBN_NAME      			AS GBN_NAME,
+			A.MAIN_DEPT_CD				AS MAIN_DEPT_CD,
+			C.DEPT_NAME 				AS MAIN_DEPT_NAME,
+			A.STATUS_CD					AS STATUS_CD,
+			dbo.getCode_nm(A.STATUS_CD) AS STATUS_NM,
+			CASE WHEN (NULLIF(LTRIM(RTRIM(D.NAME)), '') IS NULL THEN WORKER_NAME
+			    ELSE D.NAME END AS WORKER_NAME
+		FROM dbo.TWK_SCHEDULE_NEW A
+		LEFT JOIN dbo.TWK_SCHEDULE_GBN AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SCH_GBN = B.SCH_GBN
+		LEFT JOIN dbo.THR_DEPT AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MAIN_DEPT_CD = C.DEPT_CD
+		LEFT JOIN dbo.TAD_EMP AS D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.WORK_USER_ID = D.EMP_NO
+			AND (NULLIF(LTRIM(RTRIM(D.RESIGN_DATE)), '') IS NULL OR CONVERT(DATE, D.RESIGN_DATE, 112) &gt;= CAST(GETDATE() AS DATE))
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			<if test="START_DATE != null and START_DATE != ''">
+				AND A.SC_DATE &gt;= #{START_DATE}
+			</if>
+			<if test="END_DATE != null and END_DATE != ''">
+				AND A.SC_DATE  &lt;= #{END_DATE}
+			</if>
+			<if test="START_DATE != null and START_DATE != '' and END_DATE != null and END_DATE != ''">
+				AND A.SC_DATE &gt;= #{START_DATE}
+				AND A.SC_DATE  &lt;= #{END_DATE}
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				AND A.STATUS_CD = #{STATUS_CD}
+			</if>
+	</select>
+
+
+
+
+
+
+
+
+
+
+
 
 	<select id="getSelectOption_ilj02010_search_mstDate" parameterType="map" resultType="map">
 		SELECT

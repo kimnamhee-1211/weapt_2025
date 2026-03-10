@@ -26,10 +26,6 @@
                         <span>&emsp;상태 :&nbsp;
                             <select id="search_statusCd" class="select_cont100"></select>
                         </span>
-                        <span>&emsp;
-                            <input  type="checkbox" id="search_importantYn">
-                            <label for="search_importantYn">&nbsp;중요업무&emsp;</label>
-                        </span>
                     </div>
                     <div>
                         <span class="search-box">제목&내용 :&nbsp;
@@ -39,6 +35,7 @@
                 </div>
             </div>
             <div id="grid1"></div>
+            <jsp:include page="/WEB-INF/jsp/section/iljung/pop_iljung.jsp" />
         </div>
 
 <script>
@@ -83,6 +80,9 @@
             visible : false
         },
         { dataField: "MST_MONTH",
+            visible : false
+        },
+        { dataField: "SEQ",
             visible : false
         },
         { dataField: "SC_DATE",
@@ -155,7 +155,6 @@
             SCH_GBN : search_schGbn.value,
             MAIN_DEPT_CD : search_mainDeptCd.value,
             STATUS_CD : search_statusCd.value,
-            IMPORTANT_YN : search_importantYn.value,
             TEXT : search_text.value,
         };
 

@@ -15,11 +15,11 @@
         </div>
         <div id="conf_line">
             <div class="conf_line_left">
-                <input type="date" id="date">
+                <input type="date" id="search_scDate" name="SC_DATE">
             </div>
-            <div id="grid1" class="conf_line_right" style="border: 1px solid #bcbcbc;"></div> //결재란
+            <div id="gridAppr1" class="conf_line_right"></div> //결재란
         </div>
-        <div id="grid2"  style="height: 546px; border: 1px solid #bcbcbc;"></div>
+        <div id="grid1"  style="height: 546px;"></div>
     </div>
 
 
@@ -49,132 +49,134 @@
 
         //변수 선언
     const pgId = "${pgId}";	//프로그램ID
+    let gridAppr1;	// 결재란 그리드 컴포넌트
     let grid1;	// 그리드 컴포넌트
-    let grid2;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
-    let focus2 = 0;	//그리드 컴포넌트 포커스
+    const search_scDate = document.querySelector("#search_scDate"); //select 컴포넌트
 
     //그리드1 설정
-    const grid1ColumnLayout = [
-    ];
+    const gridAppr1ColumnLayout = [];
 
     //그리드1 생성
-    grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
+    gridAppr1 = AUIGrid.create("#gridAppr1", gridAppr1ColumnLayout,
         Object.assign({}, we_appr_Props,
-            {
-            })
+            {})
     );
 
     //그리드2 설정
-    const grid2ColumnLayout = [
-        { dataField: "CODEDV_NO",
-            headerText: "코드구분",
+    const grid1ColumnLayout = [
+        { dataField: "MST_NO",
+            visible : false
+        },
+        { dataField: "MST_MONTH",
+            visible : false
+        },
+        { dataField: "SEQ",
+            visible : false
+        },
+        { dataField: "GBN_NAME",
+            headerText: "일정구분",
+            width : "8%",
             dataType: "text",
+        },
+        { dataField: "TITLE",
+            headerText: "내용",
+            dataType: "text",
+            width : "*%",
+        },
+        { dataField: "MAIN_DEPT_NAME",
+            headerText: "주무부서",
             width : "10%",
-            editable : false
-        },
-        { dataField: "CODE_NO",
-            headerText: "코드",
             dataType: "text",
-            width : "10%",
-            editRenderer : {
-                type : "InputEditRenderer",
-                onlyNumeric : true, // 0~9 까지만 허용
-                maxlength : 6,
-            }
         },
-        { dataField: "CODEDTL_NM",
-            headerText: "코드명",
+        { dataField: "STATUS_NM",
+            headerText: "결과",
+            width : "8%",
             dataType: "text",
-            width : "20%",
-            style : "text-align-left",
         },
-        { dataField: "SHORT_NM",
-            headerText: "약어명",
-            dataType: "text",
-            width : "15%",
-        },
-        { dataField: "DIVISION1_NM",
-            headerText: "구분명",
-            dataType: "text",
-            width : "20%",
-        },
-        { dataField: "SORTORDER",
-            headerText: "정렬순서",
-            width : "15%",
-            dataType: "text",
-            editRenderer : {
-                type: "InputEditRenderer",
-                onlyNumeric: true, // 0~9 까지만 허용
-            }
-        },
-        { dataField: "USE_YN",
-            headerText: "사용유무",
-            width : "15%",
+        { dataField: "WORKER_NAME",
+            headerText: "처리자",
+            width : "8%",
             renderer : we_cb_YN_Renderer
-        }
+        },
     ];
 
     //그리드2 생성
-    grid2 = AUIGrid.create("#grid2", grid2ColumnLayout,
+    grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
-                showRowNumColumn: false,
+                editable : false,
+                showRowCheckColumn: false,
+                height : 546
             })
     );
 
     //그리드 이벤트
     //체크박스 클릭 시
-    AUIGrid.bind(grid1, "rowCheckClick", function(event) {
+    AUIGrid.bind(gridAppr1, "cellDoubleClick", function(event) {
         AUIGrid.setSelectionByIndex(grid1, event.rowIndex);
     });
-    AUIGrid.bind(grid2, "rowCheckClick", function(event) {
-        AUIGrid.setSelectionByIndex(grid2, event.rowIndex, 0);
-    });
-    //셀 선택 변경 이벤트 바인딩
-    AUIGrid.bind(grid1, "selectionChange", function(event) {
-        search_grid2_onclick();
+    AUIGrid.bind(grid1, "rowCheckClick", function(event) {
+        AUIGrid.setSelectionByIndex(grid1, event.rowIndex, 0);
     });
 
-    async function grid1_column_make(){
+
+    async function gridAppr1_column_make(){
         let columns = [];
 
         //검색데이터
-        let param = {
-            OFFICE_CODE : loginUser.officeCode,
-        }
+        let param = {}
         //파라미터
         let data = {
             sectionId : sectionId,
-            component : pgId + "_grid1_column",
+            component : pgId + "_gridAppr1_column",
             param: param,
         }
         let list = await we_getSelectOption(data);
 
         list.forEach((row, idx)=>{
             let item = {};
-            item.dataField  = row.ABSENT_CD;
-            item.headerText = row.ABSENT_NAME;
-            item.dataType  = "numeric";
-            item.formatString = "#,##0.0";
-            item.width = "5%";
+            item.dataField  = row.DUTY_CD;
+            item.headerText = row.DUTY_NAME;
+            item.dataType  = "text";
             columns.push(item);
         });
-        let new_cols = [...grid1ColumnLayout, ...columns];
+        let new_cols = [...gridAppr1ColumnLayout, ...columns];
 
-        AUIGrid.changeColumnLayout(grid1, new_cols);
+        AUIGrid.changeColumnLayout(gridAppr1, new_cols);
     }
 
     //그리드 조회 함수
-    function search_grid1_onclick(){
+    function search_gridAppr1_onclick(){
 
         //검색데이터
-        let selectParam = {
-        }
+        let selectParam = {}
 
         //파라미터
         let selectData = {
             sectionId :  sectionId,
+            component : pgId + "_gridAppr1",
+            param: selectParam,
+        }
+
+        we_select( selectData,{
+            successSelect : (data) => {
+                //그리드 데이터 세팅
+                AUIGrid.setGridData(gridAppr1, data);
+            }
+        });
+    }
+
+    function search_grid1_onclick(){
+
+        if(!requireCheck("SEARCH_GRID1")) return;
+
+        //검색데이터
+        let selectParam = {}
+
+        //파라미터
+        let selectData = {
+            sectionId : sectionId,
             component : pgId + "_grid1",
             param: selectParam,
         }
@@ -190,225 +192,17 @@
         });
     }
 
-    function search_grid2_onclick(){
-
-        //검색데이터
-        let selectParam = {
-            CODEDV_NO : AUIGrid.getSelectedRows(grid1)[0].CODEDV_NO
-        }
-
-        //파라미터
-        let selectData = {
-            sectionId : sectionId,
-            component : pgId + "_grid2",
-            param: selectParam,
-        }
-
-        we_select( selectData,{
-            successSelect : (data) => {
-                //그리드 데이터 세팅
-                AUIGrid.setGridData(grid2, data);
-                //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
-                AUIGrid.setSelectionByIndex(grid2, focus2, 0);
-                focus2 = 0;
-            }
-        });
-    }
-
-    //그리드 추가 함수
-    function add_grid2_onclick(){
-        // 그리드의 편집 인푸터가 열린 경우 에디팅 완료 상태로 만듬.
-        AUIGrid.forceEditingComplete(grid2, null);
-        //새행 만들기
-        let selectRowItem = AUIGrid.getSelectedRows(grid1)[0];
-        const item = {};
-        item.CODEDV_NO = selectRowItem.CODEDV_NO;
-        AUIGrid.addRow(grid2, item, "last");
-    }
-
-    //그리드 저장 함수
-    function save_grid1_onclick(){
-        // 추가된 행 아이템들(배열)
-        let addedRowItems = AUIGrid.getAddedRowItems(grid1);
-        // 수정된 행 아이템들(배열) : 수정된 필드와 수정안된 필드 모두를 얻음.
-        let editedRowItems = AUIGrid.getEditedRowItems(grid1);
-
-        //검증
-        let itemCount = addedRowItems.length + editedRowItems.length;
-        if(itemCount == 0){
-            alert("변경된 항목이 없습니다");
-            return;
-        }
-        if(itemCount > 100){
-            alert("변경사항 저장은 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
-            return;
-        }
-        if(!confirm("총 " + itemCount + "건의 변경사항을 저장하시겠습니까?")) return;
-        if(!requireCheck("SAVE_GRID1")) return;
-
-        //포커스 지정
-        focus = gridFocus(grid1);
-
-        //저장 데이터
-        let saveParam = {
-            insertParam : addedRowItems,
-            updateParam : editedRowItems,
-            key : ["CODEDV_NO"],
-            before : {}
-        }
-
-        //파라미터
-        let saveData  = {
-            sectionId :  sectionId,
-            component : pgId + "_grid1",
-            param: saveParam,
-        }
-
-        we_save( saveData ,{
-            successSave : (data) => {
-                alert(data.O_MSG);
-                if(data.O_RESULT > 0){
-                    search_grid1_onclick();
-                }else return;
-            }
-        });
-    }
-
-    function save_grid2_onclick(){
-        // 추가된 행 아이템들(배열)
-        let addedRowItems = AUIGrid.getAddedRowItems(grid2);
-        // 수정된 행 아이템들(배열) : 수정된 필드와 수정안된 필드 모두를 얻음.
-        let editedRowItems = AUIGrid.getEditedRowItems(grid2);
-
-        //검증
-        let itemCount = addedRowItems.length + editedRowItems.length;
-        if(itemCount == 0){
-            alert("변경된 항목이 없습니다");
-            return;
-        }
-        if(itemCount > 100){
-            alert("변경사항 저장은 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)")
-            return;
-        }
-        if(!confirm("총 " + itemCount + "건의 변경사항을 저장하시겠습니까?")) return;
-        if(!requireCheck("SAVE_GRID2")) return;
-
-        //포커스 지정
-
-        focus = AUIGrid.getSelectedIndex(grid1)[0];
-        focus2 = gridFocus(grid2);
-
-        //저장 데이터
-        let saveParam = {
-            insertParam : addedRowItems,
-            updateParam : editedRowItems,
-            key : [],
-            before : {}
-        }
-
-        //파라미터
-        let saveData  = {
-            sectionId : sectionId,
-            component : pgId + "_grid2",
-            param: saveParam,
-        }
-
-        we_save( saveData ,{
-            successSave : (data) => {
-                alert(data.O_MSG);
-                if(data.O_RESULT > 0){
-                    search_grid2_onclick();
-                }else return;
-            }
-        });
-    }
-
-    //그리드 삭제 함수
-
-    function delete_grid2_onclick(){
-        //검증
-        const checkedItems = AUIGrid.getCheckedRowItems(grid2);
-        let itemCount = checkedItems.length;
-        if (itemCount=== 0) {
-            alert("체크된 항목이 없습니다");
-            return;
-        }
-        if(itemCount > 100){
-            alert("삭제는 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
-            return;
-        }
-        let delItemsName = checkedItems.map(row => row.item.CODEDTL_NM).join(", ");
-        if (!confirm( delItemsName + "을/를(총 " + itemCount +"건) 삭제하시겠습니까?")) return;
-
-        //포커스 지정
-        focus2 = (checkedItems[0].rowIndex -1) < 1 ? 0 : (checkedItems[0].rowIndex -1);
-
-        // 체크된 행 삭제 처리
-        AUIGrid.removeCheckedRows(grid2);
-
-        // 삭제된 행 아이템들(배열) -> 삭제 데이터
-        let param = {
-            deleteParam : AUIGrid.getRemovedItems(grid2),
-            before : {}
-        };
-
-
-        //공통 저장 트렌젝션용 데이터
-        let deleteData = {
-            sectionId :  sectionId,
-            component : pgId + "_grid2",
-            param : param,
-        }
-
-        we_delete(deleteData,{
-            successDelete : (data) => {
-                alert(data.O_MSG);
-                if(data.O_RESULT > 0){
-                    search_grid2_onclick();
-                }else return;
-            }
-        });
-    }
-
     //컴포넌트 필수항목 입력 체크
     function requireCheck(require){
         let isValid = true;
         switch(require){
-            case "SAVE_GRID1":
-                let addedRowItems = AUIGrid.getAddedRowItems(grid1);
-                let editedRowItems = AUIGrid.getEditedRowItems(grid1);
-                let items = [...addedRowItems,...editedRowItems];
-                for(const row of items){
-                    if(isNull(row.CODEDV_NM)){
-                        alert("코드구분명은 반드시 입력해야 합니다.");
-                        isValid = false;
-                        break;
-                    }
+            case "SEARCH_GRID1":
+                if(isNull(search_scDate.value)){
+                    alert("일자는 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
                 }
                 break;
-            case "SAVE_GRID2":
-                let addedRowItems2 = AUIGrid.getAddedRowItems(grid2);
-                let editedRowItems2 = AUIGrid.getEditedRowItems(grid2);
-                let items2 = [...addedRowItems2,...editedRowItems2];
-                for(const row of items2){
-                    if(isNull(row.CODEDV_NO)){
-                        alert("코드구분은 반드시 입력해야 합니다.");
-                        isValid = false;
-                        break;
-                    }
-                    if(isNull(row.CODE_NO)){
-                        alert("코드는 반드시 입력해야 합니다.");
-                        isValid = false;
-                        break;
-                    }
-                    if(isNull(row.CODEDTL_NM)){
-                        alert("코드명은 반드시 입력해야 합니다.");
-                        isValid = false;
-                        break;
-                    }
-                }
-                break;
-
         }
         return isValid;
     }
@@ -429,6 +223,9 @@
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print: true});
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
+
+        gridAppr1_column_make()
+
         //로드 시 그리드 바로 조회
         search_grid1_onclick();
         search_grid2_onclick();

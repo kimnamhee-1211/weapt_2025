@@ -15,9 +15,9 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/we_style_pop.css"/> 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/fontello_we/css/animation.css" >
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/fontello_we/css/menu.css" >
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_script.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_grid_script.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_crud_script.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_ui.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_grid.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_crud.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js"></script>    
     <style>
    

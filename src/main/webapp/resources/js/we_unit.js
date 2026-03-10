@@ -7,8 +7,14 @@
  *        format : "yyyy-MM-dd", "yyyy/MM/dd", "yyyyMMdd", "yyyy.MM.dd", "kor", "yyyy", "MM", "dd"
  * function isNull(object) : null 체크
  * function dateFormat(obj) : text 날짜 포멧
+ * function strToDate(obj) : text 날짜 - Date 변환
+ * function  dateToStr(date, format) : Date - text 날짜 변환
  * function stripHtml(html) : HTML 태그 제거-순수 텍스트 추출
- * function getMaxSeq(data, dataField) : max 구하기
+ * function nextAlpha(str) : 알파벳 조합 최대값 구하기
+ *
+ *
+ *
+ * const DS_MONTH : [{DS_MONTH_CD, DS_MONTH}]
  *
  */
 

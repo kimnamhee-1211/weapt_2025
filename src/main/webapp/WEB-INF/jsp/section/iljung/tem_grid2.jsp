@@ -168,9 +168,10 @@
         //그리드 조회 함수
         function search_grid1_onclick(){
 
+            if(!requireCheck("SEARCH_GRID1")) return;
+
             //검색데이터
-            let selectParam = {
-            }
+            let selectParam = {}
 
             //파라미터
             let selectData = {
@@ -191,6 +192,8 @@
         }
 
         function search_grid2_onclick(){
+
+            if(!requireCheck("SEARCH_GRID2")) return;
 
             //검색데이터
             let selectParam = {

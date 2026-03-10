@@ -6,33 +6,33 @@
  *
  * function btnMaker(search = false, add = false, del = false, save = false, print = false) : 공통버튼 만들기
  * function btnHidden(div, btnDivId) : 버튼 숨기기
- * function btnPermission : crud 권한별 공통버튼 제어
+ * function btnPermission(data) : crud 권한별 공통버튼 제어
  *
  * -----------------------------------------------------------------------
- * function selectOptionMaker : 공통코드 select 태그 option 설정
+ * function selectOptionMaker(CODEDV_NO, selectId, all, short = false) : 공통코드 select 태그 option 설정
  * function selectUsergroupId : UsergroupId select 태그 option 설정
  *
  * --------------------------------------------------------------
  * function inputDateFormat(obj) : 입력부 text 날짜 포멧
  * function inputNumFormat(obj) : 입력부 text 슷자 포멧
  * function inputTelFormat(obj) : 입력부 text 전화번호 포멧
- *
+ * function inputBRNFormat(obj) : 입력부 text 사업자번호 포멧
+ * function inputMoneyFormat(obj) : 입력부 text 금액 포멧
  *
  * -----------------------------------------------------------------------
  * function dataToInput(data, inputDivId) : data-input 태그 바인딩
  * function gridToInput(grid, inputDivId) : 그리그-input 태그 바인딩
  * function inputToGrid(grid, inputDivId) : input-그리드 태그 바인딩
+ * function inputToGrid(inputDivId) : input-object 태그 바인딩
+ *
+ * function clearInput(inputDivId) : input clear
+ * function clearInput(disableInput) : disabled input
  *
  * ----------------------------------------------------------------
  * function popupOpen(popupTagId) : 팝업 열기 이벤트
  * function popupClose(popupTagId) : 팝업 닫기 이벤트
- *---------------------------------------------------------------------------------------------------------------
- * function getToday(format) : 오늘 날짜
- *        format : "yyyy-MM-dd", "yyyy/MM/dd", "yyyyMMdd", "yyyy.MM.dd", "kor", "yyyy", "MM", "dd"
- * function isNull(object) : null 체크
- * function dateFormat(obj) : text 날짜 포멧
- * function stripHtml(html) : HTML 태그 제거-순수 텍스트 추출
- * function getMaxSeq(data, dataField) : max 구하기
+ *
+ *
  *
  */
 
@@ -171,24 +171,6 @@
         }
     }
 
-    //입력부 text 사업자번호 포멧
-    function inputBRNFormat(obj){
-        let num = obj.value.replace(/-/g, '');
-        let formatted = "";
-
-        if(!/^[0-9]*$/.test(num)){
-            obj.value = "";
-            return;
-        }
-        if(num.length == 10){
-            formatted = num.slice(0,3) + '-' + num.slice(3,5) + '-' + num.slice(5);
-        }else{
-            formatted = num; // 포맷 불가 상태 유지
-        }
-        obj.value = formatted;
-    }
-
-
     //입력부 text 전화번호 포멧
     function inputTelFormat(obj){
         let tel = obj.value.replace(/-/g, '');
@@ -214,8 +196,25 @@
         obj.value = formatted;
     }
 
+    //입력부 text 사업자번호 포멧
+    function inputBRNFormat(obj){
+        let num = obj.value.replace(/-/g, '');
+        let formatted = "";
 
-    //입력부 text 돈 포멧
+        if(!/^[0-9]*$/.test(num)){
+            obj.value = "";
+            return;
+        }
+        if(num.length == 10){
+            formatted = num.slice(0,3) + '-' + num.slice(3,5) + '-' + num.slice(5);
+        }else{
+            formatted = num; // 포맷 불가 상태 유지
+        }
+        obj.value = formatted;
+    }
+
+
+    //입력부 text 금액 포멧
     function inputMoneyFormat(obj){
         let num = obj.value.replace(/,/g, "");  // 기존 콤마 제거
 
@@ -315,7 +314,7 @@
 
 
 
-
+    //input lear
     function clearInput(inputDivId){
         const inputDiv = document.querySelector("#" + inputDivId);
         const namedElements = inputDiv.querySelectorAll('[name]');
@@ -324,6 +323,7 @@
         }
     }
 
+    //
     function disableInput(inputDivId){
         const inputDiv = document.querySelector("#" + inputDivId);
         const namedElements = inputDiv.querySelectorAll('[name]');

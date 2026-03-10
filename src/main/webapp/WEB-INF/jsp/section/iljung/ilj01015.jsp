@@ -146,6 +146,7 @@
             fixedWeekCount : false,
             height: 658,
             locale: 'ko',
+            dayMaxEventRows: true,
             eventDidMount: function(info) {
                 let tooltip = new Tooltip(info.el, {
                     title: info.event.title,

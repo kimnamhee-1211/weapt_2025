@@ -35,6 +35,6 @@
     <link rel="stylesheet" type="text/css" href="/resources/css/we_style_pop.css"/>
     <link rel="stylesheet" href="/resources/fontello_we/css/animation.css" >
     <link rel="stylesheet" href="/resources/fontello_we/css/menu.css" >
-    <script type='text/javascript' src="/resources/js/we_script.js"></script>
+    <script type='text/javascript' src="/resources/js/we_ui.js"></script>
     <title>종합관리솔루션</title>
 </head>

@@ -1,8 +1,7 @@
 /**
  * 2025.09
  *
- * 데이터 처리용 공통 js
- *
+ * CRUD 공통 function
  *
  * async function we_select : 공통 select 함수
  * async function we_insert : 공통 insert 함수
@@ -14,13 +13,11 @@
  * async function we_boardSavs : 공통 게시글 save 함수
  * async function we_boardDeleteOne : 공통 게시글 delete 함수
  *
- * async function we_checkCrudPermission(pgId, { successPer } = {}, timeout = 60_000) : 프로그램별 crud 권한 데이터 select 함수
- * function btnPermission(data) : crud 권한별 버튼 제어
- * function checkCrudPermission(pgId) : crud 권한 처리 호출 함수
+ * async function we_checkCrudPermission : crud 권한 데이터 select 함수
+ *
  *
  **/
 
-   const crudPrefix = "/api"
 
    //공통 select 함수
    async function we_select(data, { successSelect } = {}, timeout = 60_000) {
@@ -38,7 +35,7 @@
 
          method = "/selectList/";
          query = new URLSearchParams(data.param).toString();
-         url = ctx + crudPrefix + method  + sectionId + "/" + component + "?" +  query;
+         url = ctx + apiPrefix + method  + sectionId + "/" + component + "?" +  query;
 
          const res = await fetch(
              url,
@@ -123,7 +120,7 @@
          const param = JSON.stringify(data.param);
 
          const res = await fetch(
-             ctx + crudPrefix + method + sectionId + "/" + component,
+             ctx + apiPrefix + method + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -181,7 +178,7 @@
          const param = JSON.stringify(data.param)
 
          const res = await fetch(
-             ctx + crudPrefix + method + sectionId + "/" + component,
+             ctx + apiPrefix + method + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -233,7 +230,7 @@
          const param = JSON.stringify(data.param);
 
          const res = await fetch(
-             ctx + crudPrefix + method + sectionId + "/" + component,
+             ctx + apiPrefix + method + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -313,7 +310,7 @@
          const param =  JSON.stringify(data.param);
 
          const res = await fetch(
-             ctx + crudPrefix + "/saveList/" + sectionId + "/" + component,
+             ctx + apiPrefix + "/saveList/" + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -391,7 +388,7 @@
 
          method = "/boardSelectOne/";
          query = new URLSearchParams(data.param).toString();
-         url = ctx + crudPrefix + method + sectionId + "/" + component + "?" + query;
+         url = ctx + apiPrefix + method + sectionId + "/" + component + "?" + query;
 
          const res = await fetch(
              url,
@@ -467,7 +464,7 @@
          const param =  JSON.stringify(data.param);
 
          const res = await fetch(
-             ctx + crudPrefix + "/boardSave/" + sectionId + "/" + component,
+             ctx + apiPrefix + "/boardSave/" + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -560,7 +557,7 @@
          const param = JSON.stringify(data.param);
 
          const res = await fetch(
-             ctx + crudPrefix + method + sectionId + "/" + component,
+             ctx + apiPrefix + method + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -595,204 +592,6 @@
    /* 사용법
 
    */
-
-
-
-   //프로그램별 crud 권한 데이터 select 함수
-   async function we_checkCrudPermission(pgId, { successPer } = {}, timeout = 60_000) {
-
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), timeout);
-
-      try {
-         const res = await fetch(
-             ctx + crudPrefix + "/checkCrudPermission/" + pgId,
-             {
-                method: "GET",
-                headers: {
-                   "Accept": "application/json",
-                   "X-PG-ID": pgId,
-                },
-                credentials: "include",
-                signal: controller.signal
-             });
-
-         if(!res.ok) throw new Error(`서버 오류: ${res.status}`);
-
-         const json = await res.json();
-
-         if (typeof successPer === "function") await successPer(json);
-
-      }catch (err) {
-         if (err.name === "AbortError") {
-            console.error("요청 타임아웃");
-            alert("권한 조회 시간이 초과되었습니다");
-         }else{
-            console.error(err);
-            alert("권한 조회에 실패하였습니다");
-         }
-         throw err;
-      }finally{
-         clearTimeout(timer);
-      }
-   }
-   /*사용법
-
-      //crud 권한 처리 호출 함수
-      function checkCrudPermission(pgId){
-         we_checkCrudPermission(pgId,{
-            successPer : (data) => {
-               //권한에 따라 버튼 숨김
-               btnPermission(data)
-            }
-         });
-      }
-    */
-
-
-   async function we_getCode(CODEDV_NO, timeout = 60_000) {
-
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), timeout);
-
-      try {
-         const res = await fetch(
-             ctx + crudPrefix + "/getCode/" + CODEDV_NO,
-             {
-                method: "GET",
-                headers: {
-                   "Accept": "application/json",
-                   "X-PG-ID": pgId,
-                },
-                credentials: "include",
-                signal: controller.signal
-             });
-   
-         if(!res.ok) throw new Error(`서버 오류: ${res.status}`);
-
-         const json = await res.json();
-         return json;
-
-      }catch (err) {
-         if (err.name === "AbortError") {
-            console.error("요청 타임아웃");
-            alert("공통코드 조회 시간이 초과되었습니다");
-         }else{
-            console.error(err);
-            alert("공통코드 조회에 실패하였습니다");
-         }
-         throw err;
-      }finally{
-         clearTimeout(timer);
-      }
-   }
-   /*사용법
-        //공통코드 가져오기
-        function getCode(){
-            let selectOptions = we_getCode(CODEDV_NO);
-        }
-    */
-
-
-
-   // selectOption 함수
-   async function we_getSelectOption(data, timeout = 60_000) {
-
-      //로딩시작
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), timeout);
-
-      try {
-         let url = "";
-         let method = "";
-         let query = "";
-         const sectionId = encodeURIComponent(data.sectionId);
-         const component = encodeURIComponent(data.component);
-
-         method = "/getSelectOption/";
-         query = new URLSearchParams(data.param).toString();
-         url = ctx + crudPrefix + method + sectionId + "/" + component + "?" + query;
-
-         const res = await fetch(
-             url,
-             {
-                method: "GET",
-                headers: {
-                   "Accept": "application/json",
-                   "X-PG-ID": pgId,
-                },
-                credentials: "include",
-                signal: controller.signal
-             });
-
-         if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
-
-         const json = await res.json();
-         return json;
-
-      }catch (err) {
-         if (err.name === "AbortError") {
-            console.error("요청 타임아웃");
-            alert("조회 시간이 초과되었습니다");
-         }else{
-            console.error(err);
-            alert("조회에 실패하였습니다");
-         }
-         throw err;
-
-      }finally{
-         clearTimeout(timer);
-         //로딩종료
-      }
-   }
-
-async function we_getUsergroupId(timeout = 60_000) {
-
-   const controller = new AbortController();
-   const timer = setTimeout(() => controller.abort(), timeout);
-
-   try {
-      const res = await fetch(
-          ctx + crudPrefix + "/getUsergroupId",
-          {
-             method: "GET",
-             headers: {
-                "Accept": "application/json",
-                "X-PG-ID": pgId,
-             },
-             credentials: "include",
-             signal: controller.signal
-          });
-
-      if(!res.ok) throw new Error(`서버 오류: ${res.status}`);
-
-      const json = await res.json();
-      return json;
-
-   }catch (err) {
-      if (err.name === "AbortError") {
-         console.error("요청 타임아웃");
-         alert("공통코드 조회 시간이 초과되었습니다");
-      }else{
-         console.error(err);
-         alert("공통코드 조회에 실패하였습니다");
-      }
-      throw err;
-   }finally{
-      clearTimeout(timer);
-   }
-}
-/*사용법
-     //공통코드 가져오기
-     function getUsergroupId(){
-         let usergroupId = we_getSelectCode();
-     }
- */
-
-
-
-
-
 
 
 

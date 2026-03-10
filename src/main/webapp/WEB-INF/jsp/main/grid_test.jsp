@@ -15,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="/resources/css/we_style_pop.css"/> 
     <link rel="stylesheet" href="/resources/fontello_we/css/animation.css" >
     <link rel="stylesheet" href="/resources/fontello_we/css/menu.css" >
-    <script type="text/javascript" src="/resources/js/we_script.js"></script>
+    <script type="text/javascript" src="/resources/js/we_ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js"></script>    
     
     <!-- AUIGrid 라이센스 파일입니다. 그리드 출력을 위해 꼭 삽입하십시오. -->

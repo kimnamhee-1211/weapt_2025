@@ -128,6 +128,7 @@
 
     //그리드 조회 함수
     function search_grid1_onclick(){
+        if(!requireCheck("SEARCH_GRID1")) return;
 
         //검색데이터
         let selectParam = {
