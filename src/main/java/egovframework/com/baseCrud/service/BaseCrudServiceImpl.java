@@ -2,7 +2,7 @@ package egovframework.com.baseCrud.service;
 
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.BaseServiceSupport;
-import egovframework.com.exception.BaseCrudFailException;
+import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +50,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
     //다중 저장
     @Override
+    @Transactional
     public int insertList(String sectionId, String component, List<Map<String, Object>> param, LoginVO loginUser, String pgId) {
 
         String statement = buildStatement(sectionId, component, "insertList");
@@ -62,6 +63,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
     //단일 저장
     @Override
+    @Transactional
     public int insertOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
         String statement = buildStatement(sectionId, component, "insertOne");
@@ -74,6 +76,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
     //다중 수정
     @Override
+    @Transactional
     public int updateList(String sectionId, String component, List<Map<String, Object>> param, LoginVO loginUser, String pgId) {
 
         String statement = buildStatement(sectionId, component, "updateList");
@@ -86,6 +89,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
     //단일 수정
     @Override
+    @Transactional
     public int updateOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
         String statement = buildStatement(sectionId, component, "updateOne");
@@ -99,6 +103,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
     //다중 삭제
     @Override
+    @Transactional
     public Map<String, Object> deleteList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
         String statement = buildStatement(sectionId, component, "deleteList");
@@ -115,10 +120,10 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
         int resultRowCount = baseCrudMapper.deleteList(statement, deleteParam);
 
         if (resultRowCount <= 0) {
-            throw new BaseCrudFailException(
+            throw new CrudFailException(
                     "FAIL DELETE " + component + " : \n" + deleteParam,
                     "삭제 실패 : " + resultRowCount + "건",
-                    BaseCrudFailException.CrudType.DELETE);
+                    CrudFailException.CrudType.DELETE);
         }
 
         Map<String, Object> result = new HashMap<>();
@@ -132,6 +137,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
     //단일 삭제
     @Override
+    @Transactional
     public int deleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
         String statement = buildStatement(sectionId, component, "deleteOne");
@@ -168,10 +174,10 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
             resultInsertRowCount = processInsert(sectionId, component, loginUser, insertParam, rawKey, pgId);
 
             if (resultInsertRowCount <= 0) {
-                throw new BaseCrudFailException(
+                throw new CrudFailException(
                         "FAIL INSERT " + component + " : \n" + param,
                         "저장 실패 : " + (resultInsertRowCount) + "건",
-                        BaseCrudFailException.CrudType.INSERT);
+                        CrudFailException.CrudType.INSERT);
             }
         }
 
@@ -184,10 +190,10 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
             }
             resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId);
             if (resultUpdateRowCount <= 0) {
-                throw new BaseCrudFailException(
+                throw new CrudFailException(
                         "FAIL UPDATE " + component + " : \n" + param,
                         "저장 실패 : " + (resultUpdateRowCount) + "건",
-                        BaseCrudFailException.CrudType.UPDATE);
+                        CrudFailException.CrudType.UPDATE);
             }
         }
 
@@ -256,17 +262,17 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
             String statement = buildStatement(sectionId, component, "beforeDelete");
             resultRowCount = baseCrudMapper.deleteList(statement, beforeParam);
         } else {
-            throw new BaseCrudFailException(
+            throw new CrudFailException(
                     "FAIL CALLBEFOR " + component + " : " + saveMode,
                     "callBefore 실패",
-                    BaseCrudFailException.CrudType.CALLBEFORE);
+                    CrudFailException.CrudType.CALLBEFORE);
         }
 
         if (resultRowCount <= 0) {
-            throw new BaseCrudFailException(
+            throw new CrudFailException(
                     "FAIL CALLBEFORE " + component + " : \n" + beforeParam,
                     "callBefore 실패 : " + resultRowCount + "건",
-                    BaseCrudFailException.CrudType.CALLBEFORE);
+                    CrudFailException.CrudType.CALLBEFORE);
         }
 
         return resultRowCount;

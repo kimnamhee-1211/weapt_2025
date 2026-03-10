@@ -2,7 +2,7 @@ package egovframework.com.baseCrud.service;
 
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.BaseServiceSupport;
-import egovframework.com.exception.BaseCrudFailException;
+import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +33,10 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
             String cntUpStatement = buildStatement(sectionId, component, "boardCntUp");
             int cntUp = baseCrudMapper.updateOne(cntUpStatement, param);
             if (cntUp <= 0) {
-                throw new BaseCrudFailException(
+                throw new CrudFailException(
                         "FAIL CNT " + component,
                         "조회수 증가 실패 : " + cntUp + "건",
-                        BaseCrudFailException.CrudType.CNT);
+                        CrudFailException.CrudType.CNT);
             }
         }
         return result;
@@ -56,20 +56,20 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
         if (insertParam != null && !insertParam.isEmpty()) {
             resultInsertRowCount = processInsert(sectionId, component, loginUser, insertParam, pgId);
             if (resultInsertRowCount <= 0) {
-                throw new BaseCrudFailException(
+                throw new CrudFailException(
                         "FAIL INSERT " + component + " : \n" + param,
                         "저장 실패 : " + (resultInsertRowCount) + "건",
-                        BaseCrudFailException.CrudType.INSERT);
+                        CrudFailException.CrudType.INSERT);
             }
         }
 
         if (updateParam != null && !updateParam.isEmpty()) {
             resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId);
             if (resultUpdateRowCount <= 0) {
-                throw new BaseCrudFailException(
+                throw new CrudFailException(
                         "FAIL UPDATE " + component + " : \n" + param,
                         "저장 실패 : " + (resultUpdateRowCount) + "건",
-                        BaseCrudFailException.CrudType.UPDATE);
+                        CrudFailException.CrudType.UPDATE);
             }
         }
 
@@ -105,6 +105,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
 
     //게시글 삭제
     @Override
+    @Transactional
     public Map<String, Object> boardDeleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
         String statement = buildStatement(sectionId, component, "boardDeleteOne");
@@ -117,10 +118,10 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
         Map<String, Object> result = new HashMap<>();
 
         if (resultRowCount <= 0) {
-            throw new BaseCrudFailException(
+            throw new CrudFailException(
                     "FAIL DELETE " + component + " : \n" + deleteParam,
                     "삭제 실패 : " + resultRowCount + "건",
-                    BaseCrudFailException.CrudType.DELETE);
+                    CrudFailException.CrudType.DELETE);
         }
 
         result.put("O_STATUS", "SUCCESS");

@@ -11,11 +11,11 @@ import java.util.Map;
 @RestControllerAdvice
 public class ExceptionController {
 
-    @ExceptionHandler(BaseCrudFailException.class)
-    public ResponseEntity<Map<String, Object>> handleBaseCrudFailException(BaseCrudFailException ex) {
+    @ExceptionHandler(CrudFailException.class)
+    public ResponseEntity<Map<String, Object>> handleCrudFailException(CrudFailException ex) {
 
         // enum 값 가져오기
-        BaseCrudFailException.CrudType type = ex.getCrudType();
+        CrudFailException.CrudType type = ex.getCrudType();
 
         Map<String, Object> errorResponse = new HashMap<>();
 
@@ -28,5 +28,7 @@ public class ExceptionController {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);
     }
+
+
 
 }

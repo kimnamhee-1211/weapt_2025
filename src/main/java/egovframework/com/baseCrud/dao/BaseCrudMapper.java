@@ -11,22 +11,6 @@ import org.springframework.stereotype.Repository;
 public class BaseCrudMapper extends EgovAbstractMapper{
 
 	//다중 검색
-	public List<Map<String, Object>> baseSelectList(String statement){
-
-		List<Map<String, Object>> result = super.selectList(statement);
-		return result;
-	}
-
-	//map 검색
-	public Map<String, Object> baseSelectMap(String statement, String mapKey){
-
-		Map<String, Object> result = super.selectMap(statement, mapKey);
-
-		return result;
-	}
-
-
-	//다중 검색
 	public List<Map<String, Object>> selectList(String statement, Map<String, Object> param){
 		List<Map<String, Object>> result = super.selectList(statement, param);
 		return result;
