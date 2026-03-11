@@ -27,18 +27,13 @@
       const timer = setTimeout(() => controller.abort(), timeout);
 
       try {
-         let url = "";
-         let method = "";
-         let query = "";
          const sectionId = encodeURIComponent(data.sectionId);
          const component = encodeURIComponent(data.component);
-
-         method = "/selectList/";
-         query = new URLSearchParams(data.param)
-         url = ctx + apiPrefix + method  + sectionId + "/" + component + "?" +  query;
+         const query = new URLSearchParams(data.param)
+         let method = "/selectList/";
 
          const res = await fetch(
-             url,
+             ctx + apiPrefix + method  + sectionId + "/" + component + "?" +  query,
              {
                 method: "GET",
                 headers: {
@@ -109,15 +104,13 @@
       try {
          const sectionId = encodeURIComponent(data.sectionId);
          const component = encodeURIComponent(data.component);
+         const param = JSON.stringify(data.param);
          let method = "";
-
          if(Array.isArray(data.param)){
             method = "/insertList/";
          }else{
             method = "/insertOne/";
          }
-
-         const param = JSON.stringify(data.param);
 
          const res = await fetch(
              ctx + apiPrefix + method + sectionId + "/" + component,
@@ -167,15 +160,13 @@
       try {
          const sectionId = encodeURIComponent(data.sectionId);
          const component = encodeURIComponent(data.component);
+         const param = JSON.stringify(data.param)
          let method = "";
-
          if(Array.isArray(data.param)){
             method = "/updateList/";
          }else{
             method = "/updateOne/";
          }
-
-         const param = JSON.stringify(data.param)
 
          const res = await fetch(
              ctx + apiPrefix + method + sectionId + "/" + component,
@@ -225,9 +216,8 @@
       try {
          const sectionId = encodeURIComponent(data.sectionId);
          const component = encodeURIComponent(data.component);
-         let method = "/deleteList/";
-
          const param = JSON.stringify(data.param);
+         let method = "/deleteList/";
 
          const res = await fetch(
              ctx + apiPrefix + method + sectionId + "/" + component,
@@ -306,11 +296,11 @@
       try {
          const sectionId = encodeURIComponent(data.sectionId);
          const component = encodeURIComponent(data.component);
-
          const param =  JSON.stringify(data.param);
+         let method = "/saveList/"
 
          const res = await fetch(
-             ctx + apiPrefix + "/saveList/" + sectionId + "/" + component,
+             ctx + apiPrefix + method + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -380,18 +370,13 @@
       const timer = setTimeout(() => controller.abort(), timeout);
 
       try {
-         let url = "";
-         let method = "";
-         let query = "";
          const sectionId = encodeURIComponent(data.sectionId);
          const component = encodeURIComponent(data.component);
-
-         method = "/boardSelectOne/";
-         query = new URLSearchParams(data.param)
-         url = ctx + apiPrefix + method + sectionId + "/" + component + "?" + query;
+         const query = new URLSearchParams(data.param)
+         let method = "/boardSelectOne/";
 
          const res = await fetch(
-             url,
+             ctx + apiPrefix + method + sectionId + "/" + component + "?" + query,
              {
                 method: "GET",
                 headers: {
@@ -460,11 +445,11 @@
       try {
          const sectionId = encodeURIComponent(data.sectionId);
          const component = encodeURIComponent(data.component);
-
          const param =  JSON.stringify(data.param);
+         let method = "/boardSave/";
 
          const res = await fetch(
-             ctx + apiPrefix + "/boardSave/" + sectionId + "/" + component,
+             ctx + apiPrefix + method + sectionId + "/" + component,
              {
                 method: "POST",
                 headers: {
@@ -552,9 +537,8 @@
       try {
          const sectionId = encodeURIComponent(data.sectionId);
          const component = encodeURIComponent(data.component);
-         let method = "/boardDeleteOne/";
-
          const param = JSON.stringify(data.param);
+         let method = "/boardDeleteOne/";
 
          const res = await fetch(
              ctx + apiPrefix + method + sectionId + "/" + component,

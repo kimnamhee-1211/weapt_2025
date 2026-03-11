@@ -26,7 +26,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     @Transactional(readOnly = true)
     public List<Map<String, Object>> selectList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
-        String statement = buildStatement(sectionId, component, "selectList");
+        String statement = buildCrudStatement(sectionId, component, "selectList");
         setLoginParam(param, loginUser);
         setPgIdParam(param, pgId);
         System.out.println(param);
@@ -40,7 +40,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     @Transactional(readOnly = true)
     public Map<String, Object> selectMap(String sectionId, String component, Map<String, Object> param, String mapKey, LoginVO loginUser, String pgId) {
 
-        String statement = buildStatement(sectionId, component, "selectMap");
+        String statement = buildCrudStatement(sectionId, component, "selectMap");
         setLoginParam(param, loginUser);
         setPgIdParam(param, pgId);
         Map<String, Object> result = baseCrudMapper.selectMap(statement, param, mapKey);
@@ -53,7 +53,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     @Transactional
     public int insertList(String sectionId, String component, List<Map<String, Object>> param, LoginVO loginUser, String pgId) {
 
-        String statement = buildStatement(sectionId, component, "insertList");
+        String statement = buildCrudStatement(sectionId, component, "insertList");
         setLoginParam(param, loginUser);
         setPgIdParam(param, pgId);
         int resultRowCount = baseCrudMapper.insertList(statement, param);
@@ -66,7 +66,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     @Transactional
     public int insertOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
-        String statement = buildStatement(sectionId, component, "insertOne");
+        String statement = buildCrudStatement(sectionId, component, "insertOne");
         setLoginParam(param, loginUser);
         setPgIdParam(param, pgId);
         int resultRowCount = baseCrudMapper.insertOne(statement, param);
@@ -79,7 +79,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     @Transactional
     public int updateList(String sectionId, String component, List<Map<String, Object>> param, LoginVO loginUser, String pgId) {
 
-        String statement = buildStatement(sectionId, component, "updateList");
+        String statement = buildCrudStatement(sectionId, component, "updateList");
         setLoginParam(param, loginUser);
         setPgIdParam(param, pgId);
         int resultRowCount = baseCrudMapper.updateList(statement, param);
@@ -92,7 +92,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     @Transactional
     public int updateOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
-        String statement = buildStatement(sectionId, component, "updateOne");
+        String statement = buildCrudStatement(sectionId, component, "updateOne");
         setLoginParam(param, loginUser);
         setPgIdParam(param, pgId);
         int resultRowCount = baseCrudMapper.updateOne(statement, param);
@@ -106,7 +106,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     @Transactional
     public Map<String, Object> deleteList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
-        String statement = buildStatement(sectionId, component, "deleteList");
+        String statement = buildCrudStatement(sectionId, component, "deleteList");
         List<Map<String, Object>> deleteParam = (List<Map<String, Object>>) param.get("deleteParam");
         setLoginParam(deleteParam, loginUser);
         setPgIdParam(deleteParam, pgId);
@@ -121,7 +121,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
         if (resultRowCount <= 0) {
             throw new CrudFailException(
-                    "FAIL DELETE " + component + " : \n" + deleteParam,
+                    "FAIL DELETE " + sectionId + "/" + pgId + "/" + component  + " : \n" + deleteParam,
                     "삭제 실패 : " + resultRowCount + "건",
                     CrudFailException.CrudType.DELETE);
         }
@@ -140,7 +140,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     @Transactional
     public int deleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
-        String statement = buildStatement(sectionId, component, "deleteOne");
+        String statement = buildCrudStatement(sectionId, component, "deleteOne");
         setLoginParam(param, loginUser);
         setPgIdParam(param, pgId);
         int resultRowCount = baseCrudMapper.deleteOne(statement, param);
@@ -175,7 +175,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
             if (resultInsertRowCount <= 0) {
                 throw new CrudFailException(
-                        "FAIL INSERT " + component + " : \n" + param,
+                        "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                         "저장 실패 : " + (resultInsertRowCount) + "건",
                         CrudFailException.CrudType.INSERT);
             }
@@ -188,10 +188,12 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
             if (before != null && !before.isEmpty() && "update".equals(before.get("action"))) {
                 callBefore(before, loginUser, sectionId, component, pgId);
             }
+
             resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId);
+
             if (resultUpdateRowCount <= 0) {
                 throw new CrudFailException(
-                        "FAIL UPDATE " + component + " : \n" + param,
+                        "FAIL UPDATE " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                         "저장 실패 : " + (resultUpdateRowCount) + "건",
                         CrudFailException.CrudType.UPDATE);
             }
@@ -220,7 +222,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
         setLoginParam(insertParam, loginUser);
         setPgIdParam(insertParam, pgId);
         System.out.println(insertParam);
-        String statement = buildStatement(sectionId, component, "insertList");
+        String statement = buildCrudStatement(sectionId, component, "insertList");
         return baseCrudMapper.insertList(statement, insertParam);
     }
 
@@ -230,7 +232,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
         setLoginParam(updateParam, loginUser);
         setPgIdParam(updateParam, pgId);
         System.out.println(updateParam);
-        String statement = buildStatement(sectionId, component, "updateList");
+        String statement = buildCrudStatement(sectionId, component, "updateList");
         return baseCrudMapper.updateList(statement, updateParam);
     }
 
@@ -252,25 +254,25 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
         int resultRowCount = 0;
         if ("I".equals(saveMode)) {
-            String statement = buildStatement(sectionId, component, "beforeInsert");
+            String statement = buildCrudStatement(sectionId, component, "beforeInsert");
             resultRowCount = baseCrudMapper.insertList(statement, beforeParam);
         } else if ("U".equals(saveMode)) {
-            String statement = buildStatement(sectionId, component, "beforeUpdate");
+            String statement = buildCrudStatement(sectionId, component, "beforeUpdate");
             resultRowCount = baseCrudMapper.updateList(statement, beforeParam);
             System.out.println(resultRowCount);
         } else if ("D".equals(saveMode)) {
-            String statement = buildStatement(sectionId, component, "beforeDelete");
+            String statement = buildCrudStatement(sectionId, component, "beforeDelete");
             resultRowCount = baseCrudMapper.deleteList(statement, beforeParam);
         } else {
             throw new CrudFailException(
-                    "FAIL CALLBEFOR " + component + " : " + saveMode,
+                    "FAIL CALLBEFOR " + sectionId + "/" + pgId + "/" + component + "/" + saveMode,
                     "callBefore 실패",
                     CrudFailException.CrudType.CALLBEFORE);
         }
 
         if (resultRowCount <= 0) {
             throw new CrudFailException(
-                    "FAIL CALLBEFORE " + component + " : \n" + beforeParam,
+                    "FAIL CALLBEFORE " + sectionId + "/" + pgId + "/" + component + "/" + saveMode + " : \n" + beforeParam,
                     "callBefore 실패 : " + resultRowCount + "건",
                     CrudFailException.CrudType.CALLBEFORE);
         }
@@ -284,7 +286,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     @Transactional
     public List<Map<String, Object>> getKeyToParam(List<Map<String, Object>> param, Object rawKey, String sectionId, String component, LoginVO loginUser) {
 
-        String statement = buildStatement(sectionId, component, "getKey");
+        String statement = buildCrudStatement(sectionId, component, "getKey");
 
         Map<String, Object> keyParam = param.get(0);
         setLoginParam(keyParam, loginUser);
@@ -312,7 +314,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getSelectOption(String sectionId, String component, Map<String, Object> param,  LoginVO loginUser) {
 
-        String statement = buildStatement(sectionId, component, "getSelectOption");
+        String statement = buildCrudStatement(sectionId, component, "getSelectOption");
         setLoginParam(param, loginUser);
         List<Map<String, Object>> result = baseCrudMapper.getSelectOption(statement, param);
         return result;

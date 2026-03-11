@@ -40,8 +40,8 @@ public abstract class BaseServiceSupport {
     }
 
 
-    //mapper id 만들기
-    protected String buildStatement(String sectionId, String component, String action){
+    //mapper id 만들기(CRUD)
+    protected String buildCrudStatement(String sectionId, String component, String action){
 
         String mapper = sectionId.replaceAll("[^A-Za-z]", "") + "Mapper";
         String methodName = action +  "_" + component;
@@ -49,5 +49,15 @@ public abstract class BaseServiceSupport {
 
         return statement;
     }
+
+    //mapper id 만들기(Approval)
+    protected String buildApprovalStatement(String sectionId, String pgId, String action){
+        
+        String methodName = action +  "_" + sectionId + "_" + pgId;
+        String statement = "approvalMapper." + methodName;
+
+        return statement;
+    }
+
 
 }

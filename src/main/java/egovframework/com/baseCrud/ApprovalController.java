@@ -35,7 +35,7 @@ public class ApprovalController {
 	protected ApprovalService approvalService;
 
 
-	//결제직책 조회
+	//결재 직책 조회
 	@RequestMapping(value = "/getApprovalDuty/{sectionId}/{component}", produces="application/json;charset=UTF-8", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> getApprovalDuty(@PathVariable("sectionId") String sectionId,
@@ -44,13 +44,27 @@ public class ApprovalController {
 										@SessionAttribute("loginUser") LoginVO loginUser,
 										@RequestAttribute(value="PG_ID") String pgId){
 
-
-
 		List<Map<String, Object>> result = approvalService.getApprovalDuty(sectionId, component, param, loginUser, pgId);
 
 		return result;
 	}
 
+	//결재 현황 조회
+	@RequestMapping(value = "/selectApproval/{sectionId}/{component}", produces="application/json;charset=UTF-8", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> selectApproval(@PathVariable("sectionId") String sectionId,
+													 @PathVariable("component") String component,
+													 @RequestParam Map<String, Object> param,
+													 @SessionAttribute("loginUser") LoginVO loginUser,
+													 @RequestAttribute(value="PG_ID") String pgId){
+
+		List<Map<String, Object>> result = approvalService.selectApproval(sectionId, component, param, loginUser, pgId);
+
+		return result;
+	}
+
+
+	//결재 처리
 	@RequestMapping(value = "/approval/{sectionId}/{component}", produces="application/json;charset=UTF-8", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> processApproval(@PathVariable("sectionId") String sectionId,
@@ -59,10 +73,25 @@ public class ApprovalController {
 													 @SessionAttribute("loginUser") LoginVO loginUser,
 													 @RequestAttribute(value="PG_ID") String pgId){
 
-		Map<String, String> result = approvalService.processApproval(sectionId, component, param, loginUser, pgId);
+		List<Map<String, Object>> result = approvalService.processApproval(sectionId, component, param, loginUser, pgId);
 
-		return null;
+		return result;
 	}
+
+	//결재 취소 처리
+	@RequestMapping(value = "/cancelApproval/{sectionId}/{component}", produces="application/json;charset=UTF-8", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> processCancelApproval(@PathVariable("sectionId") String sectionId,
+														   @PathVariable("component") String component,
+														   @RequestParam Map<String, Object> param,
+														   @SessionAttribute("loginUser") LoginVO loginUser,
+														   @RequestAttribute(value="PG_ID") String pgId){
+
+		List<Map<String, Object>> result = approvalService.processCancelApproval(sectionId, component, param, loginUser, pgId);
+
+		return result;
+	}
+
 
 }
 

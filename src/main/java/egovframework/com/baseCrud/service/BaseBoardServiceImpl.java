@@ -22,15 +22,21 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
     @Transactional
     public Map<String, Object> boardSelectOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
-        String statement = buildStatement(sectionId, component, "boardSelectOne");
+        String statement = buildCrudStatement(sectionId, component, "boardSelectOne");
         setLoginParam(param, loginUser);
         setPgIdParam(param, pgId);
         System.out.println(param);
 
         Map<String, Object> result = baseCrudMapper.selectOne(statement, param);
+        if(result == null || result.isEmpty()) {
+            throw new CrudFailException(
+                    "FAIL BOARD SLELECT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
+                    "게시글 조회 실패",
+                    CrudFailException.CrudType.SELECT);
+        }
 
         if ("Y".equals(param.get("cnt")) && param.get("LOGINUSER_ID") != result.get("USER_ID")) {
-            String cntUpStatement = buildStatement(sectionId, component, "boardCntUp");
+            String cntUpStatement = buildCrudStatement(sectionId, component, "boardCntUp");
             int cntUp = baseCrudMapper.updateOne(cntUpStatement, param);
             if (cntUp <= 0) {
                 throw new CrudFailException(
@@ -57,7 +63,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
             resultInsertRowCount = processInsert(sectionId, component, loginUser, insertParam, pgId);
             if (resultInsertRowCount <= 0) {
                 throw new CrudFailException(
-                        "FAIL INSERT " + component + " : \n" + param,
+                        "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                         "저장 실패 : " + (resultInsertRowCount) + "건",
                         CrudFailException.CrudType.INSERT);
             }
@@ -67,7 +73,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
             resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId);
             if (resultUpdateRowCount <= 0) {
                 throw new CrudFailException(
-                        "FAIL UPDATE " + component + " : \n" + param,
+                        "FAIL UPDATE " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                         "저장 실패 : " + (resultUpdateRowCount) + "건",
                         CrudFailException.CrudType.UPDATE);
             }
@@ -88,7 +94,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
         setLoginParam(insertParam, loginUser);
         setPgIdParam(insertParam, pgId);
         System.out.println(insertParam);
-        String statement = buildStatement(sectionId, component, "insertList");
+        String statement = buildCrudStatement(sectionId, component, "insertList");
         return baseCrudMapper.insertOne(statement, insertParam);
     }
 
@@ -98,7 +104,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
         setLoginParam(updateParam, loginUser);
         setPgIdParam(updateParam, pgId);
         System.out.println(updateParam);
-        String statement = buildStatement(sectionId, component, "boardUpdateOne");
+        String statement = buildCrudStatement(sectionId, component, "boardUpdateOne");
         return baseCrudMapper.updateOne(statement, updateParam);
     }
 
@@ -108,7 +114,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
     @Transactional
     public Map<String, Object> boardDeleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
 
-        String statement = buildStatement(sectionId, component, "boardDeleteOne");
+        String statement = buildCrudStatement(sectionId, component, "boardDeleteOne");
         Map<String, Object> deleteParam = (Map<String, Object>) param.get("deleteParam");
         setLoginParam(deleteParam, loginUser);
         setPgIdParam(deleteParam, pgId);
@@ -119,7 +125,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
 
         if (resultRowCount <= 0) {
             throw new CrudFailException(
-                    "FAIL DELETE " + component + " : \n" + deleteParam,
+                    "FAIL DELETE " + sectionId + "/" + pgId + "/" + component + " : \n" + deleteParam,
                     "삭제 실패 : " + resultRowCount + "건",
                     CrudFailException.CrudType.DELETE);
         }

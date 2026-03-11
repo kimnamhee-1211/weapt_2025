@@ -1,15 +1,15 @@
 package egovframework.com.exception;
 
-public class CrudFailException extends RuntimeException {
+public class ApprovalFailException extends RuntimeException {
 
     public enum CrudType {
-        INSERT, UPDATE, DELETE, SELECT, SAVE, CALLBEFORE, CNT
+        NULL_DUTY, NULL_CONFIRMID, ALREADY_APPROVAL, NO_AUTHORITY, APPROVAL_FAILED
     }
 
     private final String userMessage;
     private final CrudType crudType;  // 실패 유형
 
-    public CrudFailException(String devMessage, String userMessage, CrudType crudType) {
+    public ApprovalFailException(String devMessage, String userMessage, CrudType crudType) {
         super(devMessage);
         this.userMessage = userMessage;
         this.crudType = crudType;
