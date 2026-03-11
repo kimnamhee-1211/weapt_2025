@@ -43,7 +43,9 @@ public class MenuController {
 		model.addAttribute("paramMap", paramMap);
 		model.addAttribute("pgId", pgId);
 		model.addAttribute("title", title);
-		System.out.println("pgId :" + pgId + "/" + title);
+		model.addAttribute("menuId", getMenuId(pgId));
+
+		System.out.println("pgId :" + pgId + "/" + getMenuId(pgId) + "/" + title);
 		String goPgId = setPgId(sectionId, pgId);
 
 		return "section/" + sectionId + "/" + goPgId;
@@ -61,8 +63,10 @@ public class MenuController {
 		return "popup/" + popup;
 	}
 
+	//동일 jsp 사용하는 경우
 	private String setPgId(String sectionId, String pgId) {
 		String goPgId = "";
+		//회의단체 메뉴
 		if(sectionId.equals("danche")){
 			//회의단체 명단
 			List<String> pgIdList1 = Arrays.asList(
@@ -104,6 +108,20 @@ public class MenuController {
 
 		return goPgId;
 	}
+
+	//menuId 가져오기
+	private String getMenuId(String pgId) throws Exception {
+
+		String menuId = "0000";
+
+		switch (pgId){
+			case "ilj01060" : menuId = "010010060"; break;
+		}
+
+		return menuId;
+	}
+
+
 
 
 }

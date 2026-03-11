@@ -40,9 +40,10 @@ public class BaseBoardController {
 											  @PathVariable("component") String component,
 											  @RequestParam Map<String, Object> param,
 											  @SessionAttribute("loginUser") LoginVO loginUser,
-											  @RequestAttribute(value="PG_ID") String pgId){
+											  @RequestAttribute(value="PG_ID") String pgId,
+											  @RequestAttribute(value="MENU_ID") String menuId){
 
-		Map<String, Object> result = baseBoardService.boardSelectOne(sectionId, component, param, loginUser, pgId);
+		Map<String, Object> result = baseBoardService.boardSelectOne(sectionId, component, param, loginUser, pgId, menuId);
 		return result;
 	}
 
@@ -50,12 +51,13 @@ public class BaseBoardController {
 	@RequestMapping(value = "/boardSave/{sectionId}/{component}", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> boardSave(@PathVariable("sectionId") String sectionId,
-										@PathVariable("component") String component,
-										@RequestBody Map<String, Object> param,
-										@SessionAttribute("loginUser") LoginVO loginUser,
-									 	@RequestAttribute(value="PG_ID") String pgId){
+										 @PathVariable("component") String component,
+										 @RequestBody Map<String, Object> param,
+										 @SessionAttribute("loginUser") LoginVO loginUser,
+										 @RequestAttribute(value="PG_ID") String pgId,
+										 @RequestAttribute(value="MENU_ID") String menuId){
 
-		Map<String, Object> result = baseBoardService.boardSave(sectionId, component, param, loginUser, pgId);
+		Map<String, Object> result = baseBoardService.boardSave(sectionId, component, param, loginUser, pgId, menuId);
 		return result;
 	}
 
@@ -66,9 +68,10 @@ public class BaseBoardController {
 											  @PathVariable("component") String component,
 											  @RequestBody Map<String, Object> param,
 											  @SessionAttribute("loginUser") LoginVO loginUser,
-											  @RequestAttribute(value="PG_ID") String pgId){
+											  @RequestAttribute(value="PG_ID") String pgId,
+											  @RequestAttribute(value="MENU_ID") String menuId){
 
-		Map<String, Object> result = baseBoardService.boardDeleteOne(sectionId, component, param, loginUser, pgId);
+		Map<String, Object> result = baseBoardService.boardDeleteOne(sectionId, component, param, loginUser, pgId, menuId);
 
 		return result ;
 	}

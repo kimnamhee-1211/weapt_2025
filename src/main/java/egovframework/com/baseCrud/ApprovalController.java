@@ -35,30 +35,48 @@ public class ApprovalController {
 	protected ApprovalService approvalService;
 
 
-	//결재 직책 조회
-	@RequestMapping(value = "/getApprovalDuty/{sectionId}/{component}", produces="application/json;charset=UTF-8", method = RequestMethod.GET)
+	//결재 직책 조회(개별)
+	@RequestMapping(value = "/getApprDuty/{sectionId}/{component}", produces="application/json;charset=UTF-8", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Map<String, Object>> getApprovalDuty(@PathVariable("sectionId") String sectionId,
-										@PathVariable("component") String component,
-										@RequestParam Map<String, Object> param,
-										@SessionAttribute("loginUser") LoginVO loginUser,
-										@RequestAttribute(value="PG_ID") String pgId){
+	public List<Map<String, Object>> getApprDuty(@PathVariable("sectionId") String sectionId,
+													 @PathVariable("component") String component,
+													 @RequestParam Map<String, Object> param,
+													 @SessionAttribute("loginUser") LoginVO loginUser,
+													 @RequestAttribute(value="PG_ID") String pgId,
+													 @RequestAttribute(value="MENU_ID") String menuId){
 
-		List<Map<String, Object>> result = approvalService.getApprovalDuty(sectionId, component, param, loginUser, pgId);
+		List<Map<String, Object>> result = approvalService.getApprDuty(sectionId, component, param, loginUser, pgId, menuId);
 
 		return result;
 	}
+
+	//결재 직책 조회 TPM_CONFIRM_LINE
+	@RequestMapping(value = "/getApprDutyLine/{sectionId}/{component}", produces="application/json;charset=UTF-8", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Map<String, Object>> getApprDutyLine(@PathVariable("sectionId") String sectionId,
+												 @PathVariable("component") String component,
+												 @RequestParam Map<String, Object> param,
+												 @SessionAttribute("loginUser") LoginVO loginUser,
+												 @RequestAttribute(value="PG_ID") String pgId,
+												 @RequestAttribute(value="MENU_ID") String menuId){
+
+		List<Map<String, Object>> result = approvalService.getApprDutyLine(sectionId, component, param, loginUser, pgId, menuId);
+
+		return result;
+	}
+
 
 	//결재 현황 조회
 	@RequestMapping(value = "/selectApproval/{sectionId}/{component}", produces="application/json;charset=UTF-8", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> selectApproval(@PathVariable("sectionId") String sectionId,
-													 @PathVariable("component") String component,
-													 @RequestParam Map<String, Object> param,
-													 @SessionAttribute("loginUser") LoginVO loginUser,
-													 @RequestAttribute(value="PG_ID") String pgId){
+													@PathVariable("component") String component,
+													@RequestParam Map<String, Object> param,
+													@SessionAttribute("loginUser") LoginVO loginUser,
+													@RequestAttribute(value="PG_ID") String pgId,
+													@RequestAttribute(value="MENU_ID") String menuId){
 
-		List<Map<String, Object>> result = approvalService.selectApproval(sectionId, component, param, loginUser, pgId);
+		List<Map<String, Object>> result = approvalService.selectApproval(sectionId, component, param, loginUser, pgId, menuId);
 
 		return result;
 	}
@@ -71,9 +89,10 @@ public class ApprovalController {
 													 @PathVariable("component") String component,
 													 @RequestParam Map<String, Object> param,
 													 @SessionAttribute("loginUser") LoginVO loginUser,
-													 @RequestAttribute(value="PG_ID") String pgId){
+													 @RequestAttribute(value="PG_ID") String pgId,
+													 @RequestAttribute(value="MENU_ID") String menuId){
 
-		List<Map<String, Object>> result = approvalService.processApproval(sectionId, component, param, loginUser, pgId);
+		List<Map<String, Object>> result = approvalService.processApproval(sectionId, component, param, loginUser, pgId, menuId);
 
 		return result;
 	}
@@ -85,9 +104,10 @@ public class ApprovalController {
 														   @PathVariable("component") String component,
 														   @RequestParam Map<String, Object> param,
 														   @SessionAttribute("loginUser") LoginVO loginUser,
-														   @RequestAttribute(value="PG_ID") String pgId){
+														   @RequestAttribute(value="PG_ID") String pgId,
+														   @RequestAttribute(value="MENU_ID") String menuId){
 
-		List<Map<String, Object>> result = approvalService.processCancelApproval(sectionId, component, param, loginUser, pgId);
+		List<Map<String, Object>> result = approvalService.processCancelApproval(sectionId, component, param, loginUser, pgId, menuId);
 
 		return result;
 	}

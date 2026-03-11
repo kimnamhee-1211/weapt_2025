@@ -60,6 +60,7 @@
 
         //변수 선언
     const pgId = "${pgId}";	//프로그램ID
+    const menuId = "${menuId}";	//메뉴ID
     const title_endDate = document.querySelector("#title_endDate"); //title 컴포넌트
     const input_endDate = document.querySelector("#input_endDate"); //input 컴포넌트
     let DS_END_DATE = [];

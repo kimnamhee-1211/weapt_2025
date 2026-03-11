@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="approvalMapper">
+
+	<select id="confirmLine_menuGroup" parameterType="map" resultType="map">
+		SELECT
+			A.CODE_NO
+		FROM dbo.TPM_CODEBODY AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}, A.DIVISION3_NM = #{MENU_ID}
+	</select>
+
+
+
+
+
+
+</mapper>

@@ -57,6 +57,7 @@
 
         //변수 선언
     const pgId = "${pgId}";	//프로그램ID
+    const menuId = "${menuId}";	//메뉴ID
     let grid1;	// 그리드 컴포넌트
     let grid2;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
@@ -68,6 +69,7 @@
             headerText: "수립일",
             dataType: "date",
             formatString: "yyyy-mm-dd",
+            editRenderer : we_calendar_Renderer
         }
     ];
 
@@ -93,11 +95,11 @@
         { dataField: "GBN_DESCR",
             headerText: "설명",
             dataType: "text",
-            width : "15%",
+            width : "*%",
         },
         { dataField: "ODER_SEQ",
             headerText: "정렬순서",
-            width : "15%",
+            width : "10%",
             dataType: "text",
             editRenderer : {
                 type: "InputEditRenderer",
@@ -106,7 +108,7 @@
         },
         { dataField: "USE_YN",
             headerText: "사용유무",
-            width : "15%",
+            width : "10%",
             renderer : we_cb_10_Renderer
         }
     ];
@@ -434,7 +436,7 @@
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section_middle_btn1", grid:"grid1", add: true, save: true});
-        btnMaker({ tag: "#section_middle_btn2", grid:"grid2", add: true, save: true});
+        btnMaker({ tag: "#section_middle_btn2", grid:"grid2", add: true, save: true, del: true});
         document.querySelector("#section_middle_btn2").insertAdjacentHTML("afterbegin", "<button id='regist_btn' onclick='regist_onclick()' class='admin_btn'>기본등록</button>");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);

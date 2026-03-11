@@ -263,14 +263,17 @@
 			A.MST_MONTH					AS MST_MONTH,
 			A.SEQ						AS SEQ,
 			A.SC_DATE					AS SC_DATE,
-			A.TITLE	+ '<br>' + A.DESCR	AS TITLE,
+			A.TITLE
+			    + CHAR(13) + CHAR(10)
+				+ CONVERT(VARCHAR(MAX), A.DESCR)
+										AS TITLE,
 			A.SCH_GBN 					AS SCH_GBN,
 			B.GBN_NAME      			AS GBN_NAME,
 			A.MAIN_DEPT_CD				AS MAIN_DEPT_CD,
 			C.DEPT_NAME 				AS MAIN_DEPT_NAME,
 			A.STATUS_CD					AS STATUS_CD,
 			dbo.getCode_nm(A.STATUS_CD) AS STATUS_NM,
-			CASE WHEN (NULLIF(LTRIM(RTRIM(D.NAME)), '') IS NULL THEN WORKER_NAME
+			CASE WHEN NULLIF(LTRIM(RTRIM(D.NAME)), '') IS NULL THEN WORKER_NAME
 			    ELSE D.NAME END AS WORKER_NAME
 		FROM dbo.TWK_SCHEDULE_NEW A
 		LEFT JOIN dbo.TWK_SCHEDULE_GBN AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SCH_GBN = B.SCH_GBN
@@ -293,15 +296,37 @@
 			</if>
 	</select>
 
-
-
-
-
-
-
-
-
-
+	<select id="selectList_ilj01060_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.MST_NO					AS MST_NO,
+			A.MST_MONTH					AS MST_MONTH,
+			A.SEQ						AS SEQ,
+			A.SC_DATE					AS SC_DATE,
+			A.TITLE
+				+ CHAR(13) + CHAR(10)
+				+ CONVERT(VARCHAR(MAX), A.DESCR)
+										AS TITLE,
+			A.SCH_GBN 					AS SCH_GBN,
+			B.GBN_NAME      			AS GBN_NAME,
+			A.MAIN_DEPT_CD				AS MAIN_DEPT_CD,
+			C.DEPT_NAME 				AS MAIN_DEPT_NAME,
+			A.STATUS_CD					AS STATUS_CD,
+			dbo.getCode_nm(A.STATUS_CD) AS STATUS_NM,
+			CASE WHEN NULLIF(LTRIM(RTRIM(D.NAME)), '') IS NULL THEN WORKER_NAME
+			ELSE D.NAME END AS WORKER_NAME
+		FROM dbo.TWK_SCHEDULE_NEW A
+		LEFT JOIN dbo.TWK_SCHEDULE_GBN AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SCH_GBN = B.SCH_GBN
+		LEFT JOIN dbo.THR_DEPT AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MAIN_DEPT_CD = C.DEPT_CD
+		LEFT JOIN dbo.TAD_EMP AS D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.WORK_USER_ID = D.EMP_NO
+		AND (NULLIF(LTRIM(RTRIM(D.RESIGN_DATE)), '') IS NULL OR CONVERT(DATE, D.RESIGN_DATE, 112) &gt;= CAST(GETDATE() AS DATE))
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			<if test="START_DATE != null and START_DATE != ''">
+				AND A.SC_DATE &gt;= #{START_DATE}
+			</if>
+			<if test="STATUS_CD != null and STATUS_CD != ''">
+				AND A.STATUS_CD = #{STATUS_CD}
+			</if>
+	</select>
 
 
 	<select id="getSelectOption_ilj02010_search_mstDate" parameterType="map" resultType="map">
@@ -613,7 +638,7 @@
 			A.REG_DATE				AS REG_DATE,
 			A.GBN_DESCR				AS GBN_DESCR,
 			ISNULL(A.USE_YN, '1')	AS USE_YN,
-			A.ODER_SEQ				AS ODER_SEQ
+			A.ORDER_SEQ				AS ODER_SEQ
 		FROM dbo.TWK_SCHEDULE_GBN A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 		ORDER BY A.SCH_GBN
@@ -626,20 +651,24 @@
 				A.GBN_NAME   			= U.GBN_NAME,
 				A.GBN_DESCR   			= U.GBN_DESCR,
 				A.USE_YN   				= U.USE_YN,
-				A.ODER_SEQ   			= U.ODER_SEQ
+				A.ORDER_SEQ   			= U.ORDER_SEQ
 			FROM dbo.TWK_SCHEDULE_GBN A
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
 					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
 					#{row.SCH_GBN} 			 	 AS SCH_GBN,
-					#{row.REG_DATE} 			 AS REG_DATE
+					#{row.REG_DATE} 			 AS REG_DATE,
+					#{row.GBN_NAME} 			 AS GBN_NAME,
+					#{row.GBN_DESCR} 			 AS GBN_DESCR,
+					#{row.USE_YN} 			 	 AS USE_YN,
+					#{row.ORDER_SEQ} 			 AS ORDER_SEQ
 			</foreach>
-			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.MST_DATE = U.MST_DATE
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.SCH_GBN = U.SCH_GBN AND A.REG_DATE = U.REG_DATE
 		</if>
 	</update>
 
-	<select id="getKey_ilj02040_grid0" parameterType="map" resultType="map">
+	<select id="getKey_ilj02040_grid2" parameterType="map" resultType="map">
 		SELECT
 			ISNULL(MAX(A.SCH_GBN), '100000') AS SCH_GBN
 		FROM dbo.TWK_SCHEDULE_GBN A
@@ -654,7 +683,7 @@
 				GBN_NAME,
 				GBN_DESCR,
 				USE_YN,
-				ODER_SEQ,
+				ORDER_SEQ,
 				REG_USER,
 				REG_DATE)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
@@ -664,7 +693,7 @@
 					#{row.GBN_NAME},
 					#{row.GBN_DESCR},
 					#{row.USE_YN},
-					#{row.ODER_SEQ},
+					#{row.ORDER_SEQ},
 					#{row.LOGINUSER_ID},
 					#{row.REG_DATE}
 			</foreach>

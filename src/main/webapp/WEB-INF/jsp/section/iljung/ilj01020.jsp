@@ -43,6 +43,7 @@
 
         //변수 선언
     const pgId = "${pgId}";	//프로그램ID
+    const menuId = "${menuId}";	//메뉴ID
 
     //crud 권한 처리 함수
     function checkCrudPermission(pgId){
@@ -60,8 +61,9 @@
         btnMaker({ tag: "#section1_btn", grid:"calendar1", add : true, print : true});
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
-        let pop_item = {
+                let pop_item = {
             pgId : pgId,
+		    menuId : menuId,
             querySet : "ilj01015",
             initialView : 'listWeek',
         };

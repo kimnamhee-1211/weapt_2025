@@ -42,6 +42,7 @@
 
         //변수 선언
     const pgId = "${pgId}";	//프로그램ID
+    const menuId = "${menuId}";	//메뉴ID
 
     //crud 권한 처리 함수
     function checkCrudPermission(pgId){
@@ -60,8 +61,9 @@
 
         checkCrudPermission(pgId);
 
-        let pop_item = {
+                let pop_item = {
             pgId : pgId,
+		    menuId : menuId,
             querySet : "dan003",
         };
         pop_onload(pop_item);

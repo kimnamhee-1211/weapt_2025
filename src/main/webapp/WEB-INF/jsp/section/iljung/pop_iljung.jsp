@@ -187,7 +187,11 @@
                 alert(data.O_MSG);
                 if(data.O_RESULT > 0){
                     saveKey = "U";
-                    initializeCalendar();
+                    if(pgId != "ilj01040"){
+                        initializeCalendar();
+                    }else{
+                        search_grid1_onclick();
+                    }
                 }else return;
             }
         });
@@ -260,7 +264,11 @@
                 if(data.O_RESULT > 0){
                     //팝업 닫기
                     close_popup_onclick();
-                    initializeCalendar();
+                    if(pgId != "ilj01040"){
+                        initializeCalendar();
+                    }else{
+                        search_grid1_onclick();
+                    }
                 }else return;
             }
         });

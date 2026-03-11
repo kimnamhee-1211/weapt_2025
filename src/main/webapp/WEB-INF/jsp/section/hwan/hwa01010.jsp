@@ -41,6 +41,7 @@
 
         //변수 선언
     const pgId = "${pgId}";	//프로그램ID
+    const menuId = "${menuId}";	//메뉴ID
 
     //crud 권한 처리 함수
     function checkCrudPermission(pgId){
@@ -58,8 +59,9 @@
         btnMaker({ tag: "#section1_btn", grid: "grid1", search : true, add : true});
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
-        let pop_item = {
+                let pop_item = {
             pgId : pgId,
+		    menuId : menuId,
             pop_title : "&#10004;&nbsp환경위생관리",
             querySet : "hwa001",
             board_div : "100001"	//게시판 구분

@@ -20,11 +20,11 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
     //게시글 검색
     @Override
     @Transactional
-    public Map<String, Object> boardSelectOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public Map<String, Object> boardSelectOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "boardSelectOne");
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         System.out.println(param);
 
         Map<String, Object> result = baseCrudMapper.selectOne(statement, param);
@@ -51,7 +51,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
     //게시글 저장 + 수정
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> boardSave(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public Map<String, Object> boardSave(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         Map<String, Object> insertParam = (Map<String, Object>) param.get("insertParam");
         Map<String, Object> updateParam = (Map<String, Object>) param.get("updateParam");
@@ -60,7 +60,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
         int resultUpdateRowCount = 0;
 
         if (insertParam != null && !insertParam.isEmpty()) {
-            resultInsertRowCount = processInsert(sectionId, component, loginUser, insertParam, pgId);
+            resultInsertRowCount = processInsert(sectionId, component, loginUser, insertParam, pgId, menuId);
             if (resultInsertRowCount <= 0) {
                 throw new CrudFailException(
                         "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
@@ -70,7 +70,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
         }
 
         if (updateParam != null && !updateParam.isEmpty()) {
-            resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId);
+            resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId, menuId);
             if (resultUpdateRowCount <= 0) {
                 throw new CrudFailException(
                         "FAIL UPDATE " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
@@ -89,20 +89,20 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
         return result;
     }
 
-    private int processInsert(String sectionId, String component, LoginVO loginUser, Map<String, Object> insertParam, String pgId) {
+    private int processInsert(String sectionId, String component, LoginVO loginUser, Map<String, Object> insertParam, String pgId, String menuId) {
         //loginUser set
         setLoginParam(insertParam, loginUser);
-        setPgIdParam(insertParam, pgId);
+        setPgIdParam(insertParam, pgId, menuId);
         System.out.println(insertParam);
         String statement = buildCrudStatement(sectionId, component, "insertList");
         return baseCrudMapper.insertOne(statement, insertParam);
     }
 
 
-    private int processUpdate(String sectionId, String component, LoginVO loginUser, Map<String, Object> updateParam, String pgId) {
+    private int processUpdate(String sectionId, String component, LoginVO loginUser, Map<String, Object> updateParam, String pgId, String menuId) {
         //loginUser set
         setLoginParam(updateParam, loginUser);
-        setPgIdParam(updateParam, pgId);
+        setPgIdParam(updateParam, pgId, menuId);
         System.out.println(updateParam);
         String statement = buildCrudStatement(sectionId, component, "boardUpdateOne");
         return baseCrudMapper.updateOne(statement, updateParam);
@@ -112,12 +112,12 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
     //게시글 삭제
     @Override
     @Transactional
-    public Map<String, Object> boardDeleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public Map<String, Object> boardDeleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "boardDeleteOne");
         Map<String, Object> deleteParam = (Map<String, Object>) param.get("deleteParam");
         setLoginParam(deleteParam, loginUser);
-        setPgIdParam(deleteParam, pgId);
+        setPgIdParam(deleteParam, pgId, menuId);
 
         int resultRowCount = baseCrudMapper.deleteOne(statement, deleteParam);
 

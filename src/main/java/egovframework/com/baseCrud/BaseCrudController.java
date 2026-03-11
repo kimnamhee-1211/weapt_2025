@@ -41,12 +41,13 @@ public class BaseCrudController {
 	@RequestMapping(value = "/selectList/{sectionId}/{component}", produces="application/json;charset=UTF-8", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Map<String, Object>> selectList(@PathVariable("sectionId") String sectionId,
-										@PathVariable("component") String component,
-										@RequestParam Map<String, Object> param,
-										@SessionAttribute("loginUser") LoginVO loginUser,
-										@RequestAttribute(value="PG_ID") String pgId){
+												@PathVariable("component") String component,
+												@RequestParam Map<String, Object> param,
+												@SessionAttribute("loginUser") LoginVO loginUser,
+												@RequestAttribute(value="PG_ID") String pgId,
+												@RequestAttribute(value="MENU_ID") String menuId){
 
-		List<Map<String, Object>> result = baseCrudService.selectList(sectionId, component, param, loginUser, pgId);
+		List<Map<String, Object>> result = baseCrudService.selectList(sectionId, component, param, loginUser, pgId, menuId);
 
 		return result;
 	}
@@ -55,13 +56,14 @@ public class BaseCrudController {
 	@RequestMapping(value = "/selectMap/{sectionId}/{component}", produces="application/json;charset=UTF-8", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> selectMap(@PathVariable("sectionId") String sectionId,
-									  	@PathVariable("component") String component,
-									  	@RequestParam Map<String, Object> param,
-									  	@RequestParam String mapKey,
-									  	@SessionAttribute("loginUser") LoginVO loginUser,
-								 		@RequestAttribute(value="PG_ID") String pgId){
+										 @PathVariable("component") String component,
+										 @RequestParam Map<String, Object> param,
+										 @RequestParam String mapKey,
+										 @SessionAttribute("loginUser") LoginVO loginUser,
+										 @RequestAttribute(value="PG_ID") String pgId,
+										 @RequestAttribute(value="MENU_ID") String menuId){
 
-		Map<String, Object> result = baseCrudService.selectMap(sectionId, component, param, mapKey, loginUser, pgId);
+		Map<String, Object> result = baseCrudService.selectMap(sectionId, component, param, mapKey, loginUser, pgId, menuId);
 
 		return result;
 	}
@@ -71,12 +73,13 @@ public class BaseCrudController {
 	@RequestMapping(value = "/insertList/{sectionId}/{component}", method = RequestMethod.POST)
 	@ResponseBody
 	public int insertList(@PathVariable("sectionId") String sectionId,
-					  @PathVariable("component") String component,
-					  @RequestBody List<Map<String, Object>> param,
-					  @SessionAttribute("loginUser") LoginVO loginUser,
-					  @RequestAttribute(value="PG_ID") String pgId){
+						  @PathVariable("component") String component,
+						  @RequestBody List<Map<String, Object>> param,
+						  @SessionAttribute("loginUser") LoginVO loginUser,
+						  @RequestAttribute(value="PG_ID") String pgId,
+						  @RequestAttribute(value="MENU_ID") String menuId){
 
-		int resultRowCount = baseCrudService.insertList(sectionId, component, param, loginUser, pgId);
+		int resultRowCount = baseCrudService.insertList(sectionId, component, param, loginUser, pgId, menuId);
 
 		return resultRowCount ;
 	}
@@ -89,9 +92,10 @@ public class BaseCrudController {
 						  @PathVariable("component") String component,
 						  @RequestBody Map<String, Object> param,
 						  @SessionAttribute("loginUser") LoginVO loginUser,
-						  @RequestAttribute(value="PG_ID") String pgId){
+						  @RequestAttribute(value="PG_ID") String pgId,
+						  @RequestAttribute(value="MENU_ID") String menuId){
 
-		int resultRowCount = baseCrudService.insertOne(sectionId, component, param, loginUser, pgId);
+		int resultRowCount = baseCrudService.insertOne(sectionId, component, param, loginUser, pgId, menuId);
 
 		return resultRowCount ;
 	}
@@ -104,9 +108,10 @@ public class BaseCrudController {
 						  @PathVariable("component") String component,
 						  @RequestBody List<Map<String, Object>> param,
 						  @SessionAttribute("loginUser") LoginVO loginUser,
-						  @RequestAttribute(value="PG_ID") String pgId){
+						  @RequestAttribute(value="PG_ID") String pgId,
+						  @RequestAttribute(value="MENU_ID") String menuId){
 
-		int resultRowCount = baseCrudService.updateList(sectionId, component, param, loginUser, pgId);
+		int resultRowCount = baseCrudService.updateList(sectionId, component, param, loginUser, pgId, menuId);
 
 		return resultRowCount ;
 	}
@@ -119,9 +124,10 @@ public class BaseCrudController {
 						 @PathVariable("component") String component,
 						 @RequestBody Map<String, Object> param,
 						 @SessionAttribute("loginUser") LoginVO loginUser,
-						 @RequestAttribute(value="PG_ID") String pgId){
+						 @RequestAttribute(value="PG_ID") String pgId,
+						 @RequestAttribute(value="MENU_ID") String menuId){
 
-		int resultRowCount = baseCrudService.updateOne(sectionId, component, param, loginUser, pgId);
+		int resultRowCount = baseCrudService.updateOne(sectionId, component, param, loginUser, pgId, menuId);
 
 		return resultRowCount ;
 	}
@@ -130,12 +136,13 @@ public class BaseCrudController {
 	@RequestMapping(value = "/deleteList/{sectionId}/{component}", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> deleteList(@PathVariable("sectionId") String sectionId,
-						  @PathVariable("component") String component,
-						  @RequestBody Map<String, Object> param,
-						  @SessionAttribute("loginUser") LoginVO loginUser,
-						  @RequestAttribute(value="PG_ID") String pgId){
+										  @PathVariable("component") String component,
+										  @RequestBody Map<String, Object> param,
+										  @SessionAttribute("loginUser") LoginVO loginUser,
+										  @RequestAttribute(value="PG_ID") String pgId,
+										  @RequestAttribute(value="MENU_ID") String menuId){
 
-		Map<String, Object> result = baseCrudService.deleteList(sectionId, component, param, loginUser, pgId);
+		Map<String, Object> result = baseCrudService.deleteList(sectionId, component, param, loginUser, pgId, menuId);
 
 		return result;
 	}
@@ -148,9 +155,10 @@ public class BaseCrudController {
 						 @PathVariable("component") String component,
 						 @RequestBody Map<String, Object> param,
 						 @SessionAttribute("loginUser") LoginVO loginUser,
-						 @RequestAttribute(value="PG_ID") String pgId){
+						 @RequestAttribute(value="PG_ID") String pgId,
+						 @RequestAttribute(value="MENU_ID") String menuId){
 
-		int resultRowCount = baseCrudService.deleteOne(sectionId, component, param, loginUser, pgId);
+		int resultRowCount = baseCrudService.deleteOne(sectionId, component, param, loginUser, pgId, menuId);
 
 		return resultRowCount ;
 	}
@@ -164,9 +172,10 @@ public class BaseCrudController {
 						  				@PathVariable("component") String component,
 						  				@RequestBody Map<String, Object> param,
 						 				@SessionAttribute("loginUser") LoginVO loginUser,
-										@RequestAttribute(value="PG_ID") String pgId){
+										@RequestAttribute(value="PG_ID") String pgId,
+										@RequestAttribute(value="MENU_ID") String menuId){
 
-		Map<String, Object> result = baseCrudService.saveList(sectionId, component, param, loginUser, pgId);
+		Map<String, Object> result = baseCrudService.saveList(sectionId, component, param, loginUser, pgId, menuId);
 		return result;
 	}
 

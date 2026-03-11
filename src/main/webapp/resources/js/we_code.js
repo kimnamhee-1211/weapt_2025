@@ -24,6 +24,7 @@
                 headers: {
                    "Accept": "application/json",
                    "X-PG-ID": pgId,
+                   "X-MENU-ID": menuId,
                 },
                 credentials: "include",
                 signal: controller.signal
@@ -81,6 +82,7 @@
                 headers: {
                    "Accept": "application/json",
                    "X-PG-ID": pgId,
+                   "X-MENU-ID": menuId,
                 },
                 credentials: "include",
                 signal: controller.signal
@@ -121,6 +123,7 @@
                 headers: {
                    "Accept": "application/json",
                    "X-PG-ID": pgId,
+                   "X-MENU-ID": menuId,
                 },
                 credentials: "include",
                 signal: controller.signal

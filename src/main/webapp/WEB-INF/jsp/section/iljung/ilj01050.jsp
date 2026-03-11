@@ -50,11 +50,12 @@
 
         //변수 선언
     const pgId = "${pgId}";	//프로그램ID
+    const menuId = "${menuId}";	//메뉴ID
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
-    const search_startDate = document.querySelector("search_startDate")	//select 컴포넌트
+    const search_startDate = document.querySelector("#search_startDate")	//select 컴포넌트
     const search_endDate = document.querySelector("#search_endDate")	//select 컴포넌트
-    const search_statusCd = document.querySelector("search_statusCd")	//select 컴포넌트
+    const search_statusCd = document.querySelector("#search_statusCd")	//select 컴포넌트
 
     //그리드 설정
     const grid1ColumnLayout = [
@@ -82,6 +83,7 @@
             headerText: "내용",
             dataType: "text",
             width : "*%",
+            style: "line-break-column",
         },
         { dataField: "MAIN_DEPT_NAME",
             headerText: "주무부서",
@@ -96,7 +98,7 @@
         { dataField: "WORKER_NAME",
             headerText: "처리자",
             width : "8%",
-            renderer : we_cb_YN_Renderer
+            dataType: "text",
         },
     ];
 
@@ -113,8 +115,9 @@
     //그리드 이벤트
     //행 클릭 시
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        let pop_item = {
+                let pop_item = {
             pgId : pgId,
+		    menuId : menuId,
             querySet : querySet,
             saveKey : "U",
             searchItem : {
@@ -180,7 +183,9 @@
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print : true});
         search_startDate.value = getToday("yyyy-MM-dd");
-        search_endDate.value = getToday("yyyy-MM-dd" + 7);
+        const d = new Date();
+        d.setDate(d.getDate() + 7);
+        search_endDate.value = d.toLocaleDateString("sv-SE");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
         Promise.all([

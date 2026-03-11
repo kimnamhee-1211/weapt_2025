@@ -49,16 +49,14 @@
 
         //변수 선언
     const pgId = "${pgId}";	//프로그램ID
+    const menuId = "${menuId}";	//메뉴ID
     let gridAppr1;	// 결재란 그리드 컴포넌트
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const search_scDate = document.querySelector("#search_scDate"); //select 컴포넌트
 
-    //그리드1 설정
-    const gridAppr1ColumnLayout = [];
-
-    //그리드1 생성
-    gridAppr1 = AUIGrid.create("#gridAppr1", gridAppr1ColumnLayout,
+    //결재란 생성
+    gridAppr1 = AUIGrid.create("#gridAppr1", [],
         Object.assign({}, we_appr_Props,
             {})
     );
@@ -83,6 +81,7 @@
             headerText: "내용",
             dataType: "text",
             width : "*%",
+            style: "line-break-column text-align-left",
         },
         { dataField: "MAIN_DEPT_NAME",
             headerText: "주무부서",
@@ -120,30 +119,41 @@
         AUIGrid.setSelectionByIndex(grid1, event.rowIndex, 0);
     });
 
-
-    async function gridAppr1_column_make(){
-        let columns = [];
-
+    //결재란 생성
+    async function getApprovalDuty_gridAppr1(){
         //검색데이터
         let param = {}
         //파라미터
         let data = {
             sectionId : sectionId,
-            component : pgId + "_gridAppr1_column",
+            component : pgId,
             param: param,
         }
-        let list = await we_getSelectOption(data);
 
-        list.forEach((row, idx)=>{
-            let item = {};
-            item.dataField  = row.DUTY_CD;
-            item.headerText = row.DUTY_NAME;
-            item.dataType  = "text";
-            columns.push(item);
+        we_getApprovalDuty(data,{
+            successGet : (data) => {
+                let columns = [];
+                if(data.length > 0){
+                    data.forEach(row=>{
+                        let item = {};
+                        item.dataField  = row.CONFIRM_SEQ;
+                        item.headerText = row.DUTY_CD;
+                        item.dataType  = "text";
+                        columns.push(item);
+                    });
+                }else{
+                    for(let i = 0; i < 3; i++){
+                        let item = {};
+                        item.dataField  = "1";
+                        item.headerText = "";
+                        item.dataType  = "text";
+                        columns.push(item);
+                    }
+                }
+
+                AUIGrid.changeColumnLayout(gridAppr1, columns);
+            }
         });
-        let new_cols = [...gridAppr1ColumnLayout, ...columns];
-
-        AUIGrid.changeColumnLayout(gridAppr1, new_cols);
     }
 
     //그리드 조회 함수
@@ -159,7 +169,7 @@
             param: selectParam,
         }
 
-        we_select( selectData,{
+        we_selectApproval( selectData,{
             successSelect : (data) => {
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(gridAppr1, data);
@@ -221,14 +231,15 @@
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print: true});
+        search_startDate.value = getToday("yyyy-MM-dd");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
 
-        gridAppr1_column_make()
+        //결재란 생성
+        getApprovalDuty_gridAppr1();
 
         //로드 시 그리드 바로 조회
         search_grid1_onclick();
-        search_grid2_onclick();
     };
 
 </script>

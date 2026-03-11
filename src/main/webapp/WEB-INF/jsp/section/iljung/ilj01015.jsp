@@ -102,6 +102,7 @@
 </style>
 <script>
     let parentPgId;
+    let parentMenuId;
     let querySet;
     let calendarEl;
     let calendar;
@@ -118,7 +119,7 @@
      * */
     function search_calendar1_onclick(info, successCallback, failureCallback) {
         $.ajax({
-            url: ctx + "/selectList/" + sectionId + "/" + querySet + "_calendar",
+            url: ctx + "/api/selectList/" + sectionId + "/" + querySet + "_calendar",
             type: 'GET',
             data: {
                 start: info.startStr.substring(0, 10).replace(/-/g,""),
@@ -126,6 +127,7 @@
             },
             headers: {
                 "X-PG-ID": parentPgId,
+                "X-MENU-ID": parentMenuId,
             },
             success: res => successCallback(res),
             error: err => failureCallback(err)
@@ -250,6 +252,7 @@
 
     function calendar_onload(pop_item){
         parentPgId = isNull(pop_item.pgId) ? "" : pop_item.pgId;
+        parentMenuId = isNull(pop_item.menuId) ? "" : pop_item.menuId;
         querySet = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
         initialView = pop_item.initialView ? pop_item.initialView : 'dayGridMonth';
 

@@ -24,11 +24,11 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //다중 검색
     @Override
     @Transactional(readOnly = true)
-    public List<Map<String, Object>> selectList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public List<Map<String, Object>> selectList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "selectList");
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         System.out.println(param);
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
@@ -38,11 +38,11 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //map 검색
     @Override
     @Transactional(readOnly = true)
-    public Map<String, Object> selectMap(String sectionId, String component, Map<String, Object> param, String mapKey, LoginVO loginUser, String pgId) {
+    public Map<String, Object> selectMap(String sectionId, String component, Map<String, Object> param, String mapKey, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "selectMap");
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         Map<String, Object> result = baseCrudMapper.selectMap(statement, param, mapKey);
 
         return result;
@@ -51,11 +51,11 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //다중 저장
     @Override
     @Transactional
-    public int insertList(String sectionId, String component, List<Map<String, Object>> param, LoginVO loginUser, String pgId) {
+    public int insertList(String sectionId, String component, List<Map<String, Object>> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "insertList");
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         int resultRowCount = baseCrudMapper.insertList(statement, param);
 
         return resultRowCount;
@@ -64,11 +64,11 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //단일 저장
     @Override
     @Transactional
-    public int insertOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public int insertOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "insertOne");
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         int resultRowCount = baseCrudMapper.insertOne(statement, param);
 
         return resultRowCount;
@@ -77,11 +77,11 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //다중 수정
     @Override
     @Transactional
-    public int updateList(String sectionId, String component, List<Map<String, Object>> param, LoginVO loginUser, String pgId) {
+    public int updateList(String sectionId, String component, List<Map<String, Object>> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "updateList");
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         int resultRowCount = baseCrudMapper.updateList(statement, param);
 
         return resultRowCount;
@@ -90,11 +90,11 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //단일 수정
     @Override
     @Transactional
-    public int updateOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public int updateOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "updateOne");
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         int resultRowCount = baseCrudMapper.updateOne(statement, param);
 
         return resultRowCount;
@@ -104,17 +104,17 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //다중 삭제
     @Override
     @Transactional
-    public Map<String, Object> deleteList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public Map<String, Object> deleteList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "deleteList");
         List<Map<String, Object>> deleteParam = (List<Map<String, Object>>) param.get("deleteParam");
         setLoginParam(deleteParam, loginUser);
-        setPgIdParam(deleteParam, pgId);
+        setPgIdParam(deleteParam, pgId, menuId);
 
         //사전 함수 호출
         Map<String, Object> before = (Map<String, Object>) param.get("before");
         if (before != null && !before.isEmpty()) {
-            callBefore(before, loginUser, sectionId, component, pgId);
+            callBefore(before, loginUser, sectionId, component, pgId, menuId);
         }
 
         int resultRowCount = baseCrudMapper.deleteList(statement, deleteParam);
@@ -138,11 +138,11 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //단일 삭제
     @Override
     @Transactional
-    public int deleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public int deleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "deleteOne");
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         int resultRowCount = baseCrudMapper.deleteOne(statement, param);
 
         return resultRowCount;
@@ -151,7 +151,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //다중 저장 + 수정
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> saveList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public Map<String, Object> saveList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         List<Map<String, Object>> insertParam = (List<Map<String, Object>>) param.get("insertParam");
         List<Map<String, Object>> updateParam = (List<Map<String, Object>>) param.get("updateParam");
@@ -161,7 +161,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
         Map<String, Object> before = (Map<String, Object>) param.get("before");
 
         if (before != null && !before.isEmpty() && "all".equals(before.get("action"))) {
-            callBefore(before, loginUser, sectionId, component, pgId);
+            callBefore(before, loginUser, sectionId, component, pgId, menuId);
         }
 
         //insert
@@ -169,9 +169,9 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
         if (insertParam != null && !insertParam.isEmpty()) {
             //사전 함수 호출
             if (before != null && !before.isEmpty() && "insert".equals(before.get("action"))) {
-                callBefore(before, loginUser, sectionId, component, pgId);
+                callBefore(before, loginUser, sectionId, component, pgId, menuId);
             }
-            resultInsertRowCount = processInsert(sectionId, component, loginUser, insertParam, rawKey, pgId);
+            resultInsertRowCount = processInsert(sectionId, component, loginUser, insertParam, rawKey, pgId, menuId);
 
             if (resultInsertRowCount <= 0) {
                 throw new CrudFailException(
@@ -186,10 +186,10 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
         if (updateParam != null && !updateParam.isEmpty()) {
             //사전 함수 호출
             if (before != null && !before.isEmpty() && "update".equals(before.get("action"))) {
-                callBefore(before, loginUser, sectionId, component, pgId);
+                callBefore(before, loginUser, sectionId, component, pgId, menuId);
             }
 
-            resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId);
+            resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId, menuId);
 
             if (resultUpdateRowCount <= 0) {
                 throw new CrudFailException(
@@ -210,7 +210,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     }
 
 
-    private int processInsert(String sectionId, String component, LoginVO loginUser, List<Map<String, Object>> insertParam, Object rawKey, String pgId) {
+    private int processInsert(String sectionId, String component, LoginVO loginUser, List<Map<String, Object>> insertParam, Object rawKey, String pgId, String menuId) {
         //pk get&set
         if (rawKey != null &&
                 ((rawKey instanceof String) ||
@@ -220,17 +220,17 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
         }
         //loginUser set
         setLoginParam(insertParam, loginUser);
-        setPgIdParam(insertParam, pgId);
+        setPgIdParam(insertParam, pgId, menuId);
         System.out.println(insertParam);
         String statement = buildCrudStatement(sectionId, component, "insertList");
         return baseCrudMapper.insertList(statement, insertParam);
     }
 
 
-    private int processUpdate(String sectionId, String component, LoginVO loginUser, List<Map<String, Object>> updateParam, String pgId) {
+    private int processUpdate(String sectionId, String component, LoginVO loginUser, List<Map<String, Object>> updateParam, String pgId, String menuId) {
         //loginUser set
         setLoginParam(updateParam, loginUser);
-        setPgIdParam(updateParam, pgId);
+        setPgIdParam(updateParam, pgId, menuId);
         System.out.println(updateParam);
         String statement = buildCrudStatement(sectionId, component, "updateList");
         return baseCrudMapper.updateList(statement, updateParam);
@@ -240,14 +240,14 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //사전 함수 호출
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int callBefore(Map<String, Object> before, LoginVO loginUser, String sectionId, String component, String pgId) {
+    public int callBefore(Map<String, Object> before, LoginVO loginUser, String sectionId, String component, String pgId, String menuId) {
 
         List<Map<String, Object>> beforeParam = (List<Map<String, Object>>) before.get("beforeParam");
         if (beforeParam == null || beforeParam.isEmpty()) return 0;
 
         //loginUser set
         setLoginParam(beforeParam, loginUser);
-        setPgIdParam(beforeParam, pgId);
+        setPgIdParam(beforeParam, pgId, menuId);
         System.out.println(beforeParam);
 
         String saveMode = (String) before.get("saveMode");

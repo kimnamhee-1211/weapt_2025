@@ -58,6 +58,7 @@
 
         //변수 선언
     const pgId = "${pgId}";	//프로그램ID
+    const menuId = "${menuId}";	//메뉴ID
     const popupId = "pop_write_ad";
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
@@ -340,8 +341,9 @@
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
 
-        let pop_item = {
+                let pop_item = {
             pgId : pgId,
+		    menuId : menuId,
             pop_title : "&#10004;&nbsp수정사항",
             board_div : "900001"	//게시판 구분
         };

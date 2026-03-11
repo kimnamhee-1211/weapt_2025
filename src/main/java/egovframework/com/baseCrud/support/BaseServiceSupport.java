@@ -25,18 +25,18 @@ public abstract class BaseServiceSupport {
         }
     }
 
-    protected void setPgIdParam(List<Map<String, Object>> param, String pgId){
-        if(pgId != null){
-            for(Map<String, Object> row : param){
-                row.put("PG_ID", pgId);
-            }
+    protected void setPgIdParam(List<Map<String, Object>> param, String pgId, String menuId){
+
+        for(Map<String, Object> row : param){
+            row.put("PG_ID", pgId);
+            row.put("MENU_ID", menuId);
         }
+
     }
 
-    protected void setPgIdParam(Map<String, Object> param, String pgId){
-        if(pgId != null){
+    protected void setPgIdParam(Map<String, Object> param, String pgId, String menuId){
             param.put("PG_ID", pgId);
-        }
+            param.put("MENU_ID", menuId);
     }
 
 

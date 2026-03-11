@@ -7,7 +7,7 @@
         <div id="section">
             <div class="section1">
                 <div class="section1_nav"><i class="icon-calendar-plus-o"></i>일정조회</div>
-                <div class="section1_btn" ID="section1_btn"></div>
+                <div class="section1_btn" id="section1_btn"></div>
             </div>
             <div class="section2">
                 <div class="section2_line2">
@@ -64,6 +64,8 @@
 
         //변수 선언
     const pgId = "${pgId}";	//프로그램ID
+    const menuId = "${menuId}";	//메뉴ID
+    let querySet = "ilj01015";
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const search_startDate = document.querySelector("#search_startDate"); //select 컴포넌트
@@ -128,6 +130,7 @@
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         let pop_item = {
             pgId : pgId,
+		    menuId : menuId,
             querySet : querySet,
             saveKey : "U",
             searchItem : {
@@ -188,6 +191,7 @@
                 }
                 break;
         }
+        return isValid;
     }
 
     //crud 권한 처리 함수
@@ -208,7 +212,7 @@
         //파라미터
         let data = {
             sectionId : sectionId,
-            component : querySet + "_input_schGbn",
+            component : pgId + "_search_schGbn",
             param: param,
         }
         let list = await we_getSelectOption(data);
@@ -232,7 +236,7 @@
         //파라미터
         let data = {
             sectionId : sectionId,
-            component : querySet + "_input_mainDeptCd",
+            component : pgId + "_search_mainDeptCd",
             param: param,
         }
         let list = await we_getSelectOption(data);
@@ -250,7 +254,7 @@
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        btnMaker({ tag: "#section1_btn1", grid:"grid1", search: true, print:true});
+        btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print:true});
         search_startDate.value = getToday("yyyy-MM-dd");
         search_endDate.value = getToday("yyyy-MM-dd");
         //crud 권한 처리 함수

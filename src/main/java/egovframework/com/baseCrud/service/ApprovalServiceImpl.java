@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +21,42 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
 
-    //결재 직책 조회
+    //결재 직책 조회(개별)
     @Override
     @Transactional(readOnly = true)
-    public List<Map<String, Object>> getApprovalDuty(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public List<Map<String, Object>> getApprDuty(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
-        String statement = buildCrudStatement(sectionId, component, "confirmDuty");
+        String statement = buildApprovalStatement(sectionId, component, "confirmDuty");
 
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         System.out.println(param);
+
+        List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
+
+        if(result == null || result.isEmpty()){
+            throw new ApprovalFailException(
+                    "NULL_DATA " + sectionId + "/" + component  + " : \n" + param,
+                    "결재 권한 직책 정보가 없습니다.",
+                    ApprovalFailException.CrudType.NULL_DUTY);
+        }
+
+        return result;
+    }
+
+    //결재 직책 조회 TPM_CONFIRM_LINE
+    @Override
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getApprDutyLine(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
+
+        setLoginParam(param, loginUser);
+        setPgIdParam(param, pgId, menuId);
+
+        List<Map<String, Object>> menuGroup = baseCrudMapper.selectList("approvalMapper.confirmLine_menuGroup", param);
+        param.put("MENU_GROUP", menuGroup.get(0).get("CODE_NO"));
+
+        System.out.println(param);
+        String statement = buildApprovalStatement(sectionId, component, "confirmDuty");
 
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
@@ -46,26 +73,36 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
     //결재 현황 조회
     @Override
     @Transactional(readOnly = true)
-    public List<Map<String, Object>> selectApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public List<Map<String, Object>> selectApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         System.out.println(param);
 
         //결재 현황 조회
-        List<Map<String, Object>> result = getApproval(sectionId, component, param);
+        List<Map<String, Object>> getApproval = getApproval(sectionId, component, param);
 
-        return result;
+        if(getApproval != null || !getApproval.isEmpty()){
+            List<Map<String, Object>> result = new ArrayList<>();
+            Map<String, Object> resultMap = new HashMap<>();
+            for(Map<String, Object> el : getApproval){
+                resultMap.put((String) el.get("CONFIRM_SEQ"), (String)el.get("REAL_USER_NM"));
+            }
+            result.add(resultMap);
+            return result;
+        }else{
+            return getApproval;
+        }
     }
 
 
     //결재 처리 프로세스
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public List<Map<String, Object>> processApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public List<Map<String, Object>> processApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         System.out.println(param);
 
         //결재 권한 확인
@@ -82,7 +119,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
     //결재 권한 확인
     private boolean checkApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser) {
 
-        String statement = buildCrudStatement(sectionId, component, "getApprAuth");
+        String statement = buildApprovalStatement(sectionId, component, "getApprAuth");
 
         //직책별 결재 권한 정보 조회
         List<Map<String, Object>> approvalAuthority = baseCrudMapper.selectList(statement, param);
@@ -119,7 +156,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
     //결재 처리
     private int approval(String sectionId, String component, Map<String, Object> param) {
-        String statement = buildCrudStatement(sectionId, component, "approval");
+        String statement = buildApprovalStatement(sectionId, component, "approval");
 
         int result = baseCrudMapper.insertOne(statement, param);
 
@@ -135,17 +172,17 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
     //결재 취소 처리 프로세스
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public List<Map<String, Object>> processCancelApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId) {
+    public List<Map<String, Object>> processCancelApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId);
+        setPgIdParam(param, pgId, menuId);
         System.out.println(param);
 
         //결재 취소 처리
         cancelApproval(sectionId, component, param);
 
         //결재 현황 조회
-        String statement = buildCrudStatement(sectionId, component, "selectApproval");
+        String statement = buildApprovalStatement(sectionId, component, "selectApproval");
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
         return result;
@@ -155,7 +192,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
     //결재 취소
     private int cancelApproval(String sectionId, String component, Map<String, Object> param) {
 
-        String statement = buildCrudStatement(sectionId, component, "cancelApproval");
+        String statement = buildApprovalStatement(sectionId, component, "cancelApproval");
 
         int result = baseCrudMapper.deleteOne(statement, param);
 
@@ -173,7 +210,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
     private List<Map<String, Object>> getApproval(String sectionId, String component, Map<String, Object> param) {
 
         //결재 현황 조회
-        String statement = buildCrudStatement(sectionId, component, "selectApproval");
+        String statement = buildApprovalStatement(sectionId, component, "selectApproval");
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
         return result;
