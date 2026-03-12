@@ -217,7 +217,8 @@
         }
 
         we_select( selectData,{
-            successSelect : (data) => {
+            successSelect : (json) => {
+                let data = json.DATA;
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
@@ -247,7 +248,8 @@
         }
 
         we_boardSelect( boardSelectData,{
-            successBoardSelect : (data) => {
+            successBoardSelect : (json) => {
+                let data = json.DATA;
                 saveKey = "U";
                 dataToInput(data, popupId);
                 //search_file1_onclick();
@@ -321,9 +323,9 @@
         }
 
         we_boardSave(boardSaveData ,{
-            successBoardSave : (data) => {
-                alert(data.O_MSG);
-                if(data.O_RESULT > 0){
+            successBoardSave : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
                     saveKey = "U";
                     search_grid1_onclick(function() {
                         search_board1_onclick();
@@ -360,9 +362,9 @@
         }
 
         we_boardDeleteOne(boardDeleteOneData,{
-            successboardDeleteOne : (data) => {
-                alert(data.O_MSG);
-                if(data.O_RESULT > 0){
+            successboardDeleteOne : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
                     //팝업 닫기
                     close_popup_onclick();
                     search_grid1_onclick();

@@ -152,7 +152,8 @@
         }
 
         we_select( selectData,{
-            successSelect : (data) => {
+            successSelect : (json) => {
+                let data = json.DATA;
                 let absentCdArr = [];
                 let gridData = [];
                 absentCdArr = ["100001", "100002","100003","100004","100005","100006","100007","100008","100009","100010","100011"]

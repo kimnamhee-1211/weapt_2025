@@ -78,7 +78,8 @@
         }
 
         we_select( selectData,{
-            successSelect : (data) => {
+            successSelect : (json) => {
+                let data = json.DATA;
                 DS_END_DATE = data;
                 title_endDate.value = DS_END_DATE[0].END_DATE
             }
@@ -120,12 +121,12 @@
         }
 
         we_save( saveData ,{
-            successSave : (data) => {
-                if(data.O_RESULT > 0){
+            successSave : (json) => {
+                if(json.O_RESULT > 0){
                     alert( input_endDate.value + "일자로 업무를 마감했습니다.");
                     search_grid1_onclick();
                 }else{
-                    alert(data.O_MSG);
+                    alert(json.O_MSG);
                     return;
                 }
             }

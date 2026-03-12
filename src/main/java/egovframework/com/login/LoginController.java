@@ -65,19 +65,6 @@ public class LoginController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-	/** EgovPropertyService */
-	@Resource(name = "propertiesService")
-	protected EgovPropertyService propertiesService;
-
-	/** Validator */
-	@Resource(name = "beanValidator")
-	protected DefaultBeanValidator beanValidator;
-	
-	@Resource(name = "commonService")
-	private CommonService commonService;
-
-
-
 	@Resource(name = "loginService")
 	protected LoginService loginService;
 

@@ -143,7 +143,8 @@
         }
 
         we_select( selectData,{
-            successSelect : (data) => {
+            successSelect : (json) => {
+                let data = json.DATA;
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
@@ -203,9 +204,9 @@
         }
 
         we_save( saveData ,{
-            successSave : (data) => {
-                alert(data.O_MSG);
-                if(data.O_RESULT > 0){
+            successSave : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
                     search_grid1_onclick();
                 }else return;
             }
@@ -249,9 +250,9 @@
         }
 
         we_delete(deleteData,{
-            successDelete : (data) => {
-                alert(data.O_MSG);
-                if(data.O_RESULT > 0){
+            successDelete : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
                     search_grid1_onclick();
                 }else return;
             }
@@ -302,9 +303,9 @@
         }
 
         we_save( saveData ,{
-            successSave : (data) => {
-                alert(data.O_MSG);
-                if(data.O_RESULT > 0){
+            successSave : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
                     search_grid1_onclick()
                 }else return;
             }

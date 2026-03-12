@@ -120,7 +120,7 @@
     });
 
     //결재란 생성
-    async function getApprovalDuty_gridAppr1(){
+    async function getApprDutyLine_gridAppr1(){
         //검색데이터
         let param = {}
         //파라미터
@@ -130,34 +130,38 @@
             param: param,
         }
 
-        we_getApprovalDuty(data,{
-            successGet : (data) => {
+        we_getApprDutyLine(data,{
+            successGet : (json) => {
                 let columns = [];
-                if(data.length > 0){
-                    data.forEach(row=>{
+                if(json.O_RESULT < 0){
+                    for(let i = 1; i < 4; i++){
                         let item = {};
-                        item.dataField  = row.CONFIRM_SEQ;
-                        item.headerText = row.DUTY_CD;
-                        item.dataType  = "text";
-                        columns.push(item);
-                    });
-                }else{
-                    for(let i = 0; i < 3; i++){
-                        let item = {};
-                        item.dataField  = "1";
+                        item.dataField  = i.toString();
                         item.headerText = "";
                         item.dataType  = "text";
                         columns.push(item);
                     }
+                    alert(json.O_MSG);
+                }else{
+                    let data = json.DATA
+                    if(data.length > 0){
+                        data.forEach(row=>{
+                            let item = {};
+                            item.dataField  = row.CONFIRM_SEQ;
+                            item.headerText = row.DUTY_CD;
+                            item.dataType  = "text";
+                            columns.push(item);
+                        });
+                    }
                 }
-
                 AUIGrid.changeColumnLayout(gridAppr1, columns);
+                selectApproval_gridAppr1()
             }
         });
     }
 
     //그리드 조회 함수
-    function search_gridAppr1_onclick(){
+    function selectApproval_gridAppr1(){
 
         //검색데이터
         let selectParam = {}
@@ -170,7 +174,8 @@
         }
 
         we_selectApproval( selectData,{
-            successSelect : (data) => {
+            successSelect : (json) => {
+                let data = json.DATA;
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(gridAppr1, data);
             }
@@ -192,7 +197,8 @@
         }
 
         we_select( selectData,{
-            successSelect : (data) => {
+            successSelect : (json) => {
+                let data = json.DATA;
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행

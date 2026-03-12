@@ -7,14 +7,14 @@ import java.util.Map;
 
 public interface ApprovalService {
 
-	public List<Map<String, Object>> getApprDuty(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
+    public List<Map<String, Object>> getApprDuty(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
-	public List<Map<String, Object>> getApprDutyLine(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
+    public List<Map<String, Object>> getApprDutyLine(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
-	public List<Map<String, Object>> selectApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
+    public List<Map<String, Object>> selectApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
-	public List<Map<String, Object>> processApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
+    public List<Map<String, Object>> processApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
-	public List<Map<String, Object>> processCancelApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
+    public List<Map<String, Object>> processCancelApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
 }

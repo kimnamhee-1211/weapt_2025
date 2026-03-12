@@ -131,7 +131,8 @@
         }
 
         we_select( selectData,{
-            successSelect : (data) => {
+            successSelect : (json) => {
+                let data = json.DATA;
                 if(isNull(data)){
                     alert("일정 정보가 존재하지 않습니다.")
                     close_popup_onclick();
@@ -183,9 +184,9 @@
         }
 
         we_save( saveData ,{
-            successSave : (data) => {
-                alert(data.O_MSG);
-                if(data.O_RESULT > 0){
+            successSave : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
                     saveKey = "U";
                     if(pgId != "ilj01040"){
                         initializeCalendar();
@@ -259,9 +260,9 @@
         }
 
         we_delete(deleteData,{
-            successDelete : (data) => {
-                alert(data.O_MSG);
-                if(data.O_RESULT > 0){
+            successDelete : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
                     //팝업 닫기
                     close_popup_onclick();
                     if(pgId != "ilj01040"){

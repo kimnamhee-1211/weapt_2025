@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //메뉴 이동
     tree.addEventListener('click', (e) => {
         let pg = "";
-        if(e.target.tagName == 'LI' && !isNull(e.target.id)){
+        if (e.target.tagName == 'LI' && !isNull(e.target.id)) {
             nav_focus = e.target.id;
             localStorage.setItem('nav_focus', nav_focus);
             localStorage.setItem('nav_focus_scroll', tree.scrollTop);
@@ -48,10 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (nav_focus !== null) {
             const focus_tag = document.getElementById(nav_focus);
             focus_tag.classList.add("focus");
-            tree.scrollTop = parseInt(nav_focus_scroll , 10);
-        }else{
+            tree.scrollTop = parseInt(nav_focus_scroll, 10);
+        } else {
             const focus_tag = tree.querySelector("li");
-            if(focus_tag){
+            if (focus_tag) {
                 focus_tag.classList.add("focus");
             }
             tree.scrollTop = 0;
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // 체크박스 상태 저장
-        checkbox.addEventListener('change', function() {
+        checkbox.addEventListener('change', function () {
             localStorage.setItem(id, checkbox.checked);
         });
     });

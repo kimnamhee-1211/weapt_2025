@@ -3,7 +3,6 @@ package egovframework.com.baseCrud.service;
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.BaseServiceSupport;
 import egovframework.com.exception.ApprovalFailException;
-import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +33,9 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
-        if(result == null || result.isEmpty()){
+        if (result == null || result.isEmpty()) {
             throw new ApprovalFailException(
-                    "NULL_DATA " + sectionId + "/" + component  + " : \n" + param,
+                    "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 직책 정보가 없습니다.",
                     ApprovalFailException.CrudType.NULL_DUTY);
         }
@@ -60,9 +59,9 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
-        if(result == null || result.isEmpty()){
+        if (result == null || result.isEmpty()) {
             throw new ApprovalFailException(
-                    "NULL_DATA " + sectionId + "/" + component  + " : \n" + param,
+                    "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 직책 정보가 없습니다.",
                     ApprovalFailException.CrudType.NULL_DUTY);
         }
@@ -80,19 +79,9 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         System.out.println(param);
 
         //결재 현황 조회
-        List<Map<String, Object>> getApproval = getApproval(sectionId, component, param);
+        List<Map<String, Object>> result = getApproval(sectionId, component, param);
 
-        if(getApproval != null || !getApproval.isEmpty()){
-            List<Map<String, Object>> result = new ArrayList<>();
-            Map<String, Object> resultMap = new HashMap<>();
-            for(Map<String, Object> el : getApproval){
-                resultMap.put((String) el.get("CONFIRM_SEQ"), (String)el.get("REAL_USER_NM"));
-            }
-            result.add(resultMap);
-            return result;
-        }else{
-            return getApproval;
-        }
+        return result;
     }
 
 
@@ -133,9 +122,9 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
         //결재 처리 여부 확인
         String confirm_date = (String) approvalAuthority.get(0).get("REAL_DATE");
-        if(confirm_date != null && !confirm_date.isEmpty()){
+        if (confirm_date != null && !confirm_date.isEmpty()) {
             throw new ApprovalFailException(
-                    "ALREADY_APPROVAL " + sectionId + "/" + component  + " : \n" + param,
+                    "ALREADY_APPROVAL " + sectionId + "/" + component + " : \n" + param,
                     "이미 결재 처리되었습니다.",
                     ApprovalFailException.CrudType.ALREADY_APPROVAL);
         }
@@ -144,9 +133,9 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         String confirm_id2 = (String) approvalAuthority.get(0).get("CONFIRM_ID_S");
 
         //결재 권한 확인
-        if(loginUser.getUserId().equals(confirm_id1) || loginUser.getUserId().equals(confirm_id2)){
+        if (loginUser.getUserId().equals(confirm_id1) || loginUser.getUserId().equals(confirm_id2)) {
             return true;
-        }else{
+        } else {
             throw new ApprovalFailException(
                     "FORBIDDEN " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한이 없습니다.",
@@ -160,11 +149,11 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
         int result = baseCrudMapper.insertOne(statement, param);
 
-        if(result < 1){
+        if (result < 1) {
             throw new ApprovalFailException(
-                "FAIL APPROVAL " + sectionId + "/" + component  + " : \n" + param,
-                "결재 실패",
-                ApprovalFailException.CrudType.APPROVAL_FAILED);
+                    "FAIL APPROVAL " + sectionId + "/" + component + " : \n" + param,
+                    "결재 실패",
+                    ApprovalFailException.CrudType.APPROVAL_FAILED);
         }
         return result;
     }
@@ -196,9 +185,9 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
         int result = baseCrudMapper.deleteOne(statement, param);
 
-        if(result < 1){
+        if (result < 1) {
             throw new ApprovalFailException(
-                    "FAIL APPROVAL " + sectionId + "/" + component  + " : \n" + param,
+                    "FAIL APPROVAL " + sectionId + "/" + component + " : \n" + param,
                     "결재 실패",
                     ApprovalFailException.CrudType.APPROVAL_FAILED);
         }
@@ -211,12 +200,23 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
         //결재 현황 조회
         String statement = buildApprovalStatement(sectionId, component, "selectApproval");
-        List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
+        List<Map<String, Object>> getApproval = baseCrudMapper.selectList(statement, param);
+        List<Map<String, Object>> result = new ArrayList<>();
 
+        if (getApproval != null || !getApproval.isEmpty()) {
+            Map<String, Object> resultMap = new HashMap<>();
+            for (Map<String, Object> el : getApproval) {
+                resultMap.put((String) el.get("CONFIRM_SEQ"), (String) el.get("REAL_USER_NM"));
+            }
+            result.add(resultMap);
+        } else {
+
+            Map<String, Object> emptyRow = new HashMap<>();
+            emptyRow.put("1", "");
+            result.add(emptyRow);
+        }
         return result;
     }
-
-
 
 
 }

@@ -134,7 +134,8 @@
             }
 
             we_select( selectData,{
-                successSelect : (data) => {
+                successSelect : (json) => {
+                let data = json.DATA;
                     data.forEach(row => {
                         orgFileNm.ATT_NO = row.FILE_NM
                     });

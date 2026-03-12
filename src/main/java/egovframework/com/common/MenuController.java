@@ -1,4 +1,4 @@
-package egovframework.com.cmmn;
+package egovframework.com.common;
 
 
 import org.springframework.stereotype.Controller;

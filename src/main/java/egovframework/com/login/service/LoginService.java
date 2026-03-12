@@ -8,10 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import egovframework.com.login.model.LoginVO;
 
 public interface LoginService {
-	
-	public void login(Map<String, Object> params) throws Exception;
 
-	public LoginVO login(LoginVO loginuser) throws Exception;
+    public LoginVO login(LoginVO loginuser) throws Exception;
 
 
 }

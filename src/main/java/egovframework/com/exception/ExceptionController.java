@@ -42,10 +42,10 @@ public class ExceptionController {
 
         if(type == ApprovalFailException.CrudType.NULL_DUTY || type == ApprovalFailException.CrudType.NULL_CONFIRMID) {
             errorResponse.put("O_STATUS", "NULL_DATA");
-            errorResponse.put("O_RESULT", -1);
+            errorResponse.put("O_RESULT", -2);
 
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
+                    .status(HttpStatus.OK)
                     .body(errorResponse);
 
         }else if(type == ApprovalFailException.CrudType.ALREADY_APPROVAL) {
@@ -53,15 +53,17 @@ public class ExceptionController {
             errorResponse.put("O_RESULT", -1);
 
             return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
+                    .status(HttpStatus.OK)
                     .body(errorResponse);
+
         }else if(type == ApprovalFailException.CrudType.NO_AUTHORITY) {
             errorResponse.put("O_STATUS", "FORBIDDEN");
             errorResponse.put("O_RESULT", -1);
 
             return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
+                    .status(HttpStatus.OK)
                     .body(errorResponse);
+
         }else{
             errorResponse.put("O_STATUS", "FAIL");
             errorResponse.put("O_RESULT", -1);

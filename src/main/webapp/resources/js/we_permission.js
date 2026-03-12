@@ -8,57 +8,58 @@
  *
  **/
 
-   //crud 권한 데이터 select 함수
-   async function we_checkCrudPermission(pgId, { successPer } = {}, timeout = 60_000) {
+//crud 권한 데이터 select 함수
+async function we_checkCrudPermission(pgId, {successPer} = {}, timeout = 60_000) {
 
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), timeout);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeout);
 
-      try {
-         const res = await fetch(
-             ctx + apiPrefix + "/checkCrudPermission/" + pgId,
-             {
+    try {
+        const res = await fetch(
+            ctx + apiPrefix + "/checkCrudPermission/" + pgId,
+            {
                 method: "GET",
                 headers: {
-                   "Accept": "application/json",
-                   "X-PG-ID": pgId,
-                   "X-MENU-ID": menuId,
+                    "Accept": "application/json",
+                    "X-PG-ID": pgId,
+                    "X-MENU-ID": menuId,
                 },
                 credentials: "include",
                 signal: controller.signal
-             });
+            });
+        const json = await res.json();
+        if (!res.ok) {
+            alert(json.O_MSG);
+            return;
+        }
+        if (typeof successPer === "function") await successPer(json);
 
-         if(!res.ok) throw new Error(`서버 오류: ${res.status}`);
-
-         const json = await res.json();
-
-         if (typeof successPer === "function") await successPer(json);
-
-      }catch (err) {
-         if (err.name === "AbortError") {
+    } catch (err) {
+        if (err.name === "AbortError") {
             console.error("요청 타임아웃");
             alert("권한 조회 시간이 초과되었습니다");
-         }else{
+        } else {
             console.error(err);
             alert("권한 조회에 실패하였습니다");
-         }
-         throw err;
-      }finally{
-         clearTimeout(timer);
-      }
-   }
-   /*사용법
+        }
+        throw err;
+    } finally {
+        clearTimeout(timer);
+    }
+}
 
-      //crud 권한 처리 호출 함수
-      function checkCrudPermission(pgId){
-         we_checkCrudPermission(pgId,{
-            successPer : (data) => {
-               //권한에 따라 버튼 숨김
-               btnPermission(data)
-            }
-         });
-      }
-    */
+/*사용법
+
+   //crud 권한 처리 호출 함수
+   function checkCrudPermission(pgId){
+      we_checkCrudPermission(pgId,{
+         successPer : (data) => {
+            //권한에 따라 버튼 숨김
+            btnPermission(data)
+         }
+      });
+   }
+ */
 
 
 

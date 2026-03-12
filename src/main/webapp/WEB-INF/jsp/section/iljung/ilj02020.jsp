@@ -120,7 +120,8 @@
         }
 
         we_select( selectData,{
-            successSelect : (data) => {
+            successSelect : (json) => {
+                let data = json.DATA;
                 let items = {};
                 data.forEach(row =>{
                     let month = row.MST_MONTH;

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service("baseBoardService")
@@ -19,7 +18,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
 
     //게시글 검색
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> boardSelectOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "boardSelectOne");
@@ -28,11 +27,10 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
         System.out.println(param);
 
         Map<String, Object> result = baseCrudMapper.selectOne(statement, param);
-        if(result == null || result.isEmpty()) {
+        if (result == null || result.isEmpty()) {
             throw new CrudFailException(
                     "FAIL BOARD SLELECT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
-                    "게시글 조회 실패",
-                    CrudFailException.CrudType.SELECT);
+                    "게시글 조회 실패", CrudFailException.CrudType.SELECT);
         }
 
         if ("Y".equals(param.get("cnt")) && param.get("LOGINUSER_ID") != result.get("USER_ID")) {
@@ -45,13 +43,14 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
                         CrudFailException.CrudType.CNT);
             }
         }
+
         return result;
     }
 
     //게시글 저장 + 수정
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> boardSave(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
+    public int boardSave(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         Map<String, Object> insertParam = (Map<String, Object>) param.get("insertParam");
         Map<String, Object> updateParam = (Map<String, Object>) param.get("updateParam");
@@ -79,14 +78,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
             }
         }
 
-        Map<String, Object> result = new HashMap<>();
-
-        result.put("O_STATUS", "SUCCESS");
-        result.put("O_RESULT", (resultInsertRowCount + resultUpdateRowCount));
-        result.put("O_MSG", resultInsertRowCount + resultUpdateRowCount + "건이 저장되었습니다.");
-        result.put("O_TYPE", "SAVE");
-
-        return result;
+        return resultInsertRowCount + resultUpdateRowCount;
     }
 
     private int processInsert(String sectionId, String component, LoginVO loginUser, Map<String, Object> insertParam, String pgId, String menuId) {
@@ -112,7 +104,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
     //게시글 삭제
     @Override
     @Transactional
-    public Map<String, Object> boardDeleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
+    public int boardDeleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "boardDeleteOne");
         Map<String, Object> deleteParam = (Map<String, Object>) param.get("deleteParam");
@@ -121,8 +113,6 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
 
         int resultRowCount = baseCrudMapper.deleteOne(statement, deleteParam);
 
-        Map<String, Object> result = new HashMap<>();
-
         if (resultRowCount <= 0) {
             throw new CrudFailException(
                     "FAIL DELETE " + sectionId + "/" + pgId + "/" + component + " : \n" + deleteParam,
@@ -130,12 +120,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
                     CrudFailException.CrudType.DELETE);
         }
 
-        result.put("O_STATUS", "SUCCESS");
-        result.put("O_RESULT", resultRowCount);
-        result.put("O_MSG", resultRowCount + "건이 삭제되었습니다.");
-        result.put("O_TYPE", "DELETE");
-
-        return result;
+        return resultRowCount;
     }
 
 }
