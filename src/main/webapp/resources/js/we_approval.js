@@ -234,7 +234,7 @@ async function we_approval(data, {successAppr} = {}, timeout = 60_000) {
 
 
 //결재 취소 처리 함수
-async function we_cancApproval(data, {successCancAppr} = {}, timeout = 60_000) {
+async function we_cnlApproval(data, {successCancAppr} = {}, timeout = 60_000) {
 
     //로딩시작
     const controller = new AbortController();

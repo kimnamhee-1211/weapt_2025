@@ -15,6 +15,6 @@ public interface ApprovalService {
 
     public List<Map<String, Object>> processApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
-    public List<Map<String, Object>> processCancelApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
+    public List<Map<String, Object>> processCnlApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
 }

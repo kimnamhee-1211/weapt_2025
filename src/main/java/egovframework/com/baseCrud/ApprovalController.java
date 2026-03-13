@@ -118,14 +118,14 @@ public class ApprovalController {
     //결재 취소 처리
     @RequestMapping(value = "/cancelApproval/{sectionId}/{component}", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
     @ResponseBody
-    public ApiResponse<List<Map<String, Object>>> processCancelApproval(@PathVariable("sectionId") String sectionId,
+    public ApiResponse<List<Map<String, Object>>> processCnlApproval(@PathVariable("sectionId") String sectionId,
                                                                         @PathVariable("component") String component,
                                                                         @RequestParam Map<String, Object> param,
                                                                         @SessionAttribute("loginUser") LoginVO loginUser,
                                                                         @RequestAttribute(value = "PG_ID") String pgId,
                                                                         @RequestAttribute(value = "MENU_ID") String menuId) {
 
-        List<Map<String, Object>> resultList = approvalService.processCancelApproval(sectionId, component, param, loginUser, pgId, menuId);
+        List<Map<String, Object>> resultList = approvalService.processCnlApproval(sectionId, component, param, loginUser, pgId, menuId);
         ApiResponse<List<Map<String, Object>>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
         result.setO_RESULT(resultList.size());

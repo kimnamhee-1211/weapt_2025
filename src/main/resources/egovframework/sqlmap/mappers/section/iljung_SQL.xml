@@ -602,16 +602,16 @@
 	<insert id="insertList_ilj02040_grid1" parameterType="list">
 		<if test="list != null and list.size > 0">
 			INSERT INTO dbo.TWK_MONTH_BASIC (
-				OFFICE_CODE,
-				MST_DATE,
-				REG_USER,
-				REG_DATE)
+			OFFICE_CODE,
+			MST_DATE,
+			REG_USER,
+			REG_DATE)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE},
-					#{row.MST_DATE},
-					#{row.LOGINUSER_ID},
-					#{row.REG_DATE}
+				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.MST_DATE},
+				#{row.LOGINUSER_ID},
+				#{row.REG_DATE}
 			</foreach>
 		</if>
 	</insert>

@@ -3,7 +3,7 @@ package egovframework.com.exception;
 public class ApprovalFailException extends RuntimeException {
 
     public enum CrudType {
-        NULL_DUTY, NULL_CONFIRMID, ALREADY_APPROVAL, NO_AUTHORITY, APPROVAL_FAILED
+        NULL_DUTY, NULL_CONFIRMID, ALREADY_APPROVAL, NO_APPROVAL, NO_AUTHORITY, NO_CANCEL_AUTHORITY, APPROVAL_FAILED, CANCEL_APPROVAL_FAILED
     }
 
     private final String userMessage;
