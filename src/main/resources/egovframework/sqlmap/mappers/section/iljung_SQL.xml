@@ -263,8 +263,7 @@
 			A.MST_MONTH					AS MST_MONTH,
 			A.SEQ						AS SEQ,
 			A.SC_DATE					AS SC_DATE,
-			A.TITLE
-			    + CHAR(13) + CHAR(10)
+			A.TITLE + '\n'
 				+ CONVERT(VARCHAR(MAX), A.DESCR)
 										AS TITLE,
 			A.SCH_GBN 					AS SCH_GBN,
@@ -302,9 +301,8 @@
 			A.MST_MONTH					AS MST_MONTH,
 			A.SEQ						AS SEQ,
 			A.SC_DATE					AS SC_DATE,
-			A.TITLE
-				+ CHAR(13) + CHAR(10)
-				+ CONVERT(VARCHAR(MAX), A.DESCR)
+			A.TITLE + '\n'
+			    + CONVERT(VARCHAR(MAX), A.DESCR)
 										AS TITLE,
 			A.SCH_GBN 					AS SCH_GBN,
 			B.GBN_NAME      			AS GBN_NAME,

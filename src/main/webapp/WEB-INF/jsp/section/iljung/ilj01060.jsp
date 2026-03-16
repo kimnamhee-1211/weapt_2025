@@ -243,8 +243,6 @@
     }
 
 
-
-
     function search_grid1_onclick(){
 
         if(!requireCheck("SEARCH_GRID1")) return;
@@ -313,7 +311,6 @@
 
         //결재란 생성
         getApprDutyLine_gridAppr1();
-
         //로드 시 그리드 바로 조회
         search_grid1_onclick();
     };
