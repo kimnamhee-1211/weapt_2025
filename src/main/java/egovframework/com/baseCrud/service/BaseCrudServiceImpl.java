@@ -2,6 +2,7 @@ package egovframework.com.baseCrud.service;
 
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.BaseServiceSupport;
+import egovframework.com.common.dto.ApiResponse;
 import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
@@ -60,7 +61,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
             throw new CrudFailException(
                     "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                     "저장 실패 : " + (resultRowCount) + "건",
-                    CrudFailException.CrudType.INSERT);
+                    ApiResponse.ApiType.INSERT);
         }
         return resultRowCount;
     }
@@ -78,7 +79,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
             throw new CrudFailException(
                     "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                     "저장 실패 : " + (resultRowCount) + "건",
-                    CrudFailException.CrudType.INSERT);
+                    ApiResponse.ApiType.INSERT);
         }
         return resultRowCount;
     }
@@ -96,7 +97,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
             throw new CrudFailException(
                     "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                     "저장 실패 : " + (resultRowCount) + "건",
-                    CrudFailException.CrudType.UPDATE);
+                    ApiResponse.ApiType.UPDATE);
         }
         return resultRowCount;
     }
@@ -114,7 +115,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
             throw new CrudFailException(
                     "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                     "저장 실패 : " + (resultRowCount) + "건",
-                    CrudFailException.CrudType.UPDATE);
+                    ApiResponse.ApiType.UPDATE);
         }
         return resultRowCount;
     }
@@ -141,7 +142,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
             throw new CrudFailException(
                     "FAIL DELETE " + sectionId + "/" + pgId + "/" + component + " : \n" + deleteParam,
                     "삭제 실패 : " + resultRowCount + "건",
-                    CrudFailException.CrudType.DELETE);
+                    ApiResponse.ApiType.DELETE);
         }
         return resultRowCount;
     }
@@ -187,7 +188,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
                 throw new CrudFailException(
                         "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                         "저장 실패 : " + (resultInsertRowCount) + "건",
-                        CrudFailException.CrudType.INSERT);
+                        ApiResponse.ApiType.INSERT);
             }
         }
 
@@ -205,7 +206,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
                 throw new CrudFailException(
                         "FAIL UPDATE " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                         "저장 실패 : " + (resultUpdateRowCount) + "건",
-                        CrudFailException.CrudType.UPDATE);
+                        ApiResponse.ApiType.UPDATE);
             }
         }
         return (resultInsertRowCount + resultUpdateRowCount);
@@ -269,14 +270,14 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
             throw new CrudFailException(
                     "FAIL CALLBEFOR " + sectionId + "/" + pgId + "/" + component + "/" + saveMode,
                     "callBefore 실패",
-                    CrudFailException.CrudType.CALLBEFORE);
+                    ApiResponse.ApiType.CALLBEFORE);
         }
 
         if (resultRowCount <= 0) {
             throw new CrudFailException(
                     "FAIL CALLBEFORE " + sectionId + "/" + pgId + "/" + component + "/" + saveMode + " : \n" + beforeParam,
                     "callBefore 실패 : " + resultRowCount + "건",
-                    CrudFailException.CrudType.CALLBEFORE);
+                    ApiResponse.ApiType.CALLBEFORE);
         }
 
         return resultRowCount;

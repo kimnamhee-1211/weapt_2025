@@ -385,7 +385,7 @@ button:hover{
 }
 .conf_line_right{
     height:98px;
-    width: 540px;
+    /*width: 540px;*/
     float: right;
 }
 .border10 {
@@ -841,3 +841,11 @@ textarea {
 .text-align-right {
     text-align: right !important;
 }
+
+
+/* 줄바꿈 문자 들어온 값 그대로 개행 시키기 위한 스타일 */
+.line-break-column .aui-grid-renderer-base {
+    white-space: pre-line; !important;
+    text-align: left !important;
+}
+

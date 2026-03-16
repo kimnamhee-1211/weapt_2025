@@ -16,7 +16,7 @@ async function we_getApprDuty(data, {successGet} = {}, timeout = 60_000) {
     try {
         const sectionId = encodeURIComponent(data.sectionId);
         const component = encodeURIComponent(data.component);
-        const query = new UrlSearchParams(data.param)
+        const query = new URLSearchParams(data.param)
         let method = "/getApprDuty/";
 
         const res = await fetch(
@@ -75,7 +75,7 @@ async function we_getApprDutyLine(data, {successGet} = {}, timeout = 60_000) {
     try {
         const sectionId = encodeURIComponent(data.sectionId);
         const component = encodeURIComponent(data.component);
-        const query = new UrlSearchParams(data.param)
+        const query = new URLSearchParams(data.param)
         let method = "/getApprDutyLine/";
 
         const res = await fetch(
@@ -132,7 +132,7 @@ async function we_selectApproval(data, {successSelect} = {}, timeout = 60_000) {
     try {
         const sectionId = encodeURIComponent(data.sectionId);
         const component = encodeURIComponent(data.component);
-        const query = new UrlSearchParams(data.param)
+        const query = new URLSearchParams(data.param)
         let method = "/selectApproval/";
 
         const res = await fetch(
@@ -176,7 +176,7 @@ async function we_selectApproval(data, {successSelect} = {}, timeout = 60_000) {
 
      we_selectApproval(data,{
         successSelect : (json) => {
-            let data = json.DATA;
+            let data = json.data;
 
         }
      });

@@ -43,6 +43,7 @@
 	<!-- AUIGrid CSS 테마 파일 (원하는 테마로 변경 가능) -->
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/grid/AUIGrid/AUIGrid_style.css" />
 
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_approval.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_code.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_crud.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_grid.js"></script>

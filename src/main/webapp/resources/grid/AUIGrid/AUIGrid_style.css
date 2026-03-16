@@ -2161,8 +2161,3 @@
 	font-weight: bold;
 	color: #000;
 }
-
-/* 줄바꿈 문자 들어온 값 그대로 개행 시키기 위한 스타일 */
-.line-break-column .aui-grid-renderer-base {
-	white-space: pre-line; !important;
-}

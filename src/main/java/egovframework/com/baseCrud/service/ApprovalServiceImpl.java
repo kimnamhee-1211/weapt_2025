@@ -2,6 +2,7 @@ package egovframework.com.baseCrud.service;
 
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.BaseServiceSupport;
+import egovframework.com.common.dto.ApiResponse;
 import egovframework.com.exception.ApprovalFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 직책 정보가 없습니다.",
-                    ApprovalFailException.CrudType.NULL_DUTY);
+                    ApiResponse.ApiType.APPROVAL);
         }
 
         return result;
@@ -52,7 +53,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         setPgIdParam(param, pgId, menuId);
 
         List<Map<String, Object>> menuGroup = baseCrudMapper.selectList("approvalMapper.confirmLine_menuGroup", param);
-        param.put("MENU_GROUP", menuGroup.get(0).get("CODE_NO"));
+        param.put("MENU_GROUP", menuGroup.get(0).get("MENU_GROUP"));
 
         System.out.println(param);
         String statement = buildApprovalStatement(sectionId, component, "confirmLine");
@@ -63,7 +64,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 직책 정보가 없습니다.",
-                    ApprovalFailException.CrudType.NULL_DUTY);
+                    ApiResponse.ApiType.APPROVAL);
         }
 
         return result;
@@ -133,7 +134,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 정보가 없습니다.",
-                    ApprovalFailException.CrudType.NULL_CONFIRMID);
+                    ApiResponse.ApiType.APPROVAL);
         }
 
         //결재 처리 여부 확인
@@ -142,7 +143,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "ALREADY_APPROVAL " + sectionId + "/" + component + " : \n" + param,
                     "이미 결재 처리되었습니다.",
-                    ApprovalFailException.CrudType.ALREADY_APPROVAL);
+                    ApiResponse.ApiType.APPROVAL);
         }
 
         String confirm_id1 = (String) approvalAuthority.get(0).get("CONFIRM_ID");
@@ -155,7 +156,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "NO_AUTHORITY " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한이 없습니다.",
-                    ApprovalFailException.CrudType.NO_AUTHORITY);
+                    ApiResponse.ApiType.APPROVAL);
         }
     }
 
@@ -169,7 +170,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "APPROVAL_FAILED " + sectionId + "/" + component + " : \n" + param,
                     "결재 실패",
-                    ApprovalFailException.CrudType.APPROVAL_FAILED);
+                    ApiResponse.ApiType.APPROVAL);
         }
         return result;
     }
@@ -207,7 +208,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 정보가 없습니다.",
-                    ApprovalFailException.CrudType.NULL_CONFIRMID);
+                    ApiResponse.ApiType.APPROVAL);
         }
 
         //결재 처리 여부 확인
@@ -216,7 +217,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "NO_APPROVAL " + sectionId + "/" + component + " : \n" + param,
                     "취소할 결재내역이 없습니다.",
-                    ApprovalFailException.CrudType.NO_APPROVAL);
+                    ApiResponse.ApiType.APPROVAL);
         }
 
         String confirm_userId = (String) approvalAuthority.get(0).get("REAL_USER_ID");
@@ -227,7 +228,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "NO_CANCEL_AUTHORITY " + sectionId + "/" + component + " : \n" + param,
                     "결재 취소 권한이 없습니다.",
-                    ApprovalFailException.CrudType.NO_CANCEL_AUTHORITY);
+                    ApiResponse.ApiType.APPROVAL);
         } else {
             return true;
         }
@@ -244,7 +245,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "CANCEL_APPROVAL_FAILED " + sectionId + "/" + component + " : \n" + param,
                     "결재 취소 실패",
-                    ApprovalFailException.CrudType.CANCEL_APPROVAL_FAILED);
+                    ApiResponse.ApiType.APPROVAL);
         }
         return result;
     }

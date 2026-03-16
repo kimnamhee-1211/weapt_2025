@@ -86,7 +86,7 @@ async function we_select(data, {successSelect} = {}, timeout = 60_000) {
 
       we_select( selectData,{
           successSelect : (json) => {
-             let data = json.DATA;
+             let data = json.data;
               //그리드 데이터 세팅
               AUIGrid.setGridData(grid1, data)
               //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
@@ -443,7 +443,7 @@ async function we_boardSelect(data, {successBoardSelect} = {}, timeout = 60_000)
 
       we_boardSelect( boardSelectData,{
           successBoardSelect : (json) => {
-                let data = json.DATA;
+                let data = json.data;
 
              dataToInput(data[0], write_popup);
              AUIGrid.setGridData(file_grid, data);

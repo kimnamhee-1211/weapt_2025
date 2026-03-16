@@ -2,6 +2,7 @@ package egovframework.com.baseCrud.service;
 
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.BaseServiceSupport;
+import egovframework.com.common.dto.ApiResponse;
 import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,8 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
         if (result == null || result.isEmpty()) {
             throw new CrudFailException(
                     "FAIL BOARD SLELECT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
-                    "게시글 조회 실패", CrudFailException.CrudType.SELECT);
+                    "게시글 조회 실패",
+                    ApiResponse.ApiType.SELECT);
         }
 
         if ("Y".equals(param.get("cnt")) && param.get("LOGINUSER_ID") != result.get("USER_ID")) {
@@ -40,7 +42,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
                 throw new CrudFailException(
                         "FAIL CNT " + component,
                         "조회수 증가 실패 : " + cntUp + "건",
-                        CrudFailException.CrudType.CNT);
+                        ApiResponse.ApiType.CNT);
             }
         }
 
@@ -64,7 +66,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
                 throw new CrudFailException(
                         "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                         "저장 실패 : " + (resultInsertRowCount) + "건",
-                        CrudFailException.CrudType.INSERT);
+                        ApiResponse.ApiType.INSERT);
             }
         }
 
@@ -74,7 +76,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
                 throw new CrudFailException(
                         "FAIL UPDATE " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
                         "저장 실패 : " + (resultUpdateRowCount) + "건",
-                        CrudFailException.CrudType.UPDATE);
+                        ApiResponse.ApiType.UPDATE);
             }
         }
 
@@ -117,7 +119,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
             throw new CrudFailException(
                     "FAIL DELETE " + sectionId + "/" + pgId + "/" + component + " : \n" + deleteParam,
                     "삭제 실패 : " + resultRowCount + "건",
-                    CrudFailException.CrudType.DELETE);
+                    ApiResponse.ApiType.DELETE);
         }
 
         return resultRowCount;

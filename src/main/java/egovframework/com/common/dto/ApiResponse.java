@@ -11,7 +11,9 @@ public class ApiResponse<T> {
         DELETE,
         INSERT,
         UPDATE,
-        APPROVAL
+        CALLBEFORE,
+        CNT,
+        APPROVAL,
     }
 
     private String O_STATUS;

@@ -318,11 +318,8 @@
 		LEFT JOIN dbo.TAD_EMP AS D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.WORK_USER_ID = D.EMP_NO
 		AND (NULLIF(LTRIM(RTRIM(D.RESIGN_DATE)), '') IS NULL OR CONVERT(DATE, D.RESIGN_DATE, 112) &gt;= CAST(GETDATE() AS DATE))
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
-			<if test="START_DATE != null and START_DATE != ''">
-				AND A.SC_DATE &gt;= #{START_DATE}
-			</if>
-			<if test="STATUS_CD != null and STATUS_CD != ''">
-				AND A.STATUS_CD = #{STATUS_CD}
+			<if test="SC_DATE != null and SC_DATE != ''">
+				AND A.SC_DATE &gt;= #{SC_DATE}
 			</if>
 	</select>
 
@@ -456,7 +453,7 @@
 
 	<select id="getSelectOption_ilj02020_search_mstDate" parameterType="map" resultType="map">
 		SELECT
-			A.MST_DATE,
+			A.MST_DATE AS MST_DATE,
 			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
 		FROM dbo.TWK_MONTH_BASIC A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
@@ -465,8 +462,8 @@
 
 	<select id="getSelectOption_ilj02020_grid1_column" parameterType="map" resultType="map">
 		SELECT
-			A.SCH_GBN,
-			A.GBN_NAME
+			A.SCH_GBN AS SCH_GBN,
+			A.GBN_NAME AS GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'1') = '1'
 		ORDER BY A.ORDER_SEQ
@@ -485,7 +482,7 @@
 
 	<select id="getSelectOption_ilj02030_search_mstDate" parameterType="map" resultType="map">
 		SELECT
-			A.MST_DATE,
+			A.MST_DATE AS MST_DATE,
 			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
 		FROM dbo.TWK_MONTH_BASIC A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
@@ -600,10 +597,10 @@
 	<insert id="insertList_ilj02040_grid1" parameterType="list">
 		<if test="list != null and list.size > 0">
 			INSERT INTO dbo.TWK_MONTH_BASIC (
-			OFFICE_CODE,
-			MST_DATE,
-			REG_USER,
-			REG_DATE)
+				OFFICE_CODE,
+				MST_DATE,
+				REG_USER,
+				REG_DATE)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
 				#{row.LOGINUSER_OFFICE_CODE},

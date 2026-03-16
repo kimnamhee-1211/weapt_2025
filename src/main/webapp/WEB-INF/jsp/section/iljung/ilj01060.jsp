@@ -81,7 +81,7 @@
             headerText: "내용",
             dataType: "text",
             width : "*%",
-            style: "line-break-column text-align-left",
+            style: "line-break-column",
         },
         { dataField: "MAIN_DEPT_NAME",
             headerText: "주무부서",
@@ -96,7 +96,7 @@
         { dataField: "WORKER_NAME",
             headerText: "처리자",
             width : "8%",
-            renderer : we_cb_YN_Renderer
+            dataType: "text",
         },
     ];
 
@@ -106,7 +106,8 @@
             {
                 editable : false,
                 showRowCheckColumn: false,
-                height : 546
+                height : 546,
+                rowHeight : 60
             })
     );
 
@@ -151,17 +152,17 @@
                     item.dataField  = "1";
                     item.headerText = "";
                     item.dataType  = "text";
-                    item.width = "80px";
+                    item.width = "100";
                     columns.push(item);
                     alert(json.O_MSG);
                 }else{
-                    let data = json.DATA;
+                    let data = json.data;
                     data.forEach(row=>{
                         let item = {};
                         item.dataField  = row.SEQ;
                         item.headerText = row.DUTY_CD;
                         item.dataType  = "text";
-                        item.width = "80px";
+                        item.width = "100";
                         columns.push(item);
                     })
                 }
@@ -186,7 +187,12 @@
 
         we_selectApproval( selectData,{
             successSelect : (json) => {
-                let data = json.DATA
+                let data = [];
+                if(json.data.length < 1){
+                    data = [...{ 1 : null}]
+                }else{
+                    data = json.data
+                }
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(gridAppr1, data);
             }
@@ -208,7 +214,7 @@
 
         we_approval( selectData,{
             successAppr : (json) => {
-                let data = json.DATA;
+                let data = json.data;
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(gridAppr1, data);
             }
@@ -235,7 +241,7 @@
 
         we_cnlApproval( selectData,{
             successCancAppr : (json) => {
-                let data = json.DATA;
+                let data = json.data;
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(gridAppr1, data);
             }
@@ -248,7 +254,9 @@
         if(!requireCheck("SEARCH_GRID1")) return;
 
         //검색데이터
-        let selectParam = {}
+        let selectParam = {
+            SC_DATE : search_scDate.value
+        }
 
         //파라미터
         let selectData = {
@@ -259,7 +267,7 @@
 
         we_select( selectData,{
             successSelect : (json) => {
-                let data = json.DATA;
+                let data = json.data;
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
@@ -305,7 +313,7 @@
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print: true});
-        search_startDate.value = getToday("yyyy-MM-dd");
+        search_scDate.value = getToday("yyyy-MM-dd");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
 

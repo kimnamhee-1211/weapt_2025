@@ -27,9 +27,9 @@ async function we_checkCrudPermission(pgId, {successPer} = {}, timeout = 60_000)
                 credentials: "include",
                 signal: controller.signal
             });
-        const json = await res.json();
+        //const json = await res.json();
         if (!res.ok) {
-            alert(json.O_MSG);
+           // alert(json.O_MSG);
             return;
         }
         if (typeof successPer === "function") await successPer(json);
