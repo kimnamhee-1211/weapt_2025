@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="minwonMapper">
+
+	<select id="selectList_min01010_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.DONG_ID		AS DONG_ID,
+			A.DONG_NAME		AS DONG_NAME,
+			C.VIEW_GBN		AS VIEW_GBN
+		FROM dbo.TMN_DONG A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY CONVERT(INT, A.SORT_ORDER), CONVERT(INT, A.REG_DATE)
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

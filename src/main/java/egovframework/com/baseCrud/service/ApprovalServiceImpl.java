@@ -38,7 +38,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 직책 정보가 없습니다.",
-                    ApiResponse.ApiType.APPROVAL);
+                    ApiResponse.ApiType.NULL_DATA);
         }
 
         return result;
@@ -64,7 +64,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 직책 정보가 없습니다.",
-                    ApiResponse.ApiType.APPROVAL);
+                    ApiResponse.ApiType.NULL_DATA);
         }
 
         return result;
@@ -134,7 +134,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 정보가 없습니다.",
-                    ApiResponse.ApiType.APPROVAL);
+                    ApiResponse.ApiType.NULL_DATA);
         }
 
         //결재 처리 여부 확인
@@ -208,7 +208,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
             throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 정보가 없습니다.",
-                    ApiResponse.ApiType.APPROVAL);
+                    ApiResponse.ApiType.NULL_DATA);
         }
 
         //결재 처리 여부 확인

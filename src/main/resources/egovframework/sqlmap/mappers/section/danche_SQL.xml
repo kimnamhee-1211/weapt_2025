@@ -4,16 +4,16 @@
 
 	<select id="selectList_dan001_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE,
-			A.EMP_NO,
-			A.REG_DATE,
-			A.DONG,
-			A.HO,
-			A.DUTY_CD,
-			A.NAME,
-			A.HP_NO,
-			A.BIRTH,
-			A.REMARKS
+			A.OFFICE_CODE 	AS OFFICE_CODE,
+			A.EMP_NO 		AS EMP_NO,
+			A.REG_DATE 		AS REG_DATE,
+			A.DONG 			AS DONG,
+			A.HO 			AS HO,
+			A.DUTY_CD 		AS DUTY_CD,
+			A.NAME 			AS NAME,
+			A.HP_NO 		AS HP_NO,
+			A.BIRTH 		AS BIRTH,
+			A.REMARKS 		AS REMARKS
 		FROM
 		<choose>
 			<when test="PG_ID == 'dan01010'">
@@ -320,7 +320,7 @@
 			#{BOARD_CONTENT},
 			#{BOARD_DATE},
 			#{LOGINUSER_ID},
-			#{LOGINUSER_NAME},
+			#{LOGINUSER_NAME}
 		FROM dbo.TME_BOARD
 		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND BOARD_DIV = #{BOARD_DIV}
 	</insert>
@@ -354,18 +354,18 @@
 
 	<select id="selectList_dan003_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE,
-			A.EMP_NO,
-			A.REG_DATE,
-			A.DONG,
-			A.HO,
-			A.DUTY_CD,
+			A.OFFICE_CODE 	AS OFFICE_CODE,
+			A.EMP_NO 		AS EMP_NO,
+			A.REG_DATE 		AS REG_DATE,
+			A.DONG 			AS DONG,
+			A.HO 			AS HO,
+			A.DUTY_CD 		AS DUTY_CD,
 			dbo.getCode_nm(A.DUTY_CD) as DUTY_NM,
-			A.NAME,
-			A.HP_NO,
-			A.BIRTH,
-			A.DISUSE_DATE,
-			A.DISUSE_REASON
+			A.NAME 			AS NAME,
+			A.HP_NO 		AS HP_NO,
+			A.BIRTH 		AS BIRTH,
+			A.DISUSE_DATE 	AS DISUSE_DATE,
+			A.DISUSE_REASON AS DISUSE_REASON
 		FROM
 			<choose>
 				<when test="PG_ID == 'dan01030'">
@@ -414,7 +414,7 @@
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
-				A.DISUSE_GBN		 = 'N',
+				A.DISUSE_GBN	 = 'N',
 				A.DISUSE_DATE    = NULL,
 				A.DISUSE_REASON  = NULL
 			FROM
@@ -459,17 +459,17 @@
 
 	<select id="selectList_dan004_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE,
-			A.EMP_NO,
-			A.REG_DATE,
-			A.DONG,
-			A.HO,
-			A.DUTY_CD,
-			A.APPOINT,
-			A.NAME,
-			A.HP_NO,
-			A.BIRTH,
-			A.REMARKS
+			A.OFFICE_CODE 	AS OFFICE_CODE,
+			A.EMP_NO 		AS EMP_NO,
+			A.REG_DATE 		AS REG_DATE,
+			A.DONG 			AS DONG,
+			A.HO 			AS HO,
+			A.DUTY_CD 		AS DUTY_CD,
+			A.APPOINT 		AS APPOINT,
+			A.NAME 			AS NAME,
+			A.HP_NO 		AS HP_NO,
+			A.BIRTH 		AS BIRTH,
+			A.REMARKS 		AS REMARKS
 		FROM
 			<choose>
 				<when test="PG_ID == 'dan03010'">
@@ -513,7 +513,7 @@
 
 	<select id="getKey_dan004_grid1" parameterType="map" resultType="map">
 		SELECT
-		CONVERT(VARCHAR, MAX(CONVERT(INT, A.EMP_NO))) AS EMP_NO
+			CONVERT(VARCHAR, MAX(CONVERT(INT, A.EMP_NO))) AS EMP_NO
 		FROM
 		<choose>
 			<when test="PG_ID == 'dan03010'">
@@ -698,19 +698,19 @@
 
 	<select id="selectList_dan006_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE,
-			A.EMP_NO,
-			A.REG_DATE,
-			A.DONG,
-			A.HO,
-			A.DUTY_CD,
-			dbo.getCode_nm(A.DUTY_CD) as DUTY_NM,
-			A.APPOINT,
-			A.NAME,
-			A.HP_NO,
-			A.BIRTH,
-			A.DISUSE_DATE,
-			A.DISUSE_REASON
+			A.OFFICE_CODE 	AS OFFICE_CODE,
+			A.EMP_NO 		AS EMP_NO,
+			A.REG_DATE 		AS REG_DATE,
+			A.DONG 			AS DONG,
+			A.HO 			AS HO,
+			A.DUTY_CD 		AS DUTY_CD,
+			dbo.getCode_nm(A.DUTY_CD) AS DUTY_NM,
+			A.APPOINT 		AS APPOINT,
+			A.NAME 			AS NAME,
+			A.HP_NO 		AS HP_NO,
+			A.BIRTH 		AS BIRTH,
+			A.DISUSE_DATE 	AS DISUSE_DATE,
+			A.DISUSE_REASON AS DISUSE_REASON
 		FROM
 			<choose>
 				<when test="PG_ID == 'dan03010'">

@@ -4,8 +4,8 @@
 
 	<select id="selectList_soj01010_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.END_DATE,
-			A.SEQ
+			A.END_DATE	AS END_DATE,
+			A.SEQ		AS SEQ
 		FROM dbo.TPM_DEADLINE A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DEAD_YN = 'Y'
 		  AND A.END_DATE = (
@@ -48,23 +48,23 @@
 
 	<select id="getSelectOption_soj03010_input_empNo" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE,
-			A.EMP_NO,
-			A.USER_ID,
-			A.JOIN_DATE,
-			A.DEPT_CD,
-			A.JOB_DUTY_CD,
-			A.NAME AS USER_NAME,
+			A.OFFICE_CODE AS OFFICE_CODE,
+			A.EMP_NO      AS EMP_NO,
+			A.USER_ID     AS USER_ID,
+			A.JOIN_DATE   AS JOIN_DATE,
+			A.DEPT_CD     AS DEPT_CD,
+			A.JOB_DUTY_CD AS JOB_DUTY_CD,
+			A.NAME        AS USER_NAME,
 			A.NAME + '(' + B.DEPT_NAME + ')' AS EMP,
-			A.HP_NO,
-			A.PASSWORD,
-			A.CERT_NO,
-			A.RESIGN_DATE,
-			A.REMARKS,
-			A.MOON_GBN,
-			A.BIRTH,
-			A.LEVEL_CODE,
-		    A.COMP_CODE
+			A.HP_NO       AS HP_NO,
+			A.PASSWORD    AS PASSWORD,
+			A.CERT_NO     AS CERT_NO,
+			A.RESIGN_DATE AS RESIGN_DATE,
+			A.REMARKS     AS REMARKS,
+			A.MOON_GBN    AS MOON_GBN,
+			A.BIRTH       AS BIRTH,
+			A.LEVEL_CODE  AS LEVEL_CODE,
+			A.COMP_CODE   AS COMP_CODE
 		FROM dbo.TAD_EMP A
 		LEFT JOIN dbo.THR_DEPT B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DEPT_CD = B.DEPT_CD
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
@@ -74,8 +74,8 @@
 
 	<select id="getSelectOption_soj03010_input_deptCd" parameterType="map" resultType="map">
 		SELECT
-			A.DEPT_CD,
-			A.DEPT_NAME
+			A.DEPT_CD	AS DEPT_CD,
+			A.DEPT_NAME	AS DEPT_NAME
 		FROM dbo.THR_DEPT A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 		ORDER BY A.DEPT_CD
@@ -83,8 +83,8 @@
 
 	<select id="getSelectOption_soj03010_input_jobDutyCd" parameterType="map" resultType="map">
 		SELECT
-			A.JOB_DUTY_CD,
-			A.JOB_DUTY_NAME
+			A.JOB_DUTY_CD	AS JOB_DUTY_CD,
+			A.JOB_DUTY_NAME AS JOB_DUTY_NAME
 		FROM dbo.THR_JOB_DUTY A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 		ORDER BY A.JOB_DUTY_CD
@@ -92,44 +92,44 @@
 
 	<select id="selectList_soj03010_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.USER_ID,
-			A.USERGROUP_ID,
-			A.PASSWD,
-			A.USER_NAME,
-			A.REGI_DATE,
-			A.OFFICE_CODE,
-			A.HP_NO,
-			A.COMP_CODE,
-			A.AUTH_CODE,
-			A.MGMCOMP_CODE,
-			A.STATUS,
-			dbo.getCode_nm(A.STATUS) as STATUS_NM,
-			A.MGM_CODE,
-			A.UP_MGMUSER_ID,
-			A.REG_END_DATE,
-			A.WORK_GROUP_ID,
-			A.LEVEL_CODE,
-			A.DEPT_CD,
-			B.DEPT_NAME,
-			A.JOB_DUTY_CD,
-			C.JOB_DUTY_NAME,
-			A.ID_GBN,
-			dbo.getCode_nm(A.ID_GBN) as ID_GBN_NM,
-			A.EMP_NO,
-			A.GROUP_DTL_CD,
-			dbo.getCode_nm(A.GROUP_DTL_CD) as GROUP_DTL_NM,
-			A.EMAIL,
-			D.REMARKS
+			A.USER_ID        AS USER_ID,
+			A.USERGROUP_ID   AS USERGROUP_ID,
+			A.PASSWD         AS PASSWD,
+			A.USER_NAME      AS USER_NAME,
+			A.REGI_DATE      AS REGI_DATE,
+			A.OFFICE_CODE    AS OFFICE_CODE,
+			A.HP_NO          AS HP_NO,
+			A.COMP_CODE      AS COMP_CODE,
+			A.AUTH_CODE      AS AUTH_CODE,
+			A.MGMCOMP_CODE   AS MGMCOMP_CODE,
+			A.STATUS         AS STATUS,
+			dbo.getCode_nm(A.STATUS) AS STATUS_NM,
+			A.MGM_CODE       AS MGM_CODE,
+			A.UP_MGMUSER_ID  AS UP_MGMUSER_ID,
+			A.REG_END_DATE   AS REG_END_DATE,
+			A.WORK_GROUP_ID  AS WORK_GROUP_ID,
+			A.LEVEL_CODE     AS LEVEL_CODE,
+			A.DEPT_CD        AS DEPT_CD,
+			B.DEPT_NAME      AS DEPT_NAME,
+			A.JOB_DUTY_CD    AS JOB_DUTY_CD,
+			C.JOB_DUTY_NAME  AS JOB_DUTY_NAME,
+			A.ID_GBN         AS ID_GBN,
+			dbo.getCode_nm(A.ID_GBN) AS ID_GBN_NM,
+			A.EMP_NO         AS EMP_NO,
+			A.GROUP_DTL_CD   AS GROUP_DTL_CD,
+			dbo.getCode_nm(A.GROUP_DTL_CD) AS GROUP_DTL_NM,
+			A.EMAIL          AS EMAIL,
+			D.REMARKS        AS REMARKS
 		FROM dbo.TPM_USER A
 		LEFT JOIN dbo.THR_DEPT B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DEPT_CD = B.DEPT_CD
 		LEFT JOIN dbo.THR_JOB_DUTY C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.JOB_DUTY_CD = C.JOB_DUTY_CD
 		LEFT JOIN dbo.TAD_EMP D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.EMP_NO = D.EMP_NO
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 			<if test="LOGINUSER_COMP_CODE != null and LOGINUSER_COMP_CODE != ''">
-				A.COMP_CODE = #{LOGINUSER_COMP_CODE}
+				AND A.COMP_CODE = #{LOGINUSER_COMP_CODE}
 			</if>
 			<if test="LOGINUSER_COMP_CODE == null or LOGINUSER_COMP_CODE == ''">
-				(A.COMP_CODE IS NULL OR A.COMP_CODE = '')
+				AND (A.COMP_CODE IS NULL OR A.COMP_CODE = '')
 			</if>
 		ORDER BY A.USER_ID, A.REGI_DATE
 	</select>
@@ -270,13 +270,13 @@
 
 	<select id="selectList_soj03020_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.USER_ID,
-			A.USERGROUP_ID,
-			A.USER_NAME,
-			A.OFFICE_CODE,
-			A.COMP_CODE,
-			B.JOB_DUTY_NAME,
-			A.EMP_NO
+			A.USER_ID        AS USER_ID,
+			A.USERGROUP_ID   AS USERGROUP_ID,
+			A.USER_NAME      AS USER_NAME,
+			A.OFFICE_CODE    AS OFFICE_CODE,
+			A.COMP_CODE      AS COMP_CODE,
+			B.JOB_DUTY_NAME  AS JOB_DUTY_NAME,
+			A.EMP_NO         AS EMP_NO
 		FROM dbo.TPM_USER A
 		LEFT JOIN dbo.THR_JOB_DUTY B ON A.OFFICE_CODE = B.OFFICE_CODE AND  A.JOB_DUTY_CD = B.JOB_DUTY_CD
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND
@@ -291,19 +291,19 @@
 
 	<select id="selectList_soj03020_grid2" parameterType="map" resultType="map">
 		SELECT
-			A.MENU_NAME,
-			A.MENU_ID,
-			A.M_LEVEL,
-			A.UP_MENU_ID,
-			B.USER_ID,
-			B.USER_NAME,
-			E.JOB_DUTY_NAME,
-			COALESCE(C.FORM_USE, D.FORM_USE, '0') 	 AS FORM_USE,
-			COALESCE(C.GRD_READ, D.GRD_READ,'0') 	 AS GRD_READ,
-			COALESCE(C.GRD_CREATE, D.GRD_CREATE,'0') AS GRD_CREATE,
-			COALESCE(C.GRD_UPDATE, D.GRD_UPDATE,'0') AS GRD_UPDATE,
-			COALESCE(C.GRD_DELETE, D.GRD_DELETE,'0') AS GRD_DELETE,
-			COALESCE(C.GRD_EXCEL, D.GRD_EXCEL,'0') 	 AS GRD_EXCEL
+			A.MENU_NAME   	AS MENU_NAME,
+			A.MENU_ID     	AS MENU_ID,
+			A.M_LEVEL     	AS M_LEVEL,
+			A.UP_MENU_ID  	AS UP_MENU_ID,
+			B.USER_ID     	AS USER_ID,
+			B.USER_NAME   	AS USER_NAME,
+			E.JOB_DUTY_NAME AS JOB_DUTY_NAME,
+			COALESCE(C.FORM_USE,   D.FORM_USE,   '0') AS FORM_USE,
+			COALESCE(C.GRD_READ,   D.GRD_READ,   '0') AS GRD_READ,
+			COALESCE(C.GRD_CREATE, D.GRD_CREATE, '0') AS GRD_CREATE,
+			COALESCE(C.GRD_UPDATE, D.GRD_UPDATE, '0') AS GRD_UPDATE,
+			COALESCE(C.GRD_DELETE, D.GRD_DELETE, '0') AS GRD_DELETE,
+			COALESCE(C.GRD_EXCEL,  D.GRD_EXCEL,  '0') AS GRD_EXCEL
 		FROM dbo.TPM_MENU A
 		INNER JOIN dbo.TPM_USER B ON B.USER_ID = #{USER_ID}
 		LEFT JOIN dbo.TPM_USERMENU C ON A.MENU_ID = C.MENU_ID AND B.USER_ID = C.USER_ID
@@ -355,25 +355,25 @@
 
 	<select id="selectList_soj05040_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.MGMCOMP_CODE,
-			A.MGMCOMP_NAME,
-			A.NUM,
-			A.CEO,
-			A.CEO_HP,
-			A.CON,
-			A.ITEM,
-			A.ZIP,
-			A.ADDR1,
-			A.ADDR2,
-			A.TEL,
-			A.FAX,
-			A.EMAIL,
-			A.HOMEPAGE,
-			A.REGI_DAY,
-			A.OFF_DAY,
-			A.STATE,
-			dbo.getCode_nm(A.STATE) as STATE_NM,
-			ISNULL(A.USE_YN, '0') AS USE_YN
+			A.MGMCOMP_CODE   AS MGMCOMP_CODE,
+			A.MGMCOMP_NAME   AS MGMCOMP_NAME,
+			A.NUM            AS NUM,
+			A.CEO            AS CEO,
+			A.CEO_HP         AS CEO_HP,
+			A.CON            AS CON,
+			A.ITEM           AS ITEM,
+			A.ZIP            AS ZIP,
+			A.ADDR1          AS ADDR1,
+			A.ADDR2          AS ADDR2,
+			A.TEL            AS TEL,
+			A.FAX            AS FAX,
+			A.EMAIL          AS EMAIL,
+			A.HOMEPAGE       AS HOMEPAGE,
+			A.REGI_DAY       AS REGI_DAY,
+			A.OFF_DAY        AS OFF_DAY,
+			A.STATE          AS STATE,
+			dbo.getCode_nm(A.STATE) AS STATE_NM,
+			ISNULL(A.USE_YN, '0')   AS USE_YN
 		FROM dbo.TPM_MGM_COMPANY A
 		ORDER BY A.MGMCOMP_CODE, A.REGI_DAY
 	</select>
@@ -482,27 +482,27 @@
 
 	<select id="selectList_soj05060_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.COMP_CODE,
-			A.COMP_NAME,
-			A.NUM,
-			A.CEO,
-			A.CEO_HP,
-			A.CON,
-			A.ITEM,
-			A.ZIP,
-			A.ADDR1,
-			A.ADDR2,
-			A.TEL,
-			A.FAX,
-			A.EMAIL,
-			A.HOMEPAGE,
-			A.REGI_DAY,
-			A.OFF_DAY,
+			A.COMP_CODE        AS COMP_CODE,
+			A.COMP_NAME        AS COMP_NAME,
+			A.NUM              AS NUM,
+			A.CEO              AS CEO,
+			A.CEO_HP           AS CEO_HP,
+			A.CON              AS CON,
+			A.ITEM             AS ITEM,
+			A.ZIP              AS ZIP,
+			A.ADDR1            AS ADDR1,
+			A.ADDR2            AS ADDR2,
+			A.TEL              AS TEL,
+			A.FAX              AS FAX,
+			A.EMAIL            AS EMAIL,
+			A.HOMEPAGE         AS HOMEPAGE,
+			A.REGI_DAY         AS REGI_DAY,
+			A.OFF_DAY          AS OFF_DAY,
 			ISNULL(A.STATE, '107003') AS STATE,
-			dbo.getCode_nm(A.STATE) as STATE_NM,
-			ISNULL(A.USE_YN, '0') AS USE_YN,
-			A.MGMUSER_ID,
-			A.GROUP_CODE
+			dbo.getCode_nm(A.STATE)   AS STATE_NM,
+			ISNULL(A.USE_YN, '0')     AS USE_YN,
+			A.MGMUSER_ID      AS MGMUSER_ID,
+			A.GROUP_CODE      AS GROUP_CODE
 		FROM dbo.TPM_COMPANY A
 		ORDER BY A.COMP_CODE, A.REGI_DAY
 	</select>
@@ -625,8 +625,8 @@
 
 	<select id="getSelectOption_soj05070_input_compCode" parameterType="map" resultType="map">
 		SELECT
-			A.COMP_CODE,
-			A.COMP_NAME
+			A.COMP_CODE	AS COMP_CODE,
+			A.COMP_NAME	AS COMP_NAME
 		FROM dbo.TPM_COMPANY A
 		WHERE A.STATE = '107001'
 		ORDER BY A.COMP_CODE
@@ -634,8 +634,8 @@
 
 	<select id="getSelectOption_soj05070_input_mgmuserId" parameterType="map" resultType="map">
 		SELECT
-			A.COMP_CODE,
-			A.MGMUSER_ID
+			A.COMP_CODE		AS COMP_CODE,
+			A.MGMUSER_ID	AS MGMUSER_ID
 		FROM dbo.TPM_COMPANY A
 		WHERE A.STATE = '107001'
 		<if test="COMP_CODE != null and COMP_CODE != ''">
@@ -662,41 +662,41 @@
 			FROM dbo.TRP_MONTH_REPAIR_BASIC
 		)
 		SELECT
-			A.OFFICE_CODE,
-			A.OFFICE_NAME,
+			A.OFFICE_CODE        AS OFFICE_CODE,
+			A.OFFICE_NAME        AS OFFICE_NAME,
 			ISNULL(A.COMP_CODE, '') AS COMP_CODE,
-			A.MGMCOMP_CODE AS MGMCOMP_CODE,
-			A.EXPLAN,
-			A.PART1,
-			A.PART2,
-			A.TEL,
-			A.FAX,
-			A.ZIP,
-			A.ADDR1,
-			A.ADDR2,
-			A.MAGOR_NAME,
-			A.MAJOR_HP,
-			A.REGI_DAY,
+			A.MGMCOMP_CODE       AS MGMCOMP_CODE,
+			A.EXPLAN             AS EXPLAN,
+			A.PART1              AS PART1,
+			A.PART2              AS PART2,
+			A.TEL                AS TEL,
+			A.FAX                AS FAX,
+			A.ZIP                AS ZIP,
+			A.ADDR1              AS ADDR1,
+			A.ADDR2              AS ADDR2,
+			A.MAGOR_NAME         AS MAGOR_NAME,
+			A.MAJOR_HP           AS MAJOR_HP,
+			A.REGI_DAY           AS REGI_DAY,
 			ISNULL(A.STATUS, '104003') AS STATUS,
-			dbo.getCode_nm(A.STATUS) as STATUS_NM,
-			A.MGMUSER_ID,
-			A.OFFICE_HARD_SIZE,
-			A.OFFICE_USER_CNT,
-			A.OFFICE_CNT,
-			A.OFFICE_AREAR,
-			A.START_DAY,
-			A.END_DAY,
-			B.CONT_SEQ,
-			B.START_DATE,
-			B.END_DATE,
-		    B.CONT_KIND_CD,
-			dbo.getCode_nm(B.CONT_KIND_CD) as CONT_KIND_NM,
-		    B.CONT_AMT,
-		    C.PLAN_GBN,
-			dbo.getCode_nm(C.PLAN_GBN) as PLAN_GBN_NM,
-		    C.PLAN_MONTH,
-		    C.STATUS AS REPAIR_STATUS,
-			dbo.getCode_nm(C.STATUS) as REPAIR_STATUS_NM
+			dbo.getCode_nm(A.STATUS)   AS STATUS_NM,
+			A.MGMUSER_ID         AS MGMUSER_ID,
+			A.OFFICE_HARD_SIZE   AS OFFICE_HARD_SIZE,
+			A.OFFICE_USER_CNT    AS OFFICE_USER_CNT,
+			A.OFFICE_CNT         AS OFFICE_CNT,
+			A.OFFICE_AREAR       AS OFFICE_AREAR,
+			A.START_DAY          AS START_DAY,
+			A.END_DAY            AS END_DAY,
+			B.CONT_SEQ           AS CONT_SEQ,
+			B.START_DATE         AS START_DATE,
+			B.END_DATE           AS END_DATE,
+			B.CONT_KIND_CD       AS CONT_KIND_CD,
+			dbo.getCode_nm(B.CONT_KIND_CD) AS CONT_KIND_NM,
+			B.CONT_AMT           AS CONT_AMT,
+			C.PLAN_GBN           AS PLAN_GBN,
+			dbo.getCode_nm(C.PLAN_GBN)     AS PLAN_GBN_NM,
+			C.PLAN_MONTH         AS PLAN_MONTH,
+			C.STATUS             AS REPAIR_STATUS,
+			dbo.getCode_nm(C.STATUS)       AS REPAIR_STATUS_NM
 		FROM dbo.TPM_OFFICE A
 		LEFT JOIN LatestContract B
 		    ON A.OFFICE_CODE = B.OFFICE_CODE AND B.RN = 1
@@ -707,10 +707,10 @@
 			AND B.CONT_KIND_CD LIKE '%' + #{CONT_KIND_CD} + '%'
 		</if>
 		<if test="END_DATE1 != null and END_DATE1 != ''">
-			AND END_DATE >= #{END_DATE1}
+			AND B.END_DATE >= #{END_DATE1}
 		</if>
 		<if test="END_DATE2 != null and END_DATE2 != ''">
-			AND END_DATE &lt;= #{END_DATE2}
+			AND B.END_DATE &lt;= #{END_DATE2}
 		</if>
 		<if test="LOGINUSER_OFFICE_CODE != '10001' and LOGINUSER_MGMCOMP_CODE != '101' and LOGINUSER_USERGROUP_ID !='900'" >
 			AND A.MGMCOMP_CODE = #{LOGINUSER_MGMCOMP_CODE}
@@ -839,17 +839,17 @@
 
 	<select id="selectList_soj05070_grid2" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE,
-			A.CONT_SEQ,
-			A.CONTRACT_NO,
-			A.START_DATE,
-			A.END_DATE,
-			A.CONT_KIND_CD,
-			dbo.getCode_nm(A.CONT_KIND_CD) as CONT_KIND_NM,
-			A.CONT_AMT,
-			A.REV_DATE,
-			A.REV_REASON,
-			A.REMARKS
+			A.OFFICE_CODE        AS OFFICE_CODE,
+			A.CONT_SEQ           AS CONT_SEQ,
+			A.CONTRACT_NO        AS CONTRACT_NO,
+			A.START_DATE         AS START_DATE,
+			A.END_DATE           AS END_DATE,
+			A.CONT_KIND_CD       AS CONT_KIND_CD,
+			dbo.getCode_nm(A.CONT_KIND_CD) AS CONT_KIND_NM,
+			A.CONT_AMT           AS CONT_AMT,
+			A.REV_DATE           AS REV_DATE,
+			A.REV_REASON         AS REV_REASON,
+			A.REMARKS            AS REMARKS
 		FROM dbo.TPM_CONTRACT A
 		WHERE A.OFFICE_CODE = #{OFFICE_CODE}
 		ORDER BY A.CONT_SEQ, A.START_DATE, A.END_DATE
@@ -940,44 +940,44 @@
 			FROM dbo.TRP_MONTH_REPAIR_BASIC
 		)
 		SELECT
-			A.OFFICE_CODE,
-			A.OFFICE_NAME,
-			A.PART1,
-			A.PART2,
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.OFFICE_NAME		AS OFFICE_NAME,
 			ISNULL(A.COMP_CODE, '') AS COMP_CODE,
 			ISNULL(A.MGMCOMP_CODE, '') AS MGMCOMP_CODE,
-			A.EXPLAN,
-			A.PART1,
-			dbo.getCode_nm(A.PART1) as PART1_NM,
-			A.PART2,
-			dbo.getCode_nm(A.PART2) as PART2_NM,
-			A.TEL,
-			A.FAX,
-			'(' + A.ZIP + ') ' + A.ADDR1 + ' ' + A.ADDR2 AS ADDR,
-			A.MAGOR_NAME,
-			A.MAJOR_HP,
-			D.COMP_NAME,
-			A.MGMUSER_ID,
-			A.REGI_DAY,
+			A.EXPLAN			AS EXPLAN,
+			A.PART1				AS PART1,
+			dbo.getCode_nm(A.PART1) AS PART1_NM,
+			A.PART2				AS PART2,
+			dbo.getCode_nm(A.PART2) AS PART2_NM,
+			A.TEL				AS TEL,
+			A.FAX				AS FAX,
+			ISNULL('(' + A.ZIP + ') ', '')
+				+ ISNULL(A.ADDR1, '') + ' '
+				+ ISNULL(A.ADDR2, '') AS ADDR,
+			A.MAGOR_NAME		 AS MAGOR_NAME,
+			A.MAJOR_HP           AS MAJOR_HP,
+			D.COMP_NAME          AS COMP_NAME,
+			A.MGMUSER_ID         AS MGMUSER_ID,
+			A.REGI_DAY           AS REGI_DAY,
 			ISNULL(A.STATUS, '104003') AS STATUS,
-			dbo.getCode_nm(A.STATUS) as STATUS_NM,
-			A.OFFICE_HARD_SIZE,
-			A.OFFICE_USER_CNT,
-			A.OFFICE_CNT,
-			A.OFFICE_AREAR,
-			B.CONT_SEQ,
-			B.START_DATE,
-			B.END_DATE,
-			B.CONT_KIND_CD,
-			dbo.getCode_nm(B.CONT_KIND_CD) as CONT_KIND_NM,
-			B.CONT_AMT,
-			B.REV_DATE,
-			B.REV_REASON,
-			C.PLAN_GBN,
-			dbo.getCode_nm(C.PLAN_GBN) as PLAN_GBN_NM,
-			C.PLAN_MONTH,
-			C.STATUS AS REPAIR_STATUS,
-			dbo.getCode_nm(C.STATUS) as REPAIR_STATUS_NM
+			dbo.getCode_nm(A.STATUS)   AS STATUS_NM,
+			A.OFFICE_HARD_SIZE   AS OFFICE_HARD_SIZE,
+			A.OFFICE_USER_CNT    AS OFFICE_USER_CNT,
+			A.OFFICE_CNT         AS OFFICE_CNT,
+			A.OFFICE_AREAR       AS OFFICE_AREAR,
+			B.CONT_SEQ           AS CONT_SEQ,
+			B.START_DATE         AS START_DATE,
+			B.END_DATE           AS END_DATE,
+			B.CONT_KIND_CD       AS CONT_KIND_CD,
+			dbo.getCode_nm(B.CONT_KIND_CD) AS CONT_KIND_NM,
+			B.CONT_AMT           AS CONT_AMT,
+			B.REV_DATE           AS REV_DATE,
+			B.REV_REASON         AS REV_REASON,
+			C.PLAN_GBN           AS PLAN_GBN,
+			dbo.getCode_nm(C.PLAN_GBN) AS PLAN_GBN_NM,
+			C.PLAN_MONTH         AS PLAN_MONTH,
+			C.STATUS             AS REPAIR_STATUS,
+			dbo.getCode_nm(C.STATUS) AS REPAIR_STATUS_NM
 		FROM dbo.TPM_OFFICE A
 		LEFT JOIN LatestContract B
 			ON A.OFFICE_CODE = B.OFFICE_CODE AND B.RN = 1
@@ -1000,12 +1000,12 @@
 
 	<select id="selectList_soj05120_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.BOARD_DIV,
-			A.BOARD_NO,
-			A.BOARD_TITLE,
-			B.ATT_NO AS ATT_NO,
-			A.BOARD_WRITER,
-			A.BOARD_DATE
+			A.BOARD_DIV    AS BOARD_DIV,
+			A.BOARD_NO     AS BOARD_NO,
+			A.BOARD_TITLE  AS BOARD_TITLE,
+			B.ATT_NO       AS ATT_NO,
+			A.BOARD_WRITER AS BOARD_WRITER,
+			A.BOARD_DATE   AS BOARD_DATE
 		FROM dbo.TPM_BOARD A
 		LEFT JOIN (
 			SELECT BOARD_DIV, BOARD_NO, MAX(ATT_NO) AS ATT_NO
@@ -1033,14 +1033,14 @@
 
 	<select id="boardSelectOne_soj05120_board1" parameterType="map" resultType="map">
 		SELECT
-			A.BOARD_DIV,
-			A.BOARD_NO,
-			A.BOARD_TITLE,
-			A.BOARD_CONTENT,
-			A.BOARD_WRITER,
-			A.BOARD_DATE,
-			A.BOARD_CNT,
-			A.USER_ID
+			A.BOARD_DIV     AS BOARD_DIV,
+			A.BOARD_NO      AS BOARD_NO,
+			A.BOARD_TITLE   AS BOARD_TITLE,
+			A.BOARD_CONTENT AS BOARD_CONTENT,
+			A.BOARD_WRITER  AS BOARD_WRITER,
+			A.BOARD_DATE    AS BOARD_DATE,
+			A.BOARD_CNT     AS BOARD_CNT,
+			A.USER_ID       AS USER_ID
 		FROM dbo.TPM_BOARD A
 		WHERE A.BOARD_DIV = #{BOARD_DIV} AND A.BOARD_NO = #{BOARD_NO}
 		ORDER BY A.BOARD_DATE, A.BOARD_TITLE
@@ -1090,12 +1090,12 @@
 
 	<select id="selectList_soj05120_file1" parameterType="map" resultType="map">
 		SELECT
-			A.BOARD_DIV,
-			A.BOARD_NO,
-			A.ATT_NO,
-			A.FILE_NM,
-			A.SYS_FILE_NM,
-			A.FILE_PATH
+			A.BOARD_DIV    AS BOARD_DIV,
+			A.BOARD_NO     AS BOARD_NO,
+			A.ATT_NO       AS ATT_NO,
+			A.FILE_NM      AS FILE_NM,
+			A.SYS_FILE_NM  AS SYS_FILE_NM,
+			A.FILE_PATH    AS FILE_PATH
 		FROM dbo.TPM_FILE A
 		JOIN dbo.TPM_BOARD B ON  A.BOARD_DIV = B.BOARD_DIV AND A.BOARD_NO = B.BOARD_NO
 		WHERE A.BOARD_DIV = #{BOARD_DIV} AND A.BOARD_NO = #{BOARD_NO}
@@ -1105,12 +1105,12 @@
 
 	<select id="selectList_soj07010_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.MENU_GROUP,
-			A.MENU_ID,
-			A.MENU_NAME,
-			A.M_LEVEL,
-			A.LEVEL_ORDER,
-			A.UP_MENU_ID,
+			A.MENU_GROUP  AS MENU_GROUP,
+			A.MENU_ID     AS MENU_ID,
+			A.MENU_NAME   AS MENU_NAME,
+			A.M_LEVEL     AS M_LEVEL,
+			A.LEVEL_ORDER AS LEVEL_ORDER,
+			A.UP_MENU_ID  AS UP_MENU_ID,
 			ISNULL(A.FORM_USE, '0') AS FORM_USE
 		FROM dbo.TPM_MENU A
 		<if test="MENU_NAME != null and MENU_NAME != ''">
@@ -1178,17 +1178,17 @@
 
 	<select id="selectList_soj07020_grid1" parameterType="map" resultType="map">
 		SELECT
-		    A.MENU_NAME,
-			A.MENU_ID,
-			A.M_LEVEL,
-			A.UP_MENU_ID,
+			A.MENU_NAME        AS MENU_NAME,
+			A.MENU_ID          AS MENU_ID,
+			A.M_LEVEL          AS M_LEVEL,
+			A.UP_MENU_ID       AS UP_MENU_ID,
 			ISNULL(B.FORM_USE, '0')    AS FORM_USE,
 			ISNULL(B.GRD_CREATE, '0')  AS GRD_CREATE,
 			ISNULL(B.GRD_READ, '0')    AS GRD_READ,
 			ISNULL(B.GRD_UPDATE, '0')  AS GRD_UPDATE,
 			ISNULL(B.GRD_DELETE, '0')  AS GRD_DELETE,
 			ISNULL(B.GRD_EXCEL, '0')   AS GRD_EXCEL,
-			B.USERGROUP_ID
+			B.USERGROUP_ID	AS USERGROUP_ID
 		FROM dbo.TPM_MENU AS A
 		LEFT JOIN dbo.TPM_GROUPMENU AS B
 			ON A.MENU_ID = B.MENU_ID
@@ -1252,17 +1252,17 @@
 
 	<select id="selectList_soj07030_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.MENU_NAME,
-			A.MENU_ID,
-			A.M_LEVEL,
-			A.UP_MENU_ID,
+			A.MENU_NAME        AS MENU_NAME,
+			A.MENU_ID          AS MENU_ID,
+			A.M_LEVEL          AS M_LEVEL,
+			A.UP_MENU_ID       AS UP_MENU_ID,
 			ISNULL(B.FORM_USE, '0')   AS FORM_USE,
 			ISNULL(B.GRD_CREATE, '0') AS GRD_CREATE,
 			ISNULL(B.GRD_READ, '0')   AS GRD_READ,
 			ISNULL(B.GRD_UPDATE, '0') AS GRD_UPDATE,
 			ISNULL(B.GRD_DELETE, '0') AS GRD_DELETE,
 			ISNULL(B.GRD_EXCEL, '0')  AS GRD_EXCEL,
-			B.USERGROUP_ID
+			B.USERGROUP_ID			  AS USERGROUP_ID
 		FROM dbo.TPM_MENU AS A
 		LEFT JOIN dbo.TPM_GROUPMENU AS B
 			ON A.MENU_ID = B.MENU_ID
@@ -1325,34 +1325,34 @@
 
 	<select id="selectList_soj07040_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.CODEDV_NO,
-			A.CODEDV_NM,
-			A.DIVISION1_NM,
-			A.DIVISION2_NM,
-			A.DIVISION3_NM,
-			A.DIVISION4_NM,
-			A.DIVISION5_NM,
-			ISNULL(A.USE_YN, 'N')  AS USE_YN,
-			A.SORTORDER,
-			A.ABOLITION_DT
+			A.CODEDV_NO     AS CODEDV_NO,
+			A.CODEDV_NM     AS CODEDV_NM,
+			A.DIVISION1_NM  AS DIVISION1_NM,
+			A.DIVISION2_NM  AS DIVISION2_NM,
+			A.DIVISION3_NM  AS DIVISION3_NM,
+			A.DIVISION4_NM  AS DIVISION4_NM,
+			A.DIVISION5_NM  AS DIVISION5_NM,
+			ISNULL(A.USE_YN, 'N') AS USE_YN,
+			A.SORTORDER     AS SORTORDER,
+			A.ABOLITION_DT  AS ABOLITION_DT
 		FROM dbo.TPM_CODE_MST AS A
 		ORDER BY A.CODEDV_NO
 	</select>
 
 	<select id="selectList_soj07040_grid2" parameterType="map" resultType="map">
 		SELECT
-			A.CODEDV_NO,
-			A.CODE_NO,
-			A.CODEDTL_NM,
-			A.SHORT_NM,
-			A.DIVISION1_NM,
-			A.DIVISION2_NM,
-			A.DIVISION3_NM,
-			A.DIVISION4_NM,
-			A.DIVISION5_NM,
-			ISNULL(A.USE_YN, 'N')  AS USE_YN,
-			A.SORTORDER,
-			A.ABOLITION_DT
+			A.CODEDV_NO     AS CODEDV_NO,
+			A.CODE_NO       AS CODE_NO,
+			A.CODEDTL_NM    AS CODEDTL_NM,
+			A.SHORT_NM      AS SHORT_NM,
+			A.DIVISION1_NM  AS DIVISION1_NM,
+			A.DIVISION2_NM  AS DIVISION2_NM,
+			A.DIVISION3_NM  AS DIVISION3_NM,
+			A.DIVISION4_NM  AS DIVISION4_NM,
+			A.DIVISION5_NM  AS DIVISION5_NM,
+			ISNULL(A.USE_YN, 'N') AS USE_YN,
+			A.SORTORDER     AS SORTORDER,
+			A.ABOLITION_DT  AS ABOLITION_DT
 		FROM dbo.TPM_CODEBODY AS A
 		LEFT JOIN  dbo.TPM_CODE_MST AS B
 			ON A.CODEDV_NO = B.CODEDV_NO
@@ -1466,18 +1466,18 @@
 
 	<select id="getCode" parameterType="string" resultType="map">
 		SELECT
-			REPLACE(A.CODEDV_NO, ' ', '') AS CODEDV_NO, --코드구분
-			REPLACE(A.CODE_NO, ' ', '') AS CODE_NO,		--코드
-			A.CODEDTL_NM,								--코드명
-			A.SHORT_NM,									--약어명
-			A.DIVISION1_NM,
-			A.DIVISION2_NM,
-			A.DIVISION3_NM,
-			A.DIVISION4_NM,
-			A.DIVISION5_NM,
-			A.SORTORDER,
-			ISNULL(A.USE_YN, 'N')  AS USE_YN,
-			A.ABOLITION_DT
+			REPLACE(A.CODEDV_NO, ' ', '') AS CODEDV_NO,
+			REPLACE(A.CODE_NO,  ' ', '') AS CODE_NO,
+			A.CODEDTL_NM    AS CODEDTL_NM,
+			A.SHORT_NM      AS SHORT_NM,
+			A.DIVISION1_NM  AS DIVISION1_NM,
+			A.DIVISION2_NM  AS DIVISION2_NM,
+			A.DIVISION3_NM  AS DIVISION3_NM,
+			A.DIVISION4_NM  AS DIVISION4_NM,
+			A.DIVISION5_NM  AS DIVISION5_NM,
+			A.SORTORDER     AS SORTORDER,
+			ISNULL(A.USE_YN, 'N') AS USE_YN,
+			A.ABOLITION_DT  AS ABOLITION_DT
 		FROM dbo.TPM_CODEBODY AS A
 		INNER JOIN dbo.TPM_CODE_MST AS B ON A.CODEDV_NO = B.CODEDV_NO
 		WHERE A.CODEDV_NO = #{CODEDV_NO} AND A.USE_YN = 'Y'
@@ -1486,10 +1486,10 @@
 
 	<select id="getUsergroupId" parameterType="map" resultType="map">
 		SELECT
-			A.USERGROUP_ID,
-			A.USERGROUP_NM,
-			A.USERGROUP_EXP,
-			A.GROUP_GBN
+			A.USERGROUP_ID  AS USERGROUP_ID,
+			A.USERGROUP_NM  AS USERGROUP_NM,
+			A.USERGROUP_EXP AS USERGROUP_EXP,
+			A.GROUP_GBN     AS GROUP_GBN
 		FROM dbo.TPM_MGTGROUP A
 		ORDER BY A.USERGROUP_ID
 	</select>

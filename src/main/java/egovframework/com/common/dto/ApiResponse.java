@@ -14,6 +14,7 @@ public class ApiResponse<T> {
         CALLBEFORE,
         CNT,
         APPROVAL,
+        NULL_DATA
     }
 
     private String O_STATUS;

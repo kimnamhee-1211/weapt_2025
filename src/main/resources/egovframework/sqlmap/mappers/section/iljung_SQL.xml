@@ -18,7 +18,7 @@
 				AND A.SC_DATE  &gt;= #{start}
 				AND A.SC_DATE  &lt;= #{end}
 			</if>
-		UNION
+		UNION ALL
 		SELECT
 			99999999							AS id,
 			99999999							AS seq,
@@ -56,8 +56,8 @@
 
 	<select id="getSelectOption_ilj01015_input_schGbn" parameterType="map" resultType="map">
 		SELECT
-			A.SCH_GBN,
-			A.GBN_NAME
+			A.SCH_GBN	AS SCH_GBN,
+			A.GBN_NAME	AS GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
@@ -66,8 +66,8 @@
 
 	<select id="getSelectOption_ilj01015_input_mainDeptCd" parameterType="map" resultType="map">
 		SELECT
-			A.DEPT_CD,
-			A.DEPT_NAME
+			A.DEPT_CD	AS DEPT_CD,
+			A.DEPT_NAME	AS DEPT_NAME
 		FROM dbo.THR_DEPT A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
 		ORDER BY A.SORT_ORDER
@@ -75,8 +75,8 @@
 
 	<select id="getSelectOption_ilj01015_input_workUserId" parameterType="map" resultType="map">
 		SELECT
-			A.EMP_NO,
-			A.NAME
+			A.EMP_NO	AS EMP_NO,
+			A.NAME		AS NAME
 		FROM dbo.TAD_EMP A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 		  AND (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR CONVERT(DATE, A.RESIGN_DATE, 112) &gt;= CAST(GETDATE() AS DATE))
@@ -199,8 +199,8 @@
 
 	<select id="getSelectOption_ilj01040_search_schGbn" parameterType="map" resultType="map">
 		SELECT
-			A.SCH_GBN,
-			A.GBN_NAME
+			A.SCH_GBN	AS SCH_GBN,
+			A.GBN_NAME	AS GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
@@ -208,8 +208,8 @@
 
 	<select id="getSelectOption_ilj01040_search_mainDeptCd" parameterType="map" resultType="map">
 		SELECT
-			A.DEPT_CD,
-			A.DEPT_NAME
+			A.DEPT_CD	AS DEPT_CD,
+			A.DEPT_NAME	AS DEPT_NAME
 		FROM dbo.THR_DEPT A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
 		ORDER BY A.SORT_ORDER
@@ -252,7 +252,7 @@
 				AND A.STATUS_CD = #{STATUS_CD}
 			</if>
 			<if test="TEXT != null and TEXT != ''">
-				A.TITLE LIKE '%' + #{TEXT} + '%' OR A.DESCR LIKE '%' + #{TEXT} + '%'
+				AND A.TITLE LIKE '%' + #{TEXT} + '%' OR A.DESCR LIKE '%' + #{TEXT} + '%'
 			</if>
 	</select>
 
@@ -326,7 +326,7 @@
 
 	<select id="getSelectOption_ilj02010_search_mstDate" parameterType="map" resultType="map">
 		SELECT
-			A.MST_DATE,
+			A.MST_DATE	AS MST_DATE,
 			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
 		FROM dbo.TWK_MONTH_BASIC A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
@@ -335,8 +335,8 @@
 
 	<select id="getSelectOption_ilj02010_grid1_schGbn" parameterType="map" resultType="map">
 		SELECT
-			A.SCH_GBN,
-			A.GBN_NAME
+			A.SCH_GBN	AS SCH_GBN,
+			A.GBN_NAME	AS GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
@@ -344,8 +344,8 @@
 
 	<select id="getSelectOption_ilj02010_grid1_deptCd" parameterType="map" resultType="map">
 		SELECT
-			A.DEPT_CD,
-			A.DEPT_NAME
+			A.DEPT_CD	AS DEPT_CD,
+			A.DEPT_NAME	AS DEPT_NAME
 		FROM dbo.THR_DEPT A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
 		ORDER BY A.SORT_ORDER
@@ -462,8 +462,8 @@
 
 	<select id="getSelectOption_ilj02020_grid1_column" parameterType="map" resultType="map">
 		SELECT
-			A.SCH_GBN AS SCH_GBN,
-			A.GBN_NAME AS GBN_NAME
+			A.SCH_GBN 	AS SCH_GBN,
+			A.GBN_NAME	AS GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'1') = '1'
 		ORDER BY A.ORDER_SEQ
@@ -633,7 +633,7 @@
 			A.REG_DATE				AS REG_DATE,
 			A.GBN_DESCR				AS GBN_DESCR,
 			ISNULL(A.USE_YN, '1')	AS USE_YN,
-			A.ORDER_SEQ				AS ODER_SEQ
+			A.ORDER_SEQ				AS ORDER_SEQ
 		FROM dbo.TWK_SCHEDULE_GBN A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 		ORDER BY A.SCH_GBN

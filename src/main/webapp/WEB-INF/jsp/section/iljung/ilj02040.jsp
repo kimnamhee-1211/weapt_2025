@@ -97,7 +97,7 @@
             dataType: "text",
             width : "*%",
         },
-        { dataField: "ODER_SEQ",
+        { dataField: "ORDER_SEQ",
             headerText: "정렬순서",
             width : "10%",
             dataType: "text",

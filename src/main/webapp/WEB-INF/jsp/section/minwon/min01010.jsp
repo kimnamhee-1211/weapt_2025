@@ -4,6 +4,26 @@
 <%@ include file="../../inc_nav.jsp" %>
 <jsp:include page="/WEB-INF/jsp/section/minwon/min_nav.jsp"/>
 
+<style>
+    .step_block{
+        border: 1px solid #bcbcbc;
+        background-color: #f4e1d6;
+        height : 30px;
+        weight: 40px;
+    }
+    .ho_block{
+        border: 1px solid #bcbcbc;
+        background-color: #f4e1d6;
+        height : 30px;
+        weight: 80px;
+    }
+
+    .el_block{}
+    .rooftop_block{}
+    .door_block{}
+
+
+</style>
 <div id="section">
     <div class="section1">
         <span class="section1_nav"><i class="icon-phone-squared"></i>민원접수</span>
@@ -20,7 +40,6 @@
             <table id="dong_table"></table>
         </div>
         <div>
-            <div>민원설정 아파트 이미지 클릭하면 나타나는 민원전표</div>
             <div id="min-jeon01">
                 <input type="checkbox" id="layer_popup" class="layer_popup">
                 <label for="layer_popup" class="pop_labal">클릭하면 나타나는 민원전표(세대)</label>
@@ -78,7 +97,6 @@
     let focus = 0;	//그리드 컴포넌트 포커스
     let dong_table = document.querySelector("#dong_table");
 
-
     //그리드1 설정
     const grid1ColumnLayout = [
         {
@@ -86,6 +104,7 @@
             headerText: "동번호",
             dataType: "text",
             width: "30%",
+            visible : false
         },
         {
             dataField: "DONG_NAME",
@@ -234,27 +253,27 @@
                     switch (true) {
                         case (i == row.END_FLOOR && row.EL_CNT == "Y") :
                             if(LINE_GBN = "step"){
-                                td.className = "el_step_block";
+                                td.className = "el_block step_block";
                             }else{
-                                td.className = "el_ho_block";
+                                td.className = "el_block ho_block";
                             }
                             td.innerHTML = "EL"
                             td.id = i.toString() + "_el";
                             break;
                         case (i == row.END_FLOOR && row.ROOFTOP_CNT == "Y") :
                             if(LINE_GBN = "step"){
-                                td.className = "rooftop_step_block";
+                                td.className = "rooftop_block step_block";
                             }else{
-                                td.className = "rooftop_ho_block";
+                                td.className = "rooftop_block ho_block";
                             }
                             td.innerHTML = "루프탑"
                             td.id = i.toString() + "_rooftop";
                             break;
                         case (i == row.START_FLOOR && row.DOOR_CNT == "Y") :
                             if(LINE_GBN = "step"){
-                                td.className = "door_step_block";
+                                td.className = "door_block step_block";
                             }else{
-                                td.className = "door_ho_block";
+                                td.className = "door_block ho_block";
                             }
                             td.innerHTML = "현관"
                             td.id = i.toString() + "_door";
@@ -276,7 +295,7 @@
                 }
                 tr.appendChild(td);
             })
-            table.appendChild(tr);
+            dong_table.appendChild(tr);
         }
         let rower = Number(data[0].LOWER_FLOOR)
         for (let i = 1; i > rower; i++) {
@@ -286,11 +305,25 @@
             td.innerHTML = "지하주차장(동지하 포함)"
             td.id = i.toString() + "_underground";
             tr.appendChild(td);
-            table.appendChild(tr);
-
-
+            dong_table.appendChild(tr);
         }
     }
+
+    dong_table.addEventListener('click', (e) => {
+        if(e.target.tagName == "TD"){
+            let tdId = e.target.id
+            if(!tdId.includes("_")){
+                let item = {
+                    pgId : pgId,
+                    menuId : menuId,
+                    querySet : "min001",
+                }
+                pop_onload(pop_item);
+            }else {
+
+            }
+        }
+    })
 
 
     //컴포넌트 필수항목 입력 체크
