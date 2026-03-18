@@ -79,7 +79,7 @@
 
         we_select( selectData,{
             successSelect : (json) => {
-                let data = json.data;
+                let data = json.DATA;
                 DS_END_DATE = data;
                 title_endDate.value = DS_END_DATE[0].END_DATE
             }

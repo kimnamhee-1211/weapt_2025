@@ -96,11 +96,11 @@ public class ApprovalController {
 
 
     //결재 처리
-    @RequestMapping(value = "/approval/{sectionId}/{component}", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
+    @RequestMapping(value = "/approval/{sectionId}/{component}", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     @ResponseBody
     public ApiResponse<List<Map<String, Object>>> processApproval(@PathVariable("sectionId") String sectionId,
                                                                   @PathVariable("component") String component,
-                                                                  @RequestParam Map<String, Object> param,
+                                                                  @RequestBody Map<String, Object> param,
                                                                   @SessionAttribute("loginUser") LoginVO loginUser,
                                                                   @RequestAttribute(value = "PG_ID") String pgId,
                                                                   @RequestAttribute(value = "MENU_ID") String menuId) {
@@ -116,11 +116,11 @@ public class ApprovalController {
     }
 
     //결재 취소 처리
-    @RequestMapping(value = "/cancelApproval/{sectionId}/{component}", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
+    @RequestMapping(value = "/cancelApproval/{sectionId}/{component}", produces = "application/json;charset=UTF-8", method = RequestMethod.POST)
     @ResponseBody
     public ApiResponse<List<Map<String, Object>>> processCnlApproval(@PathVariable("sectionId") String sectionId,
                                                                         @PathVariable("component") String component,
-                                                                        @RequestParam Map<String, Object> param,
+                                                                        @RequestBody Map<String, Object> param,
                                                                         @SessionAttribute("loginUser") LoginVO loginUser,
                                                                         @RequestAttribute(value = "PG_ID") String pgId,
                                                                         @RequestAttribute(value = "MENU_ID") String menuId) {

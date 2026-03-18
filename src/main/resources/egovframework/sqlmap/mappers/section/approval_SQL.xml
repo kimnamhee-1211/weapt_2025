@@ -39,12 +39,12 @@
 			B.REAL_CONFIRM 	AS REAL_CONFIRM,
 			B.REAL_DATE 	AS REAL_DATE
 		FROM dbo.TPM_CONFIRM_LINE AS A
-		LEFT JOIN dbo.TWK_SCHEDULE_CONFIRM AS B ON(A.DUTY_CD = B.DUTY_CD AND B.SC_DATE = #{SC_DATE})
+		LEFT JOIN dbo.TWK_SCHEDULE_CONFIRM AS B ON (A.DUTY_CD = B.DUTY_CD AND A.SEQ = B.CONFIRM_SEQ AND B.SC_DATE = #{SC_DATE})
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.MENU_GROUP = #{MENU_GROUP} AND ISNULL(A.USE_YN,'Y') = 'Y'
 		  AND A.SEQ = #{CONFIRM_SEQ} AND A.DUTY_CD = #{DUTY_CD}
 	</select>
 
-	<insert id="approval_ilj01060_grid1" parameterType="map">
+	<insert id="approval_iljung_ilj01060" parameterType="map">
 		INSERT INTO	dbo.TWK_SCHEDULE_CONFIRM (
 			OFFICE_CODE,
 			SC_DATE,
@@ -82,7 +82,7 @@
 		)
 	</insert>
 
-	<delete id="cancelApproval_ilj01060_grid1" parameterType="map">
+	<delete id="cancelApproval_iljung_ilj01060" parameterType="map">
 		DELETE FROM dbo.TWK_SCHEDULE_CONFIRM
 		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 		  AND SC_DATE = #{SC_DATE}

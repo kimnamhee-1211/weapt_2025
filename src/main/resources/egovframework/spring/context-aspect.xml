@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
 
+	<!--20260318 주석처리 : AOP 사용
 	<aop:config>
 		<aop:pointcut id="serviceMethod" expression="execution(* egovframework.com.service.*Impl.*(..))" />
 
@@ -11,7 +12,8 @@
 			<aop:after-throwing throwing="exception" pointcut-ref="serviceMethod" method="transfer" />
 		</aop:aspect>
 	</aop:config>
-	
+
+
 	<bean id="exceptionTransfer" class="org.egovframe.rte.fdl.cmmn.aspect.ExceptionTransfer">
 		<property name="exceptionHandlerService">
 			<list>
@@ -55,5 +57,5 @@
 
 	<bean id="egovHandler" class="egovframework.com.cmmn.EgovSampleExcepHndlr" />
 	<bean id="otherHandler" class="egovframework.com.cmmn.EgovSampleOthersExcepHndlr" />	
-	
+		-->
 </beans>

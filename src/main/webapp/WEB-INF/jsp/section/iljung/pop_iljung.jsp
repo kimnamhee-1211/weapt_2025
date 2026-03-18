@@ -132,7 +132,7 @@
 
         we_select( selectData,{
             successSelect : (json) => {
-                let data = json.data;
+                let data = json.DATA;
                 if(isNull(data)){
                     alert("일정 정보가 존재하지 않습니다.")
                     close_popup_onclick();

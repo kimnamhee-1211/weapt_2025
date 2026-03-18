@@ -17,7 +17,7 @@
             <div class="conf_line_left">
                 <input type="date" id="search_scDate" name="SC_DATE">
             </div>
-            <div id="gridAppr1" class="conf_line_right"></div> //결재란
+            <div id="gridAppr1" class="conf_line_right"></div>
         </div>
         <div id="grid1"  style="height: 546px;"></div>
     </div>
@@ -117,8 +117,8 @@
         if(!isNull(event.headerText)){
             let item = {};
             item.SC_DATE = search_scDate.value.replace(/-/g,"");
-            item.CONFIRM_SEQ = event.dataField;
-            item.DUTY_CD = event.headerText;
+            item.CONFIRM_SEQ = Number(event.dataField);
+            item.DUTY_CD = event.headerText.trim();
             item.REAL_USER_NM = event.value;
             if(isNull(event.value)){
                 approval_gridAppr1(item);
@@ -149,14 +149,14 @@
                 let columns = [];
                 if(json.O_RESULT < 0){
                     let item = {};
-                    item.dataField  = "1";
+                    item.dataField  = 1;
                     item.headerText = "";
                     item.dataType  = "text";
                     item.width = "100";
                     columns.push(item);
                     alert(json.O_MSG);
                 }else{
-                    let data = json.data;
+                    let data = json.DATA;
                     data.forEach(row=>{
                         let item = {};
                         item.dataField  = row.SEQ;
@@ -176,7 +176,9 @@
     function selectApproval_gridAppr1(){
 
         //검색데이터
-        let selectParam = {}
+        let selectParam = {
+            SC_DATE : search_scDate.value.replace(/-/g,"")
+        }
 
         //파라미터
         let selectData = {
@@ -188,10 +190,10 @@
         we_selectApproval( selectData,{
             successSelect : (json) => {
                 let data = [];
-                if(json.data.length < 1){
-                    data = [...{ 1 : null}]
+                if(json.DATA.length < 1){
+                    data = [...{ 1: null}]
                 }else{
-                    data = json.data
+                    data = json.DATA
                 }
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(gridAppr1, data);
@@ -214,9 +216,11 @@
 
         we_approval( selectData,{
             successAppr : (json) => {
-                let data = json.data;
-                //그리드 데이터 세팅
-                AUIGrid.setGridData(gridAppr1, data);
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
+                    let data = json.DATA;
+                    AUIGrid.setGridData(gridAppr1, data);
+                }
             }
         });
     }
@@ -241,9 +245,11 @@
 
         we_cnlApproval( selectData,{
             successCancAppr : (json) => {
-                let data = json.data;
-                //그리드 데이터 세팅
-                AUIGrid.setGridData(gridAppr1, data);
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
+                    let data = json.DATA;
+                    AUIGrid.setGridData(gridAppr1, data);
+                }
             }
         });
     }
@@ -255,7 +261,7 @@
 
         //검색데이터
         let selectParam = {
-            SC_DATE : search_scDate.value
+            SC_DATE : search_scDate.value.replace(/-/g,"")
         }
 
         //파라미터
@@ -267,7 +273,7 @@
 
         we_select( selectData,{
             successSelect : (json) => {
-                let data = json.data;
+                let data = json.DATA;
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행

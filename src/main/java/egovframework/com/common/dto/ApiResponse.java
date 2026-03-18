@@ -1,5 +1,7 @@
 package egovframework.com.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 import java.util.Map;
 
@@ -23,41 +25,44 @@ public class ApiResponse<T> {
     private ApiType O_TYPE;
     private T DATA;
 
+    @JsonProperty("O_STATUS")
     public String getO_STATUS() {
         return O_STATUS;
     }
 
-    public void setO_STATUS(String o_STATUS) {
-        O_STATUS = o_STATUS;
+    public void setO_STATUS(String O_STATUS) {
+        this.O_STATUS = O_STATUS;
     }
 
+    @JsonProperty("O_RESULT")
     public int getO_RESULT() {
         return O_RESULT;
     }
 
-    public void setO_RESULT(int o_RESULT) {
-        O_RESULT = o_RESULT;
+    public void setO_RESULT(int O_RESULT) {
+        this.O_RESULT = O_RESULT;
     }
 
+    @JsonProperty("O_MSG")
     public String getO_MSG() {
         return O_MSG;
     }
 
-    public void setO_MSG(String o_MSG) {
-        O_MSG = o_MSG;
+    public void setO_MSG(String O_MSG) {
+        this.O_MSG = O_MSG;
     }
 
+    @JsonProperty("O_TYPE")
     public ApiType getO_TYPE() {
         return O_TYPE;
     }
 
-    public void setO_TYPE(ApiType o_TYPE) {
-        O_TYPE = o_TYPE;
+    public void setO_TYPE(ApiType O_TYPE) {
+        this.O_TYPE = O_TYPE;
     }
 
-    public T getDATA() {
-        return DATA;
-    }
+    @JsonProperty("DATA")
+    public T getDATA() {return DATA;}
 
     public void setDATA(T DATA) {
         this.DATA = DATA;

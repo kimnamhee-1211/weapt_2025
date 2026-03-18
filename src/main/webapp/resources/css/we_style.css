@@ -385,8 +385,8 @@ button:hover{
 }
 .conf_line_right{
     height:98px;
-    /*width: 540px;*/
-    float: right;
+    float: right !important;
+    border : none !important;
 }
 .border10 {
     border: 1px solid #bcbcbc;

@@ -152,7 +152,7 @@
 
         we_select( selectData,{
             successSelect : (json) => {
-                let data = json.data;
+                let data = json.DATA;
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행

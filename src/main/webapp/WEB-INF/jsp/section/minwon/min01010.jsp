@@ -110,7 +110,7 @@
             dataField: "DONG_NAME",
             headerText: "동명",
             dataType: "text",
-            width: "7%",
+            width: "*%",
         },
     ];
 
@@ -124,76 +124,10 @@
             })
     );
 
-    //그리드2 설정
-    const grid2ColumnLayout = [
-        {
-            dataField: "CODEDV_NO",
-            headerText: "코드구분",
-            dataType: "text",
-            width: "10%",
-            editable: false
-        },
-        {
-            dataField: "CODE_NO",
-            headerText: "코드",
-            dataType: "text",
-            width: "10%",
-            editRenderer: {
-                type: "InputEditRenderer",
-                onlyNumeric: true, // 0~9 까지만 허용
-                maxlength: 6,
-            }
-        },
-        {
-            dataField: "CODEDTL_NM",
-            headerText: "코드명",
-            dataType: "text",
-            width: "20%",
-            style: "text-align-left",
-        },
-        {
-            dataField: "SHORT_NM",
-            headerText: "약어명",
-            dataType: "text",
-            width: "15%",
-        },
-        {
-            dataField: "DIVISION1_NM",
-            headerText: "구분명",
-            dataType: "text",
-            width: "20%",
-        },
-        {
-            dataField: "SORTORDER",
-            headerText: "정렬순서",
-            width: "15%",
-            dataType: "text",
-            editRenderer: {
-                type: "InputEditRenderer",
-                onlyNumeric: true, // 0~9 까지만 허용
-            }
-        },
-        {
-            dataField: "USE_YN",
-            headerText: "사용유무",
-            width: "15%",
-            renderer: we_cb_YN_Renderer
-        }
-    ];
-
-
-    //그리드2 생성
-    grid2 = AUIGrid.create("#grid2", grid2ColumnLayout,
-        Object.assign({}, we_grid_Props,
-            {
-                showRowNumColumn: false,
-            })
-    );
-
     //그리드 이벤트
     //셀 선택 변경 이벤트 바인딩
     AUIGrid.bind(grid1, "selectionChange", function (event) {
-        search_grid2_onclick();
+        //search_grid2_onclick();
     });
 
 
@@ -212,7 +146,7 @@
 
         we_select(selectData, {
             successSelect: (json) => {
-                let data = json.data;
+                let data = json.DATA;
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
@@ -291,7 +225,6 @@
                     }
                 } else {
                     td.className = "blank_block";
-                    break;
                 }
                 tr.appendChild(td);
             })

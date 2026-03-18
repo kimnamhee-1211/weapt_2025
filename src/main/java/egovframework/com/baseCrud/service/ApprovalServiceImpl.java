@@ -79,23 +79,13 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         setPgIdParam(param, pgId, menuId);
 
         List<Map<String, Object>> menuGroup = baseCrudMapper.selectList("approvalMapper.confirmLine_menuGroup", param);
-        param.put("MENU_GROUP", menuGroup.get(0).get("CODE_NO"));
-        System.out.println(param);
+        param.put("MENU_GROUP", menuGroup.get(0).get("MENU_GROUP"));
+
         //결재 현황 조회
         List<Map<String, Object>> resultList = getApproval(sectionId, component, param);
+        System.out.println("resultList" + resultList);
 
-        List<Map<String, Object>> result = new ArrayList<>();
-        Map<String, Object> resultMap = new HashMap<>();
-        if(resultList != null && !resultList.isEmpty()) {
-            for (Map<String, Object> map : resultList) {
-                resultMap.put((String)map.get("CONFIRM_SEQ"), (String)map.get("REAL_USER_NM"));
-            }
-        }else{
-            resultMap.put("1", " ");
-        }
-        result.add(resultMap);
-
-        return result;
+        return resultList;
     }
 
 
@@ -106,9 +96,10 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
         setLoginParam(param, loginUser);
         setPgIdParam(param, pgId, menuId);
+        System.out.println("param1 : " + param);
 
         List<Map<String, Object>> menuGroup = baseCrudMapper.selectList("approvalMapper.confirmLine_menuGroup", param);
-        param.put("MENU_GROUP", menuGroup.get(0).get("CODE_NO"));
+        param.put("MENU_GROUP", menuGroup.get(0).get("MENU_GROUP"));
         System.out.println(param);
 
         //결재 권한 확인
@@ -129,8 +120,9 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
         //직책별 결재 권한 정보 조회
         List<Map<String, Object>> approvalAuthority = baseCrudMapper.selectList(statement, param);
-
+        System.out.println("approvalAuthority : " + approvalAuthority);
         if (approvalAuthority == null || approvalAuthority.isEmpty()) {
+            System.out.println("????");
             throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 정보가 없습니다.",
@@ -184,6 +176,10 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         setPgIdParam(param, pgId, menuId);
         System.out.println(param);
 
+        List<Map<String, Object>> menuGroup = baseCrudMapper.selectList("approvalMapper.confirmLine_menuGroup", param);
+        param.put("MENU_GROUP", menuGroup.get(0).get("MENU_GROUP"));
+        System.out.println(param);
+
         //결재 취소 권한 확인
         checkCnlApproval(sectionId, component, param, loginUser);
 
@@ -198,12 +194,12 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
     //결재 취소 권한 확인
     private boolean checkCnlApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser) {
-
+        System.out.println("param : " + param);
         String statement = buildApprovalStatement(sectionId, component, "getApprAuth");
 
         //직책별 결재 권한 정보 조회
         List<Map<String, Object>> approvalAuthority = baseCrudMapper.selectList(statement, param);
-
+        System.out.println("approvalAuthority : " + approvalAuthority);
         if (approvalAuthority == null || approvalAuthority.isEmpty()) {
             throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
@@ -234,7 +230,6 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         }
     }
 
-
     //결재 취소
     private int cancelApproval(String sectionId, String component, Map<String, Object> param) {
 
@@ -255,17 +250,20 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
         //결재 현황 조회
         String statement = buildApprovalStatement(sectionId, component, "selectApproval");
+
         List<Map<String, Object>> getApproval = baseCrudMapper.selectList(statement, param);
         List<Map<String, Object>> result = new ArrayList<>();
 
         if (getApproval != null || !getApproval.isEmpty()) {
             Map<String, Object> resultMap = new HashMap<>();
             for (Map<String, Object> el : getApproval) {
-                resultMap.put((String) el.get("CONFIRM_SEQ"), (String) el.get("REAL_USER_NM"));
+                Object key = el.get("CONFIRM_SEQ");
+                if(key != null){
+                    resultMap.put(key.toString(), String.valueOf(el.get("REAL_USER_NM")));
+                }
             }
             result.add(resultMap);
         } else {
-
             Map<String, Object> emptyRow = new HashMap<>();
             emptyRow.put("1", "");
             result.add(emptyRow);
