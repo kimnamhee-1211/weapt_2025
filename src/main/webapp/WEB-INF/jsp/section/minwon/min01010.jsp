@@ -127,7 +127,7 @@
     //그리드 이벤트
     //셀 선택 변경 이벤트 바인딩
     AUIGrid.bind(grid1, "selectionChange", function (event) {
-        //search_grid2_onclick();
+        search_aptBlock_onclick();
     });
 
 
@@ -156,37 +156,41 @@
         });
     }
 
-    function search_grid2_onclick() {
+    function search_aptBlock_onclick() {
 
         //검색데이터
         let selectParam = {
-            CODEDV_NO: AUIGrid.getSelectedRows(grid1)[0].DONG_ID
+            DONG_ID: AUIGrid.getSelectedRows(grid1)[0].DONG_ID
         }
 
         //파라미터
         let selectData = {
             sectionId: sectionId,
-            component: pgId + "_grid2",
+            component: pgId + "_aptBlock",
             param: selectParam,
         }
 
         we_select(selectData, {
             successSelect: (json) => {
-
+                let data = json.DATA;
+                aptBlock_make(data);
             }
         });
     }
 
     function aptBlock_make(data) {
-        let higher = Number(data[0].HIGHER_FLOOR)
+        dong_table.innerHTML = ""
+
+        let higher = Number(data[0].HIGHER_FLOOR);
+        let dataLength = data.length;
         for (let i = higher; i >= 1; i--) {
             let tr = document.createElement('tr');
             data.forEach(row => {
                 let td = document.createElement('td');
-                if (Number(row.END_FLOOR) >= i >= Number(row.START_FLOOR)) {
+                if (Number(row.END_FLOOR) >= i && i >= Number(row.START_FLOOR)) {
                     switch (true) {
                         case (i == row.END_FLOOR && row.EL_CNT == "Y") :
-                            if(LINE_GBN = "step"){
+                            if(LINE_GBN == "step"){
                                 td.className = "el_block step_block";
                             }else{
                                 td.className = "el_block ho_block";
@@ -195,7 +199,7 @@
                             td.id = i.toString() + "_el";
                             break;
                         case (i == row.END_FLOOR && row.ROOFTOP_CNT == "Y") :
-                            if(LINE_GBN = "step"){
+                            if(LINE_GBN == "step"){
                                 td.className = "rooftop_block step_block";
                             }else{
                                 td.className = "rooftop_block ho_block";
@@ -204,7 +208,7 @@
                             td.id = i.toString() + "_rooftop";
                             break;
                         case (i == row.START_FLOOR && row.DOOR_CNT == "Y") :
-                            if(LINE_GBN = "step"){
+                            if(LINE_GBN == "step"){
                                 td.className = "door_block step_block";
                             }else{
                                 td.className = "door_block ho_block";
@@ -231,10 +235,11 @@
             dong_table.appendChild(tr);
         }
         let rower = Number(data[0].LOWER_FLOOR)
-        for (let i = 1; i > rower; i++) {
+        for (let i = 1; i <= rower; i++) {
             let tr = document.createElement('tr');
             let td = document.createElement('td');
             td.className = "underground_block";
+            td.rowSpan = dataLength;
             td.innerHTML = "지하주차장(동지하 포함)"
             td.id = i.toString() + "_underground";
             tr.appendChild(td);
@@ -250,6 +255,12 @@
                     pgId : pgId,
                     menuId : menuId,
                     querySet : "min001",
+                    pop_data : {
+                        HO_ID : tdId,
+                        DONG_ID : AUIGrid.getSelectedRows(grid1)[0].DONG_ID,
+                        LINE_NO : AUIGrid.getSelectedRows(grid1)[0].LINE_NO,
+                        LINE_GBN : AUIGrid.getSelectedRows(grid1)[0].LINE_GBN,
+                    }
                 }
                 pop_onload(pop_item);
             }else {
@@ -279,9 +290,6 @@
 
     //로드
     window.onload = function () {
-        //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        //btnMaker({ tag: "#section_middle_btn1", grid:"grid1", add: true, save: true});
-        //btnMaker({ tag: "#section_middle_btn2", grid:"grid2", add: true, save: true});
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
         //로드 시 그리드 바로 조회

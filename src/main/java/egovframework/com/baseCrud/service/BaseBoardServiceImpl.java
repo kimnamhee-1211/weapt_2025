@@ -19,7 +19,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
 
     //게시글 검색
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public Map<String, Object> boardSelectOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "boardSelectOne");
@@ -51,7 +51,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
 
     //게시글 저장 + 수정
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public int boardSave(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         Map<String, Object> insertParam = (Map<String, Object>) param.get("insertParam");

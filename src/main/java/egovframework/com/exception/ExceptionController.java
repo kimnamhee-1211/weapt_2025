@@ -14,6 +14,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class ExceptionController {
 
+
     @ExceptionHandler(CrudFailException.class)
     public ResponseEntity<ApiResponse<Void>>  handleCrudFailException(CrudFailException ex) {
 
@@ -28,8 +29,8 @@ public class ExceptionController {
                 .body(result);
     }
 
-    @ExceptionHandler(ApprovalFailException.class)
-    public ResponseEntity<ApiResponse<Void>> handleApprovalFailException(ApprovalFailException ex) {
+    @ExceptionHandler(ApprovalAuthException.class)
+    public ResponseEntity<ApiResponse<Void>> handleApprovalAuthException(ApprovalAuthException ex) {
 
         ApiResponse<Void> result = new ApiResponse<>();
         result.setO_STATUS("FAIL");
@@ -40,8 +41,35 @@ public class ExceptionController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(result);
+    }
+
+    @ExceptionHandler(ApprovalFailException.class)
+    public ResponseEntity<ApiResponse<Void>> handleApprovalFailException(ApprovalFailException ex) {
+
+        ApiResponse<Void> result = new ApiResponse<>();
+        result.setO_STATUS("FAIL");
+        result.setO_RESULT(-1);
+        result.setO_MSG(ex.getUserMessage());
+        result.setO_TYPE(ex.getApiType());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(result);
 
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception ex) {
+        ApiResponse<Void> result = new ApiResponse<>();
+        result.setO_STATUS("FAIL");
+        result.setO_RESULT(-1);
+        result.setO_MSG("처리 중 오류가 발생하였습니다.");
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(result);
+    }
+
 
 
 

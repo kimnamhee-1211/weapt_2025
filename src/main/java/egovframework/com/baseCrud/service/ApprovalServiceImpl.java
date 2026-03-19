@@ -3,6 +3,7 @@ package egovframework.com.baseCrud.service;
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.BaseServiceSupport;
 import egovframework.com.common.dto.ApiResponse;
+import egovframework.com.exception.ApprovalAuthException;
 import egovframework.com.exception.ApprovalFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
         if (result == null || result.isEmpty()) {
-            throw new ApprovalFailException(
+            throw new ApprovalAuthException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 직책 정보가 없습니다.",
                     ApiResponse.ApiType.NULL_DATA);
@@ -61,7 +62,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
         if (result == null || result.isEmpty()) {
-            throw new ApprovalFailException(
+            throw new ApprovalAuthException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 직책 정보가 없습니다.",
                     ApiResponse.ApiType.NULL_DATA);
@@ -91,7 +92,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
     //결재 처리 프로세스
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class, noRollbackFor = ApprovalAuthException.class)
     public List<Map<String, Object>> processApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         setLoginParam(param, loginUser);
@@ -123,7 +124,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         System.out.println("approvalAuthority : " + approvalAuthority);
         if (approvalAuthority == null || approvalAuthority.isEmpty()) {
             System.out.println("????");
-            throw new ApprovalFailException(
+            throw new ApprovalAuthException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 정보가 없습니다.",
                     ApiResponse.ApiType.NULL_DATA);
@@ -132,7 +133,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         //결재 처리 여부 확인
         String confirm_date = (String) approvalAuthority.get(0).get("REAL_DATE");
         if (confirm_date != null && !confirm_date.isEmpty()) {
-            throw new ApprovalFailException(
+            throw new ApprovalAuthException(
                     "ALREADY_APPROVAL " + sectionId + "/" + component + " : \n" + param,
                     "이미 결재 처리되었습니다.",
                     ApiResponse.ApiType.APPROVAL);
@@ -145,7 +146,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         if (loginUser.getUserId().equals(confirm_id1) || loginUser.getUserId().equals(confirm_id2)) {
             return true;
         } else {
-            throw new ApprovalFailException(
+            throw new ApprovalAuthException(
                     "NO_AUTHORITY " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한이 없습니다.",
                     ApiResponse.ApiType.APPROVAL);
@@ -169,7 +170,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
     //결재 취소 처리 프로세스
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class, noRollbackFor = ApprovalAuthException.class)
     public List<Map<String, Object>> processCnlApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         setLoginParam(param, loginUser);
@@ -201,7 +202,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         List<Map<String, Object>> approvalAuthority = baseCrudMapper.selectList(statement, param);
         System.out.println("approvalAuthority : " + approvalAuthority);
         if (approvalAuthority == null || approvalAuthority.isEmpty()) {
-            throw new ApprovalFailException(
+            throw new ApprovalAuthException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 정보가 없습니다.",
                     ApiResponse.ApiType.NULL_DATA);
@@ -210,7 +211,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         //결재 처리 여부 확인
         String confirm_date = (String) approvalAuthority.get(0).get("REAL_DATE");
         if (confirm_date == null && confirm_date.isEmpty()) {
-            throw new ApprovalFailException(
+            throw new ApprovalAuthException(
                     "NO_APPROVAL " + sectionId + "/" + component + " : \n" + param,
                     "취소할 결재내역이 없습니다.",
                     ApiResponse.ApiType.APPROVAL);
@@ -221,7 +222,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
 
         //결재 권한 확인
         if (!loginUser.getUserId().equals(confirm_userId) || !loginUser.getUserName().equals(confirm_userNm)) {
-            throw new ApprovalFailException(
+            throw new ApprovalAuthException(
                     "NO_CANCEL_AUTHORITY " + sectionId + "/" + component + " : \n" + param,
                     "결재 취소 권한이 없습니다.",
                     ApiResponse.ApiType.APPROVAL);

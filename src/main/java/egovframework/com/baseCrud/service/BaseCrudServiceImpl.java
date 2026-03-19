@@ -123,7 +123,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
     //다중 삭제
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "deleteList");
@@ -161,7 +161,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
     //다중 저장 + 수정
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public int saveList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         List<Map<String, Object>> insertParam = (List<Map<String, Object>>) param.get("insertParam");
@@ -242,7 +242,6 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
     //사전 함수 호출
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public int callBefore(Map<String, Object> before, LoginVO loginUser, String sectionId, String component, String pgId, String menuId) {
 
         List<Map<String, Object>> beforeParam = (List<Map<String, Object>>) before.get("beforeParam");

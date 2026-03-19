@@ -7,12 +7,11 @@
             <div class="section_middle_title">
                 <span><i class="icon-pause"></i>접&ensp;수</span>
                 <span class="section_middle_btn" id="pop1_btn">
-                    <%-- 저장, 인쇄, 삭제, 닫기 --%>
                 </span>
                 <span class="search-box section1_btn">
-                            <button id="find_btn" onclick="" class="find_btn">메시지전송</button>
-                            <%-- 설정에서 선택해야 나옴 --%>
-                        </span>
+                    <button id="find_btn" onclick="" class="find_btn">메시지전송</button>
+                    <%-- 설정에서 선택해야 나옴 --%>
+                </span>
             </div>
             <table style="width:720px;">
                 <colgroup>
@@ -31,21 +30,24 @@
                         <input type="text" id="input_ho" name="HO" class="box50">호
                         <input type="text" id="input_dongId" name="DONG_ID" hidden="hidden">
                         <input type="text" id="input_hoId" name="HO_ID" hidden="hidden">
+                        <input type="text" id="input_gbn" name="GBN" hidden="hidden">
+                        <input type="text" id="input_slipNo" name="SLIP_NO" hidden="hidden">
                     </td>
                     <%-- 민원인과 연락처는 세대정보등록에서 가져오고 수정가능 --%>
                     <th>민원인</th>
                     <td><****></td>
                     <th>연락처</th>
                     <td><****></td>
-
                 </tr>
                 <tr>
                     <th>접수일시</th>
                     <td colspan="3">
                         <span><input type="date" id="input_minwonDate" name="MINWON_DATE" data-format="date"></span>&emsp;&emsp;
                         <%-- 환경설정에 체크되어 있으면 서버 현재시간 가져오기 --%>
-                        <span><input type="checkbox" id="input_timeInput" name="TIME_INPUT">
-                                    <label for="input_timeInput">시간선택 :</label></span>
+                        <span>
+                            <input type="checkbox" id="input_timeInput" name="TIME_INPUT">
+                            <label for="input_timeInput">시간선택 :</label>
+                        </span>
                         <%-- 체크되면 시,분 보여지기 --%>
                         <span>&ensp;<input type="time" id="input_time" class="box50"></span>
                     </td>
@@ -121,9 +123,9 @@
                     <td colspan="3">
                         <span><input type="date" id="input_workDate" name="WORK_DATE" data-format="date"></span>&emsp;&emsp;
                         <span>
-                                        <input type="checkbox" id="input_workTimeInput" name="TIME_INPUT">
-                                        <label for="input_workTimeInput">시간선택 :</label>
-                                    </span>
+                            <input type="checkbox" id="input_workTimeInput" name="TIME_INPUT">
+                            <label for="input_workTimeInput">시간선택 :</label>
+                        </span>
                         <span>&ensp;<input type="time" id="input_workTimeInputName"></span>
                     </td>
                 </tr>
@@ -175,6 +177,9 @@
     const input_ho = document.querySelector("#input_ho");
     const input_dongId = document.querySelector("#input_dongId");
     const input_hoId = document.querySelector("#input_hoId");
+    const input_gbn = document.querySelector("#input_gbn");
+    const input_slipNo = document.querySelector("#input_slipNo");
+
     const input_minwonDate = document.querySelector("#input_minwonDate");
     const input_timeInput = document.querySelector("#input_timeInput");
     const input_time = document.querySelector("#input_time");
@@ -190,8 +195,6 @@
     const input_workUser = document.querySelector("#input_workUser");
     const input_workUserName = document.querySelector("#input_workUserName");
     const input_workDesc = document.querySelector("#input_workDesc");
-
-
 
     async function getSelectOption_input_minownGbn() {
         input_minownGbn.innerHTML = "";
@@ -267,14 +270,13 @@
     }
 
 
-
-
-    function pop_onload(pop_item) {
+    function pop_onload(pop_item){
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({tag: "#pop1_btn", grid: "grid1", save: true, del: true, print: true});
         pop1_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
 
+        input_minwonDate.value = getToday("yyyy-MM-dd")
         getSelectOption_input_minownGbn();
         getSelectOption_input_statusCd();
         getSelectOption_input_user();
