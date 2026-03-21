@@ -14,7 +14,7 @@
 	</select>
 
 
-	<select id="selectList_min01010_grid1" parameterType="map" resultType="map">
+	<select id="selectList_min01010_aptBlock" parameterType="map" resultType="map">
 		SELECT
 			A.LINE_NO       AS LINE_NO,
 			A.DONG_ID       AS DONG_ID,

@@ -129,7 +129,7 @@
                 "X-PG-ID": parentPgId,
                 "X-MENU-ID": parentMenuId,
             },
-            success: res => successCallback(res.data),
+            success: res => successCallback(res.DATA),
             error: err => failureCallback(err)
         });
     }
