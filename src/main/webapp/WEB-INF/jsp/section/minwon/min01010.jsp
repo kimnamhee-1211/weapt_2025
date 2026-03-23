@@ -100,10 +100,13 @@
     //그리드1 설정
     const grid1ColumnLayout = [
         {
-            dataField: "DONG_ID",
-            headerText: "동번호",
+            dataField: "VIEW_GBN",
             dataType: "text",
-            width: "30%",
+            visible : false
+        },
+        {
+            dataField: "DONG_ID",
+            dataType: "text",
             visible : false
         },
         {
@@ -163,22 +166,39 @@
             DONG_ID: AUIGrid.getSelectedRows(grid1)[0].DONG_ID
         }
 
+        let viewGbn = AUIGrid.getSelectedRows(grid1)[0].VIEW_GBN;
+
+        let component = ""
+        if(viewGbn = "1"){
+            component = "_apt"
+        }else if(viewGbn = "2"){
+            component = "_cb"
+        }else{
+            component = "_etc"
+        }
+
         //파라미터
         let selectData = {
             sectionId: sectionId,
-            component: pgId + "_aptBlock",
+            component: pgId + component,
             param: selectParam,
         }
 
         we_select(selectData, {
             successSelect: (json) => {
                 let data = json.DATA;
-                aptBlock_make(data);
+                if(viewGbn = "1"){
+                    apt_block_make(data);
+                }else if(viewGbn = "2"){
+                    cb_block_make(data);
+                }else{
+                    etc_block_make(data);
+                }
             }
         });
     }
 
-    function aptBlock_make(data) {
+    function apt_block_make(data) {
         dong_table.innerHTML = ""
 
         let higher = Number(data[0].HIGHER_FLOOR);
@@ -196,7 +216,7 @@
                                 td.className = "el_block ho_block";
                             }
                             td.innerHTML = "EL"
-                            td.id = i.toString() + "_el";
+                            td.id = "apt_" + i.toString() + "_el";
                             break;
                         case (i == row.END_FLOOR && row.ROOFTOP_CNT == "Y") :
                             if(LINE_GBN == "step"){
@@ -205,7 +225,7 @@
                                 td.className = "rooftop_block ho_block";
                             }
                             td.innerHTML = "루프탑"
-                            td.id = i.toString() + "_rooftop";
+                            td.id = "apt_" + i.toString() + "_rooftop";
                             break;
                         case (i == row.START_FLOOR && row.DOOR_CNT == "Y") :
                             if(LINE_GBN == "step"){
@@ -214,17 +234,17 @@
                                 td.className = "door_block ho_block";
                             }
                             td.innerHTML = "현관"
-                            td.id = i.toString() + "_door";
+                            td.id = "apt_" + i.toString() + "_door";
                             break;
                         case (row.LINE_GBN == "step") :
                             td.className = "step_block";
                             td.innerHTML = "계단"
-                            td.id = i.toString() + "_step";
+                            td.id = "apt_" + i.toString() + "_step";
                             break;
                         default :
                             td.className = "ho_block";
                             td.innerHTML = row.DONG_NAME;
-                            td.id = i.toString() + row.HO_NO;
+                            td.id = "apt_" + i.toString() + row.HO_NO;
                             break;
                     }
                 } else {
@@ -241,11 +261,34 @@
             td.className = "underground_block";
             td.rowSpan = dataLength;
             td.innerHTML = "지하주차장(동지하 포함)"
-            td.id = i.toString() + "_underground";
+            td.id = "apt_" + i.toString() + "_underground";
             tr.appendChild(td);
             dong_table.appendChild(tr);
         }
     }
+
+    function cb_block_make(data) {
+        dong_table.innerHTML = ""
+        let higher = Math.ceil(data.length / 4);
+        for(let i = 0; i < higher; i ++){
+            let tr = document.createElement('tr');
+            for(let l = 0; i < 4; i ++){
+                let td = document.createElement('td');
+                d.className = "cb_block";
+                td.innerHTML = data.AREAR_NAME
+                td.id = "cb_" + data.MINWON_AREAR_SEQ
+                tr.appendChild(td);
+            }
+            dong_table.appendChild(tr);
+        }
+    }
+
+    function etc_block_make(data) {
+        dong_table.innerHTML = ""
+
+
+    }
+
 
     dong_table.addEventListener('click', (e) => {
         if(e.target.tagName == "TD"){
