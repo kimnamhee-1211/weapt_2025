@@ -140,7 +140,7 @@
             btnHidden(pop_item.btnHidden, pop_item.popupId);
         }
 
-        if(!isNull(pop_item.disabled) && pop_item.disabled){
+        if(!isNull(pop_item.disabled)){
             disableInput(pop_item.popupId);
         }
 

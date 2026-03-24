@@ -16,7 +16,7 @@
                     <colgroup>
                     <tr>
                         <th>No.</th>
-                        <td><input type="text" id="" name="CONTRACT_NO" disabled></td>
+                        <td><input type="text" id="input_contractNo" name="CONTRACT_NO" disabled></td>
                         <th>계약구분</th>
                         <td>
                             <select id="input_contractdiv" name="CONTRACT_DIV"></select>
@@ -26,42 +26,42 @@
                     </tr>
                     <tr>
                         <th>계약명</th>
-                        <td colspan="3"><input type="text" name="CONTRACT_NAME" ></td>
+                        <td colspan="3"><input type="text" id="input_contractName" name="CONTRACT_NAME" ></td>
                         <th>전화번호</th>
                         <td><input type="text" id="input_compPhonNo" name="COMP_PHON_NO" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
                     </tr>
                     <tr>
                         <th>계약일</th>
-                        <td><input type="date" id="" name="CONTRACT_DATE" data-format="date"></td>
+                        <td><input type="date" id="input_contractDate" name="CONTRACT_DATE" data-format="date"></td>
                         <th>계약시작일</th>
-                        <td><input type="date" id="" name="STRAT_DATE" data-format="date"></td>
+                        <td><input type="date" id="input_startDate" name="START_DATE" data-format="date"></td>
                         <th>계약만기일</th>
                         <td><input type="date" id="input_endDate" name="END_DATE" data-format="date"></td>
                     </tr>
                     <tr>
                         <th>계약금액</th>
-                        <td><input type="text" name="CONTRACT_AMOUNT" oninput="inputMoneyFormat(this)" ></td>
+                        <td><input type="text" id="input_contractAmount" name="CONTRACT_AMOUNT" oninput="inputMoneyFormat(this)" ></td>
                         <th>지불방법</th>
-                        <td colspan="3"><input type="text" name="PAY_TYPE" ></td>
+                        <td colspan="3"><input id="input_payType" type="text" name="PAY_TYPE" ></td>
                     </tr>
                     <tr>
                         <th>해지일</th>
                         <td><input type="date" id="input_cancelDate" name="CANCEL_DATE" data-format="date"></td>
                         <th>해지사유</th>
-                        <td colspan='3'><input type="text" name="CANCEL_REASON" ></td>
+                        <td colspan='3'><input id="input_cancelReason" type="text" name="CANCEL_REASON" ></td>
                     </tr>
                     <tr>
                         <th rowspan="2">
-                            보증<br><input type="checkbox" id="" name="GUARANTEE_YN" value="1">
+                            보증<br><input type="checkbox" id="input_guaranteeYn" name="GUARANTEE_YN" value="1">
                         </th>
-                        <td><input type="text" id="" name="GUARANTEE_NAME" placeholder="보증명"></td>
+                        <td><input type="text" id="input_guaranteeName" name="GUARANTEE_NAME" placeholder="보증명"></td>
                         <th>보증금액</th>
-                        <td><input type="text" id="" name="GUARANTEE_AMOUNT" oninput="inputMoneyFormat(this)"></td>
+                        <td><input type="text" id="input_guaranteeAmount" name="GUARANTEE_AMOUNT" oninput="inputMoneyFormat(this)"></td>
                         <th>보증기간</th>
-                        <td><input type="text" id="" name="GUARANTEE_TERM"></td>
+                        <td><input type="text" id="input_guaranteeTerm" name="GUARANTEE_TERM"></td>
                     </tr>
                     <tr>
-                        <td colspan="5"><input type="text" id="" name="GUARANTEE_REMARKS" placeholder="보증내용"></td>
+                        <td colspan="5"><input type="text" id="input_guaranteeRemarks" name="GUARANTEE_REMARKS" placeholder="보증내용"></td>
                     </tr>
                     <tr>
                         <th>비고</th>
@@ -140,7 +140,7 @@
             btnHidden(pop_item.btnHidden, pop_item.popupId);
         }
 
-        if(!isNull(pop_item.disabled) && pop_item.disabled){
+        if(!isNull(pop_item.disabled)){
             disableInput(pop_item.popupId);
         }
 

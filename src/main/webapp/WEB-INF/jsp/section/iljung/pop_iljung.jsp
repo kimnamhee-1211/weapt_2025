@@ -413,6 +413,14 @@
         pop1_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
 
+        if(!isNull(pop_item.btnHidden)){
+            btnHidden(pop_item.btnHidden, pop_item.popupId);
+        }
+
+        if(!isNull(pop_item.disabled)){
+            disableInput(pop_item.popupId);
+        }
+
         Promise.all([
             //공통코드 가져오기
             selectOptionMaker("120", input_statusCd, "", false),

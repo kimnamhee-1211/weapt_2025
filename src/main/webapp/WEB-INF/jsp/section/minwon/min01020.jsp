@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<%@ include file = "../../inc_head.jsp" %>
-<%@ include file = "../../inc_nav.jsp" %>
-<jsp:include page="/WEB-INF/jsp/section/minwon/min_nav.jsp" />
+<%@ include file = "../../../inc_head.jsp" %>
+<%@ include file = "../../../inc_nav.jsp" %>
+<%@ include file = "min_nav.jsp" %>
 
         <div id="section">
             <div class="section1">
@@ -37,8 +37,7 @@
                     <div class="section_middle_title">
                         <span><i class="icon-pause"></i>접&ensp;수</span>
                         <span class="section_middle_btn">
-                            <button id="find_btn" onclick="" class="find_btn">메시지전송</button>  
-                             <%-- 설정에서 선택해야 나옴 --%>
+                            <button id="find_btn01" onclick="" class="find_btn">사진찾기</button>
                         </span>
                     </div>
                     <table style="width:720px;">
@@ -50,7 +49,7 @@
                             <col style ="width:12%">
                             <col style ="width:17%">
                         </colgroup>
-                        <tbody id="min_tb_01">
+                        <tbody id="">
                             <tr>
                                 <th>동호(장소)</th>
                                 <td><****></td>
@@ -75,8 +74,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th><button id="find_btn01" onclick="" class="find_btn_m">사진찾기</button>
-                                </th>
+                                <th>사진파일</th>
                                 <td colspan="5" class="find_td">
                                     <div class="find_td">
                                     <%-- 찾은 사진 리스트 (여러개 선택할 수 있게) 하나씩 삭제도 할 수 있게 --%>
@@ -95,9 +93,11 @@
                     <div class="section_middle_title">
                         <span><i class="icon-pause"></i>처&ensp;리</span>
                         <span class="section_middle_btn">
-                            <button id="find_btn" onclick="" class="find_btn">소모품사용</button>  
+                            <button id="find_btn01" onclick="" class="find_btn">사진찾기</button>
+
+                            <button id="find_btn" onclick="" class="">소모품사용</button>  
                             <%-- 설정에서 선택해야 나옴 --%>
-                            <button id="find_btn" onclick="" class="find_btn">계량기사용</button>  
+                            <button id="find_btn" onclick="" class="">계량기사용</button>  
                             <%-- 설정에서 선택해야 나옴 --%>                        
                         </span>                    
                     </div> 
@@ -110,7 +110,7 @@
                                 <col style ="width:12%">
                                 <col style ="width:20%">
                             </colgroup>                        
-                        <tbody id="min_tb_02">
+                        <tbody id="">
                             <tr>
                                 <th>처리일시</th>
                                 <td colspan="3">
@@ -156,8 +156,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th><button id="find_btn01" onclick="" class="find_btn_m">사진찾기</button>
-                                </th>
+                                <th>사진파일</th>
                                 <td colspan="5" class="find_td">
                                     <div class="find_td">
                                     <%-- 찾은 사진 리스트 (여러개 선택할 수 있게) 하나씩 삭제도 할 수 있게 --%>
@@ -180,4 +179,4 @@
         </div>
     </div>
 
-<%@ include file = "../../inc_footer.jsp" %>
+<%@ include file = "../../../inc_footer.jsp" %>

@@ -3,7 +3,7 @@
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
 <jsp:include page="/WEB-INF/jsp/section/sojang/soj_nav.jsp" />
-
+<jsp:include page="/WEB-INF/jsp/popup/pop_addr.jsp"/>
     <div id="section">
         <div class="section1">
             <div class="section1_nav">
@@ -42,13 +42,13 @@
                             <tbody>
                             <tr>
                                 <th style="width: 90px;">관리소코드</th>
-                                <td style="width: 150px;"><input type="text" id="" name="OFFICE_CODE" disabled></td>
+                                <td style="width: 150px;"><input type="text" id="input_officeCode" name="OFFICE_CODE" disabled></td>
                                 <th style="width: 90px;">등록일</th>
-                                <td style="width: 150px;"><input type="date" id="" name="START_DATE" data-format="date"></td>
+                                <td style="width: 150px;"><input type="date" id="input_startDate" name="START_DATE" data-format="date"></td>
                                 <th style="width: 90px;">세대수</th>
-                                <td style="width: 150px;"><input type="text" id="" name="OFFICE_CNT" ></td>
+                                <td style="width: 150px;"><input type="text" id="input_officeCnt" name="OFFICE_CNT" ></td>
                                 <th style="width: 90px;">관리면적</th>
-                                <td style="width: 150px;"><input type="text" id="" name="OFFICE_AREAR" ></td>
+                                <td style="width: 150px;"><input type="text" id="input_officeArear" name="OFFICE_AREAR" ></td>
                             </tr>
                             <tr>
                                 <th>*관리소명</th>
@@ -73,14 +73,14 @@
                                     <select id="input_part2" name="PART2"> <%--공통코드 103--%></select>
                                 </td>
                                 <th>전화번호</th>
-                                <td><input type="text" id="" name="TEL" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
+                                <td><input type="text" id="input_tel" name="TEL" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
                                 <th>팩스번호</th>
-                                <td><input type="text" id="" name="FAX" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
+                                <td><input type="text" id="input_fax" name="FAX" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
                             </tr>
                             <tr>
                                 <th rowspan='3'>주소</th>
                                 <td colspan='2'>
-                                    <input type="text" id="" name="ZIP">
+                                    <input type="text" id="input_zip" name="ZIP">
                                 </td>
                                 <td>
                                     <button id="addr_popup_btn1" class="addr_popup_btn" type="button" onclick="search_addr_onclick()">주소찾기</button>
@@ -91,17 +91,16 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='3'><input type="text" id="" name="ADDR1" ></td>  <%--주소1--%>
+                                <td colspan='3'><input type="text" id="input_addr1" name="ADDR1" ></td>  <%--주소1--%>
                                 <th>관리자</th>
                                 <td colspan='3'>
-                                    <select id="input_mgmuserId" name="MGMUSER_ID">
-                                    </select>
+                                    <select id="input_mgmuserId" name="MGMUSER_ID"></select>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='3'><input type="text" id="" name="ADDR2" ></td><%--주소2--%>
+                                <td colspan='3'><input type="text" id="input_addr2" name="ADDR2" ></td><%--주소2--%>
                                 <th>단지이메일</th>
-                                <td colspan='3'><input type="email" id="" name="EMAIL" ></td>
+                                <td colspan='3'><input type="email" id="input_email" name="EMAIL" ></td>
                             </tr>
                             </tbody>
                         </table>

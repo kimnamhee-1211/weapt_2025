@@ -3,7 +3,7 @@
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
 <jsp:include page="/WEB-INF/jsp/section/sojang/soj_nav.jsp" />
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<jsp:include page="/WEB-INF/jsp/popup/pop_addr.jsp"/>
     <div id="section">
         <div class="section1">
             <div class="section1_nav">
@@ -19,27 +19,27 @@
                             <tbody>
                             <tr>
                                 <th style="width: 100px;">관리회사코드</th>
-                                <td style="width: 200px;"><input type="text" id="" name="COMP_CODE" oninput="inputNumFormat(this)" disabled></td> <!-- 101부터 증가-->
+                                <td style="width: 200px;"><input type="text" id="input_compCode" name="COMP_CODE" oninput="inputNumFormat(this)" disabled></td> <!-- 101부터 증가-->
                                 <th style="width: 100px;">등록일</th>
-                                <td style="width: 200px;"><input type="date" id="" name="REGI_DAY" data-format="date"></td>
+                                <td style="width: 200px;"><input type="date" id="input_regiDay" name="REGI_DAY" data-format="date"></td>
                             </tr>
                             <tr>
                                 <th>*관리회사명</th>
-                                <td><input type="text" id="" name="COMP_NAME" ></td>
+                                <td><input type="text" id="input_compName" name="COMP_NAME" ></td>
                                 <th>사업자번호</th>
-                                <td><input type="text" id="" name="NUM" oninput="inputBRNFormat(this)" placeholder="숫자만 입력해주세요" maxlength="12"></td>
+                                <td><input type="text" id="input_num" name="NUM" oninput="inputBRNFormat(this)" placeholder="숫자만 입력해주세요" maxlength="12"></td>
                             </tr>
                             <tr>
                                 <th>대표자</th>
-                                <td><input type="text" id="" name="CEO" ></td>
+                                <td><input type="text" id="input_ceo" name="CEO" ></td>
                                 <th>대표자전화번호</th>
-                                <td><input type="text" id="" name="CEO_HP" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
+                                <td><input type="text" id="input_ceoHp" name="CEO_HP" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
                             </tr>
                             <tr>
                                 <th>업태</th>
-                                <td><input type="text" id="" name="CON" ></td>
+                                <td><input type="text" id="input_con" name="CON" ></td>
                                 <th>종목</th>
-                                <td><input type="text" id="" name="ITEM" ></td>
+                                <td><input type="text" id="input_item" name="ITEM" ></td>
                             </tr>
                             <tr>
                                 <th rowspan='3'>주소</th>
@@ -54,19 +54,19 @@
                                 <td colspan='3'><input type="text" id="input_addr1" name="ADDR1" ></td>
                             </tr>
                             <tr>
-                                <td colspan='3'><input type="text" id="" name="ADDR2" ></td>
+                                <td colspan='3'><input type="text" id="input_addr2" name="ADDR2" ></td>
                             </tr>
                             <tr>
                                 <th>전화번호</th>
-                                <td><input type="text" id="" name="TEL" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
+                                <td><input type="text" id="input_tel" name="TEL" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
                                 <th>팩스번호</th>
-                                <td><input type="text" id="" name="FAX" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
+                                <td><input type="text" id="input_fax" name="FAX" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
                             </tr>
                             <tr>
                                 <th>E-Mail</th>
-                                <td><input type="email" id="" name="EMAIL" ></td>
+                                <td><input type="email" id="input_email" name="EMAIL" ></td>
                                 <th>홈페이지</th>
-                                <td><input type="text" id="" name="HOMEPAGE" ></td>
+                                <td><input type="text" id="input_hompage" name="HOMEPAGE" ></td>
                             </tr>
                             <!--관리자 없어짐-->
                             <tr>
