@@ -78,14 +78,14 @@
 <script>
     const popupId = "pop_contract";
     const pop1_btn = document.querySelector("#pop1_btn"); //팝업버튼 컴포넌트
-    const input_contractdiv = document.querySelector("#input_contractdiv"); //select 컴포넌트
-    const input_supplier = document.querySelector("#input_supplier"); //select 컴포넌트
-    const input_compPhonNo = document.querySelector("#input_compPhonNo"); //select 컴포넌트
-    const input_supplierName = document.querySelector("#input_supplierName"); //select 컴포넌트
-    const input_licenseNo = document.querySelector("#input_licenseNo"); //select 컴포넌트
-    const input_owner = document.querySelector("#input_owner"); //select 컴포넌트
-    const input_endDate = document.querySelector("#input_endDate"); //select 컴포넌트
-    const input_cancelDate = document.querySelector("#input_cancelDate"); //select 컴포넌트
+    const input_contractdiv = document.querySelector("#input_contractdiv"); //input 컴포넌트
+    const input_supplier = document.querySelector("#input_supplier"); //input 컴포넌트
+    const input_compPhonNo = document.querySelector("#input_compPhonNo"); //input 컴포넌트
+    const input_supplierName = document.querySelector("#input_supplierName"); //input 컴포넌트
+    const input_licenseNo = document.querySelector("#input_licenseNo"); //input 컴포넌트
+    const input_owner = document.querySelector("#input_owner"); //input 컴포넌트
+    const input_endDate = document.querySelector("#input_endDate"); //input 컴포넌트
+    const input_cancelDate = document.querySelector("#input_cancelDate"); //input 컴포넌트
 
     let DS_SUPPLIER = [];
 

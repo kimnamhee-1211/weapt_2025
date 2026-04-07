@@ -31,7 +31,7 @@
         <div id="grid1"></div>
         <div class="section1">
             <%-- 추가 팝업시작--%>
-            <div class="layer_bg" id="grid1_popup" onchange="inputToGrid(grid1, popupId)" >>
+            <div class="layer_bg" id="grid1_popup" onchange="inputToGrid(grid1, popupId)" >
                 <div class="popup" style="width:980px;">
                     <div class="pop_title">&#10004;관리소등록</div>
                     <div>

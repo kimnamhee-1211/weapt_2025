@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<div id="layer_bg" id="pop_min_daejang">
+<div class="layer_bg" id="pop_min_daejang">
     <div id="popup" style="width:910px;">
         <div id="pop_title" class="pop_title">&#10004;&nbsp;세대민원대장</div>
         <div class="section1_btn" id="pop1_btn">
@@ -9,7 +9,7 @@
         </div>
         <div id="info_title" style="height:40px; line-height:40px;">&#9726&nbsp;동호정보</div>
         <div class="">
-            <table id="">
+            <table id="info_table">
                 <tbody>
                 <tr>
                     <th>동</th>
@@ -21,13 +21,13 @@
                     <th>거주형태</th>
                 </tr>
                 <tr>
-                    <td><input type="text" name=""></td>
-                    <td><input type="text" name=""></td>
-                    <td><input type="text" name=""></td>
-                    <td><input type="text" name=""></td>
-                    <td><input type="text" name=""></td>
-                    <td><input type="text" name=""></td>
-                    <td><input type="text" name=""></td>
+                    <td><input type="text" id="td_dongName" name="DONG_NAME"></td>
+                    <td><input type="text" id="td_hoName" name="HO_NAME"></td>
+                    <td><input type="text" id="td_houseSize" name="HOUSE_SIZE"></td>
+                    <td><input type="text" id="td_householder" name="HOUSEHOLDER"></td>
+                    <td><input type="text" id="td_housePhonNo" name="HOUSE_PHON_NO"></td>
+                    <td><input type="text" id="td_hoNo" name="HP_NO"></td>
+                    <td><input type="text" id="td_liveTypeName" name="LIVE_TYPE_NAME"></td>
                 </tr>
                 </tbody>
             </table>
@@ -44,7 +44,7 @@
                     <th>미처리건수</th>
                 </tr>
                 <tr>
-                    <td><input type="text" id="input_totalCnt" name="TOTAL_CNT "></td>
+                    <td><input type="text" id="input_totalCnt" name="TOTAL_CNT"></td>
                     <td><input type="text" id="input_procCnt" name="PROC_CNT"></td>
                     <td><input type="text" id="input_holdCnt" name="HOLD_CNT"></td>
                     <td><input type="text" id="input_rejectCnt" name="REJECT_CNT"></td>
@@ -65,59 +65,108 @@
 
 
 <script>
-    const popupId = "pop_contract";
-    const pop1_btn = document.querySelector("#pop1_btn"); //팝업버튼 컴포넌트
-    const input_contractdiv = document.querySelector("#input_contractdiv"); //select 컴포넌트
-    const input_supplier = document.querySelector("#input_supplier"); //select 컴포넌트
-    const input_compPhonNo = document.querySelector("#input_compPhonNo"); //select 컴포넌트
-    const input_supplierName = document.querySelector("#input_supplierName"); //select 컴포넌트
-    const input_licenseNo = document.querySelector("#input_licenseNo"); //select 컴포넌트
-    const input_owner = document.querySelector("#input_owner"); //select 컴포넌트
-    const input_endDate = document.querySelector("#input_endDate"); //select 컴포넌트
-    const input_cancelDate = document.querySelector("#input_cancelDate"); //select 컴포넌트
+    const popupId = "pop_min_daejang";
+    const pop1_btn = document.querySelector("#pop1_btn");
+    const pop_title = document.querySelector("#pop_title");
 
-    let DS_SUPPLIER = [];
+    //팝업 컴포넌트
+    let info_table = document.querySelector("#info_table");
+    const input_totalCnt = document.querySelector("#input_totalCnt"); //input 컴포넌트
+    const input_procCnt = document.querySelector("#input_procCnt"); //input 컴포넌트
+    const input_holdCnt = document.querySelector("#input_holdCnt"); //input 컴포넌트
+    const input_rejectCnt = document.querySelector("#input_rejectCnt"); //input 컴포넌트
+    const input_pendingCnt = document.querySelector("#input_pendingCnt"); //input 컴포넌트
 
-    async function getSelectOption_input_supplier(){
-        input_supplier.innerHTML = "";
-        //검색데이터
-        let param = {}
+    let pop_data = {}
+    let info = {}
+
+    function search_infoTable_onclick() {
+        info_table_make()
+        let selectParam = {
+            DONG_ID : pop_data.DONG_ID,
+            HO_ID : pop_data.HO_ID,
+            GBN : pop_data.GBN,
+            LINE_GBN : pop_data.LINE_GBN,
+            MINWON_AREAR_SEQ : pop_data.MINWON_AREAR_SEQ
+        }
 
         //파라미터
-        let data = {
-            sectionId : sectionId,
-            component : "pop_contract_input_supplier",
-            param: param,
+        let selectData = {
+            sectionId: sectionId,
+            component: "pop_contract_info_table",
+            param: selectParam,
         }
 
-        DS_SUPPLIER = await we_getSelectOption(data);
+        we_select(selectData, {
+            successSelect: (json) => {
+                let data = json.DATA;
+                //세대
+                if(pop_data.GBN == "0") {
+                }
+                //동내공용
+                else if(pop_data.GBN == "1"){
+                    if( pop_data.LINE_GBN = "109002"){
+                    }else{
+                    }
+                }
+                //동외공용
+                else if(pop_data.GBN  == "2") {
+                }
+            }
+        });
 
-        if(DS_SUPPLIER) {
-            DS_SUPPLIER.forEach(row => {
-                input_supplier.insertAdjacentHTML("beforeend",
-                    "<option value='" + row.SUPPLIER_CD + "'>" + row.SUPPLIER_NAME + "</option>");
-            })
+    }
+
+
+    function info_table_make(popNum) {
+        if(pop_data.GBN == "0") {
+            pop_title.innerHTML = "&#10004;&nbsp;세대민원대장"
+        }
+        else if(pop_data.GBN == "1"){
+            pop_title.innerHTML = "&#10004;&nbsp;[동별]공용민원대장"
+            let inner = `
+                        <tbody>
+                            <tr>
+                                <th>동</th>
+                                <th>열</th>
+                                <th>층</th>
+                                <th>구분</th>
+                                <th>비고</th>
+                            </tr>
+                            <tr>
+                                <td><input type="text" id="td_dongName" name="DONG_NAME"></td>
+                                <td><input type="text" id="td_hoName" name="HO_NAME"></td>
+                                <td><input type="text" id="td_floor" name="FLOOR"></td>
+                                <td><input type="text" id="td_lineGbnNm" name="LINE_GBN_NM"></td>
+                                <td><input type="text" name=""></td>
+                            </tr>
+                        </tbody>
+                    `
+            info_table.innerHTML = inner;
+        }
+        else if(pop_data.GBN == "2"){
+            pop_title.innerHTML = "&#10004;&nbsp;[동외]동용민원대장"
+            info_table.innerHTML = ""
+            let inner = `
+                        <tbody>
+                            <tr>
+                                <th>구분</th>
+                                <th>비고</th>
+                            </tr>
+                            <tr>
+                                <td><input type="text" id="td_arearName" name="AREAR_NAME"></td>
+                                <td><input type="text" name=""></td>
+                            </tr>
+                        </tbody>
+                    `
+            info_table.innerHTML = inner;
         }
     }
-    input_supplier.addEventListener("change", async () => {
-        if(!isNull(DS_SUPPLIER)){
-            DS_SUPPLIER.forEach(row=>{
-                if(row.SUPPLIER_CD == input_supplier.value){
-                    input_compPhonNo.value = row.COMP_PHON_NO;
-                    input_supplierName.value = row.SUPPLIER_NAME;
-                    input_licenseNo.value = row.LICENSE_NO;
-                    input_owner.value = row.OWNER;
 
-                }
-            });
-        }
-    });
 
-    input_endDate.addEventListener("change", async () => {
-        if(!isNull(input_endDate.value) && isNull(input_cancelDate.value)){
-            input_cancelDate.value = input_endDate.value;
-        }
-    });
+
+
+
 
     function pop_onload(pop_item){
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
@@ -125,17 +174,10 @@
         pop1_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
 
-        if(!isNull(pop_item.btnHidden)){
-            btnHidden(pop_item.btnHidden, pop_item.popupId);
+        pop_data =  pop_item.pop_data
+        if(!isNull(pop_data)){
+            search_infoTable_onclick()
         }
-
-        if(!isNull(pop_item.disabled)){
-            disableInput(pop_item.popupId);
-        }
-
-        //공통코드 가져오기
-        selectOptionMaker("134", input_contractdiv, "", false);
-        getSelectOption_input_supplier();
 
     }
    

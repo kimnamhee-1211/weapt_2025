@@ -118,7 +118,7 @@
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const popupId = "grid1_popup"; //팝업 컴포넌트
-    const input_state = document.querySelector("#input_state"); //select 컴포넌트
+    const input_state = document.querySelector("#input_state"); //input 컴포넌트
 
     //그리드 설정
     const grid1ColumnLayout = [

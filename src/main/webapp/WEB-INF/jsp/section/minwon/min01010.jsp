@@ -5,6 +5,9 @@
 <jsp:include page="/WEB-INF/jsp/section/minwon/min_nav.jsp"/>
 
 <style>
+    .blank_block{
+        border : none;
+    }
     .step_block {
         border: 1px solid #bcbcbc;
         background-color: #f4e1d6;
@@ -28,12 +31,25 @@
     .door_block {
     }
 
+    .underground_block{
+        border: 1px solid #bcbcbc;
+        background-color: grey;
+    }
+
     .cb_block {
         border: 1px solid #bcbcbc;
         background-color: #f4e1d6;
         height: 30px;
         weight: 80px;
     }
+
+    .etc_block {
+        border: 1px solid #bcbcbc;
+        background-color: #f4e1d6;
+        height: 30px;
+        weight: 100px;
+    }
+
 
 </style>
 <div id="section">
@@ -48,8 +64,9 @@
     </div>
     <div>
         <div id="grid1" class="gridcont_left_100"></div>
-        <div id="apt_block" class="gridcont_right_970" style="height: 652px; border: 1px solid #bcbcbc;">
-            <table id="dong_table"></table>
+        <div id="apt_block" class="gridcont_right_970"
+             style="height: 652px; border: 1px solid #bcbcbc; display: flex; justify-content: center; align-items: center;">
+            <table id="dong_table" ></table>
         </div>
         <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_daejang.jsp"/>
     </div>
@@ -112,7 +129,8 @@
                 {
                     showRowNumColumn: false,
                     showRowCheckColumn: false,
-                    editable: false
+                    editable: false,
+                    height: 652
                 })
         );
 
@@ -122,6 +140,13 @@
             search_aptBlock_onclick();
         });
 
+        //팝업 이벤트
+
+        //팝업 닫기 이벤트
+        function close_popup_onclick(){
+            popupClose(popupId);
+            clearInput(popupId);
+        }
 
         //그리드 조회 함수
         function search_grid1_onclick() {
@@ -156,11 +181,10 @@
             }
 
             let viewGbn = AUIGrid.getSelectedRows(grid1)[0].VIEW_GBN;
-
             let component = ""
             if (viewGbn = "108001") {
                 component = "_apt"
-            } else if (viewGbn = "108003") {
+            } else if (viewGbn = "108002") {
                 component = "_etc"
             } else {
                 component = "_cb"
@@ -178,7 +202,7 @@
                     let data = json.DATA;
                     if (viewGbn = "108001") {
                         apt_block_make(data);
-                    } else if (viewGbn = "108003") {
+                    } else if (viewGbn = "108002") {
                         etc_block_make(data);
                     } else {
                         cb_block_make(data);
@@ -187,10 +211,11 @@
             });
         }
 
+        //아파트
         function apt_block_make(data) {
             let dongName = AUIGrid.getSelectedRows(grid1)[0].DONG_NAME
             dong_table.innerHTML = ""
-            let floors = Number(data[0].FLOORS);
+            let floors = Math.max(...data.map(row => Number(row.FLOORS)));
             let dataLength = data.length;
             for (let i = floors; i >= 1; i--) {
                 let tr = document.createElement('tr');
@@ -208,7 +233,7 @@
                                     td.className = "rooftop_block ho_block";
                                 }
                                 td.innerHTML = "루프탑"
-                                td.id = dongName + "-" + i.toString() + row.HO_NO + "_rooftop";
+                                td.id = i.toString() + row.HO_NO + "_rooftop";
                                 break;
                             case (i > endFloor && i <= endFloor + rooftopCnt + elCnt) :
                                 if (row.LINE_GBN == "109002") {
@@ -217,7 +242,7 @@
                                     td.className = "el_block ho_block";
                                 }
                                 td.innerHTML = "EL"
-                                td.id = dongName + "-" + i.toString() + row.HO_NO + "_el";
+                                td.id = i.toString() + row.HO_NO + "_el";
                                 break;
                             case (i == row.START_FLOOR && row.DOOR_CNT == "1") :
                                 if (row.LINE_GBN == "109002") {
@@ -226,17 +251,17 @@
                                     td.className = "door_block ho_block";
                                 }
                                 td.innerHTML = "현관"
-                                td.id = dongName + "-" + i.toString() + row.HO_NO + "_door";
+                                td.id = i.toString() + row.HO_NO + "_door";
                                 break;
                             case (row.LINE_GBN == "109002") :
                                 td.className = "step_block";
                                 td.innerHTML = "계단"
-                                td.id = dongName + "-" + i.toString() + row.HO_NO + "_step";
+                                td.id = i.toString() + row.HO_NO + "_step";
                                 break;
                             default :
                                 td.className = "ho_block";
-                                td.innerHTML = row.HO_NM;
-                                td.id = dongName + "-" + i.toString() + row.HO_NO + "_ho";
+                                td.innerHTML = i.toString() + row.HO_NO;
+                                td.id = i.toString() + row.HO_NO + "_ho";
                                 break;
                         }
                     } else {
@@ -247,18 +272,19 @@
                 dong_table.appendChild(tr);
             }
             let rower = Number(data[0].LOWER_FLOOR)
-            for (let i = 1; i <= rower; i++) {
+            for (let i = 0; i < rower; i++) {
                 let tr = document.createElement('tr');
                 let td = document.createElement('td');
                 td.className = "underground_block";
-                td.rowSpan = dataLength;
+                td.colSpan = dataLength;
                 td.innerHTML = "지하주차장(동지하 포함)"
-                td.id = dongName + "-" + i.toString() + row.HO_NO + "_underground";
+                td.id = i.toString() + "_underground";
                 tr.appendChild(td);
                 dong_table.appendChild(tr);
             }
         }
 
+        //상가
         function cb_block_make(data) {
             dong_table.innerHTML = ""
             let higher = Math.ceil(data.length / 4);
@@ -268,20 +294,21 @@
                     let td = document.createElement('td');
                     id.className = "cb_block";
                     td.innerHTML = data.HO_NM
-                    td.id = dongName + "-" + i.toString() + row.HO_NO + "_cb";
+                    td.id = i.toString() + row.HO_NO + "_cb";
                     tr.appendChild(td);
                 }
                 dong_table.appendChild(tr);
             }
         }
 
+        //동외민원
         function etc_block_make(data) {
             dong_table.innerHTML = ""
             for (let i = 0; i < higher; i++) {
                 let tr = document.createElement('tr');
                 for (let l = 0; i < 3; i++) {
                     let td = document.createElement('td');
-                    id.className = "cb_block";
+                    id.className = "etc_block";
                     td.innerHTML = data.AREAR_NAME
                     td.id = data.MINWON_AREAR_SEQ
                     tr.appendChild(td);
@@ -292,8 +319,8 @@
 
 
         dong_table.addEventListener('click', (e) => {
-            let viewGbn = AUIGrid.getSelectedRows(grid1)[0].VIEW_GBN;
             if (e.target.tagName == "TD") {
+                let viewGbn = AUIGrid.getSelectedRows(grid1)[0].VIEW_GBN;
                 let tdId = e.target.id
                 let item = {
                     pgId: pgId,
@@ -301,40 +328,46 @@
                     querySet: "min001",
                     pop_data: pop_data = {}
                 }
+                pop_data.DONG_ID =  AUIGrid.getSelectedRows(grid1)[0].DONG_ID;
+                pop_data.VIEW_GBN =  viewGbn;
                 if (viewGbn == "108001") {
-                    let gbn = tdId.slice("_")[1]
-                    let dongId = tdId.slice("_")[0]
+                    let gbn = tdId.split("_")[1];
+                    let hoId = tdId.split("_")[0];
                     switch (true) {
                         case (gbn == "ho"):
-                            pop_data.GBN = "1"
+                            pop_data.HO_ID =  hoId
+                            pop_data.GBN = "0"
                             pop_data.LINE_GBN = "109001"
                             break;
                         case (gbn == "step"):
-                            pop_data.GBN = "2"
+                            pop_data.HO_ID =  hoId
+                            pop_data.GBN = "1"
                             pop_data.LINE_GBN = "109002"
                             break;
                         case (gbn == "el"):
-                            pop_data.GBN = "3"
+                            pop_data.GBN = "1"
                             pop_data.LINE_GBN = "109997"
                             break;
                         case (gbn == "rooftop"):
-                            pop_data.GBN = "4"
+                            pop_data.GBN = "1"
                             pop_data.LINE_GBN = "109998"
                             break;
                         case (gbn == "underground"):
-                            pop_data.GBN = "5"
+                            pop_data.GBN = "1"
                             pop_data.LINE_GBN = "109999"
                             break;
                         case (gbn == "door"):
-                            pop_data.GBN = "21"
+                            pop_data.GBN = "1"
                             pop_data.LINE_GBN = "109003"
                             break;
                     }
-                } else if (viewGbn == "108003") {
+                } else if (viewGbn == "108002") {
+                    pop_data.GBN = "2"
                     pop_data.MINWON_AREAR_SEQ = tdId
                 } else {
 
                 }
+                popupOpen(pop_min_daejang);
             }
         })
 
