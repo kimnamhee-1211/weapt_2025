@@ -52,18 +52,19 @@
 		ORDER BY CONVERT(INT, A.ORDER_SEQ),  CONVERT(INT, A.MINWON_AREAR_SEQ)
 	</select>
 
-
-
-	<select id="getSelectOption_pop_contract_input_supplier" parameterType="map" resultType="map">
+	<select id="selectList_pop_contract_infoTable" parameterType="map" resultType="map">
 		SELECT
-			A.DOC_GBN 		AS DOC_GBN,
-			A.DOC_GBN_NAME	AS DOC_GBN_NAME
-		FROM dbo.TAD_MAKE_DOC_GBN A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'1') = '1'
-		ORDER BY CONVERT(INT, A.ORDER_SEQ)
+			A.DONG_NAME			AS DONG_NAME,
+			B.HO 				AS HO,
+			B.HOUSE_SIZE		AS HOUSE_SIZE,
+			B.HOUSEHOLDER  		AS HOUSEHOLDER,
+			B.HOUSE_PHON_NO  	AS HOUSE_PHON_NO,
+			B.HP_NO  			AS HP_NO,
+			B.LIVE_TYPE  		AS LIVE_TYPE
+		FROM dbo.TMN_DONG A
+		LEFT JOIN dbo.TMN_DONG_HO B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DONG_ID = B.DONG_ID
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DONG_ID = #{DONG_ID} AND B.HO_ID = #{HO_ID}
 	</select>
-
-
 
 
 

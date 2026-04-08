@@ -27,11 +27,17 @@ async function we_checkCrudPermission(pgId, {successPer} = {}, timeout = 60_000)
                 credentials: "include",
                 signal: controller.signal
             });
-        //const json = await res.json();
         if (!res.ok) {
-           // alert(json.O_MSG);
+            //alert("요청이 실패하였습니다");
             return;
         }
+
+        //const json = await res.json();
+
+        // if (json.O_STATUS === "FAIL") {
+        //     alert(json.O_MSG);
+        //     return;
+        // }
         if (typeof successPer === "function") await successPer(json);
 
     } catch (err) {

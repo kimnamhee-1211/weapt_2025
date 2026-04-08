@@ -44,12 +44,17 @@ async function we_select(data, {successSelect} = {}, timeout = 60_000) {
                 credentials: "include",
                 signal: controller.signal
             });
-        const json = await res.json();
         if (!res.ok) {
-            alert(json.O_MSG);
+            alert("요청이 실패하였습니다");
             return;
         }
 
+        const json = await res.json();
+
+        if (json.O_STATUS === "FAIL") {
+            alert(json.O_MSG);
+            return;
+        }
         if (typeof successSelect === "function") await successSelect(json);
 
     } catch (err) {
@@ -129,8 +134,14 @@ async function we_insert(data, {successInsert} = {}, timeout = 60_000) {
                 signal: controller.signal,
                 credentials: 'include'
             });
-        const json = await res.json();
+
         if (!res.ok) {
+            alert("요청이 실패하였습니다");
+            return;
+        }
+
+        const json = await res.json();
+        if (json.O_STATUS === "FAIL") {
             alert(json.O_MSG);
             return;
         }
@@ -187,8 +198,13 @@ async function we_update(data, {successUpdate} = {}, timeout = 60_000) {
                 signal: controller.signal,
                 credentials: 'include'
             });
-        const json = await res.json();
         if (!res.ok) {
+            alert("요청이 실패하였습니다");
+            return;
+        }
+
+        const json = await res.json();
+        if (json.O_STATUS === "FAIL") {
             alert(json.O_MSG);
             return;
         }
@@ -240,8 +256,13 @@ async function we_delete(data, {successDelete} = {}, timeout = 60_000) {
                 signal: controller.signal,
                 credentials: 'include'
             });
-        const json = await res.json();
         if (!res.ok) {
+            alert("요청이 실패하였습니다");
+            return;
+        }
+
+        const json = await res.json();
+        if (json.O_STATUS === "FAIL") {
             alert(json.O_MSG);
             return;
         }
@@ -322,8 +343,14 @@ async function we_save(data, {successSave} = {}, timeout = 60_000) {
                 signal: controller.signal,
                 credentials: 'include'
             });
-        const json = await res.json();
+
         if (!res.ok) {
+            alert("요청이 실패하였습니다");
+            return;
+        }
+
+        const json = await res.json();
+        if (json.O_STATUS === "FAIL") {
             alert(json.O_MSG);
             return;
         }
@@ -400,8 +427,13 @@ async function we_boardSelect(data, {successBoardSelect} = {}, timeout = 60_000)
                 credentials: "include",
                 signal: controller.signal
             });
-        const json = await res.json();
         if (!res.ok) {
+            alert("요청이 실패하였습니다");
+            return;
+        }
+
+        const json = await res.json();
+        if (json.O_STATUS === "FAIL") {
             alert(json.O_MSG);
             return;
         }
@@ -478,8 +510,13 @@ async function we_boardSave(data, {successBoardSave} = {}, timeout = 60_000) {
                 signal: controller.signal,
                 credentials: 'include'
             });
-        const json = await res.json();
         if (!res.ok) {
+            alert("요청이 실패하였습니다");
+            return;
+        }
+
+        const json = await res.json();
+        if (json.O_STATUS === "FAIL") {
             alert(json.O_MSG);
             return;
         }
@@ -573,8 +610,13 @@ async function we_boardDeleteOne(data, {successboardDeleteOne} = {}, timeout = 6
                 signal: controller.signal,
                 credentials: 'include'
             });
-        const json = await res.json();
         if (!res.ok) {
+            alert("요청이 실패하였습니다");
+            return;
+        }
+
+        const json = await res.json();
+        if (json.O_STATUS === "FAIL") {
             alert(json.O_MSG);
             return;
         }

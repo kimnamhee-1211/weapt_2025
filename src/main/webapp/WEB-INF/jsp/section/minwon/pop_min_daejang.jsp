@@ -26,15 +26,15 @@
                     <td><input type="text" id="td_houseSize" name="HOUSE_SIZE"></td>
                     <td><input type="text" id="td_householder" name="HOUSEHOLDER"></td>
                     <td><input type="text" id="td_housePhonNo" name="HOUSE_PHON_NO"></td>
-                    <td><input type="text" id="td_hoNo" name="HP_NO"></td>
-                    <td><input type="text" id="td_liveTypeName" name="LIVE_TYPE_NAME"></td>
+                    <td><input type="text" id="td_hpNo" name="HP_NO"></td>
+                    <td><input type="text" id="td_liveType" name="LIVE_TYPE"></td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <div style="height:40px; line-height:40px;">&#9726&nbsp;민원통계</div>
         <div class="">
-            <table>
+            <table id="_table">
                 <tbody>
                 <tr>
                     <th>민원건수</th>
@@ -66,63 +66,56 @@
 
 <script>
     const popupId = "pop_min_daejang";
+    let querySet;
+    let pop_data;
+    let pop_grid1;	// 그리드 컴포넌트
+    let focus1 = 0;	//그리드 컴포넌트 포커스
+
     const pop1_btn = document.querySelector("#pop1_btn");
     const pop_title = document.querySelector("#pop_title");
 
     //팝업 컴포넌트
-    let info_table = document.querySelector("#info_table");
+    const info_table = document.querySelector("#info_table");
     const input_totalCnt = document.querySelector("#input_totalCnt"); //input 컴포넌트
     const input_procCnt = document.querySelector("#input_procCnt"); //input 컴포넌트
     const input_holdCnt = document.querySelector("#input_holdCnt"); //input 컴포넌트
     const input_rejectCnt = document.querySelector("#input_rejectCnt"); //input 컴포넌트
     const input_pendingCnt = document.querySelector("#input_pendingCnt"); //input 컴포넌트
 
-    let pop_data = {}
-    let info = {}
 
-    function search_infoTable_onclick() {
-        info_table_make()
+
+    function search_infoTable() {
         let selectParam = {
-            DONG_ID : pop_data.DONG_ID,
-            HO_ID : pop_data.HO_ID,
-            GBN : pop_data.GBN,
-            LINE_GBN : pop_data.LINE_GBN,
-            MINWON_AREAR_SEQ : pop_data.MINWON_AREAR_SEQ
+            DONG_ID : pop_data.dongId,
+            HO_ID : pop_data.id,
         }
-
         //파라미터
         let selectData = {
             sectionId: sectionId,
-            component: "pop_contract_info_table",
+            component: querySet + "_infoTable",
             param: selectParam,
         }
 
         we_select(selectData, {
             successSelect: (json) => {
                 let data = json.DATA;
-                //세대
-                if(pop_data.GBN == "0") {
-                }
-                //동내공용
-                else if(pop_data.GBN == "1"){
-                    if( pop_data.LINE_GBN = "109002"){
-                    }else{
-                    }
-                }
-                //동외공용
-                else if(pop_data.GBN  == "2") {
-                }
+                document.querySelector("#td_houseSize").value = data[0].HOUSE_SIZE;
+                document.querySelector("#td_householder").value = data[0].HOUSEHOLDER;
+                document.querySelector("#td_housePhonNo").value = data[0].HOUSE_PHON_NO;
+                document.querySelector("#td_hpNo").value = data[0].HP_NO;
+                document.querySelector("#td_liveType").value = data[0].LIVE_TYPE;
             }
         });
-
     }
 
-
-    function info_table_make(popNum) {
-        if(pop_data.GBN == "0") {
+    function info_table_make() {
+        if(pop_data.gbn == "0") {
             pop_title.innerHTML = "&#10004;&nbsp;세대민원대장"
+            document.querySelector("#td_dongName").value = pop_data.dongName;
+            document.querySelector("#td_hoName").value =  pop_data.hoName;
+            search_infoTable();
         }
-        else if(pop_data.GBN == "1"){
+        else if(pop_data.gbn == "1"){
             pop_title.innerHTML = "&#10004;&nbsp;[동별]공용민원대장"
             let inner = `
                         <tbody>
@@ -135,7 +128,7 @@
                             </tr>
                             <tr>
                                 <td><input type="text" id="td_dongName" name="DONG_NAME"></td>
-                                <td><input type="text" id="td_hoName" name="HO_NAME"></td>
+                                <td><input type="text" id="td_lineNo" name="LINE_NO"></td>
                                 <td><input type="text" id="td_floor" name="FLOOR"></td>
                                 <td><input type="text" id="td_lineGbnNm" name="LINE_GBN_NM"></td>
                                 <td><input type="text" name=""></td>
@@ -143,6 +136,11 @@
                         </tbody>
                     `
             info_table.innerHTML = inner;
+
+            document.querySelector("#td_dongName").value = isNull(pop_data.dongName) ? "" : pop_data.dongName;
+            document.querySelector("#td_lineNo").value = isNull(pop_data.lineNo) ? "" : pop_data.lineNo;
+            document.querySelector("#td_floor").value = (pop_data.lineNo == "109002") ? (isNull(pop_data.floor) ? "" : pop_data.floor) : "";
+            document.querySelector("#td_lineGbnNm").value = pop_data.lineGbnNm;
         }
         else if(pop_data.GBN == "2"){
             pop_title.innerHTML = "&#10004;&nbsp;[동외]동용민원대장"
@@ -160,11 +158,39 @@
                         </tbody>
                     `
             info_table.innerHTML = inner;
+
+            document.querySelector("#td_arearName").value = pop_data.AREAR_NAME;
         }
     }
 
+    function search_aptBlock_onclick() {
 
+        //검색데이터
+        let selectParam = {
+            DONG_ID: AUIGrid.getSelectedRows(grid1)[0].DONG_ID
+        }
 
+        //파라미터
+        let selectData = {
+            sectionId: sectionId,
+            component: pgId + component,
+            param: selectParam,
+        }
+
+        we_select(selectData, {
+            successSelect: (json) => {
+                let data = json.DATA;
+
+                if (viewGbn = "108001") {
+                    apt_block_make(data);
+                } else if (viewGbn = "108002") {
+                    etc_block_make(data);
+                } else {
+                    cb_block_make(data);
+                }
+            }
+        });
+    }
 
 
 
@@ -173,11 +199,15 @@
         btnMaker({ tag: "#pop1_btn", grid: "pop_grid1", search: true, save : true, print : true});
         pop1_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
-
-        pop_data =  pop_item.pop_data
-        if(!isNull(pop_data)){
-            search_infoTable_onclick()
+        if(pop_item){
+            querySet = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
+            pop_data =  pop_item.pop_data
         }
+        if(!isNull(pop_data)){
+            info_table_make();
+
+        }
+
 
     }
    

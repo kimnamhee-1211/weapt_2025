@@ -29,8 +29,9 @@ async function we_getCode(CODEDV_NO, timeout = 60_000) {
                 credentials: "include",
                 signal: controller.signal
             });
-        const json = await res.json();
+
         if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
+        const json = await res.json();
         return json;
 
     } catch (err) {
@@ -85,8 +86,8 @@ async function we_getSelectOption(data, timeout = 60_000) {
                 credentials: "include",
                 signal: controller.signal
             });
-        const json = await res.json();
         if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
+        const json = await res.json();
         return json;
 
     } catch (err) {
@@ -124,8 +125,8 @@ async function we_getUsergroupId(timeout = 60_000) {
                 credentials: "include",
                 signal: controller.signal
             });
-        const json = await res.json();
         if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
+        const json = await res.json();
         return json;
 
     } catch (err) {

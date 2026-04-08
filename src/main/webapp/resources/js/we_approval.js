@@ -31,13 +31,16 @@ async function we_getApprDuty(data, {successGet} = {}, timeout = 60_000) {
                 credentials: "include",
                 signal: controller.signal
             });
-
-        const json = await res.json();
         if (!res.ok) {
-            alert(json.O_MSG);
+            alert("요청이 실패하였습니다");
             return;
         }
 
+        const json = await res.json();
+        if (json.O_STATUS === "FAIL") {
+            alert(json.O_MSG);
+            return;
+        }
         if (typeof successGet === "function") await successGet(json);
 
     } catch (err) {
@@ -90,8 +93,13 @@ async function we_getApprDutyLine(data, {successGet} = {}, timeout = 60_000) {
                 credentials: "include",
                 signal: controller.signal
             });
-        const json = await res.json();
         if (!res.ok) {
+            alert("요청이 실패하였습니다");
+            return;
+        }
+
+        const json = await res.json();
+        if (json.O_STATUS === "FAIL") {
             alert(json.O_MSG);
             return;
         }
@@ -147,12 +155,17 @@ async function we_selectApproval(data, {successSelect} = {}, timeout = 60_000) {
                 credentials: "include",
                 signal: controller.signal
             });
-        const json = await res.json();
         if (!res.ok) {
-            alert(json.O_MSG);
+            alert("요청이 실패하였습니다");
             return;
         }
 
+        const json = await res.json();
+
+        if (json.O_STATUS === "FAIL") {
+            alert(json.O_MSG);
+            return;
+        }
         if (typeof successSelect === "function") await successSelect(json);
 
     } catch (err) {
@@ -209,12 +222,16 @@ async function we_approval(data, {successAppr} = {}, timeout = 60_000) {
                 signal: controller.signal,
                 credentials: 'include'
             });
-        const json = await res.json();
         if (!res.ok) {
+            alert("요청이 실패하였습니다");
+            return;
+        }
+        const json = await res.json();
+
+        if (json.O_STATUS === "FAIL") {
             alert(json.O_MSG);
             return;
         }
-
         if (typeof successAppr === "function") await successAppr(json);
 
     } catch (err) {
@@ -258,8 +275,14 @@ async function we_cnlApproval(data, {successCancAppr} = {}, timeout = 60_000) {
                 signal: controller.signal,
                 credentials: 'include'
             });
-        const json = await res.json();
         if (!res.ok) {
+            alert("요청이 실패하였습니다");
+            return;
+        }
+
+        const json = await res.json();
+
+        if (json.O_STATUS === "FAIL") {
             alert(json.O_MSG);
             return;
         }
