@@ -40,14 +40,14 @@
         border: 1px solid #bcbcbc;
         background-color: #f4e1d6;
         height: 30px;
-        weight: 80px;
+        width: 80px;
     }
 
     .etc_block {
         border: 1px solid #bcbcbc;
         background-color: #f4e1d6;
         height: 30px;
-        weight: 100px;
+        width: 160px;
     }
 
 
@@ -174,17 +174,16 @@
         }
 
         function search_aptBlock_onclick() {
-
+            let viewGbn = AUIGrid.getSelectedRows(grid1)[0].VIEW_GBN;
             //검색데이터
             let selectParam = {
                 DONG_ID: AUIGrid.getSelectedRows(grid1)[0].DONG_ID
             }
 
-            let viewGbn = AUIGrid.getSelectedRows(grid1)[0].VIEW_GBN;
             let component = ""
-            if (viewGbn = "108001") {
+            if (viewGbn == "108001") {
                 component = "_apt"
-            } else if (viewGbn = "108002") {
+            } else if (viewGbn == "108002") {
                 component = "_etc"
             } else {
                 component = "_cb"
@@ -200,10 +199,9 @@
             we_select(selectData, {
                 successSelect: (json) => {
                     let data = json.DATA;
-
-                    if (viewGbn = "108001") {
+                    if (viewGbn == "108001") {
                         apt_block_make(data);
-                    } else if (viewGbn = "108002") {
+                    } else if (viewGbn == "108002") {
                         etc_block_make(data);
                     } else {
                         cb_block_make(data);
@@ -231,18 +229,7 @@
                     let td = document.createElement('td');
                     if ((elCnt + rooftopCnt + endFloor) >= i && i >= Number(row.START_FLOOR)) {
                         switch (true) {
-                            case (i > endFloor && i <= endFloor + rooftopCnt) :
-                                if (row.LINE_GBN == "109002") {
-                                    td.className = "rooftop_block step_block";
-                                } else {
-                                    td.className = "rooftop_block ho_block";
-                                }
-                                td.innerHTML = "루프탑"
-                                td.dataset.gbn = "1";
-                                td.dataset.lineGbn = "109998";
-                                td.dataset.lineGbnNm = "루프탑";
-                                break;
-                            case (i > endFloor && i <= endFloor + rooftopCnt + elCnt) :
+                            case (i > endFloor && i <= endFloor + elCnt) :
                                 if (row.LINE_GBN == "109002") {
                                     td.className = "el_block step_block";
                                 } else {
@@ -252,6 +239,17 @@
                                 td.dataset.gbn = "1";
                                 td.dataset.lineGbn = "109997";
                                 td.dataset.lineGbnNm = "EL";
+                                break;
+                            case (i > endFloor && i <= endFloor + elCnt + rooftopCnt) :
+                                if (row.LINE_GBN == "109002") {
+                                    td.className = "rooftop_block step_block";
+                                } else {
+                                    td.className = "rooftop_block ho_block";
+                                }
+                                td.innerHTML = "루프탑"
+                                td.dataset.gbn = "1";
+                                td.dataset.lineGbn = "109998";
+                                td.dataset.lineGbnNm = "루프탑";
                                 break;
                             case (i == row.START_FLOOR && row.DOOR_CNT == "1") :
                                 if (row.LINE_GBN == "109002") {
@@ -280,7 +278,7 @@
                                 td.dataset.lineGbnNm = "세대";
                                 break;
                         }
-                        td.dataset.id = dongName + "-" + i.toString() + row.HO_NO
+                        td.dataset.hoId = dongName + "-" + i.toString() + row.HO_NO
                         td.dataset.hoNo = row.HO_NO;
                         td.dataset.floor = i.toString();
                         td.dataset.lineNo = row.LINE_NO;
@@ -302,6 +300,7 @@
                 td.className = "underground_block";
                 td.colSpan = dataLength;
                 td.innerHTML = "지하주차장(동지하 포함)"
+                td.dataset.hoId = dongName + "-"
                 td.dataset.gbn = "1";
                 td.dataset.lineGbn = "109999";
                 td.dataset.lineGbnNm = "지하주차장";
@@ -324,12 +323,12 @@
             let row = 0
             for (let i = 0; i < higher; i++) {
                 let tr = document.createElement('tr');
-                for (let l = 0; i < 4; i++) {
+                for (let l = 0; l < 4; l++) {
                     if(row < data.length){
                         let td = document.createElement('td');
                         id.className = "cb_block";
                         td.innerHTML = data[row].HO_NM
-                        td.dataset.id = dongName + "-" + i.toString() +  data[row].HO_NO
+                        td.dataset.hoId = dongName + "-" + i.toString() +  data[row].HO_NO
                         td.dataset.type = "cb";
                         td.dataset.hoNo = data[row].HO_NO;
                         td.dataset.floor = i.toString();
@@ -360,7 +359,8 @@
                         let td = document.createElement('td');
                         td.className = "etc_block";
                         td.innerHTML = data[row].AREAR_NAME
-                        td.dataset.id = data[row].MINWON_AREAR_SEQ
+                        td.dataset.hoId = dongName + "-"
+                        td.dataset.minwonArearSeq = data[row].MINWON_AREAR_SEQ
                         td.dataset.gbn = "2";
                         td.dataset.arearName = data[row].AREAR_NAME
                         td.dataset.dongName = dongName;
@@ -383,7 +383,7 @@
                     querySet: "min001",
                     pop_data: {...e.target.dataset}
                 }
-                pop_onload(pop_item)
+                pop_onload(pop_item);
                 popupOpen(popupId);
             }
         })

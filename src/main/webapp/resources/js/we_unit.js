@@ -49,11 +49,17 @@ function getToday(format) {
 
 //null 체크
 function isNull(object) {
+    if (object == null) return true;
     if (Array.isArray(object)) {
         if (object == null || object.length < 1) return true;
-    } else {
-        if (object == null || object == undefined || object.trim() == '' || object.trim() == "") return true;
     }
+    if (typeof object === 'object') {
+        return Object.keys(object).length === 0;
+    }
+    if (typeof object === 'string') {
+        return object.trim().length === 0;
+    }
+
     return false;
 }
 

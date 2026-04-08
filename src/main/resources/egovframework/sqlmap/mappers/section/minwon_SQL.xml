@@ -52,7 +52,7 @@
 		ORDER BY CONVERT(INT, A.ORDER_SEQ),  CONVERT(INT, A.MINWON_AREAR_SEQ)
 	</select>
 
-	<select id="selectList_pop_contract_infoTable" parameterType="map" resultType="map">
+	<select id="selectList_min001_infoTable" parameterType="map" resultType="map">
 		SELECT
 			A.DONG_NAME			AS DONG_NAME,
 			B.HO 				AS HO,
@@ -66,6 +66,85 @@
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DONG_ID = #{DONG_ID} AND B.HO_ID = #{HO_ID}
 	</select>
 
+	<select id="selectList_min001_cntTable" parameterType="map" resultType="map">
+		SELECT
+			COUNT(*) AS TOTAL_CNT,
+			SUM(CASE WHEN A.STATUS_CD = '1' THEN 1 ELSE 0 END) AS PROC_CNT,
+			SUM(CASE WHEN A.STATUS_CD = '2' THEN 1 ELSE 0 END) AS HOLD_CNT,
+			SUM(CASE WHEN A.STATUS_CD = '3' THEN 1 ELSE 0 END) AS REJECT_CNT,
+			SUM(CASE WHEN A.STATUS_CD = '4' THEN 1 ELSE 0 END) AS PENDING_CNT
+		FROM dbo.TMN_MINWON A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DONG_ID = #{DONG_ID}
+			AND A.GBN = #{GBN} AND A.LINE_GBN = #{LINE_GBN}
+		<choose>
+			<when test='GBN == "0"'>
+				AND A.DONG_ID = #{DONG_ID}
+				AND A.LINE_GBN = #{LINE_GBN}
+				AND A.HO_ID  = #{HO_ID}
+			</when>
+			<when test='GBN == "1"'>
+				AND A.DONG_ID = #{DONG_ID}
+				AND A.LINE_GBN = #{LINE_GBN}
+				<if test='LINE_GBN != "109999"'>
+					AND A.HO_ID  = #{HO_ID} AND A.LINE_NO = #{LINE_NO}
+				</if>
+			</when>
+			<when test='GBN == "2"'>
+				AND A.MINWON_AREAR_SEQ  = #{MINWON_AREAR_SEQ}
+			</when>
+		</choose>
+	</select>
+
+	<select id="selectList_min001_popGrid1" parameterType="map" resultType="map">
+		SELECT
+			A.SLIP_NO 			AS SLIP_NO,
+			A.MINWON_DATE 		AS MINWON_DATE,
+			A.DESCR 			AS DESCR,
+			A.STATUS_CD 		AS STATUS_CD,
+			CASE WHEN A.STATUS_CD = '1' THEN '처리'
+				WHEN A.STATUS_CD = '2' THEN '보류'
+				WHEN A.STATUS_CD = '3' THEN '반려'
+				WHEN A.STATUS_CD = '4' THEN '처리중'
+				ELSE '미결' END 	AS STATUS_NAME,
+			B.WORK_USER 			AS WORK_USER
+		FROM dbo.TMN_MINWON A
+		LEFT JOIN (
+			SELECT
+				W1.OFFICE_CODE,
+				W1.SLIP_NO,
+				W1.MINWON_DATE,
+				W1.WORK_USER
+			FROM dbo.TMN_MINWON_WORK W1
+			JOIN (
+				SELECT
+					OFFICE_CODE,
+					SLIP_NO,
+					MINWON_DATE,
+					MAX(WORK_SEQ) AS MAX_WORK_SEQ
+					FROM dbo.TMN_MINWON_WORK
+					GROUP BY OFFICE_CODE, SLIP_NO, MINWON_DATE
+				) W2 ON W1.OFFICE_CODE = W2.OFFICE_CODE AND W1.SLIP_NO = W2.SLIP_NO AND W1.MINWON_DATE = W2.MINWON_DATE AND W1.WORK_SEQ = W2.MAX_WORK_SEQ
+			) B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SLIP_NO = B.SLIP_NO AND A.MINWON_DATE = B.MINWON_DATE
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.GBN = #{GBN}
+		<choose>
+			<when test='GBN == "0"'>
+				AND A.DONG_ID = #{DONG_ID}
+				AND A.LINE_GBN = #{LINE_GBN}
+				AND A.HO_ID  = #{HO_ID}
+			</when>
+			<when test='GBN == "1"'>
+				AND A.DONG_ID = #{DONG_ID}
+				AND A.LINE_GBN = #{LINE_GBN}
+				<if test='LINE_GBN != "109999"'>
+					AND A.HO_ID  = #{HO_ID} AND A.LINE_NO = #{LINE_NO}
+				</if>
+			</when>
+			<when test='GBN == "2"'>
+				AND A.MINWON_AREAR_SEQ  = #{MINWON_AREAR_SEQ}
+			</when>
+		</choose>
+		ORDER BY CONVERT(INT, A.MINWON_DATE) DESC, CONVERT(INT, A.SLIP_NO) DESC
+	</select>
 
 
 
