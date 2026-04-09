@@ -84,8 +84,8 @@
                             <i class="icon-mic"></i>휴대번호가 없을 시 '1234'로 지정됩니다.
                         </div>
                         <div class="pop_btn">
-                            <button id="save_btn1" onclick="save_grid1_onclick()">저장</button>
-                            <button id="close_btn1" onclick="close_popup_onclick()">닫기</button>
+                            <button id="save_btn1" class="btn_left3" onclick="save_grid1_onclick()">저장</button>
+                            <button id="close_btn1" class="btn_left3" onclick="close_popup_onclick()">닫기</button>
                         </div>
                     </div>
                 </div>

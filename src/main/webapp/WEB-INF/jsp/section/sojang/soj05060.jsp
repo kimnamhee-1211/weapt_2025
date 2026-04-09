@@ -81,7 +81,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="pop_btn" id="pop1_btn"></div>
+                    <div class="pop_btn" id="pop_btn"></div>
                 </div>
                 <!-- 팝업끝-->
             </div>
@@ -122,7 +122,7 @@
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const popupId = "grid1_popup"; //팝업 컴포넌트
-    const pop1_btn = document.querySelector("#pop1_btn"); //팝업버튼 컴포넌트
+    const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const input_state = document.querySelector("#input_state"); //select 컴포넌트
     const input_offDay = document.querySelector("#input_offDay"); //컨트롤 컴포넌트
 
@@ -373,8 +373,8 @@
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", add : true, del : true});
-        btnMaker({ tag: "#pop1_btn", grid: "grid1", save : true});
-        pop1_btn.insertAdjacentHTML("beforeend",
+        btnMaker({ tag: "#pop_btn", grid: "grid1", save : true});
+        pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);

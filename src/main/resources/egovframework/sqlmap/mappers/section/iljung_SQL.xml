@@ -84,7 +84,7 @@
 	</select>
 
 
-	<select id="selectList_ilj01015_pop1" parameterType="map" resultType="map">
+	<select id="selectList_ilj01015_pop" parameterType="map" resultType="map">
 		SELECT
 			A.MST_NO		AS MST_NO,
 			A.MST_MONTH		AS MST_MONTH,
@@ -103,7 +103,7 @@
 			AND A.SEQ = #{SEQ} AND A.SC_DATE = #{SC_DATE}
 	</select>
 
-	<update id="updateList_ilj01015_pop1" parameterType="list">
+	<update id="updateList_ilj01015_pop" parameterType="list">
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
@@ -135,14 +135,14 @@
 		</if>
 	</update>
 
-	<select id="getKey_ilj01015_pop1" parameterType="map" resultType="map">
+	<select id="getKey_ilj01015_pop" parameterType="map" resultType="map">
 		SELECT
 			ISNULL(MAX(A.MST_NO), 10000) AS MST_NO
 		FROM dbo.TWK_SCHEDULE_NEW A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 	</select>
 
-	<insert id="insertList_ilj01015_pop1" parameterType="list">
+	<insert id="insertList_ilj01015_pop" parameterType="list">
 		<if test="list != null and list.size > 0">
 			INSERT INTO dbo.TWK_SCHEDULE_NEW (
 				OFFICE_CODE,
@@ -181,7 +181,7 @@
 		</if>
 	</insert>
 
-	<delete id="deleteList_ilj01015_pop1" parameterType="list">
+	<delete id="deleteList_ilj01015_pop" parameterType="list">
 		DELETE FROM dbo.TWK_SCHEDULE_NEW
 		WHERE EXISTS (
 			SELECT 1

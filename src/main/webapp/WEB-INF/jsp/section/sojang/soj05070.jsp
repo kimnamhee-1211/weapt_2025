@@ -35,7 +35,7 @@
                     <div class="pop_title">&#10004;관리소등록</div>
                     <div>
                         <span>&nbsp;&#9726 기본사항등록</span>
-                        <span class="section_middle_btn" id="pop1_btn"></span>
+                        <span class="section_middle_btn" id="pop_btn"></span>
                     </div>
                     <div>
                         <table>
@@ -151,7 +151,7 @@
     let focus = 0;	//그리드 컴포넌트 포커스
     let focus2 = 0;	//그리드 컴포넌트 포커스
     const popupId = "grid1_popup"; //팝업 컴포넌트
-    const pop1_btn = document.querySelector("#pop1_btn"); //팝업버튼 컴포넌트
+    const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const search_status = document.querySelector("#search_status"); //select 컴포넌트
     const search_contKindCd = document.querySelector("#search_contKindCd"); //select 컴포넌트
     const search_endDate1 = document.querySelector("#search_endDate1"); //select 컴포넌트
@@ -719,8 +719,8 @@
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid: "grid1", search : true, add : true, print : true});
-        btnMaker({ tag: "#pop1_btn", grid: "grid1", save : true});
-        pop1_btn.insertAdjacentHTML("beforeend",
+        btnMaker({ tag: "#pop_btn", grid: "grid1", save : true});
+        pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
         btnMaker({ tag: "#section2_btn", grid: "grid2", add : true, save : true });
         //crud 권한 처리 함수

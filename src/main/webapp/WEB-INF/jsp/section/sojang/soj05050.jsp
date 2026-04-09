@@ -75,8 +75,8 @@
                                 </table>
                             </div>
                         <div class="pop_btn">
-                            <button id="save_btn1" onclick="">저장</button>
-                            <button id="close_btn1" onclick="close_popup_onclick()">닫기</button>
+                            <button id="save_btn1" class="btn_left3" onclick="">저장</button>
+                            <button id="close_btn1" class="btn_left3" onclick="close_popup_onclick()">pop_btn
                         </div>
                     </div>
                 </div>

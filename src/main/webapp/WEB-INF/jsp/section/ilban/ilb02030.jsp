@@ -204,7 +204,7 @@
         //로드 시 그리드 바로 조회
         search_grid1_onclick();
 
-                let pop_item = {
+        let pop_item = {
             pgId : pgId,
 		    menuId : menuId,
             popupId : popupId,

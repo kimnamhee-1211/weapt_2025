@@ -115,7 +115,7 @@
     //그리드 이벤트
     //행 클릭 시
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-                let pop_item = {
+        let pop_item = {
             pgId : pgId,
 		    menuId : menuId,
             querySet : querySet,

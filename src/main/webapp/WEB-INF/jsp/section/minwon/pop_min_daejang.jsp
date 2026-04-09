@@ -1,9 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<style>
+    #info_table td, #cnt_table td {
+        text-align: center;
+    }
+
+</style>
 
 <div class="layer_bg" id="pop_min_daejang">
     <div class="popup" style="width:910px;">
         <div id="pop_title" class="pop_title">&#10004;&nbsp;세대민원대장</div>
-        <div class="section1_btn" id="pop1_btn"></div>
+        <div class="section1_btn" id="pop_btn"></div>
         <div id="info_title" style="height:40px; line-height:40px;">&#9726&nbsp;동호정보</div>
         <div class="">
             <table id="info_table">
@@ -56,20 +62,22 @@
                 <button id="add_btn" onclick="">추가</button>
             </div>
         </div>
-        <div id="pop_grid1"></div>
+        <div id="popGrid1"></div>
     </div>
 </div>
+<jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_jeon01.jsp"/>
+
 
 
 <script>
     const popupId = "pop_min_daejang";
     let querySet;
     let pop_data;
-    let pop_grid1;	// 그리드 컴포넌트
+    let popGrid1;	// 그리드 컴포넌트
     let focus1 = 0;	//그리드 컴포넌트 포커스
 
     //팝업 컴포넌트
-    const pop1_btn = document.querySelector("#pop1_btn");
+    const pop_btn = document.querySelector("#pop_btn");
     const pop_title = document.querySelector("#pop_title");
     const info_table = document.querySelector("#info_table");
     const cnt_table = document.querySelector("#cnt_table");
@@ -94,7 +102,7 @@
             headerText: "접수 내역",
             dataType: "text",
             width : "*%",
-            style : "text-align-left",
+            style: "line-break-column",
         },
         { dataField: "STATUS_NAME",
             headerText: "처리상태",
@@ -109,16 +117,36 @@
     ];
 
     //그리드 생성
-    pop_grid1 = AUIGrid.create("#pop_grid1", popGrid1ColumnLayout,
+    popGrid1 = AUIGrid.create("#popGrid1", popGrid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
                 enable : false,
                 showRowCheckColumn : false,
                 height : 400,
                 width : 890,
-                rowHeight : 60
+                rowHeight : 60,
+                wordWrap: true,
+
             })
     );
+
+    //셀 선택 변경 이벤트 바인딩
+    AUIGrid.bind(grid1, "selectionChange", function(event) {
+
+        let slipNo = AUIGrid.getSelectedRows(grid1)[0].SLIP_NO
+        let minwonDate = AUIGrid.getSelectedRows(grid1)[0].MINWON_DATE
+        pop_data.slipNo = slipNo;
+        pop_data.minwonDate = minwonDate;
+
+        let pop_item = {
+            pgId: pgId,
+            menuId: menuId,
+            querySet: "min001",
+            pop_data: pop_data
+        }
+        pop_onload1(pop_item);
+    });
+
 
     //그리드 조회 함수
     function search_popGrid1_onclick(){
@@ -147,9 +175,9 @@
             successSelect : (json) => {
                 let data = json.DATA;
                 //그리드 데이터 세팅
-                AUIGrid.setGridData(pop_grid1, data);
+                AUIGrid.setGridData(popGrid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
-                AUIGrid.setSelectionByIndex(pop_grid1, focus1, 0);
+                AUIGrid.setSelectionByIndex(popGrid1, focus1, 0);
                 focus1 = 0;
             }
         });
@@ -273,14 +301,23 @@
 
 
     function pop_onload(pop_item){
+
+        querySet = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
+        pop_data =  pop_item.pop_data
+
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        btnMaker({ tag: "#pop1_btn", grid: "pop_grid1", search: true, print : true});
-        pop1_btn.insertAdjacentHTML("beforeend",
+        btnMaker({ tag: "#pop_btn", grid: "popGrid1", search: true, print : true});
+        pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
-        if(!isNull(pop_item)){
-            querySet = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
-            pop_data =  pop_item.pop_data
+
+        if(!isNull(pop_item.btnHidden)){
+            btnHidden(pop_item.btnHidden, pop_item.popupId);
         }
+
+        if(!isNull(pop_item.disabled)){
+            disableInput(pop_item.popupId);
+        }
+
         if(!isNull(pop_data)){
             info_table_make();
             search_cntTable();

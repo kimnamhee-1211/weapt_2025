@@ -43,9 +43,9 @@
                 <div class="popup" style="width:500px;">
                     <div>
                         <span>&nbsp;&#9726 일정등록</span>
-                        <span id="pop1_btn" style="float: right;">
-                            <button id="schedule_btn_pop1" class="btn_left3" onclick="save_schedule_onclick()">등록</button>
-                            <button id='close_btn1' class='btn_left3' onclick="close_popup_onclick()">닫기</button>
+                        <span id="pop_btn" style="float: right;">
+                            <button id="schedule_btn_pop" class="btn_left3" onclick="save_schedule_onclick()">등록</button>
+                            <button id="close_btn1" class="btn_left3" onclick="close_popup_onclick()">닫기</button>
                         </span>
                     </div>
                     <div>
@@ -377,7 +377,7 @@
         //파라미터
         let saveData  = {
             sectionId : sectionId,
-            component : "ilj01015_pop1",
+            component : "ilj01015_pop",
             param: saveParam,
         }
 

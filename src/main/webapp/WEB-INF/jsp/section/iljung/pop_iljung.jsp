@@ -5,7 +5,7 @@
         <div class="popup" style="width:800px">
             <div class="pop_title">
                 <span id="">&#10004;&nbsp;일정등록</span>
-                <div class="section1_btn" id="pop1_btn"></div>
+                <div class="section1_btn" id="pop_btn"></div>
             </div>
             <div style="display:flex; padding:5px 0px 5px 0px; height:25px;">
                 <span> &#9726&nbsp; 제 목 : &nbsp;&nbsp;</span>
@@ -89,7 +89,7 @@
 
     //변수 선언
     const popupId = "pop_iljung";
-    const pop1_btn = document.querySelector("#pop1_btn"); //팝업버튼 컴포넌트
+    const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const input_title = document.querySelector("#input_title"); //input 컴포넌트
     const input_descr = document.querySelector("#input_descr"); //input 컴포넌트
     const input_scDate = document.querySelector("#input_scDate"); //input 컴포넌트
@@ -119,14 +119,14 @@
     }
 
     //그리드 조회 함수
-    function search_pop1_onclick(){
+    function search_pop_onclick(){
         //검색데이터
         let selectParam = searchItem
 
         //파라미터
         let selectData = {
             sectionId : sectionId,
-            component : querySet + "_pop1",
+            component : querySet + "_pop",
             param: selectParam,
         }
 
@@ -146,11 +146,11 @@
 
 
     //그리드 저장 함수
-    function save_pop1_onclick(){
+    function save_pop_onclick(){
 
         //검증
         if(!confirm("일정을 저장하시겠습니까?")) return;
-        if(!requireCheck("SAVE_POP1")) return;
+        if(!requireCheck("SAVE_pop")) return;
 
         //포커스 지정
         //focus = AUIGrid.getSelectedIndex(grid1)[0];
@@ -179,7 +179,7 @@
         //파라미터
         let saveData  = {
             sectionId : sectionId,
-            component : querySet + "_pop1",
+            component : querySet + "_pop",
             param: saveParam,
         }
 
@@ -234,7 +234,7 @@
 
 
     //그리드 삭제 함수
-    function delete_pop1_onclick(){
+    function delete_pop_onclick(){
 
         let item = inputToData(popupId);
         let items =  [{ ...item }];
@@ -255,7 +255,7 @@
         //공통 저장 트렌젝션용 데이터
         let deleteData = {
             sectionId : sectionId,
-            component : querySet + "_pop1",
+            component : querySet + "_pop",
             param : param,
         }
 
@@ -279,7 +279,7 @@
     function requireCheck(require){
         let isValid = true;
         switch(require){
-            case "SAVE_POP1":
+            case "SAVE_pop":
                 if(isNull(input_title.value)){
                     alert("제목은 반드시 입력해야 합니다.");
                     isValid = false;
@@ -409,8 +409,8 @@
     //로드
     function pop_onload(pop_item){
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        btnMaker({ tag: "#pop1_btn", grid: "pop1", save : true, del: true});
-        pop1_btn.insertAdjacentHTML("beforeend",
+        btnMaker({ tag: "#pop_btn", grid: "pop", save : true, del: true});
+        pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
 
         if(!isNull(pop_item.btnHidden)){
@@ -433,7 +433,7 @@
             if(saveKey == "U"){
                 //로드 시 그리드 바로 조회
                 searchItem = pop_item.searchItem;
-                search_pop1_onclick();
+                search_pop_onclick();
                 inputTr_reWork.style.display = "none";
                 input_scDate.disabled = true
             }else{

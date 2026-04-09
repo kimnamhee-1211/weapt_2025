@@ -59,7 +59,7 @@
         btnMaker({ tag: "#section1_btn", grid:"input1", search: true, save: true});
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
-                let pop_item = {
+        let pop_item = {
             pgId : pgId,
 		    menuId : menuId,
             gridTitle : '<i class="icon-pause"></i>경비용역직원선택',

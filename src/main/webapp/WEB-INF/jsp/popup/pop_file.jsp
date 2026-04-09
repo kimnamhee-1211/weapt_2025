@@ -267,9 +267,18 @@
         }
 
         function pop_onload(pop_item){
-            btnMaker({ tag: "#pop_file_btn", grid: "file1", add : true, save : true, del : true});
             board_div = pop_item.board_div;
             board_no = pop_item.board_no;
+
+            btnMaker({ tag: "#pop_file_btn", grid: "file1", add : true, save : true, del : true});
+
+            if(!isNull(pop_item.btnHidden)){
+                btnHidden(pop_item.btnHidden, pop_item.popupId);
+            }
+
+            if(!isNull(pop_item.disabled)){
+                disableInput(pop_item.popupId);
+            }
 
         }
 

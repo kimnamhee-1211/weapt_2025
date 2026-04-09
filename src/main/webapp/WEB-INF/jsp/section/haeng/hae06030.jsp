@@ -60,7 +60,7 @@
          btnMaker({ tag: "#section1_btn", grid: "grid1", search : true, add : true});
          //crud 권한 처리 함수
          checkCrudPermission(pgId);
-                 let pop_item = {
+         let pop_item = {
             pgId : pgId,
 		    menuId : menuId,
             pop_title : "&#10004;&nbsp자금 및 지출결의"

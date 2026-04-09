@@ -135,10 +135,10 @@
         );
 
         //그리드 이벤트
-        //셀 선택 변경 이벤트 바인딩
-        AUIGrid.bind(grid1, "selectionChange", function (event) {
-            search_aptBlock_onclick();
+        AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
+
         });
+
 
         //팝업 이벤트
 

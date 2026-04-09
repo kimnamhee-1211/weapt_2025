@@ -61,7 +61,7 @@
         btnMaker({ tag: "#section1_btn", grid:"calendar1", add : true, print : true});
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
-                let pop_item = {
+        let pop_item = {
             pgId : pgId,
 		    menuId : menuId,
             querySet : "ilj01015",

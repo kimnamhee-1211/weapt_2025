@@ -194,6 +194,14 @@
         querySet = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
         empGbm = isNull(pop_item.empGbm) ? "" : pop_item.empGbm;
 
+        if(!isNull(pop_item.btnHidden)){
+            btnHidden(pop_item.btnHidden, pop_item.popupId);
+        }
+
+        if(!isNull(pop_item.disabled)){
+            disableInput(pop_item.popupId);
+        }
+
         search_date.value = getToday("yyyy") + "-" + getToday("MM");
 
         Promise.all([

@@ -4,7 +4,7 @@
         <div class="popup" style="width:910px;">
             <div class="pop_title0" >
                 <span id="board_id"></span>  <%-- 각 게시판 메뉴명--%>
-                <div class="section1_btn" id="pop1_btn"></div>
+                <div class="section1_btn" id="pop_btn"></div>
             </div>
             <div class="section2">
                 <div class="section2_line1">
@@ -28,7 +28,7 @@
 
             <div class="pop_title0" >
                 <span>첨부파일</span>  <%-- 각 게시판 메뉴명--%>
-                <div class="section1_btn" id="pop1_btn2">
+                <div class="section1_btn" id="pop_btn2">
             </div>
             <div id="file_grid1"></div>
             <input type="file" id="fileSelector" hidden />
@@ -37,7 +37,7 @@
 
     <script>
 
-        const pop1_btn = document.querySelector("#pop1_btn"); //팝업버튼 컴포넌트
+        const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
         const board_id = document.querySelector("#board_id"); //팝업 컴포넌트
         const board_title = document.querySelector("#board_title"); //팝업 컴포넌트
         const board_writer = document.querySelector("#board_writer"); //팝업 컴포넌트
@@ -284,16 +284,23 @@
         }
 
         function pop_onload(pop_item){
-            if(pop_item){
-                board_id.innerHTML = pop_item.pop_title;
-                file_path = pop_item.pop_file_path;
-            }
 
-            btnMaker({ tag: "#pop1_btn", grid: "board1", save : true, del : true});
-            pop1_btn.insertAdjacentHTML("beforeend",
+            board_id.innerHTML = pop_item.pop_title;
+            file_path = pop_item.pop_file_path;
+
+            btnMaker({ tag: "#pop_btn", grid: "board1", save : true, del : true});
+            pop_btn.insertAdjacentHTML("beforeend",
                 "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
 
-            btnMaker({ tag: "#pop1_btn2", grid: "file1", add : true, save : true, del : true});
+            btnMaker({ tag: "#pop_btn2", grid: "file1", add : true, save : true, del : true});
+
+            if(!isNull(pop_item.btnHidden)){
+                btnHidden(pop_item.btnHidden, pop_item.popupId);
+            }
+
+            if(!isNull(pop_item.disabled)){
+                disableInput(pop_item.popupId);
+            }
 
         }
 

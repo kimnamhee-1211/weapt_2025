@@ -6,7 +6,7 @@
         <div id="min_tb" class="gridcont_right_720">
             <div class="section_middle_title">
                 <span><i class="icon-pause"></i>접&ensp;수</span>
-                <span class="section_middle_btn" id="pop1_btn">
+                <span class="section_middle_btn" id="pop_btn">
                 </span>
                 <span class="search-box section1_btn">
                     <button id="find_btn" onclick="" class="find_btn">메시지전송</button>
@@ -172,7 +172,7 @@
 
 <script>
     const popupId = "pop_min_jeon01";
-    const pop1_btn = document.querySelector("#pop1_btn"); //팝업버튼 컴포넌트
+    const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const input_dongName = document.querySelector("#input_dongName");
     const input_ho = document.querySelector("#input_ho");
     const input_dongId = document.querySelector("#input_dongId");
@@ -272,9 +272,17 @@
 
     function pop_onload(pop_item){
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        btnMaker({tag: "#pop1_btn", grid: "grid1", save: true, del: true, print: true});
-        pop1_btn.insertAdjacentHTML("beforeend",
+        btnMaker({tag: "#pop_btn", grid: "grid1", save: true, del: true, print: true});
+        pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
+
+        if(!isNull(pop_item.btnHidden)){
+            btnHidden(pop_item.btnHidden, pop_item.popupId);
+        }
+
+        if(!isNull(pop_item.disabled)){
+            disableInput(pop_item.popupId);
+        }
 
         input_minwonDate.value = getToday("yyyy-MM-dd")
         getSelectOption_input_minownGbn();

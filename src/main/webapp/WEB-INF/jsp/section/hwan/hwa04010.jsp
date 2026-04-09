@@ -67,7 +67,7 @@
         btnMaker({ tag: "#section1_btn", grid : "grid1", search : true, add : true, save: true, print : true});
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
-                let pop_item = {
+        let pop_item = {
             pgId : pgId,
 		    menuId : menuId,
             querySet : "hwa010",

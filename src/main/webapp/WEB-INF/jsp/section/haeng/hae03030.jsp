@@ -25,7 +25,7 @@
                 <div class="popup" style="width:910px;">
                     <div class="pop_title0">
                         <span>&#10004; &nbsp;광고게시문</span>
-                        <div class="section1_btn" id="pop1_btn"></div>
+                        <div class="section1_btn" id="pop_btn"></div>
                     </div>
                     <table style="width:890px;">
                         <tbody>
@@ -108,7 +108,7 @@
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const popupId = "pop_gwanggo"; //팝업 컴포넌트
-    const pop1_btn = document.querySelector("#pop1_btn"); //팝업버튼 컴포넌트
+    const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const search_startDate = document.querySelector("#search_startDate"); //select 컴포넌트
     const search_endDate = document.querySelector("#search_endDate"); //select 컴포넌트
     const board_startDate = document.querySelector("#board_startDate"); //board 컴포넌트
@@ -407,8 +407,8 @@
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search : true, add : true});
-        btnMaker({ tag: "#pop1_btn", grid: "board1", save : true, del : true});
-        pop1_btn.insertAdjacentHTML("beforeend",
+        btnMaker({ tag: "#pop_btn", grid: "board1", save : true, del : true});
+        pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);

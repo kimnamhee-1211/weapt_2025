@@ -4,29 +4,28 @@
 <%@ include file = "../../inc_nav.jsp" %>
 <jsp:include page="/WEB-INF/jsp/section/ilban/ilb_nav.jsp" />
 
-<%@ include file = "pop_supplier.jsp" %>
-
-        <div id="section">
-            <div class="section1">
-                <span class="section1_nav"><i class="icon-chart-bar"></i>계약업체등록</span>
-                <div class="section1_btn" id="section1_btn"></div>
-            </div>
-            <div class="section2">
-                <div class="section2_line1">
-                        <span>업체명 :&nbsp;
-                            <select id="search_what" name="WHAT" class="select_cont100">
-                                <option value="all" selected>전체</option>
-                                <option value="Y">사용</option>
-                                <option value="N">미사용</option>
-                            </select>
-                        </span>
-                        <span>&nbsp;
-                            <input type="text" id="search_text" name="TEXT" class="box_width300">
-                        </span>
-                </div>
-            </div>
-            <div id="grid1"></div>
+    <div id="section">
+        <div class="section1">
+            <span class="section1_nav"><i class="icon-chart-bar"></i>계약업체등록</span>
+            <div class="section1_btn" id="section1_btn"></div>
         </div>
+        <div class="section2">
+            <div class="section2_line1">
+                    <span>업체명 :&nbsp;
+                        <select id="search_what" name="WHAT" class="select_cont100">
+                            <option value="all" selected>전체</option>
+                            <option value="Y">사용</option>
+                            <option value="N">미사용</option>
+                        </select>
+                    </span>
+                    <span>&nbsp;
+                        <input type="text" id="search_text" name="TEXT" class="box_width300">
+                    </span>
+            </div>
+        </div>
+        <div id="grid1"></div>
+    </div>
+    <jsp:include page="/WEB-INF/jsp/section/ilban/pop_supplier.jsp" />
 
 
 <script>
@@ -61,10 +60,8 @@
     const menuId = "${menuId}";	//메뉴ID
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
-    const popupId = "pop_supplier";
     const search_what = document.querySelector("#search_what"); //컨트롤 컴포넌트
     const search_text = document.querySelector("#search_text"); //select 컴포넌트
-
 
     //그리드 설정
     const grid1ColumnLayout = [
@@ -319,6 +316,12 @@
         //그리드 DDL
         //로드 시 그리드 바로 조회
         search_grid1_onclick();
+
+        let pop_item = {
+            pgId : pgId,
+            menuId : menuId,
+        };
+        pop_onload(pop_item);
     };
 
 </script>

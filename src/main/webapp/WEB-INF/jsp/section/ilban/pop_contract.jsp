@@ -3,7 +3,7 @@
     <div class="layer_bg" id="pop_contract" onchange="inputToGrid(grid1, popupId)">
         <div class="popup" style="width:840px;">
             <div class="pop_title" style="border:none" >&#10004; &nbsp;계약등록</div>
-            <div class="section1_btn" id="pop1_btn"></div>
+            <div class="section1_btn" id="pop_btn"></div>
             <table style="width:820px;">
                 <tbody >
                     <colgroup>
@@ -77,7 +77,7 @@
 
 <script>
     const popupId = "pop_contract";
-    const pop1_btn = document.querySelector("#pop1_btn"); //팝업버튼 컴포넌트
+    const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const input_contractdiv = document.querySelector("#input_contractdiv"); //select 컴포넌트
     const input_supplier = document.querySelector("#input_supplier"); //select 컴포넌트
     const input_compPhonNo = document.querySelector("#input_compPhonNo"); //select 컴포넌트
@@ -132,8 +132,8 @@
 
     function pop_onload(pop_item){
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        btnMaker({ tag: "#pop1_btn", grid: "grid1", save : true});
-        pop1_btn.insertAdjacentHTML("beforeend",
+        btnMaker({ tag: "#pop_btn", grid: "grid1", save : true});
+        pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
 
         if(!isNull(pop_item.btnHidden)){
