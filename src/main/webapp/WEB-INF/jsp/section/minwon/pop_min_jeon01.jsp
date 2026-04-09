@@ -13,7 +13,7 @@
                         <%-- mms_btn은 설정에서 선택해야 나옴 --%>
                     </span>
                 </div>
-                <table style="width:720px;">
+                <table style="width:720px;" id="minwon_table">
                     <colgroup>
                             <col style ="width:12%">
                             <col style ="width:32%">
@@ -41,11 +41,11 @@
                                 <span><input type="date" id="input_minwonDate" name="MINWON_DATE" data-format="date"></span>&emsp;&emsp;
                                 <%-- 환경설정에 체크되어 있으면 서버 현재시간 가져오기 --%>
                                 <span>
-                                    <input type="checkbox" id="input_timeInput" name="TIME">
+                                    <input type="checkbox" id="input_timeInput" name="TIME_INPUT">
                                     <label for="input_timeInput">시간선택 :</label>
                                 </span>
                                 <%-- 체크되면 시,분 보여지기 --%>
-                                <span>&ensp;<input type="time" id="input_time" name="SLIP_NO" class="box50"></span>
+                                <span>&ensp;<input type="time" id="input_time" name="TIME" class="box50"></span>
                             </td>
                             <th>전표번호</th>
                             <%-- 오늘날짜 순번으로 자동생성 --%>
@@ -90,7 +90,7 @@
                         <%-- 설정에서 선택해야 나옴 --%>
                     </span>
                 </div>
-                <table style="width:720px;">
+                <table style="width:720px;" id="minwonWork_table">
                     <colgroup>
                         <col style ="width:12%">
                         <col style ="width:24%">
@@ -116,13 +116,16 @@
                                     <option value="gubun"></option>
                                 </select>
                             </td>
-
                         </tr>
                         <tr>
                             <th>상태</th>
                             <td style="width:100px;">
                                 <select id="input_statusCd" name="STATUS_CD">
-                                    <option value="condition"></option>
+                                    <option value="1">처리</option>
+                                    <option value="2">보류</option>
+                                    <option value="3">반려</option>
+                                    <option value="4">처리중</option>
+                                    <option value="" selected>미결</option>
                                 </select>
                             </td>
                             <th>처리자</th>
@@ -164,9 +167,32 @@
 
     //팝업 컴포넌트
     const pop1_btn = document.querySelector("#pop1_btn");
+    const minwon_table = document.querySelector("#minwon_table");
+    const minwonWork_table = document.querySelector("#minwonWork_table");
 
+    const input_dongName = document.querySelector("#input_dongName");
+    const input_ho = document.querySelector("#input_ho");
+    const input_householder = document.querySelector("#input_householder");
+    const input_hpNo = document.querySelector("#input_hpNo");
 
-    function search_pop1_onclick(){
+    const input_minwonDate = document.querySelector("#input_minwonDate");
+    const input_timeInput = document.querySelector("#input_timeInput");
+    const input_time = document.querySelector("#input_time");
+    const input_slipNo = document.querySelector("#input_slipNo");
+    const input_receiptUser = document.querySelector("#input_receiptUser");
+    const input_receiptUserName = document.querySelector("#input_receiptUserName");
+    const input_descr = document.querySelector("#input_descr");
+
+    const input_workDate = document.querySelector("#input_workDate");
+    const input_workTimeInput = document.querySelector("#input_workTimeInput");
+    const input_workTimeInputName = document.querySelector("#input_workTimeInputName");
+    const gubun = document.querySelector("#gubun");
+    const input_statusCd = document.querySelector("#input_statusCd");
+    const input_workUser = document.querySelector("#input_workUser");
+    const input_workUserName = document.querySelector("#input_workUserName");
+    const input_workDesc = document.querySelector("#input_workDesc");
+
+    function search_input1_onclick(){
 
         let selectParam = {
             SLIP_NO : pop_data1.slipNo,
@@ -176,7 +202,7 @@
         //파라미터
         let selectData = {
             sectionId : sectionId,
-            component : querySet + "_popGrid1",
+            component : querySet1 + "_input1",
             param: selectParam,
         }
 
@@ -184,12 +210,83 @@
             successSelect : (json) => {
                 let data = json.DATA;
                 dataToInput(data[0], popupId1)
-
-
-
             }
         });
     }
+
+    function search_input2_onclick(){
+
+        let selectParam = {
+            SLIP_NO : pop_data1.slipNo,
+            MINWON_DATE : pop_data1.minwonDate,
+        }
+
+        //파라미터
+        let selectData = {
+            sectionId : sectionId,
+            component : querySet1 + "_input1",
+            param: selectParam,
+        }
+
+        we_select( selectData,{
+            successSelect : (json) => {
+                let data = json.DATA;
+                dataToInput(data[0], "minwon_table");
+            }
+        });
+    }
+
+
+    async function getSelectOption_input_minownGbn() {
+        input_minownGbn.innerHTML = "";
+        //검색데이터
+        let param = {}
+
+        //파라미터
+        let data = {
+            sectionId: sectionId,
+            component: querySet1 + "_input_minownGbn",
+            param: param,
+        }
+
+        let list  = await we_getSelectOption(data);
+
+        if (list) {
+            list.forEach(row => {
+                input_minownGbn.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.GBN_ID + "'>" + row.GBN_NAME + "</option>");
+            })
+        }
+    }
+
+    async function getSelectOption_input_user() {
+        input_receiptUser.innerHTML = "";
+        input_workUser.innerHTML = "";
+        //검색데이터
+        let param = {}
+
+        //파라미터
+        let data = {
+            sectionId: sectionId,
+            component: querySet1 + "_input_user",
+            param: param,
+        }
+
+        let list  = await we_getSelectOption(data);
+
+        if (list) {
+            input_receiptUser.insertAdjacentHTML("beforeend", "<option value='write' selected>직접입력</option>");  //필요시
+            input_workUser.insertAdjacentHTML("beforeend", "<option value='write' selected>직접입력</option>");  //필요시
+            list.forEach(row => {
+                input_receiptUser.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.NAME + "'>" + row.NAME + "</option>");
+                input_workUser.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.NAME + "'>" + row.NAME + "</option>");
+            })
+
+        }
+    }
+
 
     function pop_onload1(pop_item){
         querySet1 = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
@@ -208,8 +305,25 @@
             disableInput(pop_item.popupId);
         }
 
-        if(!isNull(pop_data)){
-            search_pop1_onclick();
+        if(!isNull(pop_data1)){
+            input_dongName.value = pop_data1.hoId.split("-")[0] + "동"
+            input_ho.value = pop_data1.hoId.split("-")[1] + "호"
+
+            Promise.all([
+                //그리드 DDL
+                getSelectOption_input_minownGbn(),
+                getSelectOption_input_user(),
+                saveKey = pop_item.saveKey
+            ]).then(function (){
+                if(!isNull(pop_data1.slipNo)){
+                    search_input1_onclick();
+                }else{
+                    if(pop_data1.gbn == "0"){
+                        input_householder.value = pop_data1.hoId.HOUSEHOLDER;
+                        input_hpNo.value = pop_data1.hoId.HP_NO;
+                    }
+                }
+            })
         }
 
 

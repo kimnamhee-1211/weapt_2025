@@ -72,7 +72,7 @@
 <script>
     const popupId = "pop_min_daejang";
     let querySet;
-    let pop_data;
+
     let popGrid1;	// 그리드 컴포넌트
     let focus1 = 0;	//그리드 컴포넌트 포커스
 
@@ -86,6 +86,9 @@
     const input_holdCnt = document.querySelector("#input_holdCnt"); //input 컴포넌트
     const input_rejectCnt = document.querySelector("#input_rejectCnt"); //input 컴포넌트
     const input_pendingCnt = document.querySelector("#input_pendingCnt"); //input 컴포넌트
+
+    let pop_data;
+    let hoInfo;
 
     //그리드 설정
     const popGrid1ColumnLayout = [
@@ -137,14 +140,18 @@
         let minwonDate = AUIGrid.getSelectedRows(grid1)[0].MINWON_DATE
         pop_data.slipNo = slipNo;
         pop_data.minwonDate = minwonDate;
+        if(pop_data.gbn == "0"){
+            pop_data.hoInfo = hoInfo;
+        }
 
         let pop_item = {
             pgId: pgId,
             menuId: menuId,
-            querySet: "min001",
+            querySet: "min011",
             pop_data: pop_data
         }
         pop_onload1(pop_item);
+        popupOpen(popupId1);
     });
 
 
@@ -199,6 +206,7 @@
         we_select(selectData, {
             successSelect: (json) => {
                 let data = json.DATA;
+                hoInfo = data[0];
                 document.querySelector("#td_houseSize").value = data[0].HOUSE_SIZE;
                 document.querySelector("#td_householder").value = data[0].HOUSEHOLDER;
                 document.querySelector("#td_housePhonNo").value = data[0].HOUSE_PHON_NO;
