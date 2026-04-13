@@ -154,6 +154,20 @@
         popupOpen(popupId1);
     });
 
+    function add_popGrid1_onclick(){
+        if(pop_data.gbn == "0"){
+            pop_data.hoInfo = hoInfo;
+        }
+
+        let pop_item = {
+            pgId: pgId,
+            menuId: menuId,
+            querySet: "min011",
+            pop_data: pop_data
+        }
+        pop_onload1(pop_item);
+        popupOpen(popupId1);
+    }
 
     //그리드 조회 함수
     function search_popGrid1_onclick(){

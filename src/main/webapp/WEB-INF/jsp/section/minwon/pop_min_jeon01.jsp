@@ -26,8 +26,8 @@
                         <tr>
                             <th>동호</th>
                             <td>
-                                <input type="text" id="input_dongName" name="DONG_NAME" class="box50">동
-                                <input type="text" id="input_ho" name="HO" class="box50">호
+                                <input type="text" id="input_dongName" name="DONG_NAME" class="box50" disabled>동
+                                <input type="text" id="input_ho" name="HO" class="box50" disabled>호
                             </td>
                              <%-- 민원인과 연락처는 세대정보등록에서 가져오고 수정가능 --%>
                             <th>민원인</th>
@@ -54,12 +54,10 @@
                         <tr>
                             <th>접수자</th>
                             <td>
-                                <select id="input_receiptUser" name="RECEIPT_USER">
-                                    <option value="">직접입력</option>
-                                </select>
+                                <select id="input_receiptUser" name="RECEIPT_USER"></select>
                             </td>
                             <td colspan="4">
-                                <input type="text" id="input_receiptUserName">
+                                <input type="text" id="input_receiptUserName" name="RECEIPT_USER_NAME">
                             </td>
                         </tr>
                         <tr>
@@ -105,16 +103,14 @@
                             <td colspan="3">
                                 <span><input type="date" id="input_workDate" name="WORK_DATE" data-format="date"></span>&emsp;&emsp;
                                 <span>
-                                    <input type="checkbox" id="input_workTimeInput" name="TIME_INPUT">
+                                    <input type="checkbox" id="input_workTimeInput" name="WORK_TIME_INPUT">
                                     <label for="input_workTimeInput">시간선택 :</label>
                                 </span>
-                                <span>&ensp;<input type="time" id="input_workTimeInputName"></span>
+                                <span>&ensp;<input type="time" id="input_workTime" name="WORK_TIME"></span>
                             </td>
                             <th>구분</th>
                             <td>
-                                <select id="gubun">
-                                    <option value="gubun"></option>
-                                </select>
+                                <select id="input_minownGbn" name="MINOWN_GBN"></select>
                             </td>
                         </tr>
                         <tr>
@@ -134,12 +130,13 @@
                                     <option value="condition"></option>
                                 </select>
                             </td>
-                            <td colspan="2"><input type="text" id="input_workUserName"></td>
+                            <td colspan="2"><input type="text" id="input_workUserName" name="WORK_USER_NAME"></td>
                         </tr>
                         <tr>
                             <th>처리내역</th>
                             <td colspan="5" class="min_memo">
                                 <textarea id="input_workDesc" name="WORK_DESC" class="min01020_textarea"></textarea>
+                                <input type="text" id="input_workSeq" name="WORK_SEQ" hidden="hidden">
                             </td>
                         </tr>
                         <tr>
@@ -185,12 +182,15 @@
 
     const input_workDate = document.querySelector("#input_workDate");
     const input_workTimeInput = document.querySelector("#input_workTimeInput");
-    const input_workTimeInputName = document.querySelector("#input_workTimeInputName");
-    const gubun = document.querySelector("#gubun");
+    const input_workTime = document.querySelector("#input_workTime");
+    const input_minownGbn = document.querySelector("#input_minownGbn");
     const input_statusCd = document.querySelector("#input_statusCd");
     const input_workUser = document.querySelector("#input_workUser");
     const input_workUserName = document.querySelector("#input_workUserName");
     const input_workDesc = document.querySelector("#input_workDesc");
+    const input_workSeq = document.querySelector("#input_workSeq");
+
+    let input_user = []
 
     function search_input1_onclick(){
 
@@ -209,7 +209,14 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
-                dataToInput(data[0], popupId1)
+                dataToInput(data[0], "minwon_table")
+                if (!input_user.some(row => row.NAME == data[0].RECEIPT_USER)) {
+                    input_receiptUser.value = "write"
+                    input_receiptUserName.value = data[0].RECEIPT_USER
+                }
+                if(!isNull(data[0].WORK_SEQ)){
+                    search_input2_onclick();
+                }
             }
         });
     }
@@ -231,7 +238,11 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
-                dataToInput(data[0], "minwon_table");
+                dataToInput(data[0], "minwonWork_table");
+                if (!input_user.some(row => row.NAME == data[0].RECEIPT_USER)) {
+                    input_workUser.value = "write";
+                    input_workUserName.value = data[0].RECEIPT_USER;
+                }
             }
         });
     }
@@ -273,6 +284,7 @@
         }
 
         let list  = await we_getSelectOption(data);
+        input_user = list;
 
         if (list) {
             input_receiptUser.insertAdjacentHTML("beforeend", "<option value='write' selected>직접입력</option>");  //필요시
@@ -321,6 +333,11 @@
                     if(pop_data1.gbn == "0"){
                         input_householder.value = pop_data1.hoId.HOUSEHOLDER;
                         input_hpNo.value = pop_data1.hoId.HP_NO;
+                        input_minwonDate.value = getToday("yyyy-MM-dd");
+                        const now = new Date();
+                        const hh = String(now.getHours()).padStart(2, '0');
+                        const mm = String(now.getMinutes()).padStart(2, '0');
+                        input_time.value = `${hh}:${mm}`;
                     }
                 }
             })
