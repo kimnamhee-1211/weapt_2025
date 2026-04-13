@@ -17,7 +17,7 @@
             <div class="conf_line_left">
                 <input type="date" id="search_scDate" name="SC_DATE">
             </div>
-            <div id="gridAppr1" class="conf_line_right"></div>
+            <div id="apprGrid1" class="conf_line_right"></div>
         </div>
         <div id="grid1"  style="height: 546px;"></div>
     </div>
@@ -50,13 +50,13 @@
         //변수 선언
     const pgId = "${pgId}";	//프로그램ID
     const menuId = "${menuId}";	//메뉴ID
-    let gridAppr1;	// 결재란 그리드 컴포넌트
+    let apprGrid1;	// 결재란 그리드 컴포넌트
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const search_scDate = document.querySelector("#search_scDate"); //select 컴포넌트
 
     //결재란 생성
-    gridAppr1 = AUIGrid.create("#gridAppr1", [],
+    apprGrid1 = AUIGrid.create("#apprGrid1", [],
         Object.assign({}, we_appr_Props,
             {})
     );
@@ -113,7 +113,7 @@
 
     //그리드 이벤트
     //결재란 클릭 시
-    AUIGrid.bind(gridAppr1, "cellDoubleClick", function(event) {
+    AUIGrid.bind(apprGrid1, "cellDoubleClick", function(event) {
         if(!isNull(event.headerText)){
             let item = {};
             item.SC_DATE = search_scDate.value.replace(/-/g,"");
@@ -121,9 +121,9 @@
             item.DUTY_CD = event.headerText.trim();
             item.REAL_USER_NM = event.value;
             if(isNull(event.value)){
-                approval_gridAppr1(item);
+                approval_apprGrid1(item);
             } else {
-                cnlApproval_gridAppr1(item);
+                cnlApproval_apprGrid1(item);
             }
         }
     });
@@ -134,7 +134,7 @@
     });
 
     //결재란 생성
-    async function getApprDutyLine_gridAppr1(){
+    async function getApprDutyLine_apprGrid1(){
         //검색데이터
         let param = {}
         //파라미터
@@ -166,14 +166,14 @@
                         columns.push(item);
                     })
                 }
-                AUIGrid.changeColumnLayout(gridAppr1, columns);
-                selectApproval_gridAppr1()
+                AUIGrid.changeColumnLayout(apprGrid1, columns);
+                selectApproval_apprGrid1()
             }
         });
     }
 
     //결재 현황 조회
-    function selectApproval_gridAppr1(){
+    function selectApproval_apprGrid1(){
 
         //검색데이터
         let selectParam = {
@@ -196,13 +196,13 @@
                     data = json.DATA
                 }
                 //그리드 데이터 세팅
-                AUIGrid.setGridData(gridAppr1, data);
+                AUIGrid.setGridData(apprGrid1, data);
             }
         });
     }
 
     //결재
-    function approval_gridAppr1(param){
+    function approval_apprGrid1(param){
 
         if(!confirm("결재하시겠습니까?")) return;
         if(!requireCheck("APPROVAL")) return;
@@ -219,14 +219,14 @@
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
                     let data = json.DATA;
-                    AUIGrid.setGridData(gridAppr1, data);
+                    AUIGrid.setGridData(apprGrid1, data);
                 }
             }
         });
     }
 
     //결재
-    function cnlApproval_gridAppr1(param){
+    function cnlApproval_apprGrid1(param){
 
         //검증
         if(!confirm("결재 취소 하시겠습니까?")) return;
@@ -248,7 +248,7 @@
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
                     let data = json.DATA;
-                    AUIGrid.setGridData(gridAppr1, data);
+                    AUIGrid.setGridData(apprGrid1, data);
                 }
             }
         });
@@ -326,7 +326,7 @@
         checkCrudPermission(pgId);
 
         //결재란 생성
-        getApprDutyLine_gridAppr1();
+        getApprDutyLine_apprGrid1();
         //로드 시 그리드 바로 조회
         search_grid1_onclick();
     };

@@ -62,6 +62,22 @@ public class ExceptionController {
 
     }
 
+    @ExceptionHandler(ApprovalAuthException.class)
+    public ResponseEntity<ApiResponse<Void>> handleApprovalAuthException(PhotoFailException ex) {
+
+        ApiResponse<Void> result = new ApiResponse<>();
+        result.setO_STATUS("FAIL");
+        result.setO_RESULT(-1);
+        result.setO_MSG(ex.getUserMessage());
+        result.setO_TYPE(ex.getApiType());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(result);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException(Exception ex) {
         ApiResponse<Void> result = new ApiResponse<>();
