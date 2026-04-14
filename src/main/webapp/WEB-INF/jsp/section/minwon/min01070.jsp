@@ -109,8 +109,8 @@
             ST_DATE : search_stDate.value,
             END_DATE : search_endDate.value,
             ST_DONG : search_stDong.value,
-            END_HO : search_stHo.value,
-            ST_DONG : search_endDong.value,
+            ST_HO : search_stHo.value,
+            END_DONG : search_endDong.value,
             END_HO : search_endHo.value
         }
 

@@ -92,9 +92,9 @@
 					AND A.HO_ID  = #{HO_ID} AND A.LINE_NO = #{LINE_NO}
 				</if>
 			</when>
-			<when test='GBN == "2"'>
+			<otherwise>
 				AND A.MINWON_AREAR_SEQ  = #{MINWON_AREAR_SEQ}
-			</when>
+			</otherwise>
 		</choose>
 	</select>
 
@@ -129,9 +129,9 @@
 					AND A.HO_ID  = #{HO_ID} AND A.LINE_NO = #{LINE_NO}
 				</if>
 			</when>
-			<when test='GBN == "2"'>
+			<otherwise>
 				AND A.MINWON_AREAR_SEQ  = #{MINWON_AREAR_SEQ}
-			</when>
+			</otherwise>
 		</choose>
 		ORDER BY CONVERT(INT, A.MINWON_DATE) DESC, CONVERT(INT, A.SLIP_NO) DESC
 	</select>
@@ -160,6 +160,26 @@
 		ORDER BY A.EMP_NO
 	</select>
 
+	<select id="getSelectOption_min011_info_table" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.SLIP_NO			AS SLIP_NO,
+			A.MINWON_DATE		AS MINWON_DATE,
+			A.GBN				AS GBN,
+			A.HO_ID 			AS HO_ID,
+			A.GBN				AS GBN,
+			A.HO_ID 			AS HO_ID,
+			A.LINE_NO			AS LINE_NO,
+			A.LINE_GBN			AS LINE_GBN,
+			B.HOUSEHOLDER  		AS HOUSEHOLDER,
+			B.HP_NO  			AS HP_NO,
+			C.AREAR_NAME        AS AREAR_NAME
+		FROM dbo.TMN_MINWON A
+		LEFT JOIN dbo.TMN_DONG_HO B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DONG_ID = B.DONG_ID AND A.HO_ID = B.HO_ID
+		LEFT JOIN dbo.TMN_MINWON_AREAR C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.DONG_ID = C.DONG_ID AND A.TMN_MINWON_AREAR = C.TMN_MINWON_AREAR
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.SLIP_NO = #{SLIP_NO} AND A.MINWON_DATE = #{MINWON_DATE}
+	</select>
+
 	<select id="selectList_min011_input1" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE		AS OFFICE_CODE,
@@ -178,10 +198,6 @@
 			A.MINOWN_GBN		AS MINOWN_GBN,
 			B.GBN_NAME			AS GBN_NAME,
 			A.RECEIPT_USER		AS RECEIPT_USER,
-			A.MINWON_AREAR_SEQ	AS MINWON_AREAR_SEQ,
-			A.MINWON_NAME		AS MINWON_NAME,
-			A.HP_NO				AS HP_NO,
-			A.MINOWN_GBN		AS MINOWN_GBN,
 			B.RECEIPT_USER 		AS RECEIPT_USER,
 			B.DESCR				AS DESCR,
 			B.STATUS_CD  		AS STATUS_CD,
@@ -215,6 +231,44 @@
 		  AND (A.DEL_YN = '' OR ISNULL(A.DEL_YN,'Y') = 'Y')
 	</select>
 
+
+	<select id="selectList_min001_popGrid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.SLIP_NO 			AS SLIP_NO,
+			A.MINWON_DATE 		AS MINWON_DATE,
+			A.MINOWN_GBN		AS MINOWN_GBN,
+			'[' + C.GBN_NAME + ']' + CHAR(13) + CHAR(10) + A.DESCR AS DESCR
+			A.STATUS_CD 		AS STATUS_CD,
+			CASE WHEN A.STATUS_CD = '1' THEN '처리'
+			WHEN A.STATUS_CD = '2' THEN '보류'
+			WHEN A.STATUS_CD = '3' THEN '반려'
+			WHEN A.STATUS_CD = '4' THEN '처리중'
+			ELSE '미결' END 	AS STATUS_NAME,
+			B.WORK_USER 			AS WORK_USER
+			FROM dbo.TMN_MINWON A
+			LEFT dbo.TMN_MINWON_WORK B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SLIP_NO = B.SLIP_NO AND A.MINWON_DATE = B.MINWON_DATE
+			LEFT JOIN TMN_MINWON_GBN C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MINOWN_GBN = C.GBN_ID
+			WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.GBN = #{GBN}
+		<choose>
+			<when test='GBN == "0"'>
+				AND A.DONG_ID = #{DONG_ID}
+				AND A.LINE_GBN = #{LINE_GBN}
+				AND A.HO_ID  = #{HO_ID}
+			</when>
+			<when test='GBN == "1"'>
+				AND A.DONG_ID = #{DONG_ID}
+				AND A.LINE_GBN = #{LINE_GBN}
+				<if test='LINE_GBN != "109999"'>
+					AND A.HO_ID  = #{HO_ID} AND A.LINE_NO = #{LINE_NO}
+				</if>
+			</when>
+			<otherwise>
+				AND A.MINWON_AREAR_SEQ  = #{MINWON_AREAR_SEQ}
+			</otherwise>
+		</choose>
+		ORDER BY CONVERT(INT, A.MINWON_DATE) DESC, CONVERT(INT, A.SLIP_NO) DESC
+	</select>
 
 
 

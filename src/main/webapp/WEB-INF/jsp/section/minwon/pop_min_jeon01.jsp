@@ -23,7 +23,7 @@
                             <col style ="width:16%">
                     </colgroup>
                     <tbody id="min_tb_01">
-                        <tr>
+                        <tr id="info_table">
                             <th>동호</th>
                             <td>
                                 <input type="text" id="input_dongName" name="DONG_NAME" class="box50" disabled>동
@@ -166,11 +166,7 @@
     const pop1_btn = document.querySelector("#pop1_btn");
     const minwon_table = document.querySelector("#minwon_table");
     const minwonWork_table = document.querySelector("#minwonWork_table");
-
-    const input_dongName = document.querySelector("#input_dongName");
-    const input_ho = document.querySelector("#input_ho");
-    const input_householder = document.querySelector("#input_householder");
-    const input_hpNo = document.querySelector("#input_hpNo");
+    const info_table = document.querySelector("#info_table");
 
     const input_minwonDate = document.querySelector("#input_minwonDate");
     const input_timeInput = document.querySelector("#input_timeInput");
@@ -300,6 +296,71 @@
     }
 
 
+    async function info_table_make() {
+        info_table.innerHTML = "";
+
+        //검색데이터
+        let param = {
+            SLIP_NO : pop_data1.slipNo,
+            MINWON_DATE : pop_data1.minwonDate,
+        }
+
+        //파라미터
+        let data = {
+            sectionId: sectionId,
+            component: querySet1 + "_info_table",
+            param: param,
+        }
+
+        let list  = await we_getSelectOption(data);
+        if(pop_data1.gbn == "0"){
+            info_table.innerHTML = `
+                            <th>동호</th>
+                            <td>
+                                <input type="text" id="input_dongName" name="DONG_NAME" class="box50" disabled>동
+                                <input type="text" id="input_ho" name="HO" class="box50" disabled>호
+                            </td>
+                            <th>민원인</th>
+                            <td ><input type="text" id="input_householder" name="MINWON_NAME"></td>
+                            <th>연락처</th>
+                            <td><input type="text" id="input_hpNo" name="HP_NO"></td>
+            `
+            document.querySelector("#input_dongName").value = list[0].HO_ID.split("-")[0] + "동"
+            document.querySelector("#input_ho").value = list[0].HO_ID.split("-")[1] + "호"
+            document.querySelector("#input_householder").value = list[0].HOUSEHOLDER;
+            document.querySelector("#input_hpNo").value = list[0].HP_NO;
+        }else if(pop_data1.gbn == "1"){
+            info_table.innerHTML = `
+                            <th>동호</th>
+                            <td>
+                                <input type="text" id="input_dongName" name="DONG_NAME" class="box50" disabled>동
+                                <input type="text" id="input_lineNo" name="LINE_NO" class="box50" disabled>열
+                            </td>
+                            <th>민원인</th>
+                            <td ><input type="text" id="input_householder" name="MINWON_NAME"></td>
+                            <th>연락처</th>
+                            <td><input type="text" id="input_hpNo" name="HP_NO" ></td>
+            `
+            document.querySelector("#input_dongName").value = list[0].HO_ID.split("-")[0] + "동"
+            document.querySelector("#input_ho").value = list[0].LINE_NO.split("-")[1] + "호"
+        }else{
+            info_table.innerHTML = `
+                            <th>장소</th>
+                            <td>
+                                <input type="input_minownName" id="MINWON_NAME" class="box200">
+                            </td>
+                            <th>민원인</th>
+                            <td ><input type="text" id="input_householder" name="MINWON_NAME"></td>
+                            <th>연락처</th>
+                            <td><input type="text" id="input_hpNo" name="HP_NO" ></td>
+            `
+            document.querySelector("#input_dongName").value = list[0].HO_ID.split("-")[0] + "동"
+            document.querySelector("#input_ho").value = list[0].LINE_NO.split("-")[1] + "호"
+        }
+    }
+
+
+
     function pop_onload1(pop_item){
         querySet1 = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
         pop_data1 =  pop_item.pop_data
@@ -318,27 +379,22 @@
         }
 
         if(!isNull(pop_data1)){
-            input_dongName.value = pop_data1.hoId.split("-")[0] + "동"
-            input_ho.value = pop_data1.hoId.split("-")[1] + "호"
 
             Promise.all([
+                info_table_make(),
                 //그리드 DDL
                 getSelectOption_input_minownGbn(),
                 getSelectOption_input_user(),
-                saveKey = pop_item.saveKey
             ]).then(function (){
                 if(!isNull(pop_data1.slipNo)){
                     search_input1_onclick();
                 }else{
-                    if(pop_data1.gbn == "0"){
-                        input_householder.value = pop_data1.hoId.HOUSEHOLDER;
-                        input_hpNo.value = pop_data1.hoId.HP_NO;
-                        input_minwonDate.value = getToday("yyyy-MM-dd");
-                        const now = new Date();
-                        const hh = String(now.getHours()).padStart(2, '0');
-                        const mm = String(now.getMinutes()).padStart(2, '0');
-                        input_time.value = `${hh}:${mm}`;
-                    }
+                    input_minwonDate.value = getToday("yyyy-MM-dd");
+                    const now = new Date();
+                    const hh = String(now.getHours()).padStart(2, '0');
+                    const mm = String(now.getMinutes()).padStart(2, '0');
+                    input_time.value = `${hh}:${mm}`;
+
                 }
             })
         }

@@ -64,8 +64,8 @@
         </div>
         <div id="popGrid1"></div>
     </div>
+    <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_jeon01.jsp"/>
 </div>
-<jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_jeon01.jsp"/>
 
 
 
@@ -140,9 +140,6 @@
         let minwonDate = AUIGrid.getSelectedRows(grid1)[0].MINWON_DATE
         pop_data.slipNo = slipNo;
         pop_data.minwonDate = minwonDate;
-        if(pop_data.gbn == "0"){
-            pop_data.hoInfo = hoInfo;
-        }
 
         let pop_item = {
             pgId: pgId,
@@ -155,9 +152,6 @@
     });
 
     function add_popGrid1_onclick(){
-        if(pop_data.gbn == "0"){
-            pop_data.hoInfo = hoInfo;
-        }
 
         let pop_item = {
             pgId: pgId,
@@ -233,6 +227,29 @@
     function info_table_make() {
         if(pop_data.gbn == "0") {
             pop_title.innerHTML = "&#10004;&nbsp;세대민원대장"
+            info_table.innerHTML = ""
+            let inner = `
+                 <tbody>
+                    <tr>
+                        <th>동</th>
+                        <th>호</th>
+                        <th>면적</th>
+                        <th>세대주</th>
+                        <th>집전화</th>
+                        <th>핸드폰</th>
+                        <th>거주형태</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="td_dongName" name="DONG_NAME"></td>
+                        <td><input type="text" id="td_hoName" name="HO_NAME"></td>
+                        <td><input type="text" id="td_houseSize" name="HOUSE_SIZE"></td>
+                        <td><input type="text" id="td_householder" name="HOUSEHOLDER"></td>
+                        <td><input type="text" id="td_housePhonNo" name="HOUSE_PHON_NO"></td>
+                        <td><input type="text" id="td_hpNo" name="HP_NO"></td>
+                        <td><input type="text" id="td_liveType" name="LIVE_TYPE"></td>
+                    </tr>
+                    </tbody>
+            `
             document.querySelector("#td_dongName").value = pop_data.dongName;
             document.querySelector("#td_hoName").value =  pop_data.hoName;
             search_infoTable();
