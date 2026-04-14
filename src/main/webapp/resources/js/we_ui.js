@@ -316,7 +316,11 @@ function clearInput(inputDivId) {
     const inputDiv = document.querySelector("#" + inputDivId);
     const namedElements = inputDiv.querySelectorAll('[name]');
     for (let el of namedElements) {
-        el.value = "";
+        if (el.type === "checkbox" || el.type === "radio") {
+            el.checked = false;
+        } else {
+            el.value = "";
+        }
     }
 }
 

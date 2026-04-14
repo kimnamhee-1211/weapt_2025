@@ -58,9 +58,7 @@
         </div>
         <div style="height:40px; line-height:40px;">
             &#9726&nbsp;민원접수 및 처리내역
-            <div class="section1_btn">
-                <button id="add_btn" onclick="">추가</button>
-            </div>
+            <div class="section1_btn" id="pop_btn1"></div>
         </div>
         <div id="popGrid1"></div>
     </div>
@@ -123,7 +121,7 @@
     popGrid1 = AUIGrid.create("#popGrid1", popGrid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
-                enable : false,
+                editable : false,
                 showRowCheckColumn : false,
                 height : 400,
                 width : 890,
@@ -134,13 +132,13 @@
     );
 
     //셀 선택 변경 이벤트 바인딩
-    AUIGrid.bind(grid1, "selectionChange", function(event) {
+    AUIGrid.bind(popGrid1, "cellDoubleClick", function(event) {
 
-        let slipNo = AUIGrid.getSelectedRows(grid1)[0].SLIP_NO
-        let minwonDate = AUIGrid.getSelectedRows(grid1)[0].MINWON_DATE
+        let slipNo = AUIGrid.getSelectedRows(popGrid1)[0].SLIP_NO
+        let minwonDate = AUIGrid.getSelectedRows(popGrid1)[0].MINWON_DATE
         pop_data.slipNo = slipNo;
         pop_data.minwonDate = minwonDate;
-
+        pop_data.saveKey = "U"
         let pop_item = {
             pgId: pgId,
             menuId: menuId,
@@ -151,8 +149,16 @@
         popupOpen(popupId1);
     });
 
-    function add_popGrid1_onclick(){
+    //팝업 닫기 이벤트
+    function close_popup1_onclick(){
+        popupClose(popupId1);
+        clearInput(popupId1);
+    }
 
+
+    function add_popGrid1_onclick(){
+        pop_data.slipNo = null;
+        pop_data.saveKey = "I"
         let pop_item = {
             pgId: pgId,
             menuId: menuId,
@@ -220,6 +226,7 @@
                 document.querySelector("#td_housePhonNo").value = data[0].HOUSE_PHON_NO;
                 document.querySelector("#td_hpNo").value = data[0].HP_NO;
                 document.querySelector("#td_liveType").value = data[0].LIVE_TYPE;
+                pop_data.hoInfo = hoInfo;
             }
         });
     }
@@ -250,6 +257,7 @@
                     </tr>
                     </tbody>
             `
+            info_table.innerHTML = inner;
             document.querySelector("#td_dongName").value = pop_data.dongName;
             document.querySelector("#td_hoName").value =  pop_data.hoName;
             search_infoTable();
@@ -348,7 +356,7 @@
         btnMaker({ tag: "#pop_btn", grid: "popGrid1", search: true, print : true});
         pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
-
+        btnMaker({ tag: "#pop_btn1", grid: "popGrid1", add: true});
         if(!isNull(pop_item.btnHidden)){
             btnHidden(pop_item.btnHidden, pop_item.popupId);
         }
@@ -362,7 +370,6 @@
             search_cntTable();
             search_popGrid1_onclick();
         }
-
 
     }
    

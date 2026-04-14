@@ -108,7 +108,8 @@
             {
                 editable : false,
                 showRowCheckColumn: false,
-                rowHeight : 60
+                rowHeight : 60,
+                wordWrap: true,
             })
     );
 

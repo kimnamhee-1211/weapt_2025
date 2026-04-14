@@ -107,7 +107,8 @@
                 editable : false,
                 showRowCheckColumn: false,
                 height : 546,
-                rowHeight : 60
+                rowHeight : 60,
+                wordWrap: true,
             })
     );
 

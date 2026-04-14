@@ -77,8 +77,7 @@
 			SUM(CASE WHEN A.STATUS_CD = '3' THEN 1 ELSE 0 END) AS REJECT_CNT,
 			SUM(CASE WHEN A.STATUS_CD = '4' THEN 1 ELSE 0 END) AS PENDING_CNT
 		FROM dbo.TMN_MINWON A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DONG_ID = #{DONG_ID}
-			AND A.GBN = #{GBN} AND A.LINE_GBN = #{LINE_GBN}
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.GBN = #{GBN}
 		<choose>
 			<when test='GBN == "0"'>
 				AND A.DONG_ID = #{DONG_ID}
@@ -100,44 +99,44 @@
 
 	<select id="selectList_min001_popGrid1" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE	AS OFFICE_CODE,
-			A.SLIP_NO 			AS SLIP_NO,
-			A.MINWON_DATE 		AS MINWON_DATE,
-			A.MINOWN_GBN		AS MINOWN_GBN,
-			'[' + C.GBN_NAME + ']' + CHAR(13) + CHAR(10) + A.DESCR AS DESCR
-			A.STATUS_CD 		AS STATUS_CD,
+			A.OFFICE_CODE			AS OFFICE_CODE,
+			A.SLIP_NO 				AS SLIP_NO,
+			A.MINWON_DATE 			AS MINWON_DATE,
+			A.MINWON_GBN			AS MINWON_GBN,
+			'[' + C.GBN_NAME + ']' + CHAR(13) + CHAR(10) + A.DESCR AS DESCR,
+			A.STATUS_CD 			AS STATUS_CD,
 			CASE WHEN A.STATUS_CD = '1' THEN '처리'
 				WHEN A.STATUS_CD = '2' THEN '보류'
 				WHEN A.STATUS_CD = '3' THEN '반려'
 				WHEN A.STATUS_CD = '4' THEN '처리중'
-				ELSE '미결' END 	AS STATUS_NAME,
+				ELSE '미결' END 		AS STATUS_NAME,
 			B.WORK_USER 			AS WORK_USER
 		FROM dbo.TMN_MINWON A
-		LEFT dbo.TMN_MINWON_WORK B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SLIP_NO = B.SLIP_NO AND A.MINWON_DATE = B.MINWON_DATE
-		LEFT JOIN TMN_MINWON_GBN C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MINOWN_GBN = C.GBN_ID
+		LEFT JOIN dbo.TMN_MINWON_WORK B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SLIP_NO = B.SLIP_NO AND A.MINWON_DATE = B.MINWON_DATE
+		LEFT JOIN TMN_MINWON_GBN C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MINWON_GBN = C.GBN_ID
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.GBN = #{GBN}
-		<choose>
-			<when test='GBN == "0"'>
-				AND A.DONG_ID = #{DONG_ID}
-				AND A.LINE_GBN = #{LINE_GBN}
-				AND A.HO_ID  = #{HO_ID}
-			</when>
-			<when test='GBN == "1"'>
-				AND A.DONG_ID = #{DONG_ID}
-				AND A.LINE_GBN = #{LINE_GBN}
-				<if test='LINE_GBN != "109999"'>
-					AND A.HO_ID  = #{HO_ID} AND A.LINE_NO = #{LINE_NO}
-				</if>
-			</when>
-			<otherwise>
-				AND A.MINWON_AREAR_SEQ  = #{MINWON_AREAR_SEQ}
-			</otherwise>
-		</choose>
+			<choose>
+				<when test='GBN == "0"'>
+					AND A.DONG_ID = #{DONG_ID}
+					AND A.LINE_GBN = #{LINE_GBN}
+					AND A.HO_ID  = #{HO_ID}
+				</when>
+				<when test='GBN == "1"'>
+					AND A.DONG_ID = #{DONG_ID}
+					AND A.LINE_GBN = #{LINE_GBN}
+					<if test='LINE_GBN != "109999"'>
+						AND A.HO_ID  = #{HO_ID} AND A.LINE_NO = #{LINE_NO}
+					</if>
+				</when>
+				<otherwise>
+					AND A.MINWON_AREAR_SEQ  = #{MINWON_AREAR_SEQ}
+				</otherwise>
+			</choose>
 		ORDER BY CONVERT(INT, A.MINWON_DATE) DESC, CONVERT(INT, A.SLIP_NO) DESC
 	</select>
 
 
-	<select id="getSelectOption_min011_input_minownGbn" parameterType="map" resultType="map">
+	<select id="getSelectOption_min011_input_minwonGbn" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE	AS OFFICE_CODE,
 			A.GBN_ID		AS GBN_ID,
@@ -160,7 +159,7 @@
 		ORDER BY A.EMP_NO
 	</select>
 
-	<select id="getSelectOption_min011_info_table" parameterType="map" resultType="map">
+	<select id="getSelectOption_min011_info_tr" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE		AS OFFICE_CODE,
 			A.SLIP_NO			AS SLIP_NO,
@@ -171,12 +170,13 @@
 			A.HO_ID 			AS HO_ID,
 			A.LINE_NO			AS LINE_NO,
 			A.LINE_GBN			AS LINE_GBN,
+			A.MINWON_NAME		AS MINWON_NAME,
 			B.HOUSEHOLDER  		AS HOUSEHOLDER,
 			B.HP_NO  			AS HP_NO,
 			C.AREAR_NAME        AS AREAR_NAME
 		FROM dbo.TMN_MINWON A
 		LEFT JOIN dbo.TMN_DONG_HO B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DONG_ID = B.DONG_ID AND A.HO_ID = B.HO_ID
-		LEFT JOIN dbo.TMN_MINWON_AREAR C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.DONG_ID = C.DONG_ID AND A.TMN_MINWON_AREAR = C.TMN_MINWON_AREAR
+		LEFT JOIN dbo.TMN_MINWON_AREAR C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MINWON_AREAR_SEQ = C.MINWON_AREAR_SEQ
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.SLIP_NO = #{SLIP_NO} AND A.MINWON_DATE = #{MINWON_DATE}
 	</select>
 
@@ -195,17 +195,15 @@
 			A.MINWON_AREAR_SEQ	AS MINWON_AREAR_SEQ,
 			A.MINWON_NAME		AS MINWON_NAME,
 			A.HP_NO				AS HP_NO,
-			A.MINOWN_GBN		AS MINOWN_GBN,
+			A.MINWON_GBN		AS MINWON_GBN,
 			B.GBN_NAME			AS GBN_NAME,
 			A.RECEIPT_USER		AS RECEIPT_USER,
-			B.RECEIPT_USER 		AS RECEIPT_USER,
-			B.DESCR				AS DESCR,
-			B.STATUS_CD  		AS STATUS_CD,
-			C.WORK_SEQ			AS WORK_SEQ,
+			A.DESCR				AS DESCR,
+			C.WORK_SEQ			AS WORK_SEQ
 		FROM dbo.TMN_MINWON A
-		LEFT JOIN dbo.TMN_MINWON_GBN B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.MINOWN_GBN = B.GBN_ID
+		LEFT JOIN dbo.TMN_MINWON_GBN B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.MINWON_GBN = B.GBN_ID
 		LEFT JOIN dbo.TMN_MINWON_WORK C ON A.OFFICE_CODE = C.OFFICE_CODE
-		    AND A.SLIP_NO = C.SLIP_NO AND A.MINWON_DATE = C.MINWON_DATE AND (B.DEL_YN = '' OR ISNULL(B.DEL_YN,'Y') = 'Y')
+		    AND A.SLIP_NO = C.SLIP_NO AND A.MINWON_DATE = C.MINWON_DATE AND (C.DEL_YN = '' OR ISNULL(C.DEL_YN,'Y') = 'Y')
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.SLIP_NO = #{SLIP_NO} AND A.MINWON_DATE = #{MINWON_DATE}
 		    AND (A.DEL_YN = '' OR ISNULL(A.DEL_YN,'Y') = 'Y')
 	</select>
@@ -215,15 +213,15 @@
 			A.OFFICE_CODE		AS OFFICE_CODE,
 			A.SLIP_NO			AS SLIP_NO,
 			A.MINWON_DATE		AS MINWON_DATE,
-			A.MINOWN_GBN		AS MINOWN_GBN,
+			A.MINWON_GBN		AS MINWON_GBN,
 			B.WORK_SEQ			AS WORK_SEQ,
 			B.WORK_DATE			AS WORK_DATE,
-			A.TIME_INPUT		AS WORK_TIME_INPUT,
-			A.TIME + ":" + A.MINUTE	AS WORK_TIME,
-			A.WORK_USER			AS WORK_USER,
-			A.WORK_DESC			AS WORK_DESC,
-			A.STATUS_CD			AS STATUS_CD,
-			A.GOODS_OUTPUT_YN	AS GOODS_OUTPUT_YN
+			B.TIME_INPUT		AS WORK_TIME_INPUT,
+			B.TIME + A.MINUTE	AS WORK_TIME,
+			B.WORK_USER			AS WORK_USER,
+			B.WORK_DESC			AS WORK_DESC,
+			B.STATUS_CD			AS STATUS_CD,
+			B.GOODS_OUTPUT_YN	AS GOODS_OUTPUT_YN
 		FROM dbo.TMN_MINWON A
 		LEFT JOIN dbo.TMN_MINWON_WORK B ON A.OFFICE_CODE = B.OFFICE_CODE
 		    AND A.SLIP_NO = B.SLIP_NO AND A.MINWON_DATE = B.MINWON_DATE AND (B.DEL_YN = '' OR ISNULL(B.DEL_YN,'Y') = 'Y')
@@ -231,44 +229,73 @@
 		  AND (A.DEL_YN = '' OR ISNULL(A.DEL_YN,'Y') = 'Y')
 	</select>
 
+	<update id="updateList_ilj02010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+			A.TITLE   			= U.TITLE,
+			A.IMPORTANT_YN    	= U.IMPORTANT_YN,
+			A.DESCR    			= U.DESCR,
+			A.SCH_GBN     		= U.SCH_GBN,
+			A.MAIN_DEPT_CD 		= U.MAIN_DEPT_CD
+			FROM dbo.TWK_MONTH_SCHEDULE A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+				#{row.MST_DATE} 			 AS MST_DATE,
+				#{row.MST_NO} 				 AS MST_NO,
+				#{row.MST_MONTH}  			 AS MST_MONTH,
+				#{row.TITLE}   		 		 AS TITLE,
+				#{row.IMPORTANT_YN}  		 AS IMPORTANT_YN,
+				#{row.DESCR}   		 		 AS DESCR,
+				#{row.SCH_GBN}   	 		 AS SCH_GBN,
+				#{row.MAIN_DEPT_CD} 	 	 AS MAIN_DEPT_CD
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE
+			AND A.MST_DATE = U.MST_DATE AND A.MST_NO = U.MST_NO AND A.MST_MONTH = U.MST_MONTH
+		</if>
+	</update>
 
-	<select id="selectList_min001_popGrid1" parameterType="map" resultType="map">
+	<select id="getKey_ilj02010_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE	AS OFFICE_CODE,
-			A.SLIP_NO 			AS SLIP_NO,
-			A.MINWON_DATE 		AS MINWON_DATE,
-			A.MINOWN_GBN		AS MINOWN_GBN,
-			'[' + C.GBN_NAME + ']' + CHAR(13) + CHAR(10) + A.DESCR AS DESCR
-			A.STATUS_CD 		AS STATUS_CD,
-			CASE WHEN A.STATUS_CD = '1' THEN '처리'
-			WHEN A.STATUS_CD = '2' THEN '보류'
-			WHEN A.STATUS_CD = '3' THEN '반려'
-			WHEN A.STATUS_CD = '4' THEN '처리중'
-			ELSE '미결' END 	AS STATUS_NAME,
-			B.WORK_USER 			AS WORK_USER
-			FROM dbo.TMN_MINWON A
-			LEFT dbo.TMN_MINWON_WORK B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SLIP_NO = B.SLIP_NO AND A.MINWON_DATE = B.MINWON_DATE
-			LEFT JOIN TMN_MINWON_GBN C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MINOWN_GBN = C.GBN_ID
-			WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.GBN = #{GBN}
-		<choose>
-			<when test='GBN == "0"'>
-				AND A.DONG_ID = #{DONG_ID}
-				AND A.LINE_GBN = #{LINE_GBN}
-				AND A.HO_ID  = #{HO_ID}
-			</when>
-			<when test='GBN == "1"'>
-				AND A.DONG_ID = #{DONG_ID}
-				AND A.LINE_GBN = #{LINE_GBN}
-				<if test='LINE_GBN != "109999"'>
-					AND A.HO_ID  = #{HO_ID} AND A.LINE_NO = #{LINE_NO}
-				</if>
-			</when>
-			<otherwise>
-				AND A.MINWON_AREAR_SEQ  = #{MINWON_AREAR_SEQ}
-			</otherwise>
-		</choose>
-		ORDER BY CONVERT(INT, A.MINWON_DATE) DESC, CONVERT(INT, A.SLIP_NO) DESC
+			ISNULL(MAX(A.MST_NO), 10000) AS MST_NO
+		FROM dbo.TWK_MONTH_SCHEDULE A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  AND A.MST_DATE = #{MST_DATE} AND A.MST_MONTH = #{MST_MONTH}
 	</select>
+
+	<insert id="insertList_ilj02010_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TWK_MONTH_SCHEDULE (
+			OFFICE_CODE,
+			MST_DATE,
+			MST_MONTH,
+			MST_NO,
+			TITLE,
+			IMPORTANT_YN,
+			DESCR,
+			SCH_GBN,
+			MAIN_DEPT_CD,
+			REG_USER,
+			REG_DATE)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.MST_DATE},
+				#{row.MST_MONTH},
+				#{row.MST_NO},
+				#{row.TITLE},
+				#{row.IMPORTANT_YN},
+				#{row.DESCR},
+				#{row.SCH_GBN},
+				#{row.MAIN_DEPT_CD},
+				#{row.LOGINUSER_ID},
+				#{row.REG_DATE}
+			</foreach>
+		</if>
+	</insert>
+
 
 
 

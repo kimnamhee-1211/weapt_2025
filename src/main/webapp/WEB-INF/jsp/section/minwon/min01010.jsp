@@ -130,13 +130,13 @@
                     showRowNumColumn: false,
                     showRowCheckColumn: false,
                     editable: false,
-                    height: 652
+                    height: 652,
                 })
         );
 
         //그리드 이벤트
         AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-
+            search_aptBlock_onclick();
         });
 
 
@@ -169,6 +169,7 @@
                     //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
                     AUIGrid.setSelectionByIndex(grid1, focus, 0);
                     focus = 0;
+                    search_aptBlock_onclick();
                 }
             });
         }
