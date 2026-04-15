@@ -294,6 +294,7 @@
             successSave : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
+                    pop_data1.saveKey == "U";
                     save_input2_onclick();
                 }else return;
             }
@@ -397,7 +398,7 @@
     }
 
 
-    async function info_tr_make() {
+    function info_tr_make(){
         info_tr.innerHTML = "";
 
         if (pop_data1.gbn == "0") {
@@ -435,44 +436,42 @@
             `
 
         }
-        if(!isNull(pop_data1.slipNo)){
-            //검색데이터
-            let param = {
-                SLIP_NO: pop_data1.slipNo,
-                MINWON_DATE: pop_data1.minwonDate,
-            }
+    }
 
-            //파라미터
-            let data = {
-                sectionId: sectionId,
-                component: querySet1 + "_info_tr",
-                param: param,
-            }
-            let list = await we_getSelectOption(data);
-            if (pop_data1.gbn == "0") {
-                    document.querySelector("#input_dongHo").value = list[0].HO_ID.split("-")[0] + "동 " +
-                        list[0].HO_ID.split("-")[1] + "호"
-                document.querySelector("#input_minwonName").value = list[0].MINWON_NAME;
-                document.querySelector("#input_hpNo").value = list[0].HP_NO;
+    function info_tr_make_add(){
+        if (pop_data1.gbn == "0") {
+            document.querySelector("#input_dongHo").value = pop_data1.hoId.split("-")[0] + "동 " +
+                pop_data1.hoId.split("-")[1] + "호"
+            let list = getSelectOption_info_tr();
+            document.querySelector("#input_minwonName").value = list[0].HOUSEHOLDER;
+            document.querySelector("#input_hpNo").value = list[0].HP_NO;
 
-            } else if (pop_data1.gbn == "1") {
-                document.querySelector("#input_dongLine").value = list[0].HO_ID.split("-")[0] + "동 " + list[0].LINE_NO;
-            } else {
-                document.querySelector("#input_minwonName").value = list[0].AREAR_NAME;
-            }
-        }else{
-            if (pop_data1.gbn == "0") {
-                document.querySelector("#input_dongHo").value = pop_data1.hoId.split("-")[0] + "동 " +
-                    pop_data1.hoId.split("-")[1] + "호"
-                document.querySelector("#input_minwonName").value = pop_data1.hoInfo.HOUSEHOLDER;
-                document.querySelector("#input_hpNo").value = pop_data1.hoInfo.HP_NO;
-
-            } else if (pop_data1.gbn == "1") {
-                document.querySelector("#input_dongLine").value = pop_data1.hoId.split("-")[0] + "동 " + pop_data1.hoNo;
-            } else {
-                document.querySelector("#input_arearName").value = pop_data1.arearName;
-            }
+        } else if (pop_data1.gbn == "1") {
+            document.querySelector("#input_dongLine").value = pop_data1.hoId.split("-")[0] + "동 " + pop_data1.hoNo;
+        } else {
+            document.querySelector("#input_arearName").value = pop_data1.arearName;
         }
+        input_minwonDate.value = getToday("yyyy-MM-dd");
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        input_time.value = `${hh}:${mm}`;
+    }
+
+    async function getSelectOption_info_tr(){
+        let param = {
+            SLIP_NO: pop_data1.slipNo,
+            MINWON_DATE: pop_data1.minwonDate,
+        }
+
+        //파라미터
+        let data = {
+            sectionId: sectionId,
+            component: querySet1 + "_info_tr",
+            param: param,
+        }
+
+        return await we_getSelectOption(data);
     }
 
     input_timeInput.addEventListener("change", () => {
@@ -544,17 +543,12 @@
                 getSelectOption_input_minwonGbn(),
                 getSelectOption_input_user(),
             ]).then(function () {
-                if (!isNull(pop_data1.slipNo)) {
+                if (pop_data1.saveKey == "U") {
                     input_slipNo.value = pop_data1.slipNo;
                     input_minwonDate.value = pop_data1.minwonDate;
                     search_input1_onclick();
                 } else {
-                    input_minwonDate.value = getToday("yyyy-MM-dd");
-                    const now = new Date();
-                    const hh = String(now.getHours()).padStart(2, '0');
-                    const mm = String(now.getMinutes()).padStart(2, '0');
-                    input_time.value = `${hh}:${mm}`;
-
+                    info_tr_make_add();
                 }
             })
         }

@@ -19,7 +19,6 @@
 			A.OFFICE_CODE	AS OFFICE_CODE,
 			A.LINE_NO       AS LINE_NO,
 			A.DONG_ID       AS DONG_ID,
-			A.OFFICE_CODE   AS OFFICE_CODE,
 			A.LINE_GBN      AS LINE_GBN,
 			A.START_FLOOR   AS START_FLOOR,
 			A.END_FLOOR     AS END_FLOOR,
@@ -179,6 +178,15 @@
 		LEFT JOIN dbo.TMN_MINWON_AREAR C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MINWON_AREAR_SEQ = C.MINWON_AREAR_SEQ
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.SLIP_NO = #{SLIP_NO} AND A.MINWON_DATE = #{MINWON_DATE}
 	</select>
+
+	<select id="getSelectOption_min011_info_tr" parameterType="map" resultType="map">
+		SELECT
+			A.HOUSEHOLDER  		AS HOUSEHOLDER,
+			A.HP_NO  			AS HP_NO
+		FROM dbo.TMN_DONG_HO A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DONG_ID = #{DONG_ID} AND A.HO_ID = #{HO_ID}
+	</select>
+
 
 	<select id="selectList_min011_input1" parameterType="map" resultType="map">
 		SELECT

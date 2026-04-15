@@ -86,7 +86,6 @@
     const input_pendingCnt = document.querySelector("#input_pendingCnt"); //input 컴포넌트
 
     let pop_data;
-    let hoInfo;
 
     //그리드 설정
     const popGrid1ColumnLayout = [
@@ -155,7 +154,6 @@
         clearInput(popupId1);
     }
 
-
     function add_popGrid1_onclick(){
         pop_data.slipNo = null;
         pop_data.saveKey = "I"
@@ -220,13 +218,11 @@
         we_select(selectData, {
             successSelect: (json) => {
                 let data = json.DATA;
-                hoInfo = data[0];
                 document.querySelector("#td_houseSize").value = data[0].HOUSE_SIZE;
                 document.querySelector("#td_householder").value = data[0].HOUSEHOLDER;
                 document.querySelector("#td_housePhonNo").value = data[0].HOUSE_PHON_NO;
                 document.querySelector("#td_hpNo").value = data[0].HP_NO;
                 document.querySelector("#td_liveType").value = data[0].LIVE_TYPE;
-                pop_data.hoInfo = hoInfo;
             }
         });
     }
