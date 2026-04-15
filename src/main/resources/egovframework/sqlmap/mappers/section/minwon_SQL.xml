@@ -237,31 +237,41 @@
 		  AND (A.DEL_YN = '' OR ISNULL(A.DEL_YN,'Y') = 'Y')
 	</select>
 
-	<update id="updateList_ilj02010_grid1" parameterType="list">
+	<update id="updateList_min011_input1" parameterType="list">
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
-			A.TITLE   			= U.TITLE,
-			A.IMPORTANT_YN    	= U.IMPORTANT_YN,
-			A.DESCR    			= U.DESCR,
-			A.SCH_GBN     		= U.SCH_GBN,
-			A.MAIN_DEPT_CD 		= U.MAIN_DEPT_CD
-			FROM dbo.TWK_MONTH_SCHEDULE A
+				A.GBN              = U.GBN,
+				A.TIME_INPUT       = U.TIME_INPUT,
+				A.TIME             = U.TIME,
+				A.MINUTE           = U.MINUTE,
+				A.MINWON_NAME      = U.MINWON_NAME,
+				A.HP_NO            = U.HP_NO,
+				A.MINOWN_GBN       = U.MINOWN_GBN,
+				A.RECEIPT_USER     = U.RECEIPT_USER,
+				A.DESCR            = U.DESCR,
+				A.STATUS_CD        = U.STATUS_CD
+			FROM dbo.TMN_MINWON A
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
 				#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
-				#{row.MST_DATE} 			 AS MST_DATE,
-				#{row.MST_NO} 				 AS MST_NO,
-				#{row.MST_MONTH}  			 AS MST_MONTH,
-				#{row.TITLE}   		 		 AS TITLE,
-				#{row.IMPORTANT_YN}  		 AS IMPORTANT_YN,
-				#{row.DESCR}   		 		 AS DESCR,
-				#{row.SCH_GBN}   	 		 AS SCH_GBN,
-				#{row.MAIN_DEPT_CD} 	 	 AS MAIN_DEPT_CD
+				#{row.SLIP_NO}               AS SLIP_NO,
+				#{row.MINWON_DATE}           AS MINWON_DATE,
+				#{row.GBN}                   AS GBN,
+				#{row.TIME_INPUT}            AS TIME_INPUT,
+				#{row.TIME}                  AS TIME,
+				#{row.MINUTE}                AS MINUTE,
+				#{row.MINWON_NAME}           AS MINWON_NAME,
+				#{row.HP_NO}                 AS HP_NO,
+				#{row.MINOWN_GBN}            AS MINOWN_GBN,
+				#{row.RECEIPT_USER}          AS RECEIPT_USER,
+				#{row.DESCR}                 AS DESCR,
+				#{row.TITLE}                 AS TITLE,
+				#{row.STATUS_CD}             AS STATUS_CD
 			</foreach>
 			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE
-			AND A.MST_DATE = U.MST_DATE AND A.MST_NO = U.MST_NO AND A.MST_MONTH = U.MST_MONTH
+				AND A.SLIP_NO = U.SLIP_NO AND A.MINWON_DATE = U.MINWON_DATE
 		</if>
 	</update>
 

@@ -245,7 +245,6 @@
             successSelect: (json) => {
                 let data = json.DATA;
                 dataToInput(data[0], "minwonWork_table");
-
                 if (!input_user.some(row => row.NAME == data[0].WORK_USER)) {
                     input_workUser.value = "write";
                     input_workUserName.value = data[0].WORK_USER;
@@ -258,15 +257,22 @@
     function save_input1_onclick(){
 
         let item = inputToData("minwon_table");
+        item.REG_DATE = getToday("yyyyMMdd");
+        if(!isNull(input_time.value)){
+            item.TIME = input_time.value.split(":")[0]
+            item.MINUTE = input_time.value.split(":")[1]
+        }
+
         if(input_receiptUser.value == "write"){
             item.RECEIPT_USER = item.RECEIPT_USER_NAME
         }
         let addedRowItems = null;
         let editedRowItems = null;
+
         if(pop_data1.saveKey == "I"){
-            addedRowItems = [...item]
+            addedRowItems = [{ ...item, ...pop_data1 }];
         }else{
-            editedRowItems = [...item]
+            editedRowItems = [{ ...item, ...pop_data1 }];
         }
 
         //검증
@@ -280,7 +286,9 @@
             insertParam : addedRowItems,
             updateParam : editedRowItems,
             key : ["SLIP_NO"],
-            before : {}
+            before : {
+                //MINOWN_GBN 업데이트
+            }
         };
 
         //파라미터
@@ -294,7 +302,7 @@
             successSave : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
-                    pop_data1.saveKey == "U";
+                    pop_data1.saveKey = "U";
                     save_input2_onclick();
                 }else return;
             }
@@ -312,14 +320,18 @@
         let editedRowItems = null;
 
         if(saveKey1 == "I"){
-            addedRowItems = [...item]
+            addedRowItems = [{ ...item, ...pop_data1 }];
         }else{
-            editedRowItems = [...item]
+            editedRowItems = [{ ...item, ...pop_data1 }];
         }
 
         //검증
-        if(!confirm("변경사항을 저장하시겠습니까?")) return;
-        if(!requireCheck("SAVE_INPUT2")) return;
+        //if(!confirm("변경사항을 저장하시겠습니까?")) return;
+        if(!isNull(input_statusCd.value)){
+            if(!requireCheck("SAVE_INPUT2")) return;
+        }
+
+        focus1 = gridFocus(popGrid1);
 
         //저장 데이터
         let saveParam = {
@@ -340,7 +352,9 @@
             successSave : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
+                    saveKey1 == "U"
                     search_popGrid1_onclick();
+                    search_input1_onclick();
                 }else return;
             }
         });
@@ -452,10 +466,6 @@
             document.querySelector("#input_arearName").value = pop_data1.arearName;
         }
         input_minwonDate.value = getToday("yyyy-MM-dd");
-        const now = new Date();
-        const hh = String(now.getHours()).padStart(2, '0');
-        const mm = String(now.getMinutes()).padStart(2, '0');
-        input_time.value = `${hh}:${mm}`;
     }
 
     async function getSelectOption_info_tr(){
@@ -476,12 +486,31 @@
 
     input_timeInput.addEventListener("change", () => {
         const el = document.querySelector("#span_time");
-        el.style.display = input_timeInput.checked ? "inline" : "none";
+        if(input_timeInput.checked){
+            el.style.display = "inline";
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            input_time.value = `${hh}:${mm}`;
+        }else{
+            el.style.display = "none";
+            input_time.value = "";
+        }
     });
 
     input_workTimeInput.addEventListener("change", () => {
         const el = document.querySelector("#span_workTime");
-        el.style.display = input_workTimeInput.checked ? "inline" : "none";
+        if(input_workTimeInput.checked){
+            el.style.display = "inline";
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            input_workTime.value = `${hh}:${mm}`;
+        }else{
+            el.style.display = "none";
+            input_workTime.value = "";
+        }
+
     });
 
     //컴포넌트 필수항목 입력 체크
@@ -546,6 +575,8 @@
                 if (pop_data1.saveKey == "U") {
                     input_slipNo.value = pop_data1.slipNo;
                     input_minwonDate.value = pop_data1.minwonDate;
+                    input_slipNo.disabled = "false";
+                    input_minwonDate.disabled = "false";
                     search_input1_onclick();
                 } else {
                     info_tr_make_add();
