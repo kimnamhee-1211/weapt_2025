@@ -11,7 +11,7 @@
  * function  dateToStr(date, format) : Date - text 날짜 변환
  * function stripHtml(html) : HTML 태그 제거-순수 텍스트 추출
  * function nextAlpha(str) : 알파벳 조합 최대값 구하기
- *
+ * function toSnakeUpper(obj) : camel → snake
  *
  *
  * const DS_MONTH : [{DS_MONTH_CD, DS_MONTH}]
@@ -139,6 +139,39 @@ function nextAlpha(str) {
     return chars.join('');
 }
 
+
+// camel → snake
+function toSnakeUpper(obj) {
+    const result = {};
+    Object.keys(obj).forEach(key => {
+        const newKey = key
+            .replace(/([a-z])([A-Z])/g, '$1_$2')
+            .toUpperCase(); // 대문자
+
+        result[newKey] = obj[key];
+    });
+    return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const DS_MONTH = [
     {DS_MONTH_CD: "01", DS_MONTH: "1월"},
     {DS_MONTH_CD: "02", DS_MONTH: "2월"},
@@ -154,9 +187,6 @@ const DS_MONTH = [
     {DS_MONTH_CD: "12", DS_MONTH: "12월"}
 ];
 
-
-
-    	
 
 
   

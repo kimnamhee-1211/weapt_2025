@@ -134,7 +134,6 @@
                     <th>처리내역</th>
                     <td colspan="5" class="min_memo">
                         <textarea id="input_workDesc" name="WORK_DESC" class="min01020_textarea"></textarea>
-                        <input type="text" id="input_workSeq" name="WORK_SEQ" hidden="hidden">
                     </td>
                 </tr>
                 <tr>
@@ -183,7 +182,6 @@
     const input_workUser = document.querySelector("#input_workUser");
     const input_workUserName = document.querySelector("#input_workUserName");
     const input_workDesc = document.querySelector("#input_workDesc");
-    const input_workSeq = document.querySelector("#input_workSeq");
 
     let input_user = []
 
@@ -262,17 +260,17 @@
             item.TIME = input_time.value.split(":")[0]
             item.MINUTE = input_time.value.split(":")[1]
         }
-
         if(input_receiptUser.value == "write"){
             item.RECEIPT_USER = item.RECEIPT_USER_NAME
         }
         let addedRowItems = null;
         let editedRowItems = null;
 
+        let data = toSnakeUpper(pop_data1)
         if(pop_data1.saveKey == "I"){
-            addedRowItems = [{ ...item, ...pop_data1 }];
+            addedRowItems = [{ ...item, ...data }];
         }else{
-            editedRowItems = [{ ...item, ...pop_data1 }];
+            editedRowItems = [{ ...item, ...data }];
         }
 
         //검증
@@ -286,9 +284,7 @@
             insertParam : addedRowItems,
             updateParam : editedRowItems,
             key : ["SLIP_NO"],
-            before : {
-                //MINOWN_GBN 업데이트
-            }
+            before : {}
         };
 
         //파라미터
@@ -313,16 +309,26 @@
     function save_input2_onclick(){
 
         let item = inputToData("minwonWork_table");
+        item.REG_DATE = getToday("yyyyMMdd");
+        item.SLIP_NO = input_slipNo.value;
+        item.MINWON_DATE = input_minwonDate.value;
+        item.TIME_INPUT = input_workTimeInput.value;
+        if(!isNull(input_workTimeInput.value)){
+            item.TIME = input_workTimeInput.value.split(":")[0]
+            item.MINUTE = input_workTimeInput.value.split(":")[1]
+        }
         if(input_workUser.value == "write"){
             item.WORK_USER = item.WORK_USER_NAME
         }
+
         let addedRowItems = null;
         let editedRowItems = null;
 
+        let data = toSnakeUpper(pop_data1)
         if(saveKey1 == "I"){
-            addedRowItems = [{ ...item, ...pop_data1 }];
+            addedRowItems = [{ ...item, ...data }];
         }else{
-            editedRowItems = [{ ...item, ...pop_data1 }];
+            editedRowItems = [{ ...item, ...data }];
         }
 
         //검증
@@ -338,7 +344,11 @@
             insertParam : addedRowItems,
             updateParam : editedRowItems,
             key : ["WORK_SEQ"],
-            before : {}
+            before : {
+                action : "update",
+                saveMode : "U",
+                beforeParam : [...item]
+            }
         };
 
         //파라미터
@@ -509,6 +519,7 @@
         }else{
             el.style.display = "none";
             input_workTime.value = "";
+
         }
 
     });
