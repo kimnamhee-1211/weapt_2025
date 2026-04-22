@@ -411,7 +411,6 @@
 		</if>
 	</insert>
 
-
 	<update id="beforeUpdate_min011_input2" parameterType="list">
 		<if test="list != null and list.size > 0">
 			UPDATE A
@@ -421,10 +420,10 @@
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-				#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
-				#{row.SLIP_NO}               AS SLIP_NO,
-				#{row.MINWON_DATE}           AS MINWON_DATE,
-				#{row.MINWON_GBN}  			 AS MINWON_GBN,
+                    #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+                    #{row.SLIP_NO}               AS SLIP_NO,
+                    #{row.MINWON_DATE}           AS MINWON_DATE,
+                    #{row.MINWON_GBN}  			 AS MINWON_GBN,
 			</foreach>
 			) AS U ON A.OFFICE_CODE	= U.OFFICE_CODE
 				AND A.SLIP_NO = U.SLIP_NO AND A.MINWON_DATE = U.MINWON_DATE
@@ -433,6 +432,36 @@
 
 
 
+
+
+	<delete id="deleteList_min011_input1" parameterType="list">
+		DELETE FROM dbo.TMN_MINWON
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.SLIP_NO} AS SLIP_NO, #{row.MINWON_DATE} AS MINWON_DATE
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TMN_MINWON.OFFICE_CODE
+			  AND temp.SLIP_NO = TMN_MINWON.SLIP_NO AND temp.MINWON_DATE = TMN_MINWON.MINWON_DATE
+		)
+	</delete>
+
+
+	<delete id="beforeDelete_min011_input1" parameterType="list">
+		DELETE FROM dbo.TMN_MINWON_WORK
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.SLIP_NO} AS SLIP_NO, #{row.MINWON_DATE} AS MINWON_DATE
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TMN_MINWON_WORK.OFFICE_CODE
+			  AND temp.SLIP_NO = TMN_MINWON_WORK.SLIP_NO AND temp.MINWON_DATE = TMN_MINWON_WORK.MINWON_DATE
+		)
+	</delete>
 
 
 

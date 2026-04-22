@@ -290,7 +290,7 @@
         //파라미터
         let saveData  = {
             sectionId :  sectionId,
-            component : pgId + "_input1",
+            component : querySet1 + "_input1",
             param: saveParam,
         }
 
@@ -354,7 +354,7 @@
         //파라미터
         let saveData  = {
             sectionId :  sectionId,
-            component : pgId + "_input2",
+            component : querySet1 + "_input2",
             param: saveParam,
         }
 
@@ -365,6 +365,55 @@
                     saveKey1 == "U"
                     search_popGrid1_onclick();
                     search_input1_onclick();
+                }else return;
+            }
+        });
+    }
+
+    //그리드 삭제 함수
+    function delete_input1_onclick(){
+
+        let item = inputToData("minwon_table");
+
+        //검증
+        if (isNull(item.SLIP_NO)) {
+            alert("삭제할 항목이 없습니다");
+            return;
+        }
+
+        if (!confirm( "민원접수 내역을 삭제하시겠습니까?")) return;
+
+        if (isNull(input_workSeq.value)) {
+            if (!confirm("등록된 민원 처리 내역이 있습니다.\n모두 삭제하시겠습니까?")) return;
+            return;
+        }
+
+        //포커스 지정
+        focus1 = gridFocus(popGrid1) -1;
+
+        // 삭제된 행 아이템들(배열) -> 삭제 데이터
+        let param = {
+            deleteParam : [{...item}],
+            before : {
+                action : "delete",
+                saveMode : "D",
+                beforeParam : [...item]
+            }
+        };
+
+        //공통 저장 트렌젝션용 데이터
+        let deleteData = {
+            sectionId :  sectionId,
+            component : querySet1 + "_input1",
+            param : param,
+        }
+
+        we_delete(deleteData,{
+            successDelete : (data) => {
+                alert(data.O_MSG);
+                if(data.O_RESULT > 0){
+                    search_popGrid1_onclick();
+                    close_popup1_onclick();
                 }else return;
             }
         });
