@@ -159,7 +159,8 @@
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print : true});
-
+        search_startDate.value = getToday("yyyyMMdd");
+        search_endDate.value = getToday("yyyyMMdd");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
         search_grid1_onclick();

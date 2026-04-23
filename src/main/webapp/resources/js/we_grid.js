@@ -55,7 +55,7 @@ const we_grid_Props = {
     noDataMessage: "조회된 데이터가 없습니다.",
     wrapSelectionMove: true,            // 칼럼 끝에서 오른쪽 이동 시 다음 행, 처음 칼럼으로 이동할지 여부
     autoGridHeight: false,
-    height: 614,                       // autoGridHeight : false 함께 쓰임
+    height: 611,                       // autoGridHeight : false 함께 쓰임
     showSelectionBorder: true,         // 셀 선택 시 선택된 셀에 테두리(border) 를 표시할지 여부,
     editingOnKeyDown: false,           // 키보드 입력으로 바로 편집할 수 있는지 여부
     enterKeyColumnBase: true,          // 엔터키가 다음 행이 아닌 다음 컬럼으로 이동함

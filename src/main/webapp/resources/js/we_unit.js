@@ -73,6 +73,7 @@ function dateFormat(obj) {
     }
 }
 
+//text 날짜 - Date 변환
 function strToDate(obj) {
     let result = obj.replace(/[^0-9]/g, '');
     let year = result.substring(0, 4);
@@ -82,6 +83,7 @@ function strToDate(obj) {
     return date;
 }
 
+//Date - text 날짜 변환
 function dateToStr(date, format) {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
