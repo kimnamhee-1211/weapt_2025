@@ -132,7 +132,11 @@
 
     //셀 선택 변경 이벤트 바인딩
     AUIGrid.bind(popGrid1, "cellDoubleClick", function(event) {
+        open_popup1_onclick();
+    });
 
+    //팝업 닫기 이벤트
+    function open_popup1_onclick(){
         let slipNo = AUIGrid.getSelectedRows(popGrid1)[0].SLIP_NO
         let minwonDate = AUIGrid.getSelectedRows(popGrid1)[0].MINWON_DATE
         pop_data.slipNo = slipNo;
@@ -146,9 +150,8 @@
         }
         pop_onload1(pop_item);
         popupOpen(popupId1);
-    });
+    }
 
-    //팝업 닫기 이벤트
     function close_popup1_onclick(){
         popupClose(popupId1);
         clearInput(popupId1);
@@ -168,7 +171,7 @@
     }
 
     //그리드 조회 함수
-    function search_popGrid1_onclick(){
+    async function search_popGrid1_onclick(){
 
         let selectParam = {
             GBN : pop_data.gbn,
@@ -190,7 +193,7 @@
             param: selectParam,
         }
 
-        we_select( selectData,{
+        return we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
                 //그리드 데이터 세팅
@@ -266,15 +269,13 @@
                                 <th>동</th>
                                 <th>열</th>
                                 <th>층</th>
-                                <th>구분</th>
-                                <th>비고</th>
+                                <th colspan="2">구분</th>
                             </tr>
                             <tr>
                                 <td><input type="text" id="td_dongName" name="DONG_NAME"></td>
                                 <td><input type="text" id="td_lineNo" name="LINE_NO"></td>
                                 <td><input type="text" id="td_floor" name="FLOOR"></td>
-                                <td><input type="text" id="td_lineGbnNm" name="LINE_GBN_NM"></td>
-                                <td><input type="text" name=""></td>
+                                <td colspan="2"><input type="text" id="td_lineGbnNm" name="LINE_GBN_NM"></td>
                             </tr>
                         </tbody>
                     `
@@ -297,12 +298,10 @@
             let inner = `
                         <tbody>
                             <tr>
-                                <th>구분</th>
-                                <th>비고</th>
+                                <th colspan="7">구분</th>
                             </tr>
                             <tr>
-                                <td><input type="text" id="td_arearName" name="AREAR_NAME"></td>
-                                <td><input type="text" name=""></td>
+                                <td colspan="7"><input type="text" id="td_arearName" name="AREAR_NAME"></td>
                             </tr>
                         </tbody>
                     `

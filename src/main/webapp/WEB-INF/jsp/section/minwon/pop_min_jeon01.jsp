@@ -29,20 +29,20 @@
                         <th>접수일시</th>
                         <td colspan="3">
                             <span>
-                                <input type="date" class="box50" id="input_minwonDate" name="MINWON_DATE" data-format="date">
+                                <input type="date" id="input_minwonDate" name="MINWON_DATE" data-format="date">
                             </span>&emsp;&emsp;
                             <%-- 환경설정에 체크되어 있으면 서버 현재시간 가져오기 --%>
                             <span>
-                                <input type="checkbox" id="input_timeInput" name="TIME_INPUT">
+                                <input type="checkbox" id="input_timeInput" name="TIME_INPUT" >
                                 <label for="input_minwonDate">시간선택</label></span>
                             <%-- 체크되면 시,분 보여지기 --%>
-                            <span>&ensp;:
-                                <input type="time" class="box50" id="input_time" name="TIME" style="display: none;">
+                            <span id="span_time" style="display: none">&ensp;:
+                                <input type="time" id="input_time" name="TIME">
                             </span>
                         </td>
                         <th>전표번호</th>
                         <%-- 오늘날짜 순번으로 자동생성 --%>
-                        <td><input type="text" id="input_slipNo" name="SLIP_NO"></td>
+                        <td><input type="text" id="input_slipNo" name="SLIP_NO" disabled></td>
                     </tr>
                     <tr>
                         <th>접수자</th>
@@ -75,10 +75,12 @@
             <div id="input2">
                 <div class="section_middle_title">
                     <span><i class="icon-pause"></i>처&ensp;리</span>
-                    <span class="section_middle_btn">
+                    <span class="section_middle_btn" id="section_middle_btn2"></span>
+                    <div class="search-box section1_btn">
                         <button id="photo_btn_input2" class="find_btn" onclick="">사진첨부</button>
                         <button onclick="" class="find_btn">소모품사용</button>
                         <button onclick="" class="find_btn">계량기사용</button>
+                    </div>
                     </span>
                 </div>
                 <table style="width:720px;" id="minwonWork_table">
@@ -96,14 +98,14 @@
                         <td colspan="3">
                             <input type="text" id="input_workSeq" name="WORK_SEQ" hidden="hidden">
                             <span>
-                                <input type="date" class="box50" id="input_workDate" name="WORK_DATE" data-format="date">
+                                <input type="date" id="input_workDate" name="WORK_DATE" data-format="date">
                             </span>&emsp;&emsp;
                             <span>
                                 <input type="checkbox" id="input_workTimeInput" name="WORK_TIME_INPUT">
                                 <label for="input_workTimeInput">시간선택</label>
                             </span>
-                            <span>&ensp;:
-                                <input type="time" class="box50" id="input_workTime" name="WORK_TIME" style="display: none;">
+                            <span id="span_workTime" style="display: none">&ensp;:
+                                <input type="time" id="input_workTime" name="WORK_TIME" >
                             </span>
                         </td>
                         <th>구분</th>
@@ -157,6 +159,7 @@
     let querySet1;
     let pop_data1;
     let saveKey1;
+    let saveKey2;
 
     //팝업 컴포넌트
     const section_middle_btn1 = document.querySelector("#section_middle_btn1");
@@ -188,7 +191,7 @@
 
         let selectParam = {
             SLIP_NO: input_slipNo.value,
-            MINWON_DATE: input_minwonDate.value,
+            MINWON_DATE: input_minwonDate.value.replace(/-/g,""),
         }
 
         //파라미터
@@ -202,21 +205,12 @@
             successSelect: (json) => {
                 let data = json.DATA;
                 dataToInput(data[0], "minwon_table");
-                if (pop_data1.gbn == "0") {
-                    document.querySelector("#input_dongHo").value = pop_data1.hoId.split("-")[0] + "동 " +
-                        pop_data1.hoId.split("-")[1] + "호"
-                } else if (pop_data1.gbn == "1") {
-                    document.querySelector("#input_dongLine").value = pop_data1.hoId.split("-")[0] + "동 " + pop_data1.hoNo;
-                } else {
-                    document.querySelector("#input_arearName").value = pop_data1.arearName;
-                }
-
                 if (!input_user.some(row => row.NAME == data[0].RECEIPT_USER)) {
                     input_receiptUser.value = "write"
                     input_receiptUserName.value = data[0].RECEIPT_USER
                 }
                 if (!isNull(data[0].WORK_SEQ)) {
-                    saveKey1 = "U"
+                    saveKey2 = "U"
                     search_input2_onclick();
                 }
             }
@@ -227,7 +221,7 @@
 
         let selectParam = {
             SLIP_NO: input_slipNo.value,
-            MINWON_DATE: input_minwonDate.value,
+            MINWON_DATE: input_minwonDate.value.replace(/-/g,""),
             WORK_SEQ: input_workSeq.value
         }
 
@@ -250,11 +244,50 @@
         });
     }
 
+    function search_focuse(){
+
+        let selectParam = {
+            GBN : pop_data1.gbn,
+            LINE_GBN : (pop_data1.gbn == "0" || pop_data1.gbn == "1" ) ? pop_data1.lineGbn : "",
+            DONG_ID : pop_data1.dongId,
+            HO_ID : pop_data1.hoId,
+            MINWON_AREAR_SEQ : (pop_data1.gbn == "0" || pop_data1.gbn == "1" ) ? "" : pop_data1.minwonArearSeq,
+            MINWON_DATE : input_minwonDate.value.replace(/-/g,""),
+        }
+        if(pop_data1.gbn == "1" && pop_data1.lineGbn != "109999"){
+            selectParam.LINE_NO = pop_data1.hoNo
+        }else{
+            selectParam.LINE_NO = ""
+        }
+
+        //파라미터
+        let selectData = {
+            sectionId: sectionId,
+            component: querySet1 + "_saveKey",
+            param: selectParam,
+        }
+
+        we_select(selectData, {
+            successSelect: (json) => {
+                let data = json.DATA;
+                focus1 = gridFocusFromKey(data[0], popGrid1);
+                Promise.all([
+                    search_popGrid1_onclick()
+                ]).then(function () {
+                    open_popup1_onclick();
+                })
+            }
+        });
+    }
+
+
     //그리드 저장 함수
     function save_input1_onclick() {
 
         let item = inputToData("minwon_table");
-        item.REG_DATE = getToday("yyyyMMdd");
+        item.MINWON_DATE = input_minwonDate.value.replace(/-/g,"");
+        item.REG_DATE = getToday("yyyyMMdd")
+        item.TIME_INPUT = input_timeInput.checked ? "1" : "0";
         if (!isNull(input_time.value)) {
             item.TIME = input_time.value.split(":")[0]
             item.MINUTE = input_time.value.split(":")[1]
@@ -262,21 +295,25 @@
         if (input_receiptUser.value == "write") {
             item.RECEIPT_USER = item.RECEIPT_USER_NAME
         }
+        item.GBN = pop_data1.gbn;
+        item.DONG_ID = pop_data1.dongId;
+        item.HO_ID = pop_data1.hoId;
+        item.LINE_NO = pop_data1.lineNo;
+        item.LINE_GBN = pop_data1.lineGbn;
+        item.MINWON_AREAR_SEQ = pop_data1.minwonArearSeq;
+
         let addedRowItems = null;
         let editedRowItems = null;
 
-        let data = toSnakeUpper(pop_data1)
-        if (pop_data1.saveKey == "I") {
-            addedRowItems = [{...item, ...data}];
+        if (saveKey1 == "I") {
+            addedRowItems = [{...item}];
         } else {
-            editedRowItems = [{...item, ...data}];
+            editedRowItems = [{...item}];
         }
 
         //검증
         if (!confirm("변경사항을 저장하시겠습니까?")) return;
-        if (!requireCheck("SAVE_INPUT1")) return;
-
-        focus1 = gridFocus(popGrid1);
+        if (!requireCheck1("SAVE_INPUT1")) return;
 
         //저장 데이터
         let saveParam = {
@@ -297,8 +334,7 @@
             successSave: (json) => {
                 alert(json.O_MSG);
                 if (json.O_RESULT > 0) {
-                    pop_data1.saveKey = "U";
-                    save_input2_onclick();
+                    search_focuse();
                 } else return;
             }
         });
@@ -310,11 +346,12 @@
         let item = inputToData("minwonWork_table");
         item.REG_DATE = getToday("yyyyMMdd");
         item.SLIP_NO = input_slipNo.value;
-        item.MINWON_DATE = input_minwonDate.value;
-        item.TIME_INPUT = input_workTimeInput.value;
-        if (!isNull(input_workTimeInput.value)) {
-            item.TIME = input_workTimeInput.value.split(":")[0]
-            item.MINUTE = input_workTimeInput.value.split(":")[1]
+        item.MINWON_DATE = input_minwonDate.value.replace(/-/g,"");
+        item.WORK_DATE = input_workDate.value.replace(/-/g,"");
+        item.TIME_INPUT = input_workTimeInput.checked ? "1" : "0";
+        if (!isNull(input_workTime.value)) {
+            item.TIME = input_workTime.value.split(":")[0]
+            item.MINUTE = input_workTime.value.split(":")[1]
         }
         if (input_workUser.value == "write") {
             item.WORK_USER = item.WORK_USER_NAME
@@ -323,17 +360,17 @@
         let addedRowItems = null;
         let editedRowItems = null;
 
-        let data = toSnakeUpper(pop_data1)
-        if (saveKey1 == "I") {
-            addedRowItems = [{...item, ...data}];
+
+        if (saveKey2 == "I") {
+            addedRowItems = [{...item}];
         } else {
-            editedRowItems = [{...item, ...data}];
+            editedRowItems = [{...item}];
         }
 
         //검증
         //if(!confirm("변경사항을 저장하시겠습니까?")) return;
         if (!isNull(input_statusCd.value)) {
-            if (!requireCheck("SAVE_INPUT2")) return;
+            if (!requireCheck1("SAVE_INPUT2")) return;
         }
 
         focus1 = gridFocus(popGrid1);
@@ -346,7 +383,7 @@
             before: {
                 action: "update",
                 saveMode: "U",
-                beforeParam: [...item]
+                beforeParam: [{...item}]
             }
         };
 
@@ -361,9 +398,9 @@
             successSave: (json) => {
                 alert(json.O_MSG);
                 if (json.O_RESULT > 0) {
-                    saveKey1 == "U"
+                    saveKey2 == "U";
                     search_popGrid1_onclick();
-                    search_input1_onclick();
+                    search_input2_onclick();
                 } else return;
             }
         });
@@ -372,10 +409,8 @@
     //그리드 삭제 함수
     function delete_input1_onclick() {
 
-        let item = inputToData("minwon_table");
-
         //검증
-        if (isNull(item.SLIP_NO)) {
+        if (isNull(input_slipNo.value)) {
             alert("삭제할 항목이 없습니다");
             return;
         }
@@ -390,13 +425,17 @@
         //포커스 지정
         focus1 = gridFocus(popGrid1) - 1;
 
+        let item = {}
+        item.SLIP_NO = input_slipNo.value
+        item.MINWON_DATE = input_minwonDate.value.replace(/-/g,"");
+
         // 삭제된 행 아이템들(배열) -> 삭제 데이터
         let param = {
             deleteParam: [{...item}],
             before: {
                 action: "delete",
                 saveMode: "D",
-                beforeParam: [...item]
+                beforeParam: [{...item}]
             }
         };
 
@@ -413,6 +452,47 @@
                 if (data.O_RESULT > 0) {
                     search_popGrid1_onclick();
                     close_popup1_onclick();
+                } else return;
+            }
+        });
+    }
+
+    function delete_input2_onclick() {
+
+        //검증
+        if (isNull(input_workSeq.value)) {
+            alert("삭제할 항목이 없습니다");
+            return;
+        }
+
+        if (!confirm("민원처리 내역을 삭제하시겠습니까?")) return;
+
+        //포커스 지정
+        focus1 = gridFocus(popGrid1) - 1;
+
+        let item = {}
+        item.SLIP_NO = input_slipNo.value
+        item.MINWON_DATE = input_minwonDate.value.replace(/-/g,"");
+
+        // 삭제된 행 아이템들(배열) -> 삭제 데이터
+        let param = {
+            deleteParam: [{...item}],
+            before: {}
+        };
+
+        //공통 저장 트렌젝션용 데이터
+        let deleteData = {
+            sectionId: sectionId,
+            component: querySet1 + "_input2",
+            param: param,
+        }
+
+        we_delete(deleteData, {
+            successDelete: (data) => {
+                alert(data.O_MSG);
+                if (data.O_RESULT > 0) {
+                    search_popGrid1_onclick();
+                    search_input1_onclick();
                 } else return;
             }
         });
@@ -480,8 +560,11 @@
                             <th>민원인</th>
                             <td ><input type="text" id="input_minwonName" name="MINWON_NAME"></td>
                             <th>연락처</th>
-                            <td><input type="text" id="input_hpNo" name="HP_NO"></td>
+                            <td><input type="text" id="input_hpNo" name="HP_NO" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
             `
+            document.querySelector("#input_dongHo").value = pop_data1.hoId.split("-")[0] + "동 " +
+                pop_data1.hoId.split("-")[1] + "호"
+
         } else if (pop_data1.gbn == "1") {
             info_tr.innerHTML = `
                             <th>동열</th>
@@ -491,6 +574,8 @@
                             <th>연락처</th>
                             <td><input type="text" id="input_hpNo" name="HP_NO" ></td>
             `
+            document.querySelector("#input_dongLine").value = pop_data1.hoId.split("-")[0] + "동 " + pop_data1.hoNo;
+
         } else {
             info_tr.innerHTML = `
                             <th>장소</th>
@@ -500,31 +585,27 @@
                             <th>연락처</th>
                             <td><input type="text" id="input_hpNo" name="HP_NO" ></td>
             `
+            document.querySelector("#input_arearName").value = pop_data1.arearName;
 
         }
     }
 
-    function info_tr_make_add() {
+    async function info_tr_make_add() {
+
         if (pop_data1.gbn == "0") {
-            let list = getSelectOption_info_tr();
-
-            document.querySelector("#input_dongHo").value = pop_data1.hoId.split("-")[0] + "동 " +
-                pop_data1.hoId.split("-")[1] + "호"
-            document.querySelector("#input_minwonName").value = list[0].HOUSEHOLDER;
-            document.querySelector("#input_hpNo").value = list[0].HP_NO;
-
-        } else if (pop_data1.gbn == "1") {
-            document.querySelector("#input_dongLine").value = pop_data1.hoId.split("-")[0] + "동 " + pop_data1.hoNo;
-        } else {
-            document.querySelector("#input_arearName").value = pop_data1.arearName;
+            let list = await getSelectOption_info_tr();
+            document.querySelector("#input_minwonName").value = list[0].HOUSEHOLDER ? list[0].HOUSEHOLDER : "";
+            document.querySelector("#input_hpNo").value = list[0].HP_NO ? list[0].HP_NO : "";
+            input_minwonDate.value = getToday("yyyy-MM-dd");
+            input_minwonDate.disabled = false;
         }
-        input_minwonDate.value = getToday("yyyy-MM-dd");
     }
 
     async function getSelectOption_info_tr() {
         let param = {
-            SLIP_NO: pop_data1.slipNo,
-            MINWON_DATE: pop_data1.minwonDate,
+            DONG_ID: pop_data1.dongId,
+            HO_ID: pop_data1.hoId,
+
         }
 
         //파라미터
@@ -568,29 +649,34 @@
     });
 
     //컴포넌트 필수항목 입력 체크
-    function requireCheck(require) {
+    function requireCheck1(require) {
         let isValid = true;
         switch (require) {
             case "SAVE_INPUT1":
                 if (input_receiptUser.value == "write") {
                     if (isNull(input_receiptUserName.value)) {
+                        alert("접수자는 반드시 입력해야 합니다.");
                         isValid = false;
                     }
                 }
                 if (isNull(input_minwonDate.value)) {
+                    alert("접수일은 반드시 입력해야 합니다.");
                     isValid = false;
                 }
                 if (isNull(input_minwonName.value)) {
+                    alert("민원인은 반드시 입력해야 합니다.");
                     isValid = false;
                 }
                 break;
             case "SAVE_INPUT2":
                 if (input_workUser.value == "write") {
                     if (isNull(input_workUserName.value)) {
+                        alert("처리자는 반드시 입력해야 합니다.");
                         isValid = false;
                     }
                 }
                 if (isNull(input_workDate.value)) {
+                    alert("처리일은 반드시 입력해야 합니다.");
                     isValid = false;
                 }
                 break;
@@ -603,8 +689,10 @@
         querySet1 = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
         pop_data1 = pop_item.pop_data
         saveKey1 = "I"
+        saveKey2 = "I"
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        btnMaker({tag: "#section_middle_btn1", grid: "input1", save: true, del: true, print: true});
+        btnMaker({tag: "#section_middle_btn1", grid: "input1", save: true, del: true});
+        btnMaker({tag: "#section_middle_btn2", grid: "input2", save: true, del: true});
         section_middle_btn1.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup1_onclick()'>닫기</button>");
 
@@ -617,17 +705,17 @@
         }
 
         if (!isNull(pop_data1)) {
+            saveKey1 = isNull(pop_data1.saveKey) ? "I" : pop_data1.saveKey;
             Promise.all([
                 info_tr_make(),
                 //그리드 DDL
                 getSelectOption_input_minwonGbn(),
                 getSelectOption_input_user(),
             ]).then(function () {
-                if (pop_data1.saveKey == "U") {
+                if (saveKey1 == "U") {
                     input_slipNo.value = pop_data1.slipNo;
-                    input_minwonDate.value = pop_data1.minwonDate;
-                    input_slipNo.disabled = "false";
-                    input_minwonDate.disabled = "false";
+                    input_minwonDate.value = dateFormat(pop_data1.minwonDate);
+                    input_minwonDate.disabled = true;
                     search_input1_onclick();
                 } else {
                     info_tr_make_add();

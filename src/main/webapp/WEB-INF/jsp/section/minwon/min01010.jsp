@@ -135,10 +135,9 @@
         );
 
         //그리드 이벤트
-        AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
+        AUIGrid.bind(grid1, "cellClick", function(event) {
             search_aptBlock_onclick();
         });
-
 
         //팝업 이벤트
 
@@ -388,15 +387,6 @@
                 popupOpen(popupId);
             }
         })
-
-
-        //컴포넌트 필수항목 입력 체크
-        function requireCheck(require) {
-            let isValid = true;
-            switch (require) {
-            }
-            return isValid;
-        }
 
         //crud 권한 처리 함수
         function checkCrudPermission(pgId) {

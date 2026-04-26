@@ -75,10 +75,13 @@ public class LoginController {
 		LOGGER.debug("^o^ [ start ]");
 //		RSATest rsaTest = new RSATest();
 //		rsaTest.getPublicKey();
-		
-		String publicKey = EgovProperties.getProperty("RSA.publicKey");
-		
+
 		HttpSession session = request.getSession();
+		if(session.getAttribute("loginUser") != null){
+			return "section/home/hom01010";
+		}
+
+		String publicKey = EgovProperties.getProperty("RSA.publicKey");
 		session.setAttribute("pbkey", publicKey);
 		
 		return "index";

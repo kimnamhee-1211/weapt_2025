@@ -21,7 +21,7 @@
 		</property>
 	</bean>
 	
-	<bean id="leaveaTrace" class="org.egovframe.rtemvc:.fdl.cmmn.trace.LeaveaTrace">
+	<bean id="leaveaTrace" class="org.egovframe.rte.fdl.cmmn.trace.LeaveaTrace">
 		<property name="traceHandlerServices">
 			<list>
 				<ref bean="traceHandlerService" />

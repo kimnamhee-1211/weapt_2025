@@ -359,6 +359,30 @@ function gridFocus(grid) {
     }
 }
 
+//그리드 포커스
+function gridFocusFromKey(data, grid) {
+    let dataKeys = Object.keys(data)
+    let l_grid1Data = AUIGrid.getGridData(grid);
+    return l_grid1Data.findIndex(item =>
+        dataKeys.every(key => item[key] == data[key])
+    );
+
+    // let rowIndex;
+    // l_grid1Data.forEach((index, item) =>{
+    //     let gbn = true;
+    //     for (let i = 0; i < dataKey.length; i++) {
+    //         if(item[dataKey[i]] != data[dataKey[i]]){
+    //             gbn = false;
+    //              break;
+    //         }
+    //     }
+    //     if(gbn){
+    //         rowIndex = index;
+    //     }
+    // })
+    // return rowIndex
+}
+
 
 
 

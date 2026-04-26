@@ -182,6 +182,13 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
             if (before != null && !before.isEmpty() && "insert".equals(before.get("action"))) {
                 callBefore(before, loginUser, sectionId, component, pgId, menuId);
             }
+            if (rawKey != null &&
+                    ((rawKey instanceof String) ||
+                            (rawKey instanceof List && !((List<?>) rawKey).isEmpty()))) {
+                insertParam = getKeyToParam(insertParam, rawKey, sectionId, component, loginUser);
+                System.out.println("getKeyToParam : " + insertParam);
+            }
+
             resultInsertRowCount = processInsert(sectionId, component, loginUser, insertParam, rawKey, pgId, menuId);
 
             if (resultInsertRowCount <= 0) {
@@ -214,13 +221,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
 
     private int processInsert(String sectionId, String component, LoginVO loginUser, List<Map<String, Object>> insertParam, Object rawKey, String pgId, String menuId) {
-        //pk get&set
-        if (rawKey != null &&
-                ((rawKey instanceof String) ||
-                        (rawKey instanceof List && !((List<?>) rawKey).isEmpty()))) {
-            insertParam = getKeyToParam(insertParam, rawKey, sectionId, component, loginUser);
-            System.out.println("getKeyToParam : " + insertParam);
-        }
+
         //loginUser set
         setLoginParam(insertParam, loginUser);
         setPgIdParam(insertParam, pgId, menuId);
