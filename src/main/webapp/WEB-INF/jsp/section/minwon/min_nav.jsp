@@ -8,15 +8,15 @@
                 <input type="checkbox" id="root1"  class="tree_cb">
                 <label for="root1">민원관리</label>
                 <ul class="tree_nav">
-                    <li id="min01010"><a>민원접수</a></li>
-                    <li id="min01020"><a>민원처리</a></li>
-                    <li id="min01030"><a>민원조회</a></li>
-                    <li id="min01040"><a>세대민원대장</a></li>
-                    <li id="min01050"><a>공용민원대장</a></li>
-                    <li id="min01060"><a>민원일지결재</a></li>
-                    <li id="min01070"><a>세대정보등록</a></li>
-                    <li id="min01080"><a>민원환경설정</a></li>
-                    <li id="min01090"><a>삭제민원조회(관리자)</a></li>
+                    <li id="min01010">민원접수</li>
+                    <li id="min01020">민원처리</li>
+                    <li id="min01030">민원조회</li>
+                    <li id="min01040">세대민원대장</li>
+                    <li id="min01050">공용민원대장</li>
+                    <li id="min01060">민원일지결재</li>
+                    <li id="min01070">세대정보등록</li>
+                    <li id="min01080">민원환경설정</li>
+                    <li id="min01090">삭제민원조회(관리자)</li>
                 </ul>
             </li>
             <li>

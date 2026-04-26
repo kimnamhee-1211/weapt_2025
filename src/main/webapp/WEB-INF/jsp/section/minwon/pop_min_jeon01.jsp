@@ -244,7 +244,7 @@
         });
     }
 
-    function search_focuse(){
+    async function search_focuse(){
 
         let selectParam = {
             GBN : pop_data1.gbn,
@@ -255,7 +255,7 @@
             MINWON_DATE : input_minwonDate.value.replace(/-/g,""),
         }
         if(pop_data1.gbn == "1" && pop_data1.lineGbn != "109999"){
-            selectParam.LINE_NO = pop_data1.hoNo
+            selectParam.LINE_NO = pop_data1.hoId.split("-")[1]
         }else{
             selectParam.LINE_NO = ""
         }
@@ -263,19 +263,14 @@
         //파라미터
         let selectData = {
             sectionId: sectionId,
-            component: querySet1 + "_saveKey",
+            component: querySet1 + "_focuse",
             param: selectParam,
         }
 
-        we_select(selectData, {
+        return we_select(selectData, {
             successSelect: (json) => {
                 let data = json.DATA;
                 focus1 = gridFocusFromKey(data[0], popGrid1);
-                Promise.all([
-                    search_popGrid1_onclick()
-                ]).then(function () {
-                    open_popup1_onclick();
-                })
             }
         });
     }
@@ -283,6 +278,11 @@
 
     //그리드 저장 함수
     function save_input1_onclick() {
+
+        //검증
+        if (!confirm("변경사항을 저장하시겠습니까?")) return;
+        if (!requireCheck1("SAVE_INPUT1")) return;
+
 
         let item = inputToData("minwon_table");
         item.MINWON_DATE = input_minwonDate.value.replace(/-/g,"");
@@ -298,9 +298,10 @@
         item.GBN = pop_data1.gbn;
         item.DONG_ID = pop_data1.dongId;
         item.HO_ID = pop_data1.hoId;
-        item.LINE_NO = pop_data1.lineNo;
+        item.LINE_NO = pop_data1.hoId.split("-")[1];
         item.LINE_GBN = pop_data1.lineGbn;
         item.MINWON_AREAR_SEQ = pop_data1.minwonArearSeq;
+
 
         let addedRowItems = null;
         let editedRowItems = null;
@@ -310,10 +311,6 @@
         } else {
             editedRowItems = [{...item}];
         }
-
-        //검증
-        if (!confirm("변경사항을 저장하시겠습니까?")) return;
-        if (!requireCheck1("SAVE_INPUT1")) return;
 
         //저장 데이터
         let saveParam = {
@@ -334,7 +331,19 @@
             successSave: (json) => {
                 alert(json.O_MSG);
                 if (json.O_RESULT > 0) {
-                    search_focuse();
+                    if(saveKey1 == "I"){
+                        Promise.all([
+                            search_focuse(),
+                            search_cntTable(),
+                            search_popGrid1_onclick()
+                        ]).then(function () {
+                            open_popup1_onclick();
+                        })
+                    }else{
+                        focus1 = AUIGrid.getSelectedIndex(popGrid1)[0];
+                        search_cntTable();
+                        search_popGrid1_onclick();
+                    }
                 } else return;
             }
         });
@@ -342,6 +351,16 @@
 
     //그리드 저장 함수
     function save_input2_onclick() {
+
+        //검증
+        if(isNull(input_slipNo.value)){
+            alert("접수된 민원 내역이 없습니다");
+            return;
+        }
+
+        if(!confirm("변경사항을 저장하시겠습니까?")) return;
+        if (!requireCheck1("SAVE_INPUT2")) return;
+
 
         let item = inputToData("minwonWork_table");
         item.REG_DATE = getToday("yyyyMMdd");
@@ -365,12 +384,6 @@
             addedRowItems = [{...item}];
         } else {
             editedRowItems = [{...item}];
-        }
-
-        //검증
-        //if(!confirm("변경사항을 저장하시겠습니까?")) return;
-        if (!isNull(input_statusCd.value)) {
-            if (!requireCheck1("SAVE_INPUT2")) return;
         }
 
         focus1 = gridFocus(popGrid1);
@@ -399,8 +412,10 @@
                 alert(json.O_MSG);
                 if (json.O_RESULT > 0) {
                     saveKey2 == "U";
+                    focus1 = AUIGrid.getSelectedIndex(popGrid1)[0];
+                    search_cntTable();
                     search_popGrid1_onclick();
-                    search_input2_onclick();
+                    search_input1_onclick();
                 } else return;
             }
         });
@@ -417,13 +432,9 @@
 
         if (!confirm("민원접수 내역을 삭제하시겠습니까?")) return;
 
-        if (isNull(input_workSeq.value)) {
+        if (!isNull(input_workSeq.value)) {
             if (!confirm("등록된 민원 처리 내역이 있습니다.\n모두 삭제하시겠습니까?")) return;
-            return;
         }
-
-        //포커스 지정
-        focus1 = gridFocus(popGrid1) - 1;
 
         let item = {}
         item.SLIP_NO = input_slipNo.value
@@ -432,11 +443,7 @@
         // 삭제된 행 아이템들(배열) -> 삭제 데이터
         let param = {
             deleteParam: [{...item}],
-            before: {
-                action: "delete",
-                saveMode: "D",
-                beforeParam: [{...item}]
-            }
+            before: {}
         };
 
         //공통 저장 트렌젝션용 데이터
@@ -450,6 +457,8 @@
             successDelete: (data) => {
                 alert(data.O_MSG);
                 if (data.O_RESULT > 0) {
+                    focus1 = AUIGrid.getSelectedIndex(popGrid1)[0] < 1 ? 0 : AUIGrid.getSelectedIndex(popGrid1)[0]-1;
+                    search_cntTable();
                     search_popGrid1_onclick();
                     close_popup1_onclick();
                 } else return;
@@ -466,9 +475,6 @@
         }
 
         if (!confirm("민원처리 내역을 삭제하시겠습니까?")) return;
-
-        //포커스 지정
-        focus1 = gridFocus(popGrid1) - 1;
 
         let item = {}
         item.SLIP_NO = input_slipNo.value
@@ -491,6 +497,9 @@
             successDelete: (data) => {
                 alert(data.O_MSG);
                 if (data.O_RESULT > 0) {
+                    saveKey2 == "I";
+                    focus1 = AUIGrid.getSelectedIndex(popGrid1)[0];
+                    search_cntTable();
                     search_popGrid1_onclick();
                     search_input1_onclick();
                 } else return;
@@ -513,6 +522,7 @@
         let list = await we_getSelectOption(data);
 
         if (list) {
+            input_minwonGbn.insertAdjacentHTML("beforeend", "<option value='' selected>미선택</option>");  //필요시
             list.forEach(row => {
                 input_minwonGbn.insertAdjacentHTML("beforeend",
                     "<option value='" + row.GBN_ID + "'>" + row.GBN_NAME + "</option>");
@@ -549,56 +559,52 @@
         }
     }
 
-
     function info_tr_make() {
         info_tr.innerHTML = "";
 
         if (pop_data1.gbn == "0") {
             info_tr.innerHTML = `
                             <th>동호</th>
-                            <td><input type="text" id="input_dongHo" name="DONG_HO" disabled></td>
+                            <td><input type="text" id="input_dongHo" disabled></td>
                             <th>민원인</th>
                             <td ><input type="text" id="input_minwonName" name="MINWON_NAME"></td>
                             <th>연락처</th>
                             <td><input type="text" id="input_hpNo" name="HP_NO" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
             `
-            document.querySelector("#input_dongHo").value = pop_data1.hoId.split("-")[0] + "동 " +
-                pop_data1.hoId.split("-")[1] + "호"
+            document.querySelector("#input_dongHo").value = make_place(pop_data1)
 
         } else if (pop_data1.gbn == "1") {
             info_tr.innerHTML = `
                             <th>동열</th>
-                            <td><input type="text" id="input_dongLine" name="DONG_LINE" disabled></td>
+                            <td><input type="text" id="input_dongLine" disabled></td>
                             <th>민원인</th>
                             <td ><input type="text" id="input_minwonName" name="MINWON_NAME"></td>
                             <th>연락처</th>
                             <td><input type="text" id="input_hpNo" name="HP_NO" ></td>
             `
-            document.querySelector("#input_dongLine").value = pop_data1.hoId.split("-")[0] + "동 " + pop_data1.hoNo;
-
+            document.querySelector("#input_dongLine").value = make_place(pop_data1);
         } else {
             info_tr.innerHTML = `
                             <th>장소</th>
-                            <td><input type="input_arearName" id="MINWON_NAME"></td>
+                            <td><input type="text" id="input_arearName" disabled></td>
                             <th>민원인</th>
                             <td ><input type="text" id="input_minwonName" name="MINWON_NAME"></td>
                             <th>연락처</th>
                             <td><input type="text" id="input_hpNo" name="HP_NO" ></td>
             `
-            document.querySelector("#input_arearName").value = pop_data1.arearName;
+            document.querySelector("#input_arearName").value = make_place(pop_data1);
 
         }
     }
 
     async function info_tr_make_add() {
-
         if (pop_data1.gbn == "0") {
             let list = await getSelectOption_info_tr();
             document.querySelector("#input_minwonName").value = list[0].HOUSEHOLDER ? list[0].HOUSEHOLDER : "";
             document.querySelector("#input_hpNo").value = list[0].HP_NO ? list[0].HP_NO : "";
-            input_minwonDate.value = getToday("yyyy-MM-dd");
-            input_minwonDate.disabled = false;
         }
+        input_minwonDate.value = getToday("yyyy-MM-dd");
+        input_minwonDate.disabled = false;
     }
 
     async function getSelectOption_info_tr() {
@@ -617,6 +623,20 @@
 
         return await we_getSelectOption(data);
     }
+
+    input_receiptUser.addEventListener("change", () => {
+        if(input_receiptUser.value != 'write'){
+            input_receiptUserName.value = '';
+        }
+    });
+
+    input_workUser.addEventListener("change", () => {
+        if(input_workUser.value != 'write'){
+            input_workUserName.value = '';
+        }
+    });
+
+
 
     input_timeInput.addEventListener("change", () => {
         const el = document.querySelector("#span_time");
@@ -643,9 +663,7 @@
         } else {
             el.style.display = "none";
             input_workTime.value = "";
-
         }
-
     });
 
     //컴포넌트 필수항목 입력 체크
@@ -683,7 +701,36 @@
         }
         return isValid;
     }
-
+    function make_place(data){
+        let place = ""
+        if(data.gbn == "0"){
+            place =  data.hoId.split("-")[0] + "동 " + data.hoId.split("-")[1] + "호"
+        }else if(data.gbn == "1"){
+            if(data.lineGbn == "109999"){
+                place = data.hoId.split("-")[0] + "동 지하주차장"
+            }else{
+                let lineGbnNm = "";
+                switch (data.lineGbn){
+                    case "109003" :
+                        lineGbnNm = "현관";
+                        break;
+                    case "109997" :
+                        lineGbnNm = " EL";
+                        break;
+                    case "109998" :
+                        lineGbnNm = "옥탑";
+                        break;
+                    case "109002" :
+                        lineGbnNm = "계단";
+                        break;
+                }
+                place = data.hoId.split("-")[0] + "동 " + data.hoId.split("-")[1] + " " +  lineGbnNm
+            }
+        }else{
+            place = data.arearName;
+        }
+        return place;
+    }
 
     function pop_onload1(pop_item) {
         querySet1 = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
@@ -722,8 +769,6 @@
                 }
             })
         }
-
-
     }
 
 

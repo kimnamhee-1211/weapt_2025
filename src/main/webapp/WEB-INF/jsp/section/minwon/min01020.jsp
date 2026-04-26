@@ -16,39 +16,42 @@
                     <input type="date" id="search_endDate">
                 </span>
                 <span class="">&emsp;
-                    <input  type="checkbox" checked="checked" id="search_desc">&nbsp;최근일자순&emsp;
+                    <input  type="checkbox" checked="checked" id="search_desc">&nbsp;최근순&emsp;
                 </span>
             </div>
         </div>
-        <div id="grid1" class="gridcont_left_350"></div>
-        <div id="min_div" class="gridcont_right_720">
+        <div class="gridcont_left_400">
+            <div id="grid1"></div>
+        </div>
+        <div id="min_div" class="gridcont_right_670">
             <div class="section_middle_title">
                 <span><i class="icon-pause"></i>접&ensp;수</span>
                 <div class="search-box section1_btn">
                     <button id="photo_btn_input1" class="find_btn" onclick="">사진첨부</button>
                 </div>
             </div>
-            <table style="width:720px;">
+            <table style="width:100%; table-layout: fixed;">
                 <colgroup>
-                    <col style ="width:12%">
-                    <col style ="width:30%">
-                    <col style ="width:12%">
-                    <col style ="width:17%">
-                    <col style ="width:12%">
-                    <col style ="width:17%">
+                    <col style="width:14%">
+                    <col style="width:19%">
+                    <col style="width:14%">
+                    <col style="width:19%">
+                    <col style="width:14%">
+                    <col style="width:19%">
                 </colgroup>
                 <tbody>
                     <tr>
-                        <th>동호(동열)/장소</th>
+                        <th>장소</th>
                         <td><input type="text" id="input_place" name="PLACE" disabled></td>
                         <th>민원인</th>
-                        <td ><input type="text" id="input_minwonName" name="MINWON_NAME" disabled></td>
+                        <td><input type="text" id="input_minwonName" name="MINWON_NAME" disabled></td>
                         <th>연락처</th>
                         <td><input type="text" id="input_hpNo" name="HP_NO" disabled></td>
                     </tr>
                     <tr>
+                        <input type="text" id="input_minwonDate" name="MINWON_DATE" hidden="hidden">
                         <th>접수일시</th>
-                        <td><input type="text" id="input_minwonDate" name="MINWON_DATE" disabled></td>
+                        <td><input type="text" id="input_minwonDateTime" name="MINWON_DATE_TIME" disabled></td>
                         <th>전표번호</th>
                         <td><input type="text" id="input_slipNo" name="SLIP_NO" disabled></td>
                         <th>접수자</th>
@@ -84,14 +87,14 @@
                     <button onclick="" class="find_btn">계량기사용</button>
                 </div>
             </div>
-            <table style="width:720px;">
-                    <colgroup>
-                        <col style ="width:12%">
-                        <col style ="width:24%">
-                        <col style ="width:12%">
-                        <col style ="width:20%">
-                        <col style ="width:12%">
-                        <col style ="width:20%">
+            <table style="width:100%; table-layout: fixed;">
+                <colgroup>
+                    <col style="width:14%">
+                    <col style="width:19%">
+                    <col style="width:14%">
+                    <col style="width:19%">
+                    <col style="width:14%">
+                    <col style="width:19%">
                     </colgroup>
                 <tbody>
                     <tr>
@@ -99,14 +102,14 @@
                         <td colspan="3">
                             <input type="text" id="input_workSeq" name="WORK_SEQ" hidden="hidden">
                             <span>
-                                <input type="date" class="box50" id="input_workDate" name="WORK_DATE" data-format="date">
+                                <input type="date" id="input_workDate" name="WORK_DATE" data-format="date">
                             </span>&emsp;&emsp;
                             <span>
                                 <input type="checkbox" id="input_workTimeInput" name="WORK_TIME_INPUT">
                                 <label for="input_workTimeInput">시간선택</label>
                             </span>
-                            <span>&ensp;:
-                                <input type="time" class="box50" id="input_workTime" name="WORK_TIME" style="display: none;">
+                            <span id="span_workTime" style="display: none">&ensp;:
+                                <input type="time" id="input_workTime" name="WORK_TIME" style="display: none;">
                             </span>
                         </td>
                         <th>구분</th>
@@ -116,7 +119,7 @@
                     </tr>
                     <tr>
                         <th>상태</th>
-                        <td style="width: 100px;">
+                        <td>
                             <select id="input_statusCd" name="STATUS_CD">
                                 <option value="1">처리</option>
                                 <option value="2">보류</option>
@@ -189,6 +192,8 @@
     const search_desc = document.querySelector("#search_desc")	//select 컴포넌트
 
     const min_div = document.querySelector("#min_div");
+
+    const input_place = document.querySelector("#input_place");
     const input_minwonDate = document.querySelector("#input_minwonDate");
     const input_slipNo = document.querySelector("#input_slipNo");
     const input_receiptUser = document.querySelector("#input_receiptUser");
@@ -210,23 +215,24 @@
     const grid1ColumnLayout = [
         { dataField: "SLIP_NO",
             headerText: "전표번호",
-            width : "10%",
+            width : "20%",
             dataType: "text",
         },
         { dataField: "MINWON_DATE",
             headerText: "접수일시",
             dataType: "date",
-            width : "15%",
+            formatString: "yyyy-mm-dd",
+            width : "20%",
         },
         { dataField: "PLACE",
             headerText: "장소",
             dataType: "text",
-            width : "30%",
-        }
+            width : "*%",
+        },
         { dataField: "STATUS_NAME",
-            headerText: "처리상태",
+            headerText: "상태",
             dataType: "text",
-            width : "10%",
+            width : "15%",
         },
     ];
 
@@ -246,6 +252,7 @@
 
     //셀 선택 변경 이벤트 바인딩
     AUIGrid.bind(grid1, "selectionChange", function(event) {
+        clearInput("min_div");
         search_input1_onclick();
     });
 
@@ -270,6 +277,9 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
+                data.forEach( row =>{
+                    row.PLACE = make_place(row);
+                })
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
@@ -297,7 +307,8 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
-                dataToInput(data[0],"min_div");
+                dataToInput(data[0], "min_div");
+                input_place.value = make_place(data[0]);
             }
         });
     }
@@ -331,7 +342,7 @@
         if(!requireCheck("SAVE_INPUT1")) return;
 
         //포커스 지정
-        focus = gridFocus(grid1);
+        focus = AUIGrid.getSelectedIndex(grid1)[0];
 
         //저장 데이터
         let saveParam = {
@@ -388,11 +399,7 @@
         // 삭제된 행 아이템들(배열) -> 삭제 데이터
         let param = {
             deleteParam : AUIGrid.getRemovedItems(grid1),
-            before: {
-                action: "delete",
-                saveMode: "D",
-                beforeParam: AUIGrid.getRemovedItems(grid1),
-            }
+            before: {}
         };
         //공통 저장 트렌젝션용 데이터
         let deleteData = {
@@ -443,14 +450,125 @@
         });
     }
 
+    function make_place(data){
+        let place = ""
+        if(data.GBN == "0"){
+            place =  data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + "호"
+        }else if(data.GBN == "1"){
+            if(data.LINE_GBN == "109999"){
+                place = data.HO_ID.split("-")[0] + "동 지하주차장"
+            }else{
+                let lineGbnNm = "";
+                switch (data.LINE_GBN){
+                    case "109003" :
+                        lineGbnNm = "현관";
+                        break;
+                    case "109997" :
+                        lineGbnNm = " EL";
+                        break;
+                    case "109998" :
+                        lineGbnNm = "옥탑";
+                        break;
+                    case "109002" :
+                        lineGbnNm = "계단";
+                        break;
+                }
+                place = data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + " " +  lineGbnNm
+            }
+        }else{
+            place = data.AREAR_NAME;
+        }
+        return place;
+    }
+
+    async function getSelectOption_input1_minwonGbn() {
+        input_minwonGbn.innerHTML = "";
+        //검색데이터
+        let param = {}
+
+        //파라미터
+        let data = {
+            sectionId: sectionId,
+            component: pgId + "_input1_minwonGbn",
+            param: param,
+        }
+
+        let list = await we_getSelectOption(data);
+
+        if (list) {
+            input_minwonGbn.insertAdjacentHTML("beforeend", "<option value='' selected>미선택</option>");
+            list.forEach(row => {
+                input_minwonGbn.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.GBN_ID + "'>" + row.GBN_NAME + "</option>");
+            })
+        }
+    }
+
+    async function getSelectOption_input1_user() {
+
+        input_workUser.innerHTML = "";
+        //검색데이터
+        let param = {}
+
+        //파라미터
+        let data = {
+            sectionId: sectionId,
+            component: pgId + "_input1_user",
+            param: param,
+        }
+
+        let list = await we_getSelectOption(data);
+        input_user = list;
+
+        if (list) {
+            input_workUser.insertAdjacentHTML("beforeend", "<option value='write' selected>직접입력</option>");  //필요시
+            list.forEach(row => {
+                input_workUser.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.NAME + "'>" + row.NAME + "</option>");
+            })
+
+        }
+    }
+
+    input_workTimeInput.addEventListener("change", () => {
+        const el = document.querySelector("#span_workTime");
+        if (input_workTimeInput.checked) {
+            el.style.display = "inline";
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            input_workTime.value = `${hh}:${mm}`;
+        } else {
+            el.style.display = "none";
+            input_workTime.value = "";
+        }
+    });
+
+    input_workUser.addEventListener("change", () => {
+        if(input_workUser.value != 'write'){
+            input_workUserName.value = '';
+        }
+    });
+
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, save: true , del: true});
+        search_startDate.value = getToday("yyyy-MM-dd");
+        search_endDate.value = getToday("yyyy-MM-dd");
+
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
-        //로드 시 그리드 바로 조회
-        search_grid1_onclick();
+
+        Promise.all([
+            //그리드 DDL
+            getSelectOption_input1_minwonGbn(),
+            getSelectOption_input1_user(),
+        ]).then(function () {
+            //로드 시 그리드 바로 조회
+            search_grid1_onclick();
+        })
+
     };
 
 </script>

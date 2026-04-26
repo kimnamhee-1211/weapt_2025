@@ -37,7 +37,7 @@
         </div>
         <div style="height:40px; line-height:40px;">&#9726&nbsp;민원통계</div>
         <div class="">
-            <table id="cnt_table">
+            <table id="cnt_table" style="width: 100%">
                 <tbody>
                 <tr>
                     <th>민원건수</th>
@@ -72,7 +72,7 @@
     let querySet;
 
     let popGrid1;	// 그리드 컴포넌트
-    let focus1 = 0;	//그리드 컴포넌트 포커스
+    let focus1;	//그리드 컴포넌트 포커스
 
     //팝업 컴포넌트
     const pop_btn = document.querySelector("#pop_btn");
@@ -181,7 +181,7 @@
             MINWON_AREAR_SEQ : (pop_data.gbn == "0" || pop_data.gbn == "1" ) ? "" : pop_data.minwonArearSeq
         }
         if(pop_data.gbn == "1" && pop_data.lineGbn != "109999"){
-            selectParam.LINE_NO = pop_data.hoNo
+            selectParam.LINE_NO = pop_data.hoId.split("-")[1]
         }else{
             selectParam.LINE_NO = ""
         }
@@ -237,8 +237,7 @@
             let inner = `
                  <tbody>
                     <tr>
-                        <th>동</th>
-                        <th>호</th>
+                        <th>동-호</th>
                         <th>면적</th>
                         <th>세대주</th>
                         <th>집전화</th>
@@ -246,8 +245,7 @@
                         <th>거주형태</th>
                     </tr>
                     <tr>
-                        <td><input type="text" id="td_dongName" name="DONG_NAME"></td>
-                        <td><input type="text" id="td_hoName" name="HO_NAME"></td>
+                        <td><input type="text" id="td_place" name="PLACE"></td>
                         <td><input type="text" id="td_houseSize" name="HOUSE_SIZE"></td>
                         <td><input type="text" id="td_householder" name="HOUSEHOLDER"></td>
                         <td><input type="text" id="td_housePhonNo" name="HOUSE_PHON_NO"></td>
@@ -257,8 +255,6 @@
                     </tbody>
             `
             info_table.innerHTML = inner;
-            document.querySelector("#td_dongName").value = pop_data.dongName;
-            document.querySelector("#td_hoName").value =  pop_data.hoName;
             search_infoTable();
         }
         else if(pop_data.gbn == "1"){
@@ -266,31 +262,15 @@
             let inner = `
                         <tbody>
                             <tr>
-                                <th>동</th>
-                                <th>열</th>
-                                <th>층</th>
-                                <th colspan="2">구분</th>
+                                <th>장소</th>
                             </tr>
                             <tr>
-                                <td><input type="text" id="td_dongName" name="DONG_NAME"></td>
-                                <td><input type="text" id="td_lineNo" name="LINE_NO"></td>
-                                <td><input type="text" id="td_floor" name="FLOOR"></td>
-                                <td colspan="2"><input type="text" id="td_lineGbnNm" name="LINE_GBN_NM"></td>
+                                <td><input type="text" id="td_place" name="PLACE"></td>
                             </tr>
                         </tbody>
                     `
             info_table.innerHTML = inner;
 
-            document.querySelector("#td_dongName").value = isNull(pop_data.dongName) ? "" : pop_data.dongName;
-            document.querySelector("#td_lineNo").value = isNull(pop_data.lineNo) ? "" : pop_data.hoNo;
-            document.querySelector("#td_lineGbnNm").value = pop_data.lineGbnNm;
-            if(pop_data.lineNo == "109002"){
-                document.querySelector("#td_floor").value = isNull(pop_data.floor) ? "" : pop_data.floor
-            }else if(pop_data.lineNo == "109999"){
-                document.querySelector("#td_floor").value =  isNull(pop_data.floor) ? "" : "지하 " + pop_data.floor
-            }else{
-                document.querySelector("#td_floor").value = ""
-            }
         }
         else if(pop_data.gbn == "2"){
             pop_title.innerHTML = "&#10004;&nbsp;[동외]동용민원대장"
@@ -298,17 +278,16 @@
             let inner = `
                         <tbody>
                             <tr>
-                                <th colspan="7">구분</th>
+                                <th>장소</th>
                             </tr>
                             <tr>
-                                <td colspan="7"><input type="text" id="td_arearName" name="AREAR_NAME"></td>
+                                <td><input type="text" id="td_place" name="PLACE"></td>
                             </tr>
                         </tbody>
                     `
             info_table.innerHTML = inner;
-
-            document.querySelector("#td_arearName").value = pop_data.arearName;
         }
+        document.querySelector("#td_place").value = make_place(pop_data);
     }
 
     function search_cntTable() {
@@ -321,7 +300,7 @@
             MINWON_AREAR_SEQ : (pop_data.gbn == "0" || pop_data.gbn == "1" ) ? "" : pop_data.minwonArearSeq
         }
         if(pop_data.gbn == "1" && pop_data.lineGbn != "109999"){
-            selectParam.LINE_NO = pop_data.hoNo
+            selectParam.LINE_NO = pop_data.hoId.split("-")[1]
         }else{
             selectParam.LINE_NO = ""
         }
@@ -341,11 +320,43 @@
         });
     }
 
+    function make_place(data){
+        let place = ""
+        if(data.gbn == "0"){
+            place =  data.hoId.split("-")[0] + "동 " + data.hoId.split("-")[1] + "호"
+        }else if(data.gbn == "1"){
+            if(data.lineGbn == "109999"){
+                place = data.hoId.split("-")[0] + "동 지하주차장"
+            }else{
+                let lineGbnNm = "";
+                switch (data.lineGbn){
+                    case "109003" :
+                        lineGbnNm = "현관";
+                        break;
+                    case "109997" :
+                        lineGbnNm = " EL";
+                        break;
+                    case "109998" :
+                        lineGbnNm = "옥탑";
+                        break;
+                    case "109002" :
+                        lineGbnNm = "계단";
+                        break;
+                }
+                place = data.hoId.split("-")[0] + "동 " + data.hoId.split("-")[1] + " " +  lineGbnNm
+            }
+        }else{
+            place = data.arearName;
+        }
+        return place;
+    }
+
 
     function pop_onload(pop_item){
 
         querySet = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
         pop_data =  pop_item.pop_data
+        focus1 = 0;
 
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#pop_btn", grid: "popGrid1", search: true, print : true});

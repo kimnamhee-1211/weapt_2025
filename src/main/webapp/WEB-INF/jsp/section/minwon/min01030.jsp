@@ -18,10 +18,11 @@
                             <input type="date" id="search_endDate">
                         </span>
                         <span>&emsp;구분 :&nbsp;
-                            <select id="search_minownGbn" name="MINOWN_GBN" class="select_cont100"></select>
+                            <select id="search_minwonGbn" name="MINOWN_GBN" class="select_cont100"></select>
                         </span>
                         <span>&emsp;상태 :&nbsp;
                             <select id="search_statusCd" name="STATUS_CD" class="select_cont100">
+                                <option value="ALL" selected>전체</option>
                                 <option value="1">처리</option>
                                 <option value="2">보류</option>
                                 <option value="3">반려</option>
@@ -30,24 +31,24 @@
                             </select>
                         </span>
                         <span>&emsp;
-                            <input  type="checkbox" id="search_recently" name="REC" checked>
-                            <label for="search_recently">&nbsp;최근일자순&emsp;</label>
+                            <input  type="checkbox" id="search_desd" name="DESC" checked>
+                            <label for="search_desd">&nbsp;최근순&emsp;</label>
                         </span>
                     </div>
                     <div>
                         <span class="search-box">세대/공용구분 :&nbsp;
-                            <select id="search_gbn" class="select_cont100">
-                                <option value="all">전체</option>
-                                <option value="sedae">세대</option>
-                                <option value="gongyong">공용</option>
+                            <select id="search_gbn" class="select_cont100" name="GBN">
+                                <option value="" selected>전체</option>
+                                <option value="0">세대</option>
+                                <option value="12">공용</option>
                             </select>&emsp;
-                            <span id="search_sedae">
+                            <span id="search_sedae" style="display: none">
                                 <input type="text" id="search_stDong" name="ST_DONG" class="box50">동
                                 <input type="text" id="search_stHo" name="ST_HO" class="box50">호&emsp;~
-                                <input type="text" id="search_endDong" name="END_DONG" class="box50">동
-                                <input type="text" id="search_endHo" name="END_HO" class="box50">호&emsp;&emsp;
+                                <input type="text" id="search_endDong" name="END_DONG" class="box50"> 동
+                                <input type="text" id="search_endHo" name="END_HO" class="box50">호
                             </span>
-                            <span id="search_gongyong">
+                            <span id="search_gongyong" style="display: none">>
                                 <input type="radio" id="search_gbn12" value="all" name="GBN_12"> 전체공용&emsp;
                                 <input type="radio" id="search_gbn1" value="1" name="GBN_12"> 동별공용&emsp;
                                 <input type="radio" id="search_gbn2" value="2" name="GBN_12"> 동외공용&emsp;
@@ -101,9 +102,9 @@
     let focus = 0;	//그리드 컴포넌트 포커스
     const search_stDate = document.querySelector("#search_stDate");
     const search_endDate = document.querySelector("#search_endDate");
-    const search_minownGbn = document.querySelector("#search_minownGbn");
+    const search_minwonGbn = document.querySelector("#search_minwonGbn");
     const search_statusCd = document.querySelector("#search_statusCd");
-    const search_recently = document.querySelector("#search_recently");
+    const search_desc = document.querySelector("#search_desc");
     const search_gbn = document.querySelector("#search_gbn");
     const search_sedae = document.querySelector("#search_sedae");
     const search_stDong = document.querySelector("#search_stDong");
@@ -121,29 +122,41 @@
     //그리드 설정
     const grid1ColumnLayout = [
         { dataField: "SLIP_NO",
-            visible : false
+            headerText: "전표번호",
+            dataType: "text",
+            width : "8%"
         },
         { dataField: "MINWON_DATE",
-            headerText: "접수일",
+            headerText: "접수일자",
             dataType: "date",
             formatString: "yyyy-mm-dd",
             width : "10%"
         },
+        { dataField: "PLACE",
+            headerText: "장소",
+            dataType: "text",
+            width : "20%"
+        },
         { dataField: "DESCR",
-            headerText: "접수 내역",
+            headerText: "내역",
             dataType: "text",
             width : "*%",
             style: "line-break-column",
         },
+        { dataField: "RECEIPT_USER",
+            headerText: "접수자",
+            dataType: "text",
+            width : "8%",
+        },
         { dataField: "STATUS_NAME",
             headerText: "처리상태",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
         { dataField: "WORK_USER",
             headerText: "처리자",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
     ];
 
@@ -152,20 +165,32 @@
         Object.assign({}, we_grid_Props,
             {
                 showRowCheckColumn : false,
+                showRowNumColumn : false,
                 enable : false,
             })
     );
 
     //그리드 이벤트
-    AUIGrid.bind(grid1, "selectionChange", function(event) {
+    AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         let pop_data;
-
         let slipNo = AUIGrid.getSelectedRows(grid1)[0].SLIP_NO
         let minwonDate = AUIGrid.getSelectedRows(grid1)[0].MINWON_DATE
         let gbn = AUIGrid.getSelectedRows(grid1)[0].GBN
+        let lineGbn = AUIGrid.getSelectedRows(grid1)[0].LINE_GBN
+        let dongId = AUIGrid.getSelectedRows(grid1)[0].DONG_ID
+        let hoId = AUIGrid.getSelectedRows(grid1)[0].HO_ID
+        let minwonArearSeq = AUIGrid.getSelectedRows(grid1)[0].MINWON_AREAR_SEQ
+        let arearName = AUIGrid.getSelectedRows(grid1)[0].AREAR_NAME
+
         pop_data.slipNo = slipNo;
         pop_data.minwonDate = minwonDate;
         pop_data.gbn = gbn;
+        pop_data.lineGbn = lineGbn;
+        pop_data.dongId = dongId;
+        pop_data.hoId = hoId;
+        pop_data.minwonArearSeq = minwonArearSeq;
+        pop_data.arearName = arearName;
+        pop_data.saveKey = "U";
 
         let pop_item = {
             pgId: pgId,
@@ -185,9 +210,9 @@
 
             ST_DATE: search_stDate.value,
             END_DATE: search_endDate.value,
-            MINOWN_GBN: search_minownGbn.value,
+            MINWON_GBN: search_minwonGbn.value,
             STATUS_CD: search_statusCd.value,
-            REC: search_recently.checked ? "Y" : "N",
+            DESC : search_desc.checked ? "Y" : "N",
             GBN: search_gbn.value,
             ST_DONG: search_stDong.value,
             ST_HO: search_stHo.value,
@@ -225,6 +250,21 @@
         return isValid;
     }
 
+    search_gbn.addEventListener("change", () => {
+        if(search_gbn.value == "0"){
+            search_sedae.style.display = "inline"
+            search_gongyong.style.display = "none"
+        }else if(search_gbn.value == "12"){
+            search_sedae.style.display = "none"
+            search_gongyong.style.display = "inline"
+        }else{
+            search_sedae.style.display = "none"
+            search_gongyong.style.display = "none"
+        }
+    });
+
+
+
     //crud 권한 처리 함수
     function checkCrudPermission(pgId){
         we_checkCrudPermission(pgId,{
@@ -234,6 +274,7 @@
             }
         });
     }
+
 
 
     //로드

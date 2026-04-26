@@ -241,9 +241,13 @@ function dataToInput(data, inputDivId) {
         let key = el.name;
         if (data.hasOwnProperty(key)) {
             if (el.dataset.format === "date") {
-                el.value = dateFormat(data[key]) ?? '';
+                if(!isNull(data[key])){
+                    el.value = dateFormat(data[key]) ?? '';
+                }
             } else if (el.dataset.format === "html") {
-                el.value = stripHtml(data[key]) ?? '';
+                if(!isNull(data[key])){
+                    el.value = stripHtml(data[key]) ?? '';
+                }
             } else {
                 el.value = data[key] ?? '';
             }
