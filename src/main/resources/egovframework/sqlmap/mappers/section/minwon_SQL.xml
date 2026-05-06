@@ -703,6 +703,18 @@
 		</if>
 	</update>
 
+	<select id="getSelectOption_min01030_search_minwonGbn" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.GBN_ID		AS GBN_ID,
+			A.GBN_NAME		AS GBN_NAME
+		FROM dbo.TMN_MINWON_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.USE_YN = '' OR ISNULL(A.USE_YN,'1') = '1')
+		ORDER BY CONVERT(INT, A.ORDER_SEQ)
+	</select>
+
+
+
 	<select id="selectList_min01030_grid1" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE			AS OFFICE_CODE,
@@ -723,7 +735,9 @@
 			A.LINE_NO				AS LINE_NO,
 			A.LINE_GBN				AS LINE_GBN,
 			A.MINWON_AREAR_SEQ		AS MINWON_AREAR_SEQ,
-			B.AREAR_NAME 			AS AREAR_NAME
+			B.AREAR_NAME 			AS AREAR_NAME,
+			A.RECEIPT_USER			AS RECEIPT_USER,
+			D.WORK_USER         	AS WORK_USER
 		FROM dbo.TMN_MINWON A
 		LEFT JOIN dbo.TMN_MINWON_AREAR B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.MINWON_AREAR_SEQ = B.MINWON_AREAR_SEQ
 		LEFT JOIN TMN_MINWON_GBN C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MINWON_GBN = C.GBN_ID
@@ -749,16 +763,13 @@
 						<if test='ST_DONG != null and ST_DONG != ""'>
 							AND CONVERT(INT, A.DONG_ID) &gt;= CONVERT(INT, #{ST_DONG})
 						</if>
-
 						<if test='END_DONG != null and END_DONG != ""'>
 							AND CONVERT(INT, A.DONG_ID) &lt;= CONVERT(INT, #{END_DONG})
 						</if>
-
 						<if test='ST_HO != null and ST_HO != ""'>
 							AND CAST(SUBSTRING(A.HO_ID, CHARINDEX('-', A.HO_ID) + 1, LEN(A.HO_ID)) AS INT)
 							&gt;= CONVERT(INT, #{ST_HO})
 						</if>
-
 						<if test='END_HO != null and END_HO != ""'>
 							AND CAST(SUBSTRING(A.HO_ID, CHARINDEX('-', A.HO_ID) + 1, LEN(A.HO_ID)) AS INT)
 							&lt;= CONVERT(INT, #{END_HO})
@@ -797,6 +808,52 @@
 		</choose>
 	</select>
 
+	<select id="selectList_min01040_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.DONG_ID,
+			A.DONG_NAME,
+			B.LINE_GBN,
+			B.LINE_NO,
+		    C.HO_ID,
+			C.HO,
+			C.HOUSE_SIZE,
+			C.HOUSEHOLDER,
+			C.HP_NO,
+			C.FLOOR,
+			COUNT(D.SLIP_NO) AS TOTAL_CNT,
+			SUM(CASE WHEN D.STATUS_CD = '1' THEN 1 ELSE 0 END) AS PROC_CNT,
+			SUM(CASE WHEN D.STATUS_CD = '2' THEN 1 ELSE 0 END) AS HOLD_CNT,
+			SUM(CASE WHEN D.STATUS_CD = '3' THEN 1 ELSE 0 END) AS REJECT_CNT,
+			SUM(CASE WHEN D.STATUS_CD = '4' OR D.STATUS_CD = '' OR D.STATUS_CD IS NULL THEN 1 ELSE 0 END) AS PENDING_CNT
+		FROM TMN_DONG A
+		INNER JOIN dbo.TMN_LINE B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DONG_ID = B.DONG_ID AND B.LINE_GBN = '109001'
+		INNER JOIN dbo.TMN_DONG_HO C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.DONG_ID = C.DONG_ID AND B.LINE_NO = C.LINE_NO
+		LEFT JOIN dbo.TMN_MINWON D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.DONG_ID = D.DONG_ID AND C.HO_ID = D.HO_ID
+		                         AND (D.DEL_YN = '' OR ISNULL(D.DEL_YN,'N') != 'Y')
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			<if test='START_DATE != "" and START_DATE != null'>
+				AND CONVERT(INT, D.MINWON_DATE) &gt;= CONVERT(INT, #{START_DATE})
+			</if>
+			<if test='END_DATE != "" and END_DATE != null'>
+				AND CONVERT(INT, D.MINWON_DATE) &lt;= CONVERT(INT, #{END_DATE})
+			</if>
+			<if test='ST_DONG != null and ST_DONG != ""'>
+				AND CONVERT(INT, A.DONG_ID) &gt;= CONVERT(INT, #{ST_DONG})
+			</if>
+			<if test='END_DONG != null and END_DONG != ""'>
+				AND CONVERT(INT, A.DONG_ID) &lt;= CONVERT(INT, #{END_DONG})
+			</if>
+			<if test='ST_HO != null and ST_HO != ""'>
+				AND CAST(SUBSTRING(C.HO_ID, CHARINDEX('-', C.HO_ID) + 1, LEN(C.HO_ID)) AS INT)
+				&gt;= CONVERT(INT, #{ST_HO})
+			</if>
+			<if test='END_HO != null and END_HO != ""'>
+				AND CAST(SUBSTRING(C.HO_ID, CHARINDEX('-', C.HO_ID) + 1, LEN(C.HO_ID)) AS INT)
+				&lt;= CONVERT(INT, #{END_HO})
+			</if>
+		GROUP BY A.DONG_ID,	A.DONG_NAME, B.LINE_GBN, B.LINE_NO,	C.HO_ID, C.HO, C.HOUSE_SIZE, C.HOUSEHOLDER,	C.HP_NO, C.FLOOR
+		ORDER BY CONVERT(INT, A.DONG_ID), CONVERT(INT, C.FLOOR), CONVERT(INT, B.LINE_NO)
+	</select>
 
 
 </mapper>

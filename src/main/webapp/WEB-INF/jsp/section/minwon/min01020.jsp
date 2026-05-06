@@ -30,7 +30,7 @@
                     <button id="photo_btn_input1" class="find_btn" onclick="">사진첨부</button>
                 </div>
             </div>
-            <table style="width:100%; table-layout: fixed;">
+            <table class="input_table" style="width:100%; table-layout: fixed;">
                 <colgroup>
                     <col style="width:14%">
                     <col style="width:19%">
@@ -87,7 +87,7 @@
                     <button onclick="" class="find_btn">계량기사용</button>
                 </div>
             </div>
-            <table style="width:100%; table-layout: fixed;">
+            <table class="input_table" style="width:100%; table-layout: fixed;">
                 <colgroup>
                     <col style="width:14%">
                     <col style="width:19%">
@@ -101,16 +101,18 @@
                         <th>처리일시</th>
                         <td colspan="3">
                             <input type="text" id="input_workSeq" name="WORK_SEQ" hidden="hidden">
-                            <span>
-                                <input type="date" id="input_workDate" name="WORK_DATE" data-format="date">
-                            </span>&emsp;&emsp;
-                            <span>
-                                <input type="checkbox" id="input_workTimeInput" name="WORK_TIME_INPUT">
-                                <label for="input_workTimeInput">시간선택</label>
-                            </span>
-                            <span id="span_workTime" style="display: none">&ensp;:
-                                <input type="time" id="input_workTime" name="WORK_TIME" style="display: none;">
-                            </span>
+                            <div style="display: flex">
+                                <span>
+                                    <input type="date" id="input_workDate" name="WORK_DATE" data-format="date">
+                                </span>&emsp;&emsp;
+                                <span>
+                                    <input type="checkbox" id="input_workTimeInput" name="WORK_TIME_INPUT">
+                                    <label for="input_workTimeInput">시간선택</label>
+                                </span>
+                                <span id="span_workTime" style="display: none">&ensp;:
+                                    <input type="time" id="input_workTime" name="WORK_TIME">
+                                </span>
+                            </div>
                         </td>
                         <th>구분</th>
                         <td>

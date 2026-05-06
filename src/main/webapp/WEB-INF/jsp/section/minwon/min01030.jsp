@@ -12,9 +12,9 @@
             </div>
             <div class="section2">
                 <div class="section2_line3">
-                    <div>
+                    <div style="display:flex;">
                         <span>기간 :&nbsp;
-                            <input type="date" id="search_stDate">&nbsp; ~ &nbsp;
+                            <input type="date" id="search_startDate">&nbsp; ~ &nbsp;
                             <input type="date" id="search_endDate">
                         </span>
                         <span>&emsp;구분 :&nbsp;
@@ -31,11 +31,11 @@
                             </select>
                         </span>
                         <span>&emsp;
-                            <input  type="checkbox" id="search_desd" name="DESC" checked>
-                            <label for="search_desd">&nbsp;최근순&emsp;</label>
+                            <input  type="checkbox" id="search_desc" name="DESC" checked>
+                            <label for="search_desc">&nbsp;최근순&emsp;</label>
                         </span>
                     </div>
-                    <div>
+                    <div style="display:flex;">
                         <span class="search-box">세대/공용구분 :&nbsp;
                             <select id="search_gbn" class="select_cont100" name="GBN">
                                 <option value="" selected>전체</option>
@@ -48,21 +48,23 @@
                                 <input type="text" id="search_endDong" name="END_DONG" class="box50"> 동
                                 <input type="text" id="search_endHo" name="END_HO" class="box50">호
                             </span>
-                            <span id="search_gongyong" style="display: none">>
-                                <input type="radio" id="search_gbn12" value="all" name="GBN_12"> 전체공용&emsp;
+                            <span id="search_gongyong" style="display: none">
+                                <input type="radio" id="search_gbn12" value="all" name="GBN_12" checked> 전체공용&emsp;
                                 <input type="radio" id="search_gbn1" value="1" name="GBN_12"> 동별공용&emsp;
                                 <input type="radio" id="search_gbn2" value="2" name="GBN_12"> 동외공용&emsp;
                             </span>
                         </span>
                     </div>
-                    <div>
+                    <div style="display:flex;">
                         <span class="search-box">민원내용 :&nbsp;
                             <select id="search_what" name="WHAT" class="select_cont150">
                                 <option value="all">접수+처리내용</option>
                                 <option value="receipt">접수내용</option>
                                 <option value="work">처리내용</option>
                             </select>&emsp;
-                            <input style="width:713px; height:20px;" type="text" id="search_text" name="TEXT" placeholder=" 검색어를 입력하십시오.">
+                        </span>
+                        <span>
+                            <input style="width:713px;" type="text" id="search_text" name="TEXT" placeholder=" 검색어를 입력하십시오.">
                         </span>
                     </div>
                 </div> 
@@ -100,7 +102,7 @@
     const menuId = "${menuId}";	//메뉴ID
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
-    const search_stDate = document.querySelector("#search_stDate");
+    const search_startDate = document.querySelector("#search_startDate");
     const search_endDate = document.querySelector("#search_endDate");
     const search_minwonGbn = document.querySelector("#search_minwonGbn");
     const search_statusCd = document.querySelector("#search_statusCd");
@@ -167,12 +169,14 @@
                 showRowCheckColumn : false,
                 showRowNumColumn : false,
                 enable : false,
+                height: 578,
+                wordWrap: true,
             })
     );
 
     //그리드 이벤트
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        let pop_data;
+        let pop_data = {};
         let slipNo = AUIGrid.getSelectedRows(grid1)[0].SLIP_NO
         let minwonDate = AUIGrid.getSelectedRows(grid1)[0].MINWON_DATE
         let gbn = AUIGrid.getSelectedRows(grid1)[0].GBN
@@ -202,14 +206,19 @@
         popupOpen(popupId1);
     });
 
+    //팝업 이벤트
+    function close_popup1_onclick(){
+        popupClose(popupId1);
+        clearInput(popupId1);
+    }
+
     //그리드 조회 함수
     function search_grid1_onclick(){
 
         //검색데이터
         let selectParam = {
-
-            ST_DATE: search_stDate.value,
-            END_DATE: search_endDate.value,
+            START_DATE: search_startDate.value.replace(/-/g,""),
+            END_DATE: search_endDate.value.replace(/-/g,""),
             MINWON_GBN: search_minwonGbn.value,
             STATUS_CD: search_statusCd.value,
             DESC : search_desc.checked ? "Y" : "N",
@@ -233,6 +242,9 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
+                data.forEach(row=>{
+                    row.PLACE = make_place(row)
+                })
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
@@ -263,7 +275,59 @@
         }
     });
 
+    async function getSelectOption_search_minwonGbn() {
+        search_minwonGbn.innerHTML = "";
+        //검색데이터
+        let param = {}
 
+        //파라미터
+        let data = {
+            sectionId: sectionId,
+            component: pgId + "_search_minwonGbn",
+            param: param,
+        }
+
+        let list = await we_getSelectOption(data);
+
+        if (list) {
+            search_minwonGbn.insertAdjacentHTML("beforeend", "<option value='' selected>미선택</option>");
+            list.forEach(row => {
+                search_minwonGbn.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.GBN_ID + "'>" + row.GBN_NAME + "</option>");
+            })
+        }
+    }
+
+    function make_place(data){
+        let place = ""
+        if(data.GBN == "0"){
+            place =  data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + "호"
+        }else if(data.GBN == "1"){
+            if(data.LINE_GBN == "109999"){
+                place = data.HO_ID.split("-")[0] + "동 지하주차장"
+            }else{
+                let lineGbnNm = "";
+                switch (data.LINE_GBN){
+                    case "109003" :
+                        lineGbnNm = "현관";
+                        break;
+                    case "109997" :
+                        lineGbnNm = " EL";
+                        break;
+                    case "109998" :
+                        lineGbnNm = "옥탑";
+                        break;
+                    case "109002" :
+                        lineGbnNm = "계단";
+                        break;
+                }
+                place = data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + " " +  lineGbnNm
+            }
+        }else{
+            place = data.AREAR_NAME;
+        }
+        return place;
+    }
 
     //crud 권한 처리 함수
     function checkCrudPermission(pgId){
@@ -284,7 +348,13 @@
 
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
-        search_grid1_onclick();
+
+        Promise.all([
+            getSelectOption_search_minwonGbn()
+        ]).then(function () {
+            //로드 시 그리드 바로 조회
+            search_grid1_onclick();
+        });
 
     };
 

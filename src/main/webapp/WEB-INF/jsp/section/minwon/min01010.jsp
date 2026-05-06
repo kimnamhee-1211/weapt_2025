@@ -5,49 +5,59 @@
 <jsp:include page="/WEB-INF/jsp/section/minwon/min_nav.jsp"/>
 
 <style>
-    .blank_block{
+
+    #dong_table{ border-collapse : collapse; }
+    
+    #dong_table .blank_block{
         border : none;
+        height: 20px;
+        font-size: 11px;
+
     }
-    .step_block {
+    #dong_table .step_block {
         border: 1px solid #bcbcbc;
         background-color: #f4e1d6;
-        height: 30px;
-        weight: 30px;
+        height: 20px;
+        width: 40px;
+        font-size: 11px;
     }
 
-    .ho_block {
+    #dong_table .ho_block {
         border: 1px solid #bcbcbc;
         background-color: #f4e1d6;
-        height: 30px;
-        weight: 60px;
+        height: 20px ;
+        width: 60px;
+        font-size: 11px;
     }
 
-    .el_block {
+    #dong_table .el_block {
     }
 
-    .rooftop_block {
+    #dong_table .rooftop_block {
     }
 
-    .door_block {
+    #dong_table .door_block {
     }
 
-    .underground_block{
+    #dong_table .underground_block{
         border: 1px solid #bcbcbc;
-        background-color: grey;
+        background-color: lightgrey;
+        font-size: 11px;
+        height: 20px ;
     }
 
-    .cb_block {
+    #dong_table .cb_block {
         border: 1px solid #bcbcbc;
         background-color: #f4e1d6;
         height: 30px;
         width: 80px;
     }
 
-    .etc_block {
+    #dong_table .etc_block {
         border: 1px solid #bcbcbc;
         background-color: #f4e1d6;
         height: 30px;
-        width: 160px;
+        width: 140px;
     }
 
 
@@ -66,9 +76,10 @@
         <div id="grid1" class="gridcont_left_100"></div>
         <div id="apt_block" class="gridcont_right_970"
              style="height: 652px; border: 1px solid #bcbcbc; display: flex; justify-content: center; align-items: center;">
-            <table id="dong_table" ></table>
+            <table id="dong_table"></table>
         </div>
         <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_daejang.jsp"/>
+        <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_jeon01.jsp"/>
     </div>
 
 
@@ -149,10 +160,8 @@
 
         //그리드 조회 함수
         function search_grid1_onclick() {
-
             //검색데이터
             let selectParam = {}
-
             //파라미터
             let selectData = {
                 sectionId: sectionId,

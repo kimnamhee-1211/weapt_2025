@@ -48,16 +48,16 @@ function getToday(format) {
 }
 
 //null 체크
-function isNull(object) {
-    if (object == null) return true;
-    if (Array.isArray(object)) {
-        if (object == null || object.length < 1) return true;
+function isNull(obj) {
+    if (obj == null) return true;
+    if (Array.isArray(obj)) {
+        if (obj == null || obj.length < 1) return true;
     }
-    if (typeof object === 'object') {
-        return Object.keys(object).length === 0;
+    if (typeof obj === 'object') {
+        return Object.keys(obj).length === 0;
     }
-    if (typeof object === 'string') {
-        return object.trim().length === 0;
+    if (typeof obj === 'string') {
+        return obj.trim().length === 0;
     }
 
     return false;
@@ -65,6 +65,7 @@ function isNull(object) {
 
 //text 날짜 포멧
 function dateFormat(obj) {
+    if (isNull(obj)) return "";
     let result = obj.replace(/[^0-9]/g, '');
     if (!isNull(result) && result.length == 8) {
         result = String(result);
@@ -75,6 +76,7 @@ function dateFormat(obj) {
 
 //text 날짜 - Date 변환
 function strToDate(obj) {
+    if (isNull(obj)) return "";
     let result = obj.replace(/[^0-9]/g, '');
     let year = result.substring(0, 4);
     let month = result.substring(4, 6);
@@ -85,6 +87,8 @@ function strToDate(obj) {
 
 //Date - text 날짜 변환
 function dateToStr(date, format) {
+    if (isNull(date)) return "";
+    if (isNull(format)) return date;
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');
@@ -113,19 +117,21 @@ function dateToStr(date, format) {
 
 
 //HTML 태그 제거-순수 텍스트 추출
-function stripHtml(html) {
-    const hasTags = /<\/?[a-z][\s\S]*>/i.test(html);
+function stripHtml(obj) {
+    if (isNull(obj)) return "";
+    const hasTags = /<\/?[a-z][\s\S]*>/i.test(obj);
     if (!hasTags) {
-        return html;
+        return obj;
     }
     const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = html;
+    tempDiv.innerHTML = obj;
     return tempDiv.textContent || tempDiv.innerText || "";
 }
 
 // 알파벳 조합 최대값 구하기
-function nextAlpha(str) {
-    let chars = (str.slice(0, 2)).split('');
+function nextAlpha(obj) {
+    if (isNull(obj)) return "";
+    let chars = (obj.slice(0, 2)).split('');
     let carry = 1;
     for (let i = chars.length - 1; i >= 0; i--) {
         if (carry === 0) break;
@@ -144,6 +150,7 @@ function nextAlpha(str) {
 
 // camel → snake
 function toSnakeUpper(obj) {
+    if (isNull(obj)) return "";
     const result = {};
     Object.keys(obj).forEach(key => {
         const newKey = key

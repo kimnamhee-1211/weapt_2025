@@ -109,7 +109,7 @@
             item.headerText = row.CODEDTL_NM;
             item.dataType  = "numeric";
             item.formatString = "#,##0.0";
-            item.width = "5%";
+            item.width = "8%";
             columns.push(item);
         });
         let new_cols = [...grid1ColumnLayout, ...columns];

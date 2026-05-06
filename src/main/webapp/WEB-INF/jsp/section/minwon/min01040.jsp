@@ -13,7 +13,7 @@
             <div class="section2_line1">
                 <div>
                     <span>기간 :&nbsp;
-                        <input type="date" id="search_stDate">&nbsp; ~ &nbsp;
+                        <input type="date" id="search_startDate">&nbsp; ~ &nbsp;
                         <input type="date" id="search_endDate">
                     </span>&emsp;&emsp;
                     <span id="sedae">동호:&nbsp;
@@ -26,6 +26,8 @@
             </div>
         </div>
         <div id="grid1"></div>
+        <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_daejang.jsp"/>
+        <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_jeon01.jsp"/>
     </div>
 
 
@@ -57,7 +59,7 @@
     const menuId = "${menuId}";	//메뉴ID
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
-    const search_stDate = document.querySelector("#search_stDate")	//select 컴포넌트
+    const search_startDate = document.querySelector("#search_startDate")	//select 컴포넌트
     const search_endDate = document.querySelector("#search_endDate")	//select 컴포넌트
     const search_stDong = document.querySelector("#search_stDong")	//select 컴포넌트
     const search_stHo = document.querySelector("#search_stHo")	//select 컴포넌트
@@ -69,60 +71,65 @@
         { dataField: "HO_ID",
             visible : false
         },
-        { dataField: "DOING",
+        { dataField: "DONG_NAME",
             headerText: "동",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
         { dataField: "HO",
             headerText: "호",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
         { dataField: "HOUSE_SIZE",
             headerText: "면적",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
         { dataField: "HOUSEHOLDER",
             headerText: "세대주",
             dataType: "text",
-            width : "10%",
+            width : "*%",
         },
         { dataField: "HOUSE_PHON_NO",
             headerText: "집전화",
             dataType: "text",
-            width : "10%",
+            width : "12%",
         },
         { dataField: "HP_NO",
             headerText: "휴대전화",
             dataType: "text",
-            width : "10%",
+            width : "12%",
         },
         { dataField: "TOTAL_CNT",
             headerText: "민원건수",
             dataType : "numeric",
-            formatString : "#,###"
+            formatString : "#,###",
+            width : "8%",
         },
         { dataField: "PROC_CNT",
             headerText: "처리건수",
             dataType : "numeric",
-            formatString : "#,###"
+            formatString : "#,###",
+            width : "8%",
         },
         { dataField: "HOLD_CNT",
             headerText: "보류건수",
             dataType : "numeric",
-            formatString : "#,###"
+            formatString : "#,###",
+            width : "8%",
         },
         { dataField: "REJECT_CNT",
             headerText: "반려건수",
             dataType : "numeric",
-            formatString : "#,###"
+            formatString : "#,###",
+            width : "8%",
         },
         { dataField: "PENDING_CNT",
             headerText: "미처리건수",
             dataType : "numeric",
-            formatString : "#,###"
+            formatString : "#,###",
+            width : "8%",
         },
     ];
 
@@ -136,14 +143,42 @@
     );
 
     //그리드 이벤트
+    AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
+        let pop_data = {};
 
+        let gbn = '0'
+        let lineGbn = "109001"
+        let dongId = AUIGrid.getSelectedRows(grid1)[0].DONG_ID
+        let hoId = AUIGrid.getSelectedRows(grid1)[0].HO_ID
+
+        pop_data.gbn = gbn;
+        pop_data.lineGbn = lineGbn;
+        pop_data.dongId = dongId;
+        pop_data.hoId = hoId;
+
+        let pop_item = {
+            pgId: pgId,
+            menuId: menuId,
+            querySet: "min001",
+            pop_data: pop_data
+        }
+        pop_onload(pop_item);
+        popupOpen(popupId);
+    });
+
+
+    //팝업 닫기 이벤트
+    function close_popup_onclick(){
+        popupClose(popupId);
+        clearInput(popupId);
+    }
     //그리드 조회 함수
     function search_grid1_onclick(){
 
         //검색데이터
         let selectParam = {
-            ST_DATE : search_stDate.value,
-            END_DATE : search_endDate.value,
+            START_DATE : search_startDate.value.replace(/-/g,""),
+            END_DATE : search_endDate.value.replace(/-/g,""),
             ST_DONG : search_stDong.value,
             ST_HO : search_stHo.value,
             END_DONG : search_endDong.value,
@@ -192,8 +227,8 @@
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print : true});
-        search_startDate.value = getToday("yyyyMMdd");
-        search_endDate.value = getToday("yyyyMMdd");
+        search_startDate.value = getToday("yyyy-MM-dd");
+        search_endDate.value = getToday("yyyy-MM-dd");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
         search_grid1_onclick();

@@ -62,7 +62,6 @@
         </div>
         <div id="popGrid1"></div>
     </div>
-    <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_jeon01.jsp"/>
 </div>
 
 
@@ -145,6 +144,7 @@
         let pop_item = {
             pgId: pgId,
             menuId: menuId,
+            popId : popupId,
             querySet: "min011",
             pop_data: pop_data
         }
@@ -163,6 +163,7 @@
         let pop_item = {
             pgId: pgId,
             menuId: menuId,
+            popId : popupId,
             querySet: "min011",
             pop_data: pop_data
         }
@@ -287,7 +288,7 @@
                     `
             info_table.innerHTML = inner;
         }
-        document.querySelector("#td_place").value = make_place(pop_data);
+        document.querySelector("#td_place").value = make_place_pop(pop_data);
     }
 
     function search_cntTable() {
@@ -318,37 +319,6 @@
                 dataToInput(data[0], "cnt_table");
             }
         });
-    }
-
-    function make_place(data){
-        let place = ""
-        if(data.gbn == "0"){
-            place =  data.hoId.split("-")[0] + "동 " + data.hoId.split("-")[1] + "호"
-        }else if(data.gbn == "1"){
-            if(data.lineGbn == "109999"){
-                place = data.hoId.split("-")[0] + "동 지하주차장"
-            }else{
-                let lineGbnNm = "";
-                switch (data.lineGbn){
-                    case "109003" :
-                        lineGbnNm = "현관";
-                        break;
-                    case "109997" :
-                        lineGbnNm = " EL";
-                        break;
-                    case "109998" :
-                        lineGbnNm = "옥탑";
-                        break;
-                    case "109002" :
-                        lineGbnNm = "계단";
-                        break;
-                }
-                place = data.hoId.split("-")[0] + "동 " + data.hoId.split("-")[1] + " " +  lineGbnNm
-            }
-        }else{
-            place = data.arearName;
-        }
-        return place;
     }
 
 

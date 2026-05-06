@@ -59,13 +59,13 @@
             { dataField: "MENU_NAME",
                 headerText: "메뉴명",
                 dataType: "text",
-                width : "25%",
+                width : "*%",
                 editable : false
             },
             { dataField: "MENU_ID",
                 headerText: "메뉴ID",
                 dataType: "text",
-                width : "20%",
+                width : "15%",
                 editable : false
             },
             { dataField: "PG_ID",
