@@ -229,6 +229,8 @@
             //지상
             let floors = Math.max(...data.map(row => Number(row.FLOORS)));
             let dataLength = data.length;
+            let el_cnt = 1;
+            let rooftop_cnt = 1;
             for (let i = floors; i >= 1; i--) {
                 let tr = document.createElement('tr');
                 data.forEach(row => {
@@ -248,6 +250,10 @@
                                 td.dataset.gbn = "1";
                                 td.dataset.lineGbn = "109997";
                                 td.dataset.lineGbnNm = "EL";
+                                if(elCnt > 1 && el_cnt <= elCnt){
+                                    td.innerHTML = "EL" + el_cnt
+                                    el_cnt ++
+                                }
                                 break;
                             case (i > endFloor && i <= endFloor + elCnt + rooftopCnt) :
                                 if (row.LINE_GBN == "109002") {
@@ -258,7 +264,10 @@
                                 td.innerHTML = "루프탑"
                                 td.dataset.gbn = "1";
                                 td.dataset.lineGbn = "109998";
-                                td.dataset.lineGbnNm = "루프탑";
+                                if(rooftopCnt > 1 && el_cnt <= rooftopCnt){
+                                    td.innerHTML = "루프탑" + rooftop_cnt
+                                    rooftop_cnt ++
+                                }
                                 break;
                             case (i == row.START_FLOOR && row.DOOR_CNT == "1") :
                                 if (row.LINE_GBN == "109002") {
@@ -269,14 +278,12 @@
                                 td.innerHTML = "현관"
                                 td.dataset.gbn = "1";
                                 td.dataset.lineGbn = "109003";
-                                td.dataset.lineGbnNm = "현관";
                                 break;
                             case (row.LINE_GBN == "109002") :
                                 td.className = "step_block";
                                 td.innerHTML = "계단"
                                 td.dataset.gbn = "1";
                                 td.dataset.lineGbn = "109002";
-                                td.dataset.lineGbnNm = "계단";
                                 break;
                             default :
                                 td.className = "ho_block";
@@ -284,16 +291,12 @@
                                 td.dataset.hoName = i.toString() + row.HO_NO;
                                 td.dataset.gbn = "0";
                                 td.dataset.lineGbn = "109001";
-                                td.dataset.lineGbnNm = "세대";
                                 break;
                         }
                         td.dataset.hoId = dongName + "-" + i.toString() + row.HO_NO
-                        td.dataset.hoNo = row.HO_NO;
+                        td.dataset.lineNo = row.HO_NO;
                         td.dataset.floor = i.toString();
-                        td.dataset.lineNo = row.LINE_NO;
-                        td.dataset.dongName = dongName;
                         td.dataset.dongId = dongid;
-                        td.dataset.viewGbn = viewGbn;
                     } else {
                         td.className = "blank_block";
                     }

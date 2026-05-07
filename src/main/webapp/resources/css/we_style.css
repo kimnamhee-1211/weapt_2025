@@ -782,6 +782,7 @@ textarea {
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    height: 40px;
 }
 
 .remember-me {

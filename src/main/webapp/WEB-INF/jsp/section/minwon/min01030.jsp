@@ -49,7 +49,7 @@
                                 <input type="text" id="search_endHo" name="END_HO" class="box50">호
                             </span>
                             <span id="search_gongyong" style="display: none">
-                                <input type="radio" id="search_gbn12" value="all" name="GBN_12" checked> 전체공용&emsp;
+                                <input type="radio" id="search_gbn12" value="all" name="GBN_12"> 전체공용&emsp;
                                 <input type="radio" id="search_gbn1" value="1" name="GBN_12"> 동별공용&emsp;
                                 <input type="radio" id="search_gbn2" value="2" name="GBN_12"> 동외공용&emsp;
                             </span>
@@ -169,7 +169,7 @@
                 showRowCheckColumn : false,
                 showRowNumColumn : false,
                 enable : false,
-                height: 578,
+                height: 538,
                 wordWrap: true,
             })
     );

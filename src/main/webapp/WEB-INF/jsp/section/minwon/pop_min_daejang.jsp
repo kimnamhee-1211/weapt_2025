@@ -181,11 +181,6 @@
             HO_ID : pop_data.hoId,
             MINWON_AREAR_SEQ : (pop_data.gbn == "0" || pop_data.gbn == "1" ) ? "" : pop_data.minwonArearSeq
         }
-        if(pop_data.gbn == "1" && pop_data.lineGbn != "109999"){
-            selectParam.LINE_NO = pop_data.hoId.split("-")[1]
-        }else{
-            selectParam.LINE_NO = ""
-        }
 
         //파라미터
         let selectData = {
@@ -273,8 +268,8 @@
             info_table.innerHTML = inner;
 
         }
-        else if(pop_data.gbn == "2"){
-            pop_title.innerHTML = "&#10004;&nbsp;[동외]동용민원대장"
+        else{
+            pop_title.innerHTML = "&#10004;&nbsp;[동외]공용민원대장"
             info_table.innerHTML = ""
             let inner = `
                         <tbody>
@@ -299,11 +294,6 @@
             DONG_ID : pop_data.dongId,
             HO_ID : pop_data.hoId,
             MINWON_AREAR_SEQ : (pop_data.gbn == "0" || pop_data.gbn == "1" ) ? "" : pop_data.minwonArearSeq
-        }
-        if(pop_data.gbn == "1" && pop_data.lineGbn != "109999"){
-            selectParam.LINE_NO = pop_data.hoId.split("-")[1]
-        }else{
-            selectParam.LINE_NO = ""
         }
 
         //파라미터

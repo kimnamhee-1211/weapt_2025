@@ -59,17 +59,22 @@
     let focus = 0;	//그리드 컴포넌트 포커스
     const search_startDate = document.querySelector("#search_startDate")	//select 컴포넌트
     const search_endDate = document.querySelector("#search_endDate")	//select 컴포넌트
-    const search_stDong = document.querySelector("#search_stDong")	//select 컴포넌트
-    const search_stHo = document.querySelector("#search_stHo")	//select 컴포넌트
-    const search_endDong = document.querySelector("#search_endDong")	//select 컴포넌트
-    const search_endHo = document.querySelector("#search_endHo")	//select 컴포넌트
+    const search_gbn12 = document.querySelector("#search_gbn12");
+    const search_gbn1 = document.querySelector("#search_gbn1");
+    const search_gbn2 = document.querySelector("#search_gbn2");
 
     //그리드 설정
     const grid1ColumnLayout = [
+        { dataField: "DONG_NAME",
+            headerText: "동",
+            dataType: "text",
+            width : "12%",
+        },
         { dataField: "PLACE",
             headerText: "장소",
             dataType: "text",
             width : "*%",
+            style : "text-align-left",
         },
         { dataField: "TOTAL_CNT",
             headerText: "민원건수",
@@ -119,12 +124,18 @@
         let gbn = AUIGrid.getSelectedRows(grid1)[0].GBN
         let lineGbn = AUIGrid.getSelectedRows(grid1)[0].LINE_GBN
         let lineNo = AUIGrid.getSelectedRows(grid1)[0].LINE_NO
-        let minwonarearseq = AUIGrid.getSelectedRows(grid1)[0].MINWON_AREAR_SEQ
+        let dongId = AUIGrid.getSelectedRows(grid1)[0].DONG_ID
+        let hoId = AUIGrid.getSelectedRows(grid1)[0].HO_ID
+        let minwonArearSeq = AUIGrid.getSelectedRows(grid1)[0].MINWON_AREAR_SEQ
+        let arearName = AUIGrid.getSelectedRows(grid1)[0].AREAR_NAME
 
         pop_data.gbn = gbn;
         pop_data.lineGbn = lineGbn;
         pop_data.lineNo = lineNo;
-        pop_data.minwonarearseq = minwonarearseq;
+        pop_data.dongId = dongId;
+        pop_data.hoId = hoId;
+        pop_data.minwonArearSeq = minwonArearSeq;
+        pop_data.arearName = arearName;
 
         let pop_item = {
             pgId: pgId,
@@ -150,10 +161,7 @@
         let selectParam = {
             START_DATE : search_startDate.value.replace(/-/g,""),
             END_DATE : search_endDate.value.replace(/-/g,""),
-            ST_DONG : search_stDong.value,
-            ST_HO : search_stHo.value,
-            END_DONG : search_endDong.value,
-            END_HO : search_endHo.value
+            GBN_12: document.querySelector("input[name='GBN_12']:checked")?.value || "",
         }
 
         //파라미터
@@ -166,6 +174,10 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
+                data.forEach( row =>{
+                    row.PLACE = make_place(row);
+                })
+
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
@@ -183,6 +195,7 @@
         return isValid;
     }
 
+
     //crud 권한 처리 함수
     function checkCrudPermission(pgId){
         we_checkCrudPermission(pgId,{
@@ -193,6 +206,36 @@
         });
     }
 
+    function make_place(data){
+        let place = ""
+        if(data.GBN == "0"){
+            place =  data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + "호"
+        }else if(data.GBN == "1"){
+            if(data.LINE_GBN == "109999"){
+                place = data.HO_ID.split("-")[0] + "동 지하주차장"
+            }else{
+                let lineGbnNm = "";
+                switch (data.LINE_GBN){
+                    case "109003" :
+                        lineGbnNm = "현관";
+                        break;
+                    case "109997" :
+                        lineGbnNm = " EL";
+                        break;
+                    case "109998" :
+                        lineGbnNm = "옥탑";
+                        break;
+                    case "109002" :
+                        lineGbnNm = "계단";
+                        break;
+                }
+                place = data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + " " +  lineGbnNm
+            }
+        }else{
+            place = data.AREAR_NAME;
+        }
+        return place;
+    }
 
     //로드
     window.onload = function() {

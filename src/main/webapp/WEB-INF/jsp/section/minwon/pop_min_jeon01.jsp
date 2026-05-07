@@ -259,11 +259,7 @@
             HO_ID : pop_data1.hoId,
             MINWON_AREAR_SEQ : (pop_data1.gbn == "0" || pop_data1.gbn == "1" ) ? "" : pop_data1.minwonArearSeq,
             MINWON_DATE : input_minwonDate.value.replace(/-/g,""),
-        }
-        if(pop_data1.gbn == "1" && pop_data1.lineGbn != "109999"){
-            selectParam.LINE_NO = pop_data1.hoId.split("-")[1]
-        }else{
-            selectParam.LINE_NO = ""
+            LINE_NO : pop_data1.lineNo
         }
 
         //파라미터
@@ -303,10 +299,9 @@
         item.GBN = pop_data1.gbn;
         item.DONG_ID = pop_data1.dongId;
         item.HO_ID = pop_data1.hoId;
-        item.LINE_NO = pop_data1.hoId.split("-")[1];
+        item.LINE_NO = pop_data1.lineNo;
         item.LINE_GBN = pop_data1.lineGbn;
         item.MINWON_AREAR_SEQ = pop_data1.minwonArearSeq;
-
 
         let addedRowItems = null;
         let editedRowItems = null;

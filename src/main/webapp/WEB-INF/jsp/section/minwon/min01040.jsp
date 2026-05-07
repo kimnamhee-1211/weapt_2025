@@ -146,15 +146,17 @@
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         let pop_data = {};
 
-        let gbn = '0'
-        let lineGbn = "109001"
+        let gbn = AUIGrid.getSelectedRows(grid1)[0].GBN
+        let lineGbn = AUIGrid.getSelectedRows(grid1)[0].LINE_GBN
         let dongId = AUIGrid.getSelectedRows(grid1)[0].DONG_ID
         let hoId = AUIGrid.getSelectedRows(grid1)[0].HO_ID
+        let lineNo = AUIGrid.getSelectedRows(grid1)[0].LINE_NO
 
         pop_data.gbn = gbn;
         pop_data.lineGbn = lineGbn;
         pop_data.dongId = dongId;
         pop_data.hoId = hoId;
+        pop_data.lineNo = lineNo;
 
         let pop_item = {
             pgId: pgId,
@@ -165,7 +167,6 @@
         pop_onload(pop_item);
         popupOpen(popupId);
     });
-
 
     //팝업 닫기 이벤트
     function close_popup_onclick(){
