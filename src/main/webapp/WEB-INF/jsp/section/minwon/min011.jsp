@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<div class="layer_bg" id="pop_min_jeon01">
+<div class="layer_bg" id="min011">
     <div class="popup" style="width: 740px;">
         <div class="pop_title">&#10004; 세대민원전표</div>
         <div class="pop_btn" id="pop1_btn"></div>
@@ -159,7 +159,7 @@
 
 
 <script>
-    const popupId1 = "pop_min_jeon01";
+    const popupId1 = "min011";
     let querySet1;
     let pop_data1;
     let pop_popId;

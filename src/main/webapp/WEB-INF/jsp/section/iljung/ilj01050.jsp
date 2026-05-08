@@ -185,9 +185,7 @@
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print : true});
         search_startDate.value = getToday("yyyy-MM-dd");
-        const d = new Date();
-        d.setDate(d.getDate() + 7);
-        search_endDate.value = d.toLocaleDateString("sv-SE");
+        search_endDate.value = addDate(getToday("yyyy-MM-dd"), 7, "yyyy-MM-dd");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
         Promise.all([

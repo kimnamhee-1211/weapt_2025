@@ -9,7 +9,7 @@
 		WHERE A.CODEDV_NO = '113' AND A.DIVISION3_NM = #{MENU_ID}
 	</select>
 
-	<select id="confirmLine_iljung_ilj01060" parameterType="map" resultType="map">
+	<select id="getConfirmLine" parameterType="map" resultType="map">
 		SELECT
 			A.SEQ 		AS SEQ,
 			A.DUTY_CD 	AS DUTY_CD
@@ -18,6 +18,9 @@
 		  AND A.MENU_GROUP = #{MENU_GROUP}
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
+
+
+
 
 	<select id="selectApproval_iljung_ilj01060" parameterType="map" resultType="map">
 		SELECT
@@ -88,7 +91,85 @@
 		  AND SC_DATE = #{SC_DATE}
 		  AND CONFIRM_SEQ = #{CONFIRM_SEQ}
 		  AND DUTY_CD = #{DUTY_CD}
+		  AND REAL_USER_ID = #{LOGINUSER_ID}
+		  AND REAL_USER_NM = #{LOGINUSER_NAME}
 	</delete>
+
+
+	<select id="selectApproval_minwon_min01060" parameterType="map" resultType="map">
+		SELECT
+			A.CONFIRM_SEQ	AS CONFIRM_SEQ,
+			A.REAL_USER_NM 	AS REAL_USER_NM
+		FROM dbo.TMN_CONFIRM AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.MINWON_DATE = #{SC_DATE}
+	</select>
+
+	<select id="getApprAuth_minwon_min01060" parameterType="map" resultType="map">
+		SELECT
+			A.SEQ 			AS SEQ,
+			A.DUTY_CD 		AS DUTY_CD,
+			A.CONFIRM_ID 	AS CONFIRM_ID,
+			A.CONFIRM_ID_S 	AS CONFIRM_ID_S,
+			B.CONFIRM_SEQ 	AS CONFIRM_SEQ,
+			B.REAL_USER_ID 	AS REAL_USER_ID,
+			B.REAL_USER_NM 	AS REAL_USER_NM,
+			B.REAL_CONFIRM 	AS REAL_CONFIRM,
+			B.REAL_DATE 	AS REAL_DATE
+		FROM dbo.TPM_CONFIRM_LINE AS A
+		LEFT JOIN dbo.TMN_CONFIRM AS B ON (A.DUTY_CD = B.DUTY_CD AND A.SEQ = B.CONFIRM_SEQ AND B.MINWON_DATE = #{SC_DATE})
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.MENU_GROUP = #{MENU_GROUP} AND ISNULL(A.USE_YN,'Y') = 'Y'
+		  AND A.SEQ = #{CONFIRM_SEQ} AND A.DUTY_CD = #{DUTY_CD}
+	</select>
+
+
+	<insert id="approval_minwon_min01060" parameterType="map">
+		INSERT INTO	dbo.TMN_CONFIRM (
+			OFFICE_CODE,
+			MINWON_DATE,
+			CONFIRM_SEQ,
+			DUTY_CD,
+			CONFIRM_ID,
+			CONFIRM_ID_S,
+			ORDER_SEQ,
+			REAL_USER_ID,
+			REAL_USER_NM,
+			REAL_CONFIRM,
+			REAL_DATE)
+		SELECT
+			#{LOGINUSER_OFFICE_CODE},
+			#{SC_DATE},
+			#{CONFIRM_SEQ},
+			A.DUTY_CD,
+			A.CONFIRM_ID,
+			A.CONFIRM_ID_S,
+			A.ORDER_SEQ,
+			#{LOGINUSER_ID},
+			#{LOGINUSER_NAME},
+			#{REAL_CONFIRM},
+			CONVERT(VARCHAR(8), GETDATE(), 112)
+		FROM TPM_CONFIRM_LINE AS A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.MENU_GROUP = #{MENU_GROUP}
+		  AND A.SEQ = #{CONFIRM_SEQ} AND A.DUTY_CD = #{DUTY_CD}
+		  AND NOT EXISTS (
+			SELECT 1
+			FROM TMN_CONFIRM B
+			WHERE B.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			  AND B.MINWON_DATE = #{SC_DATE}
+			  AND B.CONFIRM_SEQ = #{CONFIRM_SEQ}
+			  AND B.DUTY_CD = #{DUTY_CD}
+		)
+	</insert>
+
+	<delete id="cancelApproval_minwon_min01060" parameterType="map">
+		DELETE FROM dbo.TMN_CONFIRM
+		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  AND MINWON_DATE = #{SC_DATE}
+		  AND CONFIRM_SEQ = #{CONFIRM_SEQ}
+		  AND DUTY_CD = #{DUTY_CD}
+		  AND REAL_USER_ID = #{LOGINUSER_ID}
+		  AND REAL_USER_NM = #{LOGINUSER_NAME}
+	</delete>
+
 
 
 

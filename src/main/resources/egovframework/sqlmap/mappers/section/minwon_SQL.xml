@@ -980,4 +980,109 @@
 		</if>
 	</select>
 
+
+	<select id="selectList_min01030_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE			AS OFFICE_CODE,
+			A.SLIP_NO 				AS SLIP_NO,
+			A.MINWON_DATE 			AS MINWON_DATE,
+			A.MINWON_GBN			AS MINWON_GBN,
+			'[' + ISNULL(C.GBN_NAME, ' ') + ']' + CHAR(13) + CHAR(10) + ISNULL(A.DESCR, '') AS DESCR,
+			A.STATUS_CD 			AS STATUS_CD,
+			CASE WHEN A.STATUS_CD = '1' THEN '처리'
+				WHEN A.STATUS_CD = '2' THEN '보류'
+				WHEN A.STATUS_CD = '3' THEN '반려'
+				WHEN A.STATUS_CD = '4' THEN '처리중'
+				ELSE '미결'
+			END 					AS STATUS_NAME,
+			A.GBN					AS GBN,
+			A.DONG_ID				AS DONG_ID,
+			A.HO_ID					AS HO_ID,
+			A.LINE_NO				AS LINE_NO,
+			A.LINE_GBN				AS LINE_GBN,
+			A.MINWON_AREAR_SEQ		AS MINWON_AREAR_SEQ,
+			B.AREAR_NAME 			AS AREAR_NAME,
+			A.RECEIPT_USER			AS RECEIPT_USER,
+			D.WORK_USER         	AS WORK_USER
+		FROM dbo.TMN_MINWON A
+		LEFT JOIN dbo.TMN_MINWON_AREAR B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.MINWON_AREAR_SEQ = B.MINWON_AREAR_SEQ
+		LEFT JOIN TMN_MINWON_GBN C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MINWON_GBN = C.GBN_ID
+		LEFT JOIN TMN_MINWON_WORK D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.SLIP_NO = D.SLIP_NO AND A.MINWON_DATE = D.MINWON_DATE
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			AND (A.DEL_YN = '' OR ISNULL(A.DEL_YN,'N') != 'Y')
+			AND A.MINWON_DATE = #{SC_DATE}
+	</select>
+
+
+
+	<select id="selectList_min01070_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.HO_ID			AS HO_ID,
+			A.DONG_ID		AS DONG_ID,
+			B.DONG_NAME		AS DONG_NAME
+			A.HO			AS HO,
+			A.HOUSE_SIZE	AS HOUSE_SIZE,
+			A.IBJU_DATE		AS IBJU_DATE,
+			A.HOUSEHOLDER	AS HOUSEHOLDER,
+			A.HOUSE_PHON_NO	AS HOUSE_PHON_NO,
+			A.HP_NO			AS HP_NO,
+			A.REMARKS		AS REMARKS,
+			A.LIVE_TYPE		AS LIVE_TYPE,
+		FROM dbo.TMN_DONG_HO A
+		LEFT JOIN dbo.TMN_DONG B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DONG_ID = B.DONG_ID
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			<if test='ST_DONG != null and ST_DONG != ""'>
+				AND CONVERT(INT, A.DONG_ID) &gt;= CONVERT(INT, #{ST_DONG})
+			</if>
+			<if test='END_DONG != null and END_DONG != ""'>
+				AND CONVERT(INT, A.DONG_ID) &lt;= CONVERT(INT, #{END_DONG})
+			</if>
+			<if test='ST_HO != null and ST_HO != ""'>
+				AND CAST(SUBSTRING(A.HO_ID, CHARINDEX('-', A.HO_ID) + 1, LEN(A.HO_ID)) AS INT)
+				&gt;= CONVERT(INT, #{ST_HO})
+			</if>
+			<if test='END_HO != null and END_HO != ""'>
+				AND CAST(SUBSTRING(A.HO_ID, CHARINDEX('-', A.HO_ID) + 1, LEN(A.HO_ID)) AS INT)
+				&lt;= CONVERT(INT, #{END_HO})
+			</if>
+		ORDER BY CONVERT(INT, A.DONG_ID), CONVERT(INT, A.FLOOR), CONVERT(INT, A.LINE_NO)
+	</select>
+
+	<update id="updateList_min01070_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.IBJU_DATE         = U.IBJU_DATE,
+				A.HOUSEHOLDER       = U.HOUSEHOLDER,
+				A.HOUSE_PHON_NO     = U.HOUSE_PHON_NO,
+				A.HP_NO             = U.HP_NO,
+				A.LIVE_TYPE         = U.LIVE_TYPE,
+				A.REMARKS           = U.REMARKS
+			FROM dbo.TMN_DONG_HO  A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} 	AS OFFICE_CODE,
+				#{row.HO_ID}               		AS HO_ID,
+				#{row.DONG_ID}           		AS DONG_ID,
+				#{row.IBJU_DATE}              	AS IBJU_DATE,
+				#{row.HOUSEHOLDER}            	AS HOUSEHOLDER,
+				#{row.HOUSE_PHON_NO}            AS HOUSE_PHON_NO,
+				#{row.HP_NO}                  	AS HP_NO,
+				#{row.LIVE_TYPE}                AS LIVE_TYPE,
+				#{row.REMARKS}           		AS REMARKS,
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE
+			AND A.HO_ID = U.HO_ID AND A.DONG_ID = U.DONG_ID
+		</if>
+	</update>
+
+
+
+
+
+
+
+
 </mapper>

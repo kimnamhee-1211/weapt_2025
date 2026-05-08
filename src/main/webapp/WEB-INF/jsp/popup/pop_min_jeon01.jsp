@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<div class="layer_bg" id="pop_min_jeon01">
+<div class="layer_bg" id="min011">
     <div class="popup" style="width: 740px;">
         <div class="pop_title">&#10004; 세대민원전표</div>
         <div id="min_tb" class="gridcont_right_720">
@@ -171,7 +171,7 @@
 </div>
 
 <script>
-    const popupId = "pop_min_jeon01";
+    const popupId = "min011";
     const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const input_dongName = document.querySelector("#input_dongName");
     const input_ho = document.querySelector("#input_ho");

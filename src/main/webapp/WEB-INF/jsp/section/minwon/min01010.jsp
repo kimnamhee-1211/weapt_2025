@@ -78,8 +78,8 @@
              style="height: 652px; border: 1px solid #bcbcbc; display: flex; justify-content: center; align-items: center;">
             <table id="dong_table"></table>
         </div>
-        <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_daejang.jsp"/>
-        <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_jeon01.jsp"/>
+        <jsp:include page="/WEB-INF/jsp/section/minwon/min001.jsp"/>
+        <jsp:include page="/WEB-INF/jsp/section/minwon/min011.jsp"/>
     </div>
 
 

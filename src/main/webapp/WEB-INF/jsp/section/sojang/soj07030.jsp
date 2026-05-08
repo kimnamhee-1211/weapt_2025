@@ -242,6 +242,17 @@
 
 
         //기타
+        async function getSelectOption_search_usergroupId() {
+            let usergroupIds = await we_getUsergroupId();
+            if (usergroupIds) {
+                let select = search_usergroupId;
+                usergroupIds.forEach(row => {
+                    select.insertAdjacentHTML("beforeend",
+                        `<option value="${row.USERGROUP_ID}">${row.USERGROUP_NM}</option>`);
+                })
+            }
+            search_usergroupId.selectedIndex = 0;
+        }
 
         //권한그룹 선택 시 세부권한그룹 변경
         function search_usergroupId_change(obj){
@@ -255,6 +266,7 @@
             selectOptionMaker(item, search_subUsergroupId, "", false);
         }
 
+
         //로드
         window.onload = function() {
             //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
@@ -262,9 +274,15 @@
             //crud 권한 처리 함수
             checkCrudPermission(pgId);
             //공통코드 가져오기
-            selectUsergroupId(search_usergroupId, "").then(() => {
-                search_grid1_onclick()
-            });
+
+            Promise.all([
+                //DDL
+                getSelectOption_search_usergroupId(),
+            ]).then(function () {
+                //로드 시 그리드 바로 조회
+                search_grid1_onclick();
+            })
+
         };
     </script>
 

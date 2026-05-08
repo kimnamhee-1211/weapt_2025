@@ -43,10 +43,10 @@
                                 <option value="12">공용</option>
                             </select>&emsp;
                             <span id="search_sedae" style="display: none">
-                                <input type="text" id="search_stDong" name="ST_DONG" class="box50">동
-                                <input type="text" id="search_stHo" name="ST_HO" class="box50">호&emsp;~
-                                <input type="text" id="search_endDong" name="END_DONG" class="box50"> 동
-                                <input type="text" id="search_endHo" name="END_HO" class="box50">호
+                                <input type="text" id="search_stDong" name="ST_DONG" class="box50" oninput="inputNumFormat(obj)">동
+                                <input type="text" id="search_stHo" name="ST_HO" class="box50" oninput="inputNumFormat(obj)">호&emsp;~
+                                <input type="text" id="search_endDong" name="END_DONG" class="box50" oninput="inputNumFormat(obj)"> 동
+                                <input type="text" id="search_endHo" name="END_HO" class="box50" oninput="inputNumFormat(obj)">호
                             </span>
                             <span id="search_gongyong" style="display: none">
                                 <input type="radio" id="search_gbn12" value="all" name="GBN_12"> 전체공용&emsp;
@@ -70,7 +70,7 @@
                 </div> 
             </div>
             <div id="grid1"  style="height: 546px;"></div>
-            <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_jeon01.jsp"/>
+            <jsp:include page="/WEB-INF/jsp/section/minwon/min011.jsp"/>
         </div>
 
 
@@ -168,7 +168,7 @@
             {
                 showRowCheckColumn : false,
                 showRowNumColumn : false,
-                enable : false,
+                editable : false,
                 height: 538,
                 wordWrap: true,
             })
@@ -345,7 +345,8 @@
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print : true});
-
+        search_startDate.value = getToday("yyyy-MM-dd");
+        search_endDate.value = addDate(getToday("yyyy-MM-dd"), 7, "yyyy-MM-dd");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
 

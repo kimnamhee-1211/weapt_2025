@@ -6,7 +6,7 @@
 
 </style>
 
-<div class="layer_bg" id="pop_min_daejang">
+<div class="layer_bg" id="min001">
     <div class="popup" style="width:910px;">
         <div id="pop_title" class="pop_title">&#10004;&nbsp;세대민원대장</div>
         <div class="section1_btn" id="pop_btn"></div>
@@ -20,7 +20,7 @@
                     <th>면적</th>
                     <th>세대주</th>
                     <th>집전화</th>
-                    <th>핸드폰</th>
+                    <th>휴대전화</th>
                     <th>거주형태</th>
                 </tr>
                 <tr>
@@ -67,7 +67,7 @@
 
 
 <script>
-    const popupId = "pop_min_daejang";
+    const popupId = "min001";
     let querySet;
 
     let popGrid1;	// 그리드 컴포넌트

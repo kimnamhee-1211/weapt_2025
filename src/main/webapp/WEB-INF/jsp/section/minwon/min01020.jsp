@@ -243,6 +243,7 @@
         Object.assign({}, we_grid_Props,
             {
                 showRowNumColumn: false,
+                editable : false
             })
     );
 
@@ -557,13 +558,13 @@
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, save: true , del: true});
         search_startDate.value = getToday("yyyy-MM-dd");
-        search_endDate.value = getToday("yyyy-MM-dd");
+        search_endDate.value = addDate(getToday("yyyy-MM-dd"), 7, "yyyy-MM-dd");
 
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
 
         Promise.all([
-            //그리드 DDL
+            //DDL
             getSelectOption_input1_minwonGbn(),
             getSelectOption_input1_user(),
         ]).then(function () {

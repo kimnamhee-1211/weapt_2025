@@ -45,7 +45,10 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         return result;
     }
 
-    //결재 직책 조회 TPM_CONFIRM_LINE
+    /*결재 직책 조회 TPM_CONFIRM_LINE
+     * 테이블 : TPM_CONFIRM_LINE
+     * 일지 : 업무일지, 민원일지
+     */
     @Override
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getApprDutyLine(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
@@ -56,10 +59,7 @@ public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalS
         List<Map<String, Object>> menuGroup = baseCrudMapper.selectList("approvalMapper.confirmLine_menuGroup", param);
         param.put("MENU_GROUP", menuGroup.get(0).get("MENU_GROUP"));
 
-        System.out.println(param);
-        String statement = buildApprovalStatement(sectionId, component, "confirmLine");
-
-        List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
+        List<Map<String, Object>> result = baseCrudMapper.selectList("approvalMapper.getConfirmLine", param);
 
         if (result == null || result.isEmpty()) {
             throw new ApprovalAuthException(

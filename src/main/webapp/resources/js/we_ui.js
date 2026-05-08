@@ -102,12 +102,13 @@ function btnPermission(data) {
     });
 }
 
-//공통코드 select 태그 option 설정
-/*
- * CODEDV_NO(str) :  공통코드
- * selectId(odj) : select tag id
- * all(str): "전체"(필수 아님) / "" (필수)
- * short(boolean) : true 약어명 / false 상세명
+/* function selectOptionMaker
+ * @description : 공통코드 select 태그 option 설정
+ * @param CODEDV_NO : 공통코드 str
+ * @param selectId : select 태그 obj
+ * @param all : "전체"(필수 아님) / "" (필수)
+ * @param short : true 약어명 / false 상세명
+ * @return : null
  */
 async function selectOptionMaker(CODEDV_NO, selectId, all, short = false) {
     let selectOptions = await we_getCode(CODEDV_NO);
@@ -132,24 +133,12 @@ async function selectOptionMaker(CODEDV_NO, selectId, all, short = false) {
     selectId.selectedIndex = 0;
 }
 
-//USERGROUP_ID select 태그 option 설정
-async function selectUsergroupId(selectId, all) {
-    let usergroupIds = await we_getUsergroupId();
-    if (usergroupIds) {
-        let select = selectId;
-        if (!isNull(all)) {
-            select.insertAdjacentHTML("afterbegin", "<option value=''>" + all + "</option>");  //필요시
-        }
-        usergroupIds.forEach(row => {
-            select.insertAdjacentHTML("beforeend",
-                `<option value="${row.USERGROUP_ID}">${row.USERGROUP_NM}</option>`);
-        })
-    }
-    selectId.selectedIndex = 0;
-}
 
-
-//입력부 text 날짜 포멧
+/* function inputDateFormat
+ * @description : 입력부 text 날짜(yyyy-DD-mm) 형식으로 변환
+ * @param obj : input 태그
+ * @return : null
+ */
 function inputDateFormat(obj) {
     let date = obj.value;
     if (!/^[0-9]*$/.test(date)) {
@@ -162,7 +151,12 @@ function inputDateFormat(obj) {
     }
 }
 
-//입력부 text 숫자 포멧
+
+/* function inputNumFormat
+ * @description : 입력부 text 숫자 형식으로 변환
+ * @param obj : input 태그
+ * @return : null
+ */
 function inputNumFormat(obj) {
     let num = obj.value;
     if (!/^[0-9]*$/.test(num)) {
@@ -171,7 +165,12 @@ function inputNumFormat(obj) {
     }
 }
 
-//입력부 text 전화번호 포멧
+
+/* function inputTelFormat
+ * @description : 입력부 text 전화번호 형식으로 변환
+ * @param obj : input 태그
+ * @return : null
+ */
 function inputTelFormat(obj) {
     let tel = obj.value.replace(/-/g, '');
 
@@ -196,7 +195,12 @@ function inputTelFormat(obj) {
     obj.value = formatted;
 }
 
-//입력부 text 사업자번호 포멧
+
+/* function inputBRNFormat
+ * @description : 입력부 text 사업자번호 형식으로 변환
+ * @param obj : input 태그
+ * @return : null
+ */
 function inputBRNFormat(obj) {
     let num = obj.value.replace(/-/g, '');
     let formatted = "";
@@ -213,8 +217,11 @@ function inputBRNFormat(obj) {
     obj.value = formatted;
 }
 
-
-//입력부 text 금액 포멧
+/* function inputMoneyFormat
+ * @description : 입력부 text 금액 형식으로 변환
+ * @param obj : input 태그
+ * @return : null
+ */
 function inputMoneyFormat(obj) {
     let num = obj.value.replace(/,/g, "");  // 기존 콤마 제거
 
@@ -232,7 +239,12 @@ function inputMoneyFormat(obj) {
     }
 }
 
-//data-input 태그 바인딩
+/* function dataToInput
+ * @description : data{} input[name] 태그 바인딩
+ * @param data : data{}
+ * @param inputDivId : 태그 id str
+ * @return : null
+ */
 function dataToInput(data, inputDivId) {
     const inputDiv = document.querySelector("#" + inputDivId);
     const namedElements = inputDiv.querySelectorAll('[name]');
@@ -255,7 +267,12 @@ function dataToInput(data, inputDivId) {
     }
 }
 
-//그리그-input 태그 바인딩
+/* function gridToInput
+ * @description : 그리드 아이템 input[name] 태그 바인딩
+ * @param grid : grid obj
+ * @param inputDivId : 태그 id str
+ * @return : null
+ */
 function gridToInput(grid, inputDivId) {
     let selectedRow = AUIGrid.getSelectedRows(grid)[0];
     const inputDiv = document.querySelector("#" + inputDivId);
@@ -273,7 +290,12 @@ function gridToInput(grid, inputDivId) {
     }
 }
 
-//input-그리그 태그 바인딩
+/* function inputToGrid
+ * @description : input[name] 태그 key(name)-value 그리드 바인딩
+ * @param grid :  grid obj
+ * @param inputDivId :  태그 id str
+ * @return : null
+ */
 function inputToGrid(grid, inputDivId) {
     const inputDiv = document.querySelector("#" + inputDivId);
     const namedElements = inputDiv.querySelectorAll('[name]');
@@ -294,7 +316,11 @@ function inputToGrid(grid, inputDivId) {
 }
 
 
-//input-object 태그 바인딩
+/* function inputToData
+ * @description : input[name] 태그 key(name)-value 객체로 내보내기
+ * @param inputDivId :  태그 id str
+ * @return : {}
+ */
 function inputToData(inputDivId) {
     const inputDiv = document.querySelector("#" + inputDivId);
     const namedElements = inputDiv.querySelectorAll('[name]');
@@ -315,7 +341,11 @@ function inputToData(inputDivId) {
 }
 
 
-//input lear
+/* function clearInput
+ * @description : input[name] 태그 clear
+ * @param inputDivId :  태그 id str
+ * @return : null
+ */
 function clearInput(inputDivId) {
     const inputDiv = document.querySelector("#" + inputDivId);
     const namedElements = inputDiv.querySelectorAll('[name]');
@@ -328,7 +358,11 @@ function clearInput(inputDivId) {
     }
 }
 
-//
+/* function disableInput
+ * @description : input[name] 태그 disable 처리하기
+ * @param inputDivId :  태그 id str
+ * @return : null
+ */
 function disableInput(inputDivId) {
     const inputDiv = document.querySelector("#" + inputDivId);
     const namedElements = inputDiv.querySelectorAll('[name]');
@@ -338,25 +372,28 @@ function disableInput(inputDivId) {
 }
 
 
-//팝업 열기 이벤트
+
+/* function popupOpen
+ * @description : 팝업 열기 이벤트
+ * @param popupTagId : 팝업id str
+ * @return : null
+ */
 function popupOpen(popupTagId) {
     const popupTag = document.querySelector("#" + popupTagId);
     popupTag.style.display = 'block';
 }
 
-//팝업 닫기 이벤트
+
+/* function popupClose
+ * @description : 팝업 닫기 이벤트
+ * @param popupTagId : 팝업 아이디 str
+ * @return : null
+ */
 function popupClose(popupTagId) {
     const popupTag = document.querySelector("#" + popupTagId);
     popupTag.style.display = 'none';
 }
 
-
-
-
-
-
-    	
-    	
 
 
   

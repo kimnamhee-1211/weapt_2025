@@ -8,6 +8,7 @@
  * function isNull(object) : null 체크
  * function dateFormat(obj) : text 날짜 포멧
  * function strToDate(obj) : text 날짜 - Date 변환
+ * function addDate(date, num, format) : 기준일자에 + - 일 계산
  * function  dateToStr(date, format) : Date - text 날짜 변환
  * function stripHtml(html) : HTML 태그 제거-순수 텍스트 추출
  * function nextAlpha(str) : 알파벳 조합 최대값 구하기
@@ -18,7 +19,11 @@
  *
  */
 
-//날짜 return String
+/* function getToday
+ * @description : 오늘날짜
+ * @param format : 원하는 형식
+ * @return : string
+ */
 function getToday(format) {
     const today = new Date();
     const todayYr = today.getFullYear();        // 2025
@@ -47,7 +52,11 @@ function getToday(format) {
     }
 }
 
-//null 체크
+/* function isNull
+ * @description : null 체크
+ * @param obj : obj
+ * @return : boolean
+ */
 function isNull(obj) {
     if (obj == null) return true;
     if (Array.isArray(obj)) {
@@ -63,7 +72,11 @@ function isNull(obj) {
     return false;
 }
 
-//text 날짜 포멧
+/* function dateFormat
+ * @description :  text 날짜 yyyy-MM-dd 형식 변환
+ * @param obj : yyyyMMdd 형식 날짜 str
+ * @return : string
+ */
 function dateFormat(obj) {
     if (isNull(obj)) return "";
     let result = obj.replace(/[^0-9]/g, '');
@@ -74,7 +87,11 @@ function dateFormat(obj) {
     }
 }
 
-//text 날짜 - Date 변환
+/* function strToDate
+ * @description : text 날짜 - Date 변환
+ * @param obj : yyyyMMdd 형식 날짜 str
+ * @return : Date
+ */
 function strToDate(obj) {
     if (isNull(obj)) return "";
     let result = obj.replace(/[^0-9]/g, '');
@@ -82,10 +99,16 @@ function strToDate(obj) {
     let month = result.substring(4, 6);
     let day = result.substring(6, 8);
     let date = new Date(year, month - 1, day);
+
     return date;
 }
 
-//Date - text 날짜 변환
+/* function dateToStr
+ * @description : Date - text 날짜 변환
+ * @param date : Date 값
+ * @param format : 리턴할 날짜 포멧
+ * @return : string
+ */
 function dateToStr(date, format) {
     if (isNull(date)) return "";
     if (isNull(format)) return date;
@@ -115,8 +138,32 @@ function dateToStr(date, format) {
     }
 }
 
+/* function addDate
+ * @description : 기준일자에 + - 일 계산
+ * @param obj : yyyyMMdd 형식 날짜 str
+ * @param num : + - 할 Number
+ * @param format : 리턴할 날짜 포멧
+ * @return : string
+ */
+function addDate(obj, num, format) {
+    if (isNull(obj)) return "";
+    if (isNull(num)) return obj;
 
-//HTML 태그 제거-순수 텍스트 추출
+    let result = obj.replace(/[^0-9]/g, '');
+    let year = result.substring(0, 4);
+    let month = result.substring(4, 6);
+    let day = Number(result.substring(6, 8))
+    let date = new Date(year, month - 1, day);
+    date.setDate(date.getDate() + num);
+
+    return dateToStr(date, format);
+}
+
+/* function stripHtml
+ * @description : HTML 태그 제거-순수 텍스트 추출
+ * @param obj : HTML
+ * @return : string
+ */
 function stripHtml(obj) {
     if (isNull(obj)) return "";
     const hasTags = /<\/?[a-z][\s\S]*>/i.test(obj);
@@ -128,7 +175,11 @@ function stripHtml(obj) {
     return tempDiv.textContent || tempDiv.innerText || "";
 }
 
-// 알파벳 조합 최대값 구하기
+/* function nextAlpha
+ * @description : 알파벳 조합으로 된 str 최대값 구하기
+ * @param obj : 알파벳 조합으로 이루어진 str
+ * @return : string
+ */
 function nextAlpha(obj) {
     if (isNull(obj)) return "";
     let chars = (obj.slice(0, 2)).split('');
@@ -147,8 +198,11 @@ function nextAlpha(obj) {
     return chars.join('');
 }
 
-
-// camel → snake
+/* function toSnakeUpper
+ * @description : camel → snake
+ * @param obj : camel로 이루어진 str
+ * @return : string
+ */
 function toSnakeUpper(obj) {
     if (isNull(obj)) return "";
     const result = {};
@@ -180,7 +234,10 @@ function toSnakeUpper(obj) {
 
 
 
-
+/* Array DS_MONTH
+ * @description : 1~12월 객체 배열
+ * @return : Array
+ */
 const DS_MONTH = [
     {DS_MONTH_CD: "01", DS_MONTH: "1월"},
     {DS_MONTH_CD: "02", DS_MONTH: "2월"},

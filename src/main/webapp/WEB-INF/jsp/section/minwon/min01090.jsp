@@ -90,7 +90,7 @@
         Object.assign({}, we_grid_Props,
             {
                 showRowCheckColumn : false,
-                enable : false,
+                editable : false
             })
     );
 

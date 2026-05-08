@@ -2,24 +2,26 @@
 
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
-<jsp:include page="/WEB-INF/jsp/section/minwon/min_nav.jsp" />
+<jsp:include page="/WEB-INF/jsp/section/iljung/ilj_nav.jsp" />
 
-        <div id="section">
-            <div class="section1">
-                <span class="section1_nav"><i class="icon-phone-squared"></i>민원일지결재</span>
-                <div class="section1_btn" id="section1_btn"></div>
+    <div id="section">
+        <div class="section1">
+            <span class="section1_nav"><i class="icon-calendar-plus-o"></i>업무일지결재</span>
+            <div class="section1_btn" id="section1_btn">
             </div>
-            <div class="section2">
-                <div class="section2_line0"></div>
-            </div>
-            <div id="conf_line"> 
-                <div class="conf_line_left">
-                    <input type="date" id="search_scDate" name="SC_DATE">
-                </div>
-                <div id="apprGrid1" class="conf_line_right"></div>
-            </div>
-            <div id="grid1"  style="height: 546px;"></div>
         </div>
+        <div class="section2">
+            <div class="section2_line0"></div>
+        </div>
+        <div id="conf_line">
+            <div class="conf_line_left">
+                <input type="date" id="search_scDate" name="SC_DATE">
+            </div>
+            <div id="apprGrid1" class="conf_line_right"></div>
+        </div>
+        <div id="grid1"  style="height: 546px;"></div>
+    </div>
+
 
 <script>
     /** 작성 순서
@@ -61,42 +63,40 @@
 
     //그리드2 설정
     const grid1ColumnLayout = [
-        { dataField: "SLIP_NO",
-            headerText: "전표번호",
+        { dataField: "MST_NO",
+            visible : false
+        },
+        { dataField: "MST_MONTH",
+            visible : false
+        },
+        { dataField: "SEQ",
+            visible : false
+        },
+        { dataField: "GBN_NAME",
+            headerText: "일정구분",
+            width : "8%",
             dataType: "text",
-            width : "8%"
         },
-        { dataField: "MINWON_DATE",
-            headerText: "접수일자",
-            dataType: "date",
-            formatString: "yyyy-mm-dd",
-            width : "10%"
-        },
-        { dataField: "PLACE",
-            headerText: "장소",
-            dataType: "text",
-            width : "20%"
-        },
-        { dataField: "DESCR",
-            headerText: "내역",
+        { dataField: "TITLE",
+            headerText: "내용",
             dataType: "text",
             width : "*%",
             style: "line-break-column",
         },
-        { dataField: "RECEIPT_USER",
-            headerText: "접수자",
+        { dataField: "MAIN_DEPT_NAME",
+            headerText: "주무부서",
+            width : "10%",
             dataType: "text",
+        },
+        { dataField: "STATUS_NM",
+            headerText: "결과",
             width : "8%",
-        },
-        { dataField: "STATUS_NAME",
-            headerText: "처리상태",
             dataType: "text",
-            width : "10%",
         },
-        { dataField: "WORK_USER",
+        { dataField: "WORKER_NAME",
             headerText: "처리자",
+            width : "8%",
             dataType: "text",
-            width : "10%",
         },
     ];
 
@@ -107,12 +107,12 @@
                 editable : false,
                 showRowCheckColumn: false,
                 height : 546,
-                rowHeight : 60
+                rowHeight : 60,
+                wordWrap: true,
             })
     );
 
     //그리드 이벤트
-
     //결재란 클릭 시
     AUIGrid.bind(apprGrid1, "cellDoubleClick", function(event) {
         if(!isNull(event.headerText)){
@@ -275,10 +275,6 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
-                data.forEach( row =>{
-                    row.PLACE = make_place(row);
-                })
-
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
@@ -320,37 +316,6 @@
                 btnPermission(data)
             }
         });
-    }
-
-    function make_place(data){
-        let place = ""
-        if(data.GBN == "0"){
-            place =  data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + "호"
-        }else if(data.GBN == "1"){
-            if(data.LINE_GBN == "109999"){
-                place = data.HO_ID.split("-")[0] + "동 지하주차장"
-            }else{
-                let lineGbnNm = "";
-                switch (data.LINE_GBN){
-                    case "109003" :
-                        lineGbnNm = "현관";
-                        break;
-                    case "109997" :
-                        lineGbnNm = " EL";
-                        break;
-                    case "109998" :
-                        lineGbnNm = "옥탑";
-                        break;
-                    case "109002" :
-                        lineGbnNm = "계단";
-                        break;
-                }
-                place = data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + " " +  lineGbnNm
-            }
-        }else{
-            place = data.AREAR_NAME;
-        }
-        return place;
     }
 
     //로드

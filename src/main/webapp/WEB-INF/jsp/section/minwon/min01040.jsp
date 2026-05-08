@@ -17,17 +17,17 @@
                         <input type="date" id="search_endDate">
                     </span>&emsp;&emsp;
                     <span id="sedae">동호:&nbsp;
-                        <input type="text" id="search_stDong" name="" class="box50">동
-                        <input type="text" id="search_stHo" name="" class="box50">호&emsp;~
-                        <input type="text" id="search_endDong" name="" class="box50">동
-                        <input type="text" id="search_endHo" name="" class="box50">호&emsp;&emsp;&emsp;
+                        <input type="text" id="search_stDong" name="" class="box50" oninput="inputNumFormat(obj)">동
+                        <input type="text" id="search_stHo" name="" class="box50" oninput="inputNumFormat(obj)">호&emsp;~
+                        <input type="text" id="search_endDong" name="" class="box50" oninput="inputNumFormat(obj)">동
+                        <input type="text" id="search_endHo" name="" class="box50" oninput="inputNumFormat(obj)">호&emsp;&emsp;&emsp;
                     </span>
                 </div>
             </div>
         </div>
         <div id="grid1"></div>
-        <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_daejang.jsp"/>
-        <jsp:include page="/WEB-INF/jsp/section/minwon/pop_min_jeon01.jsp"/>
+        <jsp:include page="/WEB-INF/jsp/section/minwon/min001.jsp"/>
+        <jsp:include page="/WEB-INF/jsp/section/minwon/min011.jsp"/>
     </div>
 
 
@@ -138,7 +138,7 @@
         Object.assign({}, we_grid_Props,
             {
                 showRowCheckColumn : false,
-                enable : false,
+                editable : false
             })
     );
 
@@ -229,7 +229,7 @@
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print : true});
         search_startDate.value = getToday("yyyy-MM-dd");
-        search_endDate.value = getToday("yyyy-MM-dd");
+        search_endDate.value = addDate(getToday("yyyy-MM-dd"), 7, "yyyy-MM-dd");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
         search_grid1_onclick();

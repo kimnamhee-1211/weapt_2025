@@ -7,19 +7,16 @@
     <div id="section">
         <div class="section1">
             <span class="section1_nav"><i class="icon-phone-squared"></i>세대정보등록</span>
-            <span class="section1_nav_mic">&emsp;
-                <i class="icon-mic"></i>동 호 면적을 제외하고 그리드에 직접 입력(수정)하여 저장합니다.
-            </span>
             <div class="section1_btn" id="section1_btn"></div>
         </div>
         <div class="section2">
             <div class="section2_line1">
                 <div>
                     <span>동호:&nbsp;
-                        <input type="text" id="search_stDong" name="" class="box50">동
-                        <input type="text" id="search_stHo" name="" class="box50">호&emsp;~
-                        <input type="text" id="search_endDong" name="" class="box50">동
-                        <input type="text" id="search_endHo" name="" class="box50">호&emsp;&emsp;
+                        <input type="text" id="search_stDong" name="" class="box50" oninput="inputNumFormat(obj)">동
+                        <input type="text" id="search_stHo" name="" class="box50" oninput="inputNumFormat(obj)">호&emsp;~
+                        <input type="text" id="search_endDong" name="" class="box50" oninput="inputNumFormat(obj)">동
+                        <input type="text" id="search_endHo" name="" class="box50" oninput="inputNumFormat(obj)">호&emsp;&emsp;
                     </span>
                 </div>
             </div>
@@ -63,31 +60,56 @@
 
     //그리드 설정
     const grid1ColumnLayout = [
-        { dataField: "SLIP_NO",
-            visible : false
+        { dataField: "DONG_NAME",
+            headerText: "동",
+            dataType: "text",
+            width : "10%",
+            editable : false
         },
-        { dataField: "MINWON_DATE",
-            headerText: "접수일",
+        { dataField: "HO",
+            headerText: "호",
+            dataType: "text",
+            width : "10%",
+            editable : false
+        },
+        { dataField: "HOUSE_SIZE",
+            headerText: "면적",
+            dataType: "text",
+            width : "10%",
+            editable : false
+        },
+        { dataField: "IBJU_DATE",
+            headerText: "입주일자",
             dataType: "date",
             formatString: "yyyy-mm-dd",
-            width : "10%"
+            width : "10%",
         },
-        { dataField: "DESCR",
-            headerText: "접수 내역",
-            dataType: "text",
-            width : "*%",
-            style: "line-break-column",
-        },
-        { dataField: "STATUS_NAME",
-            headerText: "처리상태",
+        { dataField: "HOUSEHOLDER",
+            headerText: "세대주",
             dataType: "text",
             width : "10%",
         },
-        { dataField: "WORK_USER",
-            headerText: "처리자",
+        { dataField: "HOUSE_PHON_NO",
+            headerText: "집전화",
             dataType: "text",
             width : "10%",
         },
+        { dataField: "HP_NO",
+            headerText: "휴대전화",
+            dataType: "text",
+            width : "10%",
+        },
+        { dataField: "LIVE_TYPE",
+            headerText: "거주형태",
+            dataType: "text",
+            width : "10%",
+        },
+        { dataField: "REMARKS",
+            headerText: "비고",
+            dataType: "text",
+            width : "10%",
+        },
+
     ];
 
     //그리드 생성
@@ -95,7 +117,6 @@
         Object.assign({}, we_grid_Props,
             {
                 showRowCheckColumn : false,
-                enable : false,
             })
     );
 
@@ -106,8 +127,6 @@
 
         //검색데이터
         let selectParam = {
-            ST_DATE : search_stDate.value,
-            END_DATE : search_endDate.value,
             ST_DONG : search_stDong.value,
             ST_HO : search_stHo.value,
             END_DONG : search_endDong.value,

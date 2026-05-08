@@ -236,6 +236,19 @@
             });
         }
 
+        //기타
+        async function getSelectOption_search_usergroupId() {
+            let usergroupIds = await we_getUsergroupId();
+            if (usergroupIds) {
+                let select = search_usergroupId;
+                usergroupIds.forEach(row => {
+                    select.insertAdjacentHTML("beforeend",
+                        `<option value="${row.USERGROUP_ID}">${row.USERGROUP_NM}</option>`);
+                })
+            }
+            search_usergroupId.selectedIndex = 0;
+        }
+
 
         //로드
         window.onload = function() {
@@ -243,11 +256,15 @@
             btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, save: true});
             //crud 권한 처리 함수
             checkCrudPermission(pgId);
-            //공통코드 가져오기
-            selectUsergroupId(search_usergroupId, "").then(() => {
-                search_grid1_onclick()
-            });
 
+            //공통코드 가져오기
+            Promise.all([
+                //DDL
+                getSelectOption_search_usergroupId(),
+            ]).then(function () {
+                //로드 시 그리드 바로 조회
+                search_grid1_onclick();
+            })
 
         };
 
