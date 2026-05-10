@@ -457,7 +457,7 @@
         });
     }
 
-    async function getSelectOption_input1_minwonGbn() {
+    async function getSelect_input1_minwonGbn() {
         input_minwonGbn.innerHTML = "";
         //검색데이터
         let param = {}
@@ -469,7 +469,7 @@
             param: param,
         }
 
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if (list) {
             input_minwonGbn.insertAdjacentHTML("beforeend", "<option value='' selected>미선택</option>");
@@ -480,7 +480,7 @@
         }
     }
 
-    async function getSelectOption_input1_user() {
+    async function getSelect_input1_user() {
 
         input_workUser.innerHTML = "";
         //검색데이터
@@ -492,7 +492,7 @@
             component: pgId + "_input1_user",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
         
         input_user = list;
 
@@ -538,8 +538,8 @@
 
         Promise.all([
             //DDL
-            getSelectOption_input1_minwonGbn(),
-            getSelectOption_input1_user(),
+            getSelect_input1_minwonGbn(),
+            getSelect_input1_user(),
         ]).then(function () {
             //로드 시 그리드 바로 조회
             search_grid1_onclick();

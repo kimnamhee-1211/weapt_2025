@@ -368,7 +368,7 @@
         });
     }
 
-    async function getSelectOption_grid2_licenseCode(){
+    async function getSelect_grid2_licenseCode(){
         let code = await we_getCode('135');
         code.forEach(row=>{
             let item = {};
@@ -387,7 +387,7 @@
         //공통코드 가져오기
         //그리드 DDL
         Promise.all([
-            getSelectOption_grid2_licenseCode()
+            getSelect_grid2_licenseCode()
         ]).then(function () {
             //로드 시 그리드 바로 조회
             search_grid1_onclick();

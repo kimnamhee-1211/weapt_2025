@@ -238,14 +238,14 @@ public class BaseCrudController {
 
 
     // selectOption 검색
-    @RequestMapping(value = "/getSelectOption/{sectionId}/{component}", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
+    @RequestMapping(value = "/getSelect/{sectionId}/{component}", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String, Object>> getSelectOption(@PathVariable("sectionId") String sectionId,
+    public List<Map<String, Object>> getSelect(@PathVariable("sectionId") String sectionId,
                                                                   @PathVariable("component") String component,
                                                                   @RequestParam Map<String, Object> param,
                                                                   @SessionAttribute("loginUser") LoginVO loginUser) {
 
-        List<Map<String, Object>> result = baseCrudService.getSelectOption(sectionId, component, param, loginUser);
+        List<Map<String, Object>> result = baseCrudService.getSelect(sectionId, component, param, loginUser);
 
         return result;
     }

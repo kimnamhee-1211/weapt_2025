@@ -89,7 +89,7 @@
             component : pgId + "_grid1_column",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         list.forEach((row, idx)=>{
             let item = {};
@@ -177,7 +177,7 @@
         });
     }
 
-    async function getSelectOption_search_mstDate(){
+    async function getSelect_search_mstDate(){
 
         search_mstDate.innerHTML = "";
         //검색데이터
@@ -189,7 +189,7 @@
             component : pgId + "_search_mstDate",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if(list){
             list.forEach(row => {
@@ -209,7 +209,7 @@
         checkCrudPermission(pgId);
 
         Promise.all([
-            getSelectOption_search_mstDate(),
+            getSelect_search_mstDate(),
             grid1_column_make()
         ]).then(function (){
             //로드 시 그리드 바로 조회

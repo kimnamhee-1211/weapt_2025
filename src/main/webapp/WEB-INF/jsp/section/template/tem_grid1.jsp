@@ -295,7 +295,7 @@
         });
     }
 
-    async function getSelectOption_search_select(){
+    async function getSelect_search_select(){
 
         search_select.innerHTML = "";
         //검색데이터
@@ -307,7 +307,7 @@
             component : pgId + "_search_select",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if(list){
             list.forEach(row => {
@@ -318,7 +318,7 @@
         search_select.selectedIndex = 0;
     }
 
-    async function getSelectOption_grid1_gbn(){
+    async function getSelect_grid1_gbn(){
         //검색데이터
         let param = {};
         //파라미터
@@ -327,7 +327,7 @@
             component : pgId + "_grid1_gbn",
             param: param,
         }
-        DS_GBN = await we_getSelectOption(data);
+        DS_GBN = await we_getSelect(data);
     }
 
 
@@ -341,8 +341,8 @@
         checkCrudPermission(pgId);
 
         Promise.all([
-            getSelectOption_search_select(),
-            getSelectOption_grid1_gbn()
+            getSelect_search_select(),
+            getSelect_grid1_gbn()
         ]).then(function (){
             //로드 시 그리드 바로 조회
             search_grid1_onclick();

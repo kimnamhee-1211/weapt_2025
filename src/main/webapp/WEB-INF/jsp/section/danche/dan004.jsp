@@ -264,7 +264,7 @@
         });
     }
 
-    function disuse_onclick(){
+    function resign_onclick(){
         // 추가된 행 아이템들(배열)
         let checkedItems = AUIGrid.getCheckedRowItemsAll(grid1);
         let itemCount = checkedItems.length;
@@ -273,7 +273,7 @@
             alert("체크된 행이 없습니다.");
             return;
         }
-        if(isNull(input_disuseDate.value)){
+        if(isNull(input_resignDate.value)){
             alert("퇴사일은 반드시 입력해야 합니다.");
             return;
         }
@@ -288,8 +288,8 @@
         focus = gridFocus(grid1);
 
         checkedItems.forEach(row =>{
-            row.DISUSE_DATE = input_disuseDate.value.replace(/-/g, "");
-            row.DISUSE_REASON = input_disuseReason.value;
+            row.DISUSE_DATE = input_resignDate.value.replace(/-/g, "");
+            row.DISUSE_REASON = input_resignReason.value;
         });
 
         //저장 데이터
@@ -303,7 +303,7 @@
         //파라미터
         let saveData  = {
             sectionId : sectionId,
-            component : querySet + "_disuse",
+            component : querySet + "_resign",
             param: saveParam,
         }
 
@@ -347,7 +347,7 @@
         return isValid;
     }
 
-    async function getSelectOption_grid1_gradeCd(){
+    async function getSelect_grid1_gradeCd(){
         let  code = await we_getCode('126');
         code.forEach(row=>{
             let item = {};
@@ -372,7 +372,7 @@
 
         //그리드 DDL
         Promise.all([
-            getSelectOption_grid1_gradeCd()
+            getSelect_grid1_gradeCd()
         ]).then(function () {
             //로드 시 그리드 바로 조회
             search_grid1_onclick();

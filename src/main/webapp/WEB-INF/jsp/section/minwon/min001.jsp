@@ -133,6 +133,7 @@
     AUIGrid.bind(popGrid1, "cellDoubleClick", function(event) {
         pop_data.slipNo = AUIGrid.getSelectedRows(popGrid1)[0].SLIP_NO;
         pop_data.minwonDate = AUIGrid.getSelectedRows(popGrid1)[0].MINWON_DATE;
+        pop_data.popId = popupId;
         open_popup1_onclick(pop_data);
     });
 
@@ -145,11 +146,13 @@
     function add_popGrid1_onclick(){
         pop_data.slipNo = null;
         pop_data.minwonDate = null;
+        pop_data.popId = popupId;
         open_popup1_onclick(pop_data);
     }
 
     //그리드 조회 함수
     async function search_popGrid1_onclick(){
+        search_cntTable();
 
         let selectParam = {
             GBN : pop_data.gbn,
@@ -310,7 +313,6 @@
 
         if(!isNull(pop_data)){
             info_table_make();
-            search_cntTable();
             search_popGrid1_onclick();
         }
 

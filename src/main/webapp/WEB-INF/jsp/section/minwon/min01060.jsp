@@ -18,7 +18,7 @@
                 </div>
                 <div id="apprGrid1" class="conf_line_right"></div>
             </div>
-            <div id="grid1"  style="height: 546px;"></div>
+            <div id="grid1"></div>
         </div>
 
 <script>
@@ -114,7 +114,7 @@
 
     //그리드 이벤트
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        getSelectOption_min_setting();
+        getSelect_min_setting();
         open_popup1_onclick(AUIGrid.getSelectedRows(grid1)[0]);
     });
 

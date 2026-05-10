@@ -29,7 +29,6 @@ package egovframework.com.login.model;
  * @version 1.0
  * @see
  *
- *  Copyright (C) by MOPAS All right reserved.
  */
 public class LoginVO{
 
@@ -37,263 +36,198 @@ public class LoginVO{
 
 	/** 아이디 */
 	private String userId;
-
 	/** 비밀번호 */
 	private String password;
-
 	/** 이름 */
 	private String userName;
-
 	/** 사번 */
 	private String empNo;
-
 	/** 사용여부 */
 	private String useYn;
-
 	/** 관리소코드 */
 	private String officeCode;
-
 	/** 관리소명 */
 	private String officeName;
-
 	/** 휴대전화 */
 	private String hpNo;
-
 	/** 인증코드 */
 	private String authCode;
-
 	/** 사용자그룹ID */
 	private String usergroupId;
-
 	/** 사용자그룹설명 */
 	private String usergroupNm;
-
 	/** 작업그룹ID */
 	private String workGroupId;
-
 	/** 작업그룹이름 */
 	private String workGroupNm;
-
 	/** 전산회사코드 */
 	private String mgmcompCode;
-
 	/** 전산회사이름 */
 	private String mgmcompNm;
-
 	/** 현재상태 */
 	private String status;
-
 	/** 현재상태명 */
 	private String statusNm;
-
 	/** 관리자코드 */
 	private String mgmCode;
-
 	/** 상위관리자ID */
 	private String upMgmuserId;
-
 	/** 상위관리자명 */
 	private String upMgmuserName;
-
 	/** 레벨코드 */
 	private String levelCode;
-
 	/** 전화번호 */
 	private String tel;
-
 	/** 회사코드 */
 	private String compCode;
-
 	/** 회사코드 */
 	private String compName;
 
 	public String getUserId() {
 		return userId;
 	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
 	public String getPassword() {
 		return password;
 	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public String getUserName() {
 		return userName;
 	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
 	public String getEmpNo() {
 		return empNo;
 	}
-
-	public void setEmpNo(String empNo) {
-		this.empNo = empNo;
-	}
-
 	public String getUseYn() {
 		return useYn;
 	}
-
-	public void setUseYn(String useYn) {
-		this.useYn = useYn;
-	}
-
 	public String getOfficeCode() { return officeCode; }
-
-	public void setOfficeCode(String officeCode) {
-		this.officeCode = officeCode;
-	}
-
 	public String getOfficeName() {
 		return officeName;
 	}
-
-	public void setOfficeName(String officeName) {
-		this.officeName = officeName;
-	}
-
 	public String getHpNo() {
 		return hpNo;
 	}
-
-	public void setHpNo(String hpNo) {
-		this.hpNo = hpNo;
-	}
-
 	public String getAuthCode() {
 		return authCode;
 	}
-
-	public void setAuthCode(String authCode) {
-		this.authCode = authCode;
-	}
-
 	public String getUsergroupId() {
 		return usergroupId;
 	}
-
-	public void setUsergroupId(String usergroupId) {
-		this.usergroupId = usergroupId;
-	}
-
 	public String getUsergroupNm() {
 		return usergroupNm;
 	}
-
-	public void setUsergroupNm(String usergroupNm) {
-		this.usergroupNm = usergroupNm;
-	}
-
 	public String getWorkGroupId() {
 		return workGroupId;
 	}
-
-	public void setWorkGroupId(String workGroupId) {
-		this.workGroupId = workGroupId;
-	}
-
 	public String getMgmcompCode() {
 		return mgmcompCode;
 	}
-
-	public void setMgmcompCode(String mgmcompCode) {
-		this.mgmcompCode = mgmcompCode;
-	}
-
 	public String getMgmcompNm() {
 		return mgmcompNm;
 	}
-
-	public void setMgmcompNm(String mgmcompNm) {
-		this.mgmcompNm = mgmcompNm;
-	}
-
 	public String getWorkGroupNm() {
 		return workGroupNm;
 	}
-
-	public void setWorkGroupNm(String workGroupNm) {
-		this.workGroupNm = workGroupNm;
-	}
-
 	public String getStatus() {
 		return status;
 	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
 	public String getMgmCode() {
 		return mgmCode;
 	}
-
-	public void setMgmCode(String mgmCode) {
-		this.mgmCode = mgmCode;
-	}
-
 	public String getStatusNm() {
 		return statusNm;
 	}
-
-	public void setStatusNm(String statusNm) {
-		this.statusNm = statusNm;
-	}
-
 	public String getUpMgmuserId() {
 		return upMgmuserId;
 	}
-
-	public void setUpMgmuserId(String upMgmuserId) {
-		this.upMgmuserId = upMgmuserId;
-	}
-
 	public String getUpMgmuserName() {
 		return upMgmuserName;
 	}
-
-	public void setUpMgmuserName(String upMgmuserName) {
-		this.upMgmuserName = upMgmuserName;
-	}
-
 	public String getLevelCode() {return levelCode;}
-
-	public void setLevelCode(String levelCode) {
-		this.levelCode = levelCode;
-	}
-
 	public String getTel() {
 		return tel;
 	}
-
-	public void setTel(String tel) {
-		this.tel = tel;
-	}
-
 	public String getCompCode() {
 		return compCode;
 	}
-
-	public void setCompCode(String compCode) {
-		this.compCode = compCode;
-	}
-
 	public String getCompName() {
 		return compName;
 	}
 
-	public void setCompName(String compName) {
-		this.compName = compName;
+	private String trim(String value) {
+		return value == null ? null : value.trim();
 	}
+	public void setUserId(String userId) {
+		this.userId = trim(userId);
+	}
+	public void setPassword(String password) {
+		this.password = trim(password);
+	}
+	public void setUserName(String userName) {
+		this.userName = trim(userName);
+	}
+	public void setEmpNo(String empNo) {
+		this.empNo = trim(empNo);
+	}
+	public void setUseYn(String useYn) {
+		this.useYn = trim(useYn);
+	}
+	public void setOfficeCode(String officeCode) {
+		this.officeCode = trim(officeCode);
+	}
+	public void setOfficeName(String officeName) {
+		this.officeName = trim(officeName);
+	}
+	public void setHpNo(String hpNo) {
+		this.hpNo = trim(hpNo);
+	}
+	public void setAuthCode(String authCode) {
+		this.authCode = trim(authCode);
+	}
+	public void setUsergroupId(String usergroupId) {
+		this.usergroupId = trim(usergroupId);
+	}
+	public void setUsergroupNm(String usergroupNm) {
+		this.usergroupNm = trim(usergroupNm);
+	}
+	public void setWorkGroupId(String workGroupId) {
+		this.workGroupId = trim(workGroupId);
+	}
+	public void setMgmcompCode(String mgmcompCode) {
+		this.mgmcompCode = trim(mgmcompCode);
+	}
+	public void setMgmcompNm(String mgmcompNm) {
+		this.mgmcompNm = trim(mgmcompNm);
+	}
+	public void setWorkGroupNm(String workGroupNm) {
+		this.workGroupNm = trim(workGroupNm);
+	}
+	public void setStatus(String status) {
+		this.status = trim(status);
+	}
+	public void setMgmCode(String mgmCode) {
+		this.mgmCode = trim(mgmCode);
+	}
+	public void setStatusNm(String statusNm) {
+		this.statusNm = trim(statusNm);
+	}
+	public void setUpMgmuserId(String upMgmuserId) {
+		this.upMgmuserId = trim(upMgmuserId);
+	}
+	public void setUpMgmuserName(String upMgmuserName) {
+		this.upMgmuserName = trim(upMgmuserName);
+	}
+	public void setLevelCode(String levelCode) {
+		this.levelCode = trim(levelCode);
+	}
+	public void setTel(String tel) {
+		this.tel = trim(tel);
+	}
+	public void setCompCode(String compCode) {
+		this.compCode = trim(compCode);
+	}
+	public void setCompName(String compName) {
+		this.compName = trim(compName);
+	}
+
 
 	@java.lang.Override
 	public java.lang.String toString() {

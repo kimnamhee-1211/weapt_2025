@@ -89,7 +89,7 @@
 
     let DS_SUPPLIER = [];
 
-    async function getSelectOption_input_supplier(){
+    async function getSelect_input_supplier(){
         input_supplier.innerHTML = "";
         //검색데이터
         let param = {}
@@ -101,7 +101,7 @@
             param: param,
         }
 
-        DS_SUPPLIER = await we_getSelectOption(data);
+        DS_SUPPLIER = await we_getSelect(data);
 
         if(DS_SUPPLIER) {
             DS_SUPPLIER.forEach(row => {
@@ -146,7 +146,7 @@
 
         //공통코드 가져오기
         selectOptionMaker("134", input_contractdiv, "", false);
-        getSelectOption_input_supplier();
+        getSelect_input_supplier();
 
     }
 

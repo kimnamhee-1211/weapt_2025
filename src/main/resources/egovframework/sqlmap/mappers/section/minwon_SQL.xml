@@ -111,7 +111,7 @@
 				WHEN A.STATUS_CD = '4' THEN '처리중'
 				ELSE '미결' END 		AS STATUS_NAME,
 			B.WORK_USER 			AS WORK_USER,
-			A.GBN					AS GBN
+			A.GBN					AS GBN,
 			A.DONG_ID				AS DONG_ID,
 			A.LINE_GBN				AS LINE_GBN,
 			A.HO_ID					AS HO_ID,
@@ -145,7 +145,7 @@
 		ORDER BY CONVERT(INT, A.MINWON_DATE) DESC, CONVERT(INT, A.SLIP_NO) DESC
 	</select>
 
-	<select id="getSelectOption_min011_input_minwonGbn" parameterType="map" resultType="map">
+	<select id="getSelect_min011_input_minwonGbn" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE	AS OFFICE_CODE,
 			A.GBN_ID		AS GBN_ID,
@@ -155,7 +155,7 @@
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
 
-	<select id="getSelectOption_min011_input_user" parameterType="map" resultType="map">
+	<select id="getSelect_min011_input_user" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE	AS OFFICE_CODE,
 			A.NAME			AS NAME
@@ -167,17 +167,16 @@
 		ORDER BY A.NAME
 	</select>
 
-	<select id="getSelectOption_min011_input_workUser" parameterType="map" resultType="map">
+	<select id="getSelect_min011_input_workUser" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE	AS OFFICE_CODE,
 			A.COM_NAME		AS NAME
 		FROM dbo.TMN_MINWON_COMPANY A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 		  AND (A.USE_YN = '' OR ISNULL(A.USE_YN,'1') = '1')
-		ORDER BY A.NAME
 	</select>
 
-	<select id="getSelectOption_min011_info_tr" parameterType="map" resultType="map">
+	<select id="getSelect_min011_info_tr" parameterType="map" resultType="map">
 		SELECT
 			A.HOUSEHOLDER  		AS HOUSEHOLDER,
 			A.HP_NO  			AS HP_NO
@@ -360,8 +359,8 @@
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
-			A.MINWON_GBN = U.MINWON_GBN,
-			A.STATUS_CD  = U.STATUS_CD
+				A.MINWON_GBN = U.MINWON_GBN,
+				A.STATUS_CD  = U.STATUS_CD
 			FROM dbo.TMN_MINWON A
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
@@ -534,7 +533,7 @@
 		</choose>
 	</select>
 
-	<select id="getSelectOption_min01020_input1_minwonGbn" parameterType="map" resultType="map">
+	<select id="getSelect_min01020_input1_minwonGbn" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE	AS OFFICE_CODE,
 			A.GBN_ID		AS GBN_ID,
@@ -544,7 +543,7 @@
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
 
-	<select id="getSelectOption_min01020_input1_user" parameterType="map" resultType="map">
+	<select id="getSelect_min01020_input1_user" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE	AS OFFICE_CODE,
 			A.NAME			AS NAME
@@ -727,7 +726,7 @@
 		</if>
 	</update>
 
-	<select id="getSelectOption_min01030_search_minwonGbn" parameterType="map" resultType="map">
+	<select id="getSelect_min01030_search_minwonGbn" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE	AS OFFICE_CODE,
 			A.GBN_ID		AS GBN_ID,
@@ -1035,15 +1034,13 @@
 			AND A.MINWON_DATE = #{SC_DATE}
 	</select>
 
-
-
 	<select id="selectList_min01070_grid1" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE		AS OFFICE_CODE,
 			A.HO_ID				AS HO_ID,
 			A.DONG_ID			AS DONG_ID,
 			B.DONG_NAME			AS DONG_NAME,
-			A.SUBSTRING(A.HO_ID, CHARINDEX('-', A.HO_ID) + 1, LEN(A.HO_ID))			AS HO,
+			SUBSTRING(A.HO_ID, CHARINDEX('-', A.HO_ID) + 1, LEN(A.HO_ID))			AS HO,
 			A.HOUSE_SIZE		AS HOUSE_SIZE,
 			A.IBJU_DATE			AS IBJU_DATE,
 			A.HOUSEHOLDER		AS HOUSEHOLDER,
@@ -1432,7 +1429,7 @@
 		</if>
 	</insert>
 
-	<select id="selectList_min_setting" parameterType="map" resultType="map">
+	<select id="getSelect_min_setting" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE				AS OFFICE_CODE,
 			A.VIEW_GBN					AS VIEW_GBN,
@@ -1481,7 +1478,7 @@
 			</if>
 	</select>
 
-	<update id="updateList_min01090_cancelDisuse" parameterType="list">
+	<update id="updateList_min01090_cancelResign" parameterType="list">
 		<if test="list != null and list.size > 0">
 			UPDATE A
 				SET

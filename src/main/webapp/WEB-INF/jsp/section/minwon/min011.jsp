@@ -31,12 +31,13 @@
                             <div style="display: flex">
                                 <span>
                                     <input type="date" id="input_minwonDate" name="MINWON_DATE" data-format="date">
-                                </span>&emsp;&emsp
+                                </span>&emsp;&emsp;
                                 <%-- 환경설정에 체크되어 있으면 서버 현재시간 가져오기 --%>
                                 <span class="span_time">
                                     <span>
                                         <input type="checkbox" id="input_timeInput" name="TIME_INPUT" >
-                                        <label for="input_minwonDate">시간선택</label></span>
+                                        <label for="input_minwonDate">시간선택</label>
+                                    </span>
                                     <%-- 체크되면 시,분 보여지기 --%>
                                     <span id="span_time" style="display: none">&ensp;:
                                         <input type="time" id="input_time" name="TIME">
@@ -82,7 +83,7 @@
                     <span class="section_middle_btn" id="section_middle_btn2"></span>
                     <div class="search-box section1_btn">
                         <button id="input2_btn_photo" class="find_btn" onclick="">사진첨부</button>
-                        <button onclick="input2_btn_stock" class="find_btn">소모품사용</button>
+                        <button id="input2_btn_stock" class="find_btn">소모품사용</button>
                         <button id="input2_btn_gauge" onclick="" class="find_btn">계량기사용</button>
                     </div>
                     </span>
@@ -395,7 +396,7 @@
             updateParam: editedRowItems,
             key: ["WORK_SEQ"],
             before: {
-                action: "update",
+                action: "all",
                 saveMode: "U",
                 beforeParam: [{...item}]
             }
@@ -412,10 +413,8 @@
             successSave: (json) => {
                 alert(json.O_MSG);
                 if (json.O_RESULT > 0) {
-                    focus = AUIGrid.getSelectedIndex(focusGrid)[0];
+                    saveKey2 == "U";
                     if(!isNull(pop_popId)){
-                        saveKey2 == "U";
-                        search_cntTable();
                         search_popGrid1_onclick();
                     }else{
                         search_grid1_onclick();
@@ -437,7 +436,6 @@
                 })
             }else {
                 focus = AUIGrid.getSelectedIndex(focusGrid)[0];
-                search_cntTable();
                 search_popGrid1_onclick();
             }
         }else {
@@ -489,7 +487,6 @@
                 if (data.O_RESULT > 0) {
                     focus = AUIGrid.getSelectedIndex(focusGrid)[0] < 1 ? 0 : AUIGrid.getSelectedIndex(focusGrid)[0]-1;
                     if(!isNull(pop_popId)){
-                        search_cntTable();
                         search_popGrid1_onclick();
                     }else{
                         search_grid1_onclick();
@@ -534,7 +531,6 @@
                     focus = AUIGrid.getSelectedIndex(focusGrid)[0];
                     if(!isNull(pop_popId)){
                         saveKey2 == "I";
-                        search_cntTable();
                         search_popGrid1_onclick();
                     }else{
                         search_grid1_onclick();
@@ -545,7 +541,7 @@
         });
     }
 
-    async function getSelectOption_input_minwonGbn() {
+    async function getSelect_input_minwonGbn() {
         input_minwonGbn.innerHTML = "";
         //검색데이터
         let param = {}
@@ -557,7 +553,7 @@
             param: param,
         }
 
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if (list) {
             input_minwonGbn.insertAdjacentHTML("beforeend", "<option value='' selected>미선택</option>");  //필요시
@@ -568,7 +564,7 @@
         }
     }
 
-    async function getSelectOption_input_user() {
+    async function getSelect_input_user() {
         input_receiptUser.innerHTML = "";
         input_workUser.innerHTML = "";
         //검색데이터
@@ -580,14 +576,14 @@
             component: querySet1 + "_input_user",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         let data2 = {
             sectionId: sectionId,
             component: querySet1 + "_input_workUser",
             param: param,
         }
-        let list2 = await we_getSelectOption(data);
+        let list2 = await we_getSelect(data2);
 
         input_user = list;
         input_user2 = [...list, ...list2].sort((a, b) =>
@@ -621,7 +617,7 @@
                             <th>연락처</th>
                             <td><input type="text" id="input_hpNo" name="HP_NO" oninput="inputTelFormat(this)" placeholder="숫자만 입력해주세요" maxlength="13"></td>
             `
-            document.querySelector("#input_dongHo").value = make_place_pop(pop_data1)
+            document.querySelector("#input_dongHo").value = make_place(pop_data1)
 
         } else if (pop_data1.gbn == "1") {
             info_tr.innerHTML = `
@@ -632,7 +628,7 @@
                             <th>연락처</th>
                             <td><input type="text" id="input_hpNo" name="HP_NO" ></td>
             `
-            document.querySelector("#input_dongLine").value = make_place_pop(pop_data1);
+            document.querySelector("#input_dongLine").value = make_place(pop_data1);
         } else {
             info_tr.innerHTML = `
                             <th>장소</th>
@@ -642,13 +638,13 @@
                             <th>연락처</th>
                             <td><input type="text" id="input_hpNo" name="HP_NO" ></td>
             `
-            document.querySelector("#input_arearName").value = make_place_pop(pop_data1);
+            document.querySelector("#input_arearName").value = make_place(pop_data1);
         }
     }
 
     async function info_tr_make_add() {
         if (pop_data1.gbn == "0") {
-            let list = await getSelectOption_info_tr();
+            let list = await getSelect_info_tr();
             document.querySelector("#input_minwonName").value = list[0].HOUSEHOLDER ? list[0].HOUSEHOLDER : "";
             document.querySelector("#input_hpNo").value = list[0].HP_NO ? list[0].HP_NO : "";
         }
@@ -656,7 +652,7 @@
         input_minwonDate.disabled = false;
     }
 
-    async function getSelectOption_info_tr() {
+    async function getSelect_info_tr() {
         let param = {
             DONG_ID: pop_data1.dongId,
             HO_ID: pop_data1.hoId,
@@ -670,7 +666,7 @@
             param: param,
         }
 
-        return await we_getSelectOption(data);
+        return await we_getSelect(data);
     }
 
     input_receiptUser.addEventListener("change", () => {
@@ -751,7 +747,7 @@
         return isValid;
     }
 
-    async function getSelectOption_min_setting() {
+    async function getSelect_min_setting() {
         //검색데이터
         let param = {}
 
@@ -761,7 +757,7 @@
             component: "min_setting",
             param: param,
         }
-        setting = await we_getSelectOption(data);
+        setting = await we_getSelect(data);
 
         if(setting[0].MESSAGE_GBN != "1"){
             input1_btn_mms.style.display = "hidden"
@@ -809,8 +805,8 @@
             Promise.all([
                 info_tr_make(),
                 //그리드 DDL
-                getSelectOption_input_minwonGbn(),
-                getSelectOption_input_user(),
+                getSelect_input_minwonGbn(),
+                getSelect_input_user(),
             ]).then(function () {
                 if (saveKey1 == "U") {
                     input_slipNo.value = pop_data1.slipNo;

@@ -224,7 +224,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
         //insert
         Map<String, Object> resultInsert = new HashMap<>();
         int resultInsertRowCount = 0;
-        Map<String, Object> key = new HashMap<>();
+        List<Map<String, Object>> key = new ArrayList<Map<String, Object>>();
         if (insertParam != null && !insertParam.isEmpty()) {
             List<String> rawKey = (List<String>) param.get("key");
             resultInsert = saveInsert(sectionId,
@@ -234,7 +234,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
                                     before,
                                     loginUser, pgId, menuId);
             resultInsertRowCount = (Integer) resultInsert.get("resultInsertRowCount");
-            key = (Map<String, Object>) resultInsert.get("key");
+            key = (List<Map<String, Object>>) resultInsert.get("key");
         }
 
         //update
@@ -263,8 +263,6 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
                                            String pgId,
                                            String menuId) {
 
-        List<Map<String, Object>> key = new ArrayList<Map<String, Object>>();
-
         //사전 함수 호출
         if (before != null && !before.isEmpty() && "insert".equals(before.get("action"))) {
             callBefore(before,
@@ -273,8 +271,10 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
                         component,
                         pgId,
                         menuId);
-            }
+        }
+
         //pk 생성
+        List<Map<String, Object>> key = new ArrayList<Map<String, Object>>();
         if (rawKey != null && !rawKey.isEmpty()) {
             insertParam = getKeyToParam(insertParam, rawKey, sectionId, component, loginUser);
             System.out.println("getKeyToParam : " + insertParam);
@@ -456,15 +456,15 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //selectOption 검색
     @Override
     @Transactional(readOnly = true)
-    public List<Map<String, Object>> getSelectOption(String sectionId,
+    public List<Map<String, Object>> getSelect(String sectionId,
                                                      String component,
                                                      Map<String, Object> param,
                                                      LoginVO loginUser) {
 
-        String statement = buildCrudStatement(sectionId, component, "getSelectOption");
+        String statement = buildCrudStatement(sectionId, component, "getSelect");
         setLoginParam(param, loginUser);
 
-        List<Map<String, Object>> result = baseCrudMapper.getSelectOption(statement, param);
+        List<Map<String, Object>> result = baseCrudMapper.getSelect(statement, param);
         return result;
     }
 

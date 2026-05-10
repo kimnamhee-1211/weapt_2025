@@ -240,7 +240,7 @@
         });
     }
 
-    async function getSelectOption_grid1_empId(){
+    async function getSelect_grid1_empId(){
         //검색데이터
         let param = {};
         //파라미터
@@ -249,7 +249,7 @@
             component : pgId + "_grid1_empId",
             param: param,
         }
-        DS_EMP_NO = await we_getSelectOption(data);
+        DS_EMP_NO = await we_getSelect(data);
     }
 
     //로드
@@ -261,7 +261,7 @@
         //공통코드 가져오기
         //그리드 DDL
         Promise.all([
-            getSelectOption_grid1_empId()
+            getSelect_grid1_empId()
         ]).then(function () {
             //로드 시 그리드 바로 조회
             search_grid1_onclick();

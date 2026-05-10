@@ -110,7 +110,7 @@ function strToDate(obj) {
  * @return : string
  */
 function dateToStr(date, format) {
-    if (isNull(date)) return "";
+    if (!date || isNaN(date.getTime())) return "";
     if (isNull(format)) return date;
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');

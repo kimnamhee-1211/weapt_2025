@@ -13,24 +13,26 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
     </context:component-scan>
 
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
-        <property name="webBindingInitializer">
-            <bean class="egovframework.com.cmmn.web.EgovBindingInitializer"/>
-        </property>
-        <property name="messageConverters">
-            <list>
-                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
-            </list>
-        </property>
-    </bean>
+    <mvc:annotation-driven />
 
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
-        <property name="interceptors">
-            <list>
-                <ref bean="localeChangeInterceptor" />
-            </list>
-        </property>
-    </bean>
+<!--    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">-->
+<!--        <property name="webBindingInitializer">-->
+<!--            <bean class="egovframework.com.cmmn.web.EgovBindingInitializer"/>-->
+<!--        </property>-->
+<!--        <property name="messageConverters">-->
+<!--            <list>-->
+<!--                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>-->
+<!--            </list>-->
+<!--        </property>-->
+<!--    </bean>-->
+
+<!--    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">-->
+<!--        <property name="interceptors">-->
+<!--            <list>-->
+<!--                <ref bean="localeChangeInterceptor" />-->
+<!--            </list>-->
+<!--        </property>-->
+<!--    </bean>-->
     
     <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
     <!-- 쿠키를 이용한 Locale 이용시 <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/> -->
@@ -38,17 +40,17 @@
         <property name="paramName" value="language" />
     </bean>
 
-    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-        <property name="defaultErrorView" value="cmmn/egovError"/>
-        <property name="exceptionMappings">
-            <props>
-                <prop key="org.springframework.dao.DataAccessException">cmmn/dataAccessFailure</prop>
-                <prop key="org.springframework.transaction.TransactionException">cmmn/transactionFailure</prop>
-                <prop key="org.egovframe.rte.fdl.cmmn.exception.EgovBizException">cmmn/egovError</prop>
-                <prop key="org.springframework.security.AccessDeniedException">cmmn/egovError</prop>
-            </props>
-        </property>
-    </bean>
+<!--    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+<!--        <property name="defaultErrorView" value="cmmn/egovError"/>-->
+<!--        <property name="exceptionMappings">-->
+<!--            <props>-->
+<!--                <prop key="org.springframework.dao.DataAccessException">cmmn/dataAccessFailure</prop>-->
+<!--                <prop key="org.springframework.transaction.TransactionException">cmmn/transactionFailure</prop>-->
+<!--                <prop key="org.egovframe.rte.fdl.cmmn.exception.EgovBizException">cmmn/egovError</prop>-->
+<!--                <prop key="org.springframework.security.AccessDeniedException">cmmn/egovError</prop>-->
+<!--            </props>-->
+<!--        </property>-->
+<!--    </bean>-->
 
     <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="1"
 	    p:viewClass="org.springframework.web.servlet.view.JstlView"

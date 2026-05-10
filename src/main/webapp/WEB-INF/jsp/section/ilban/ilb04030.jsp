@@ -119,7 +119,7 @@
             component : pgId + "_grid1_column",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         list.forEach((row, idx)=>{
             let item = {};

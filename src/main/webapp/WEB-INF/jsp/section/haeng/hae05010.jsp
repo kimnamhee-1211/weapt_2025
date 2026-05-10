@@ -15,10 +15,10 @@
             <div class = "section2_block">
                 <span class="search-box section1_btn">
                     폐기일 :
-                    <input type="date" id="input_disuseDate" class="box_width100">
+                    <input type="date" id="input_resignDate" class="box_width100">
                      &nbsp; 폐기사유 :
-                    <input type="text" id="input_disuseReason" class="box_width100">
-                    <button id="disuse_btn_grid1" class="del_btn" onclick="disuse_onclick()">폐기</button>&nbsp;
+                    <input type="text" id="input_resignReason" class="box_width100">
+                    <button id="resign_btn_grid1" class="del_btn" onclick="resign_onclick()">폐기</button>&nbsp;
                 </span>
             </div>
         </div>
@@ -61,8 +61,8 @@
     let DS_DOC_GBN = [];
     let DS_DOC_STORAGE = [];
     let DS_DEPT_CD = [];
-    const input_disuseDate = document.querySelector("#input_disuseDate"); //input 컴포넌트
-    const input_disuseReason = document.querySelector("#input_disuseReason"); //input 컴포넌트
+    const input_resignDate = document.querySelector("#input_resignDate"); //input 컴포넌트
+    const input_resignReason = document.querySelector("#input_resignReason"); //input 컴포넌트
 
     //그리드 설정
     const grid1ColumnLayout = [
@@ -289,7 +289,7 @@
     }
 
     //그리드 저장 함수
-    function disuse_onclick(){
+    function resign_onclick(){
         const checkedItems = AUIGrid.getCheckedRowItemsAll(grid1);
 
         let itemCount = checkedItems.length;
@@ -310,8 +310,8 @@
         focus = gridFocus(grid1);
 
         checkedItems.forEach(row =>{
-            row.DISUSE_DATE = input_disuseDate.value.replace(/-/g, "");
-            row.DISUSE_REASON = input_disuseReason.value;
+            row.DISUSE_DATE = input_resignDate.value.replace(/-/g, "");
+            row.DISUSE_REASON = input_resignReason.value;
         })
 
         //저장 데이터
@@ -325,7 +325,7 @@
         //파라미터
         let saveData  = {
             sectionId : sectionId,
-            component : pgId + "_disuse",
+            component : pgId + "_resign",
             param: saveParam,
         };
 
@@ -360,7 +360,7 @@
         });
     }
 
-    async function getSelectOption_grid1_docGbn(){
+    async function getSelect_grid1_docGbn(){
         //검색데이터
         let param = {};
         //파라미터
@@ -369,10 +369,10 @@
             component : pgId + "_grid1_docGbn",
             param: param,
         }
-        DS_DOC_GBN = await we_getSelectOption(data);
+        DS_DOC_GBN = await we_getSelect(data);
     }
 
-    async function getSelectOption_grid1_docStorage(){
+    async function getSelect_grid1_docStorage(){
         //검색데이터
         let param = {};
         //파라미터
@@ -381,11 +381,11 @@
             component : pgId + "_grid1_docStorage",
             param: param,
         }
-        DS_DOC_STORAGE = await we_getSelectOption(data);
+        DS_DOC_STORAGE = await we_getSelect(data);
     }
 
 
-    async function getSelectOption_grid1_deptCd(){
+    async function getSelect_grid1_deptCd(){
         //검색데이터
         let param = {};
         //파라미터
@@ -394,7 +394,7 @@
             component : pgId + "_grid1_deptCd",
             param: param,
         }
-        DS_DEPT_CD = await we_getSelectOption(data);
+        DS_DEPT_CD = await we_getSelect(data);
     }
 
 
@@ -407,9 +407,9 @@
         //공통코드 가져오기
         //그리드 DDL
         Promise.all([
-            getSelectOption_grid1_docGbn(),
-            getSelectOption_grid1_docStorage(),
-            getSelectOption_grid1_deptCd()
+            getSelect_grid1_docGbn(),
+            getSelect_grid1_docStorage(),
+            getSelect_grid1_deptCd()
         ]).then(function () {
             //로드 시 그리드 바로 조회
             search_grid1_onclick();

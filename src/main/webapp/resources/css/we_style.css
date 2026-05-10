@@ -394,7 +394,6 @@ button:hover{
     float: left; 
 }
 .conf_line_right{
-    height:98px;
     float: right !important;
     border : none !important;
 }

@@ -269,7 +269,7 @@
         });
     }
 
-    async function getSelectOption_input1_absentCd() {
+    async function getSelect_input1_absentCd() {
         input_absentCd.innerHTML = "";
         //검색데이터
         let param = {}
@@ -279,7 +279,7 @@
             component: pgId + "_input1_absentCd",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if (list) {
             list.forEach(row => {
@@ -298,7 +298,7 @@
         checkCrudPermission(pgId);
         //그리드 DDL
         Promise.all([
-            getSelectOption_input1_absentCd()
+            getSelect_input1_absentCd()
         ]).then(function () {
             //로드 시 그리드 바로 조회
             search_grid1_onclick();

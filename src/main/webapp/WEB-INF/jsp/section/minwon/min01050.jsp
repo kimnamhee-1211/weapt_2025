@@ -119,7 +119,7 @@
 
     //그리드 이벤트
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        getSelectOption_min_setting();
+        getSelect_min_setting();
         open_popup_onclick(AUIGrid.getSelectedRows(grid1)[0]);
     });
 

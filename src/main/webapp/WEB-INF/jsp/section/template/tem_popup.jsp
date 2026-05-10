@@ -246,7 +246,7 @@
     //행 클릭 시
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         if(!isNull(AUIGrid.getSelectedRows(grid1)[0].COMP_CODE)) {
-            getSelectOption_input_mgmuserId();
+            getSelect_input_mgmuserId();
         }
         //그리드-input 태그 바인딩
         gridToInput(grid1, popupId);
@@ -431,7 +431,7 @@
         });
     }
 
-    async function getSelectOption_input_compCode(){
+    async function getSelect_input_compCode(){
         input_compCode.innerHTML = "";
         //검색데이터
         let param = {
@@ -442,7 +442,7 @@
             component : pgId + "_input_compCode",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if(list){
             input_compCode.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
@@ -455,7 +455,7 @@
 
     }
 
-    async function getSelectOption_input_mgmuserId(){
+    async function getSelect_input_mgmuserId(){
         input_mgmuserId.innerHTML = "";
         //검색데이터
         let param = {
@@ -467,7 +467,7 @@
             component : pgId + "_input_mgmuserId",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if(list) {
             input_mgmuserId.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
@@ -497,7 +497,7 @@
             selectOptionMaker("102", input_part1, "", false),
             selectOptionMaker("103", input_part2, "", false),
             //그리드 DDL
-            getSelectOption_input_compCode(),
+            getSelect_input_compCode(),
         ]).then(function (){
             //로드 시 그리드 바로 조회
             search_grid1_onclick();

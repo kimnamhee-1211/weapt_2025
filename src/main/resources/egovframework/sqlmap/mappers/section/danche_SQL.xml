@@ -205,7 +205,7 @@
 		</if>
 	</update>
 
-	<update id="updateList_dan001_disuse" parameterType="list">
+	<update id="updateList_dan001_resign" parameterType="list">
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
@@ -410,7 +410,7 @@
 		ORDER BY CONVERT(INT, A.EMP_NO), A.DISUSE_DATE, A.NAME
 	</select>
 
-	<update id="updateList_dan003_cancelDisuse" parameterType="list">
+	<update id="updateList_dan003_cancelResign" parameterType="list">
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
@@ -653,7 +653,7 @@
 		</if>
 	</update>
 
-	<update id="updateList_dan004_disuse" parameterType="list">
+	<update id="updateList_dan004_resign" parameterType="list">
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET
@@ -752,7 +752,7 @@
 		ORDER BY CONVERT(INT, A.EMP_NO), A.DISUSE_DATE, A.NAME
 	</select>
 
-	<update id="updateList_dan006_cancelDisuse" parameterType="list">
+	<update id="updateList_dan006_cancelResign" parameterType="list">
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET

@@ -247,7 +247,7 @@
 		)
 	</delete>
 
-	<select id="getSelectOption_pop_contract_input_supplier" parameterType="map" resultType="map">
+	<select id="getSelect_pop_contract_input_supplier" parameterType="map" resultType="map">
 		SELECT
 		    A.OFFICE_CODE	AS OFFICE_CODE,
 			A.SUPPLIER_CD	AS SUPPLIER_CD,
@@ -531,7 +531,7 @@
 	</select>
 
 
-	<select id="getSelectOption_ilb03010_grid1_deptCd" parameterType="map" resultType="map">
+	<select id="getSelect_ilb03010_grid1_deptCd" parameterType="map" resultType="map">
 		SELECT
 			A.DEPT_CD 	AS DEPT_CD,
 			A.DEPT_NAME	AS DEPT_NAME
@@ -540,7 +540,7 @@
 		ORDER BY A.SORT_ORDER
 	</select>
 
-	<select id="getSelectOption_ilb03010_grid1_jobDutyCd" parameterType="map" resultType="map">
+	<select id="getSelect_ilb03010_grid1_jobDutyCd" parameterType="map" resultType="map">
 		SELECT
 			A.JOB_DUTY_CD	AS JOB_DUTY_CD,
 			A.JOB_DUTY_NAME	AS JOB_DUTY_NAME
@@ -691,7 +691,7 @@
 		</if>
 	</update>
 
-	<select id="getSelectOption_ilb03020_grid1_empId" parameterType="map" resultType="map">
+	<select id="getSelect_ilb03020_grid1_empId" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE   AS OFFICE_CODE,
 			A.EMP_NO        AS EMP_NO,
@@ -1123,7 +1123,7 @@
 		ORDER BY CONVERT(INT, A.EMP_NO), A.JOIN_DATE, A.NAME
 	</select>
 
-	<select id="getSelectOption_ilb04010_input1_absentCd" parameterType="map" resultType="map">
+	<select id="getSelect_ilb04010_input1_absentCd" parameterType="map" resultType="map">
 		SELECT
 			A.ABSENT_CD		AS ABSENT_CD,
 			A.ABSENT_NAME	AS ABSENT_NAME,
@@ -1171,7 +1171,7 @@
 		</if>
 	</insert>
 
-	<select id="getSelectOption_ilb04020_search_empNo" parameterType="map" resultType="map">
+	<select id="getSelect_ilb04020_search_empNo" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE	AS OFFICE_CODE,
 			A.EMP_NO		AS EMP_NO,
@@ -1191,7 +1191,7 @@
 		ORDER BY A.EMP_NO
 	</select>
 
-	<select id="getSelectOption_ilb04020_grid1_absentCd" parameterType="map" resultType="map">
+	<select id="getSelect_ilb04020_grid1_absentCd" parameterType="map" resultType="map">
 		SELECT
 			A.ABSENT_CD   AS ABSENT_CD,
 			A.ABSENT_NAME AS ABSENT_NAME,
@@ -1298,7 +1298,7 @@
 		)
 	</delete>
 
-	<select id="getSelectOption_ilb04030_grid1_column" parameterType="map" resultType="map">
+	<select id="getSelect_ilb04030_grid1_column" parameterType="map" resultType="map">
 		SELECT
 			A.ABSENT_CD   AS ABSENT_CD,
 			A.ABSENT_NAME AS ABSENT_NAME,

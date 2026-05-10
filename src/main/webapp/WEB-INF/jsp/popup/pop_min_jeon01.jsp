@@ -196,7 +196,7 @@
     const input_workUserName = document.querySelector("#input_workUserName");
     const input_workDesc = document.querySelector("#input_workDesc");
 
-    async function getSelectOption_input_minownGbn() {
+    async function getSelect_input_minownGbn() {
         input_minownGbn.innerHTML = "";
         //검색데이터
         let param = {}
@@ -208,7 +208,7 @@
             param: param,
         }
 
-        let list  = await we_getSelectOption(data);
+        let list  = await we_getSelect(data);
 
         if (list) {
             list.forEach(row => {
@@ -219,7 +219,7 @@
     }
 
 
-    async function getSelectOption_input_statusCd() {
+    async function getSelect_input_statusCd() {
         input_statusCd.innerHTML = "";
         //검색데이터
         let param = {}
@@ -231,7 +231,7 @@
             param: param,
         }
 
-        let list  = await we_getSelectOption(data);
+        let list  = await we_getSelect(data);
 
         if (list) {
             list.forEach(row => {
@@ -241,7 +241,7 @@
         }
     }
 
-    async function getSelectOption_input_user() {
+    async function getSelect_input_user() {
         input_receiptUser.innerHTML = "";
         input_workUser.innerHTML = "";
         //검색데이터
@@ -254,7 +254,7 @@
             param: param,
         }
 
-        let list  = await we_getSelectOption(data);
+        let list  = await we_getSelect(data);
 
         if (list) {
             input_receiptUser.insertAdjacentHTML("beforeend", "<option value='write' selected>직접입력</option>");  //필요시
@@ -285,9 +285,9 @@
         }
 
         input_minwonDate.value = getToday("yyyy-MM-dd")
-        getSelectOption_input_minownGbn();
-        getSelectOption_input_statusCd();
-        getSelectOption_input_user();
+        getSelect_input_minownGbn();
+        getSelect_input_statusCd();
+        getSelect_input_user();
     }
 
 

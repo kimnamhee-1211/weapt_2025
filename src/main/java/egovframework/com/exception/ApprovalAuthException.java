@@ -2,7 +2,7 @@ package egovframework.com.exception;
 
 import egovframework.com.common.dto.ApiResponse;
 
-public class ApprovalAuthException  extends RuntimeException {
+public class ApprovalAuthException extends RuntimeException {
 
     private final String userMessage;
     private ApiResponse.ApiType apiType;

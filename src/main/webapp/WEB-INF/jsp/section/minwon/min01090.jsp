@@ -104,14 +104,13 @@
             {
                 showRowNumColumn : false,
                 editable : false,
-                height: 538,
                 wordWrap: true,
             })
     );
 
     //그리드 이벤트
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        getSelectOption_min_setting();
+        getSelect_min_setting();
         open_popup1_onclick(AUIGrid.getSelectedRows(grid1)[0]);
     });
 
@@ -152,7 +151,7 @@
         });
     }
 
-    function cancelDisuse_onclick(){
+    function cancelResign_onclick(){
         // 추가된 행 아이템들(배열)
         let checkedItems = AUIGrid.getCheckedRowItemsAll(grid1);
         let itemCount = checkedItems.length;
@@ -184,7 +183,7 @@
         //파라미터
         let saveData  = {
             sectionId : sectionId,
-            component : pgId + "_cancelDisuse",
+            component : pgId + "_cancelResign",
             param: saveParam,
         }
 

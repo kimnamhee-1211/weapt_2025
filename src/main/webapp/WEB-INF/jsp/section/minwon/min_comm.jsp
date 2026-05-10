@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <script>
 
@@ -99,7 +100,7 @@
         let pop_item = {
             pgId: pgId,
             menuId: menuId,
-            querySet: "min011",
+            querySet: "min001",
             pop_data: pop_data
         }
         pop_onload(pop_item);

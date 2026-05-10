@@ -79,7 +79,7 @@ public class BaseCrudMapper extends EgovAbstractMapper{
 	}
 
 	//selectOption 검색
-	public List<Map<String, Object>> getSelectOption(String statement, Map<String, Object> param){
+	public List<Map<String, Object>> getSelect(String statement, Map<String, Object> param){
 		List<Map<String, Object>> result = super.selectList(statement, param);
 		return result;
 	}

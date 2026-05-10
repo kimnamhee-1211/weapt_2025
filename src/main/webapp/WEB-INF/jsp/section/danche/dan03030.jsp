@@ -15,7 +15,7 @@
                     <i class="icon-mic"></i>복귀 버튼을 사용하여 회의단체 명단에 복귀 처리합니다.
                 </span>
                 <span class="search-box section1_btn">
-                    <button id="cancelDisuse_btn_grid1" class="del_btn" onclick="cancelDisuse_onclick()">복귀</button>
+                    <button id="cancelResign_btn_grid1" class="del_btn" onclick="cancelResign_onclick()">복귀</button>
                 </span>
             </div>
         </div>

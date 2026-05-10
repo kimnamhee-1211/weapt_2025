@@ -54,7 +54,7 @@
 	</select>
 
 
-	<select id="getSelectOption_ilj01015_input_schGbn" parameterType="map" resultType="map">
+	<select id="getSelect_ilj01015_input_schGbn" parameterType="map" resultType="map">
 		SELECT
 			A.SCH_GBN	AS SCH_GBN,
 			A.GBN_NAME	AS GBN_NAME
@@ -64,7 +64,7 @@
 	</select>
 
 
-	<select id="getSelectOption_ilj01015_input_mainDeptCd" parameterType="map" resultType="map">
+	<select id="getSelect_ilj01015_input_mainDeptCd" parameterType="map" resultType="map">
 		SELECT
 			A.DEPT_CD	AS DEPT_CD,
 			A.DEPT_NAME	AS DEPT_NAME
@@ -73,7 +73,7 @@
 		ORDER BY A.SORT_ORDER
 	</select>
 
-	<select id="getSelectOption_ilj01015_input_workUserId" parameterType="map" resultType="map">
+	<select id="getSelect_ilj01015_input_workUserId" parameterType="map" resultType="map">
 		SELECT
 			A.EMP_NO	AS EMP_NO,
 			A.NAME		AS NAME
@@ -197,7 +197,7 @@
 		)
 	</delete>
 
-	<select id="getSelectOption_ilj01040_search_schGbn" parameterType="map" resultType="map">
+	<select id="getSelect_ilj01040_search_schGbn" parameterType="map" resultType="map">
 		SELECT
 			A.SCH_GBN	AS SCH_GBN,
 			A.GBN_NAME	AS GBN_NAME
@@ -206,7 +206,7 @@
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
 
-	<select id="getSelectOption_ilj01040_search_mainDeptCd" parameterType="map" resultType="map">
+	<select id="getSelect_ilj01040_search_mainDeptCd" parameterType="map" resultType="map">
 		SELECT
 			A.DEPT_CD	AS DEPT_CD,
 			A.DEPT_NAME	AS DEPT_NAME
@@ -321,7 +321,7 @@
 	</select>
 
 
-	<select id="getSelectOption_ilj02010_search_mstDate" parameterType="map" resultType="map">
+	<select id="getSelect_ilj02010_search_mstDate" parameterType="map" resultType="map">
 		SELECT
 			A.MST_DATE	AS MST_DATE,
 			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
@@ -330,7 +330,7 @@
 		ORDER BY CONVERT(INT, A.MST_DATE) DESC
 	</select>
 
-	<select id="getSelectOption_ilj02010_grid1_schGbn" parameterType="map" resultType="map">
+	<select id="getSelect_ilj02010_grid1_schGbn" parameterType="map" resultType="map">
 		SELECT
 			A.SCH_GBN	AS SCH_GBN,
 			A.GBN_NAME	AS GBN_NAME
@@ -339,7 +339,7 @@
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
 
-	<select id="getSelectOption_ilj02010_grid1_deptCd" parameterType="map" resultType="map">
+	<select id="getSelect_ilj02010_grid1_deptCd" parameterType="map" resultType="map">
 		SELECT
 			A.DEPT_CD	AS DEPT_CD,
 			A.DEPT_NAME	AS DEPT_NAME
@@ -448,7 +448,7 @@
 	</delete>
 
 
-	<select id="getSelectOption_ilj02020_search_mstDate" parameterType="map" resultType="map">
+	<select id="getSelect_ilj02020_search_mstDate" parameterType="map" resultType="map">
 		SELECT
 			A.MST_DATE AS MST_DATE,
 			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
@@ -457,7 +457,7 @@
 		ORDER BY CONVERT(INT, A.MST_DATE) DESC
 	</select>
 
-	<select id="getSelectOption_ilj02020_grid1_column" parameterType="map" resultType="map">
+	<select id="getSelect_ilj02020_grid1_column" parameterType="map" resultType="map">
 		SELECT
 			A.SCH_GBN 	AS SCH_GBN,
 			A.GBN_NAME	AS GBN_NAME
@@ -477,7 +477,7 @@
 	</select>
 
 
-	<select id="getSelectOption_ilj02030_search_mstDate" parameterType="map" resultType="map">
+	<select id="getSelect_ilj02030_search_mstDate" parameterType="map" resultType="map">
 		SELECT
 			A.MST_DATE AS MST_DATE,
 			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT

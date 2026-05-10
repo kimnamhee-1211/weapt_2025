@@ -242,7 +242,7 @@
 
 
         //기타
-        async function getSelectOption_search_usergroupId() {
+        async function getSelect_search_usergroupId() {
             let usergroupIds = await we_getUsergroupId();
             if (usergroupIds) {
                 let select = search_usergroupId;
@@ -277,7 +277,7 @@
 
             Promise.all([
                 //DDL
-                getSelectOption_search_usergroupId(),
+                getSelect_search_usergroupId(),
             ]).then(function () {
                 //로드 시 그리드 바로 조회
                 search_grid1_onclick();

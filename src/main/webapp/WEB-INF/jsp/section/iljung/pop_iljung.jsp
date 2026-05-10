@@ -318,7 +318,7 @@
         return isValid;
     }
 
-    async function getSelectOption_input_schGbn(){
+    async function getSelect_input_schGbn(){
         input_schGbn.innerHTML = "";
         //검색데이터
         let param = {
@@ -329,7 +329,7 @@
             component : querySet + "_input_schGbn",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if(list){
             list.forEach(row => {
@@ -341,7 +341,7 @@
     }
 
 
-    async function getSelectOption_input_mainDeptCd(){
+    async function getSelect_input_mainDeptCd(){
         input_mainDeptCd.innerHTML = "";
         //검색데이터
         let param = {
@@ -352,7 +352,7 @@
             component : querySet + "_input_mainDeptCd",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if(list){
             input_mainDeptCd.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
@@ -364,7 +364,7 @@
         input_mainDeptCd.selectedIndex = 0;
     }
 
-    async function getSelectOption_input_workUserId(){
+    async function getSelect_input_workUserId(){
         input_workUserId.innerHTML = "";
         //검색데이터
         let param = {
@@ -375,7 +375,7 @@
             component : querySet + "_input_workUserId",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if(list) {
             input_workUserId.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
@@ -425,9 +425,9 @@
             //공통코드 가져오기
             selectOptionMaker("120", input_statusCd, "", false),
             //그리드 DDL
-            getSelectOption_input_schGbn(),
-            getSelectOption_input_mainDeptCd(),
-            getSelectOption_input_workUserId(),
+            getSelect_input_schGbn(),
+            getSelect_input_mainDeptCd(),
+            getSelect_input_workUserId(),
             saveKey = pop_item.saveKey
         ]).then(function (){
             if(saveKey == "U"){

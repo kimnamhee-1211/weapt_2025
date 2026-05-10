@@ -148,7 +148,7 @@
         });
     }
 
-    function cancelDisuse_onclick(){
+    function cancelResign_onclick(){
         // 추가된 행 아이템들(배열)
         let checkedItems = AUIGrid.getCheckedRowItemsAll(grid1);
         let itemCount = checkedItems.length;
@@ -180,7 +180,7 @@
         //파라미터
         let saveData  = {
             sectionId : sectionId,
-            component : querySet + "_cancelDisuse",
+            component : querySet + "_cancelResign",
             param: saveParam,
         }
 

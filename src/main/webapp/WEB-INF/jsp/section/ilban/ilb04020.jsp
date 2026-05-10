@@ -325,7 +325,7 @@
         });
     }
 
-    async function getSelectOption_search_empNo(){
+    async function getSelect_search_empNo(){
         search_empNo.innerHTML = "";
         //검색데이터
         let param = {
@@ -337,7 +337,7 @@
             component : pgId + "_search_empNo",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if(list){
             search_empNo.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");
@@ -349,7 +349,7 @@
         search_empNo.selectedIndex = 0;
     }
 
-    async function getSelectOption_grid1_absentCd(){
+    async function getSelect_grid1_absentCd(){
         //검색데이터
         let param = {};
         //파라미터
@@ -358,7 +358,7 @@
             component : pgId + "_grid1_absentCd",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
         DS_ABSENT_CD = list;
     }
 
@@ -373,8 +373,8 @@
         //공통코드 가져오기
         //그리드 DDL
         Promise.all([
-            getSelectOption_search_empNo(),
-            getSelectOption_grid1_absentCd()
+            getSelect_search_empNo(),
+            getSelect_grid1_absentCd()
         ]).then(function () {
             //로드 시 그리드 바로 조회
             search_grid1_onclick();

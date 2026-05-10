@@ -46,7 +46,7 @@
 		</if>
 	</insert>
 
-	<select id="getSelectOption_soj03010_input_empNo" parameterType="map" resultType="map">
+	<select id="getSelect_soj03010_input_empNo" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE AS OFFICE_CODE,
 			A.EMP_NO      AS EMP_NO,
@@ -72,7 +72,7 @@
 		ORDER BY A.EMP_NO
 	</select>
 
-	<select id="getSelectOption_soj03010_input_deptCd" parameterType="map" resultType="map">
+	<select id="getSelect_soj03010_input_deptCd" parameterType="map" resultType="map">
 		SELECT
 			A.DEPT_CD	AS DEPT_CD,
 			A.DEPT_NAME	AS DEPT_NAME
@@ -81,7 +81,7 @@
 		ORDER BY A.DEPT_CD
 	</select>
 
-	<select id="getSelectOption_soj03010_input_jobDutyCd" parameterType="map" resultType="map">
+	<select id="getSelect_soj03010_input_jobDutyCd" parameterType="map" resultType="map">
 		SELECT
 			A.JOB_DUTY_CD	AS JOB_DUTY_CD,
 			A.JOB_DUTY_NAME AS JOB_DUTY_NAME
@@ -125,12 +125,12 @@
 		LEFT JOIN dbo.THR_JOB_DUTY C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.JOB_DUTY_CD = C.JOB_DUTY_CD
 		LEFT JOIN dbo.TAD_EMP D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.EMP_NO = D.EMP_NO
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
-			<if test="LOGINUSER_COMP_CODE != null and LOGINUSER_COMP_CODE != ''">
-				AND A.COMP_CODE = #{LOGINUSER_COMP_CODE}
-			</if>
-			<if test="LOGINUSER_COMP_CODE == null or LOGINUSER_COMP_CODE == ''">
-				AND (A.COMP_CODE IS NULL OR A.COMP_CODE = '')
-			</if>
+<!--			<if test="LOGINUSER_COMP_CODE != null and LOGINUSER_COMP_CODE != ''">-->
+<!--				AND A.COMP_CODE = #{LOGINUSER_COMP_CODE}-->
+<!--			</if>-->
+<!--			<if test="LOGINUSER_COMP_CODE == null or LOGINUSER_COMP_CODE == ''">-->
+<!--				AND (A.COMP_CODE IS NULL OR A.COMP_CODE = '')-->
+<!--			</if>-->
 		ORDER BY A.USER_ID, A.REGI_DATE
 	</select>
 
@@ -280,12 +280,12 @@
 		FROM dbo.TPM_USER A
 		LEFT JOIN dbo.THR_JOB_DUTY B ON A.OFFICE_CODE = B.OFFICE_CODE AND  A.JOB_DUTY_CD = B.JOB_DUTY_CD
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND
-			<if test="LOGINUSER_COMP_CODE != null and LOGINUSER_COMP_CODE != ''">
-				A.COMP_CODE = #{LOGINUSER_COMP_CODE}
-			</if>
-			<if test="LOGINUSER_COMP_CODE == null or LOGINUSER_COMP_CODE == ''">
-				(A.COMP_CODE IS NULL OR A.COMP_CODE = '')
-			</if>
+<!--			<if test="LOGINUSER_COMP_CODE != null and LOGINUSER_COMP_CODE != ''">-->
+<!--				A.COMP_CODE = #{LOGINUSER_COMP_CODE}-->
+<!--			</if>-->
+<!--			<if test="LOGINUSER_COMP_CODE == null or LOGINUSER_COMP_CODE == ''">-->
+<!--				(A.COMP_CODE IS NULL OR A.COMP_CODE = '')-->
+<!--			</if>-->
 		ORDER BY A.USER_ID
 	</select>
 
@@ -623,7 +623,7 @@
 		</if>
 	</delete>
 
-	<select id="getSelectOption_soj05070_input_compCode" parameterType="map" resultType="map">
+	<select id="getSelect_soj05070_input_compCode" parameterType="map" resultType="map">
 		SELECT
 			A.COMP_CODE	AS COMP_CODE,
 			A.COMP_NAME	AS COMP_NAME
@@ -632,7 +632,7 @@
 		ORDER BY A.COMP_CODE
 	</select>
 
-	<select id="getSelectOption_soj05070_input_mgmuserId" parameterType="map" resultType="map">
+	<select id="getSelect_soj05070_input_mgmuserId" parameterType="map" resultType="map">
 		SELECT
 			A.COMP_CODE		AS COMP_CODE,
 			A.MGMUSER_ID	AS MGMUSER_ID

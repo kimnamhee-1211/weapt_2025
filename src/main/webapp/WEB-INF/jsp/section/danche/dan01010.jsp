@@ -10,10 +10,10 @@
                 <div class="section1_btn" id="section1_btn"></div>
                 <span class="search-box" style="float: right;">
                     퇴사일 :
-                    <input type="date" id="input_disuseDate" name="DISUSE_DATE" class="box_width100">
+                    <input type="date" id="input_resignDate" name="DISUSE_DATE" class="box_width100">
                      &nbsp; 퇴사사유 :
-                    <input type="text" id="input_disuseReason" name="DISUSE_REASON" class="box_width200">
-                    <button id="disuse_btn_grid1" class="del_btn" onclick="disuse_onclick()">퇴사</button>
+                    <input type="text" id="input_resignReason" name="DISUSE_REASON" class="box_width200">
+                    <button id="resign_btn_grid1" class="del_btn" onclick="resign_onclick()">퇴사</button>
                 </span>
             </div>
             <jsp:include page="/WEB-INF/jsp/section/danche/dan001.jsp" />

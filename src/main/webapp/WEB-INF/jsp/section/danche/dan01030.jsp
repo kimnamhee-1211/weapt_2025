@@ -9,7 +9,7 @@
             <div class="section1_nav"><i class="icon-user-add"></i>전임동대표</div>
             <div class="section1_btn" id="section1_btn"></div>
             <span class="search-box" style="float: right;">
-                <button id="cancelDisuse_btn_grid1" class="del_btn" onclick="cancelDisuse_onclick()">복귀</button>
+                <button id="cancelResign_btn_grid1" class="del_btn" onclick="cancelResign_onclick()">복귀</button>
             </span>
         </div>
         <jsp:include page="/WEB-INF/jsp/section/danche/dan003.jsp" />

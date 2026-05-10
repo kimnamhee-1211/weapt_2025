@@ -99,7 +99,7 @@
 		ORDER BY A.FILE_SEQ, A.FILE_NM
 	</select>
 
-	<select id="getSelectOption_hwa010_grid1_deptCd" parameterType="map" resultType="map">
+	<select id="getSelect_hwa010_grid1_deptCd" parameterType="map" resultType="map">
 		SELECT
 			A.DEPT_CD 	AS DEPT_CD,
 			A.DEPT_NAME AS DEPT_NAME
@@ -347,7 +347,7 @@
 		</if>
 	</insert>
 
-	<select id="getSelectOption_hwa040_search_empNo" parameterType="map" resultType="map">
+	<select id="getSelect_hwa040_search_empNo" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE	AS OFFICE_CODE,
 			A.EMP_NO		AS EMP_NO,

@@ -195,9 +195,9 @@
             updateParam : checkedItems,
             key : [],
             before : {
-                action : "update",
-                saveMode : "U",
-                beforeParam : checkedItems
+                // action : "update",
+                // saveMode : "U",
+                // beforeParam : checkedItems
             }
         }
 

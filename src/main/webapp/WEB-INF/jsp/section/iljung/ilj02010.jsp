@@ -462,7 +462,7 @@
         });
     }
 
-    async function getSelectOption_search_mstDate(){
+    async function getSelect_search_mstDate(){
 
         search_mstDate.innerHTML = "";
         //검색데이터
@@ -474,7 +474,7 @@
             component : pgId + "_search_mstDate",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if(list){
             list.forEach(row => {
@@ -485,7 +485,7 @@
         search_mstDate.selectedIndex = 0;
     }
 
-    async function getSelectOption_grid1_schGbn(){
+    async function getSelect_grid1_schGbn(){
         //검색데이터
         let param = {};
         //파라미터
@@ -494,11 +494,11 @@
             component : pgId + "_grid1_schGbn",
             param: param,
         }
-        DS_SCH_GBN = await we_getSelectOption(data);
+        DS_SCH_GBN = await we_getSelect(data);
     }
 
 
-    async function getSelectOption_grid1_deptCd(){
+    async function getSelect_grid1_deptCd(){
         //검색데이터
         let param = {};
         //파라미터
@@ -507,7 +507,7 @@
             component : pgId + "_grid1_deptCd",
             param: param,
         }
-        DS_DEPT_CD = await we_getSelectOption(data);
+        DS_DEPT_CD = await we_getSelect(data);
     }
 
 
@@ -520,9 +520,9 @@
         checkCrudPermission(pgId);
 
         Promise.all([
-            getSelectOption_search_mstDate(),
-            getSelectOption_grid1_schGbn(),
-            getSelectOption_grid1_deptCd(),
+            getSelect_search_mstDate(),
+            getSelect_grid1_schGbn(),
+            getSelect_grid1_deptCd(),
         ]).then(function (){
             //로드 시 그리드 바로 조회
             search_grid1_onclick();

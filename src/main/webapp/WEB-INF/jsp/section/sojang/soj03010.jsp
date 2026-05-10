@@ -96,7 +96,7 @@
                     <span class="search-box">관리소명 : &nbsp;</span>
                     <span id="title_officeName" class="search-box"></span>
                     <span class="select-container">&emsp; 검색조건 :&nbsp;
-                    <select id="search_status" name="STATUS" class="select_cont70"></select>
+                        <select id="search_status" name="STATUS" class="select_cont100"></select>
                     </span>
                 </div> 
             </div>
@@ -348,9 +348,9 @@
             updateParam : editedRowItems,
             key : [],
             before : {
-                action : "all",
-                saveMode : "U",
-                beforeParam : beforeParam
+                // action : "all",
+                // saveMode : "U",
+                // beforeParam : beforeParam
             }
         }
 
@@ -466,7 +466,7 @@
         }
     }
 
-    async function getSelectOption_input_empNo(){
+    async function getSelect_input_empNo(){
         input_empNo.innerHTML = "";
         //검색데이터
         let param = {
@@ -479,13 +479,13 @@
             component : pgId + "_input_empNo",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
         if(list){
             DS_EMP = list;
         }
     }
 
-    async function getSelectOption_input_deptCd(){
+    async function getSelect_input_deptCd(){
         input_deptCd.innerHTML = "";
         //검색데이터
         let param = {}
@@ -495,7 +495,7 @@
             component : pgId + "_input_deptCd",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if(list){
             list.forEach(row => {
@@ -505,7 +505,7 @@
         }
     }
 
-    async function getSelectOption_input_jobDutyCd(){
+    async function getSelect_input_jobDutyCd(){
         input_jobDutyCd.innerHTML = "";
         //검색데이터
         let param = {
@@ -517,7 +517,7 @@
             component : pgId + "_input_jobDutyCd",
             param: param,
         }
-        let list = await we_getSelectOption(data);
+        let list = await we_getSelect(data);
 
         if(list){
             list.forEach(row => {
@@ -549,17 +549,18 @@
             });
         }
         selectOptionMaker("105", input_idGbn, "");
+        selectOptionMaker("100", search_status, "");
         selectOptionMaker("100", input_status, "");
 
-        getSelectOption_input_empNo().then(() => {
+        getSelect_input_empNo().then(() => {
             input_empNo.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");
             DS_EMP.forEach(row => {
                 input_empNo.insertAdjacentHTML("beforeend",
                     "<option value='" + row.EMP_NO + "'>" + row.EMP + "</option>");
             })
         });
-        getSelectOption_input_deptCd();
-        getSelectOption_input_jobDutyCd();
+        getSelect_input_deptCd();
+        getSelect_input_jobDutyCd();
 
         //그리드 DDL
         //gridDdlMaker("107", grid1, "STATE", false);

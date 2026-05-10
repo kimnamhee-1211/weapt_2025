@@ -775,7 +775,7 @@
 	</select>
 
 
-	<select id="getSelectOption_hae05010_grid1_docGbn" parameterType="map" resultType="map">
+	<select id="getSelect_hae05010_grid1_docGbn" parameterType="map" resultType="map">
 		SELECT
 			A.DOC_GBN 		AS DOC_GBN,
 			A.DOC_GBN_NAME	AS DOC_GBN_NAME
@@ -784,7 +784,7 @@
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
 
-	<select id="getSelectOption_hae05010_grid1_docStorage" parameterType="map" resultType="map">
+	<select id="getSelect_hae05010_grid1_docStorage" parameterType="map" resultType="map">
 		SELECT
 			A.STORAGE_CD	AS STORAGE_CD,
 			A.STORAGE_NAME	AS STORAGE_NAME
@@ -793,7 +793,7 @@
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
 
-	<select id="getSelectOption_hae05010_grid1_deptCd" parameterType="map" resultType="map">
+	<select id="getSelect_hae05010_grid1_deptCd" parameterType="map" resultType="map">
 		SELECT
 			A.DEPT_CD	AS DEPT_CD,
 			A.DEPT_NAME	AS DEPT_NAME
@@ -912,7 +912,7 @@
 			)
 	</delete>
 
-	<update id="updateList_hae05010_disuse" parameterType="list">
+	<update id="updateList_hae05010_resign" parameterType="list">
 		<if test="list != null and list.size > 0">
 			UPDATE A
 			SET

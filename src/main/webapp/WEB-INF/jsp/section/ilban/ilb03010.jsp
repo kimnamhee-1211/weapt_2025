@@ -353,7 +353,7 @@
     }
 
 
-    async function getSelectOption_grid1_deptCd(){
+    async function getSelect_grid1_deptCd(){
         //검색데이터
         let param = {};
         //파라미터
@@ -362,10 +362,10 @@
             component : pgId + "_grid1_deptCd",
             param: param,
         }
-        DS_DEPT_CD = await we_getSelectOption(data);
+        DS_DEPT_CD = await we_getSelect(data);
     }
 
-    async function getSelectOption_grid1_jobDutyCd(){
+    async function getSelect_grid1_jobDutyCd(){
         //검색데이터
         let param = {};
         //파라미터
@@ -374,7 +374,7 @@
             component : pgId + "_grid1_jobDutyCd",
             param: param,
         }
-        DS_JOB_DUTY_CD = await we_getSelectOption(data);
+        DS_JOB_DUTY_CD = await we_getSelect(data);
     }
 
 
@@ -388,8 +388,8 @@
         //공통코드 가져오기
         //그리드 DDL
         Promise.all([
-            getSelectOption_grid1_deptCd(),
-            getSelectOption_grid1_jobDutyCd()
+            getSelect_grid1_deptCd(),
+            getSelect_grid1_jobDutyCd()
         ]).then(function () {
             //로드 시 그리드 바로 조회
             search_grid1_onclick();

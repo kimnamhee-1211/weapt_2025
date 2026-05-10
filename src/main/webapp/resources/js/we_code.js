@@ -4,7 +4,7 @@
  *  공용 조회 function
  *
  * async function we_getCode : 공통 코드 조회 함수
- * async function we_getSelectOption : select 태그 option 조회 함수
+ * async function we_getSelect : select 태그 option 조회 함수
  * async function we_getUsergroupId : usergroupId 조회 함수
  *
  *
@@ -56,8 +56,8 @@ async function we_getCode(CODEDV_NO, timeout = 60_000) {
  */
 
 
-// select 태그 option 조회 함수
-async function we_getSelectOption(data, timeout = 60_000) {
+// 조회 전용 함수
+async function we_getSelect(data, timeout = 60_000) {
 
     //로딩시작
     const controller = new AbortController();
@@ -70,7 +70,7 @@ async function we_getSelectOption(data, timeout = 60_000) {
         const sectionId = encodeURIComponent(data.sectionId);
         const component = encodeURIComponent(data.component);
 
-        method = "/getSelectOption/";
+        method = "/getSelect/";
         query = new URLSearchParams(data.param).toString();
         url = ctx + apiPrefix + method + sectionId + "/" + component + "?" + query;
 

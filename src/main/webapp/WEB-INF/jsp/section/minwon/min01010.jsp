@@ -387,7 +387,6 @@
         //클릭시 민원대장("0")/민원전표("1")열기
         dong_table.addEventListener('click', (e) => {
             if (e.target.tagName == "TD" && e.target.className != "blank_block") {
-                getSelectOption_min_setting();
                 let pop_data = {...e.target.dataset}
                 if(setting[0].VIEW_GBN == "0"){
                     open_popup_onclick(pop_data);
@@ -416,7 +415,7 @@
             checkCrudPermission(pgId);
 
             Promise.all([
-                getSelectOption_min_setting()
+                getSelect_min_setting()
             ]).then(function () {
                 //로드 시 그리드 바로 조회
                 search_grid1_onclick();
