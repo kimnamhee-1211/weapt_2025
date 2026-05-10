@@ -41,6 +41,7 @@
         </ul>
     </div>
 </div>
+<jsp:include page="/WEB-INF/jsp/section/minwon/min_comm.jsp" />
 
 <script>
     //변수 설정

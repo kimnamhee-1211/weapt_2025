@@ -5,73 +5,73 @@
 <jsp:include page="/WEB-INF/jsp/section/minwon/min_nav.jsp" />
 
 
-        <div id="section">
-            <div class="section1">
-                <div class="section1_nav"><i class="icon-phone-squared"></i>민원조회</div>
-                <div class="section1_btn" id="section1_btn"></div>
-            </div>
-            <div class="section2">
-                <div class="section2_line3">
-                    <div style="display:flex;">
-                        <span>기간 :&nbsp;
-                            <input type="date" id="search_startDate">&nbsp; ~ &nbsp;
-                            <input type="date" id="search_endDate">
-                        </span>
-                        <span>&emsp;구분 :&nbsp;
-                            <select id="search_minwonGbn" name="MINOWN_GBN" class="select_cont100"></select>
-                        </span>
-                        <span>&emsp;상태 :&nbsp;
-                            <select id="search_statusCd" name="STATUS_CD" class="select_cont100">
-                                <option value="ALL" selected>전체</option>
-                                <option value="1">처리</option>
-                                <option value="2">보류</option>
-                                <option value="3">반려</option>
-                                <option value="4">처리중</option>
-                                <option value="" selected>미결</option>
-                            </select>
-                        </span>
-                        <span>&emsp;
-                            <input  type="checkbox" id="search_desc" name="DESC" checked>
-                            <label for="search_desc">&nbsp;최근순&emsp;</label>
-                        </span>
-                    </div>
-                    <div style="display:flex;">
-                        <span class="search-box">세대/공용구분 :&nbsp;
-                            <select id="search_gbn" class="select_cont100" name="GBN">
-                                <option value="" selected>전체</option>
-                                <option value="0">세대</option>
-                                <option value="12">공용</option>
-                            </select>&emsp;
-                            <span id="search_sedae" style="display: none">
-                                <input type="text" id="search_stDong" name="ST_DONG" class="box50" oninput="inputNumFormat(obj)">동
-                                <input type="text" id="search_stHo" name="ST_HO" class="box50" oninput="inputNumFormat(obj)">호&emsp;~
-                                <input type="text" id="search_endDong" name="END_DONG" class="box50" oninput="inputNumFormat(obj)"> 동
-                                <input type="text" id="search_endHo" name="END_HO" class="box50" oninput="inputNumFormat(obj)">호
-                            </span>
-                            <span id="search_gongyong" style="display: none">
-                                <input type="radio" id="search_gbn12" value="all" name="GBN_12"> 전체공용&emsp;
-                                <input type="radio" id="search_gbn1" value="1" name="GBN_12"> 동별공용&emsp;
-                                <input type="radio" id="search_gbn2" value="2" name="GBN_12"> 동외공용&emsp;
-                            </span>
-                        </span>
-                    </div>
-                    <div style="display:flex;">
-                        <span class="search-box">민원내용 :&nbsp;
-                            <select id="search_what" name="WHAT" class="select_cont150">
-                                <option value="all">접수+처리내용</option>
-                                <option value="receipt">접수내용</option>
-                                <option value="work">처리내용</option>
-                            </select>&emsp;
-                        </span>
-                        <span>
-                            <input style="width:713px;" type="text" id="search_text" name="TEXT" placeholder=" 검색어를 입력하십시오.">
-                        </span>
-                    </div>
-                </div> 
-            </div>
-            <div id="grid1"  style="height: 546px;"></div>
-            <jsp:include page="/WEB-INF/jsp/section/minwon/min011.jsp"/>
+    <div id="section">
+        <div class="section1">
+            <div class="section1_nav"><i class="icon-phone-squared"></i>민원조회</div>
+            <div class="section1_btn" id="section1_btn"></div>
         </div>
+        <div class="section2">
+            <div class="section2_line3">
+                <div style="display:flex;">
+                    <span>기간 :&nbsp;
+                        <input type="date" id="search_startDate">&nbsp; ~ &nbsp;
+                        <input type="date" id="search_endDate">
+                    </span>
+                    <span>&emsp;구분 :&nbsp;
+                        <select id="search_minwonGbn" name="MINOWN_GBN" class="select_cont100"></select>
+                    </span>
+                    <span>&emsp;상태 :&nbsp;
+                        <select id="search_statusCd" name="STATUS_CD" class="select_cont100">
+                            <option value="ALL" selected>전체</option>
+                            <option value="1">처리</option>
+                            <option value="2">보류</option>
+                            <option value="3">반려</option>
+                            <option value="4">처리중</option>
+                            <option value="" selected>미결</option>
+                        </select>
+                    </span>
+                    <span>&emsp;
+                        <input  type="checkbox" id="search_desc" name="DESC" checked>
+                        <label for="search_desc">&nbsp;최근순&emsp;</label>
+                    </span>
+                </div>
+                <div style="display:flex;">
+                    <span class="search-box">세대/공용구분 :&nbsp;
+                        <select id="search_gbn" class="select_cont100" name="GBN">
+                            <option value="" selected>전체</option>
+                            <option value="0">세대</option>
+                            <option value="12">공용</option>
+                        </select>&emsp;
+                        <span id="search_sedae" style="display: none">
+                            <input type="text" id="search_stDong" name="ST_DONG" class="box50" oninput="inputNumFormat(obj)">동
+                            <input type="text" id="search_stHo" name="ST_HO" class="box50" oninput="inputNumFormat(obj)">호&emsp;~
+                            <input type="text" id="search_endDong" name="END_DONG" class="box50" oninput="inputNumFormat(obj)"> 동
+                            <input type="text" id="search_endHo" name="END_HO" class="box50" oninput="inputNumFormat(obj)">호
+                        </span>
+                        <span id="search_gongyong" style="display: none">
+                            <input type="radio" id="search_gbn12" value="all" name="GBN_12"> 전체공용&emsp;
+                            <input type="radio" id="search_gbn1" value="1" name="GBN_12"> 동별공용&emsp;
+                            <input type="radio" id="search_gbn2" value="2" name="GBN_12"> 동외공용&emsp;
+                        </span>
+                    </span>
+                </div>
+                <div style="display:flex;">
+                    <span class="search-box">민원내용 :&nbsp;
+                        <select id="search_what" name="WHAT" class="select_cont150">
+                            <option value="all">접수+처리내용</option>
+                            <option value="receipt">접수내용</option>
+                            <option value="work">처리내용</option>
+                        </select>&emsp;
+                    </span>
+                    <span>
+                        <input style="width:713px;" type="text" id="search_text" name="TEXT" placeholder=" 검색어를 입력하십시오.">
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div id="grid1"  style="height: 546px;"></div>
+        <jsp:include page="/WEB-INF/jsp/section/minwon/min011.jsp"/>
+    </div>
 
 
 <script>
@@ -176,34 +176,8 @@
 
     //그리드 이벤트
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        let pop_data = {};
-        let slipNo = AUIGrid.getSelectedRows(grid1)[0].SLIP_NO
-        let minwonDate = AUIGrid.getSelectedRows(grid1)[0].MINWON_DATE
-        let gbn = AUIGrid.getSelectedRows(grid1)[0].GBN
-        let lineGbn = AUIGrid.getSelectedRows(grid1)[0].LINE_GBN
-        let dongId = AUIGrid.getSelectedRows(grid1)[0].DONG_ID
-        let hoId = AUIGrid.getSelectedRows(grid1)[0].HO_ID
-        let minwonArearSeq = AUIGrid.getSelectedRows(grid1)[0].MINWON_AREAR_SEQ
-        let arearName = AUIGrid.getSelectedRows(grid1)[0].AREAR_NAME
-
-        pop_data.slipNo = slipNo;
-        pop_data.minwonDate = minwonDate;
-        pop_data.gbn = gbn;
-        pop_data.lineGbn = lineGbn;
-        pop_data.dongId = dongId;
-        pop_data.hoId = hoId;
-        pop_data.minwonArearSeq = minwonArearSeq;
-        pop_data.arearName = arearName;
-        pop_data.saveKey = "U";
-
-        let pop_item = {
-            pgId: pgId,
-            menuId: menuId,
-            querySet: "min011",
-            pop_data: pop_data
-        }
-        pop_onload1(pop_item);
-        popupOpen(popupId1);
+        getSelectOption_min_setting();
+        open_popup1_onclick(AUIGrid.getSelectedRows(grid1)[0]);
     });
 
     //팝업 이벤트
@@ -296,37 +270,6 @@
                     "<option value='" + row.GBN_ID + "'>" + row.GBN_NAME + "</option>");
             })
         }
-    }
-
-    function make_place(data){
-        let place = ""
-        if(data.GBN == "0"){
-            place =  data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + "호"
-        }else if(data.GBN == "1"){
-            if(data.LINE_GBN == "109999"){
-                place = data.HO_ID.split("-")[0] + "동 지하주차장"
-            }else{
-                let lineGbnNm = "";
-                switch (data.LINE_GBN){
-                    case "109003" :
-                        lineGbnNm = "현관";
-                        break;
-                    case "109997" :
-                        lineGbnNm = " EL";
-                        break;
-                    case "109998" :
-                        lineGbnNm = "옥탑";
-                        break;
-                    case "109002" :
-                        lineGbnNm = "계단";
-                        break;
-                }
-                place = data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + " " +  lineGbnNm
-            }
-        }else{
-            place = data.AREAR_NAME;
-        }
-        return place;
     }
 
     //crud 권한 처리 함수

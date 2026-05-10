@@ -116,6 +116,7 @@ public class MenuController {
 
 		switch (pgId){
 			case "ilj01060" : menuId = "010010060"; break;
+			case "min01060" : menuId = "020010060"; break;
 		}
 
 		return menuId;

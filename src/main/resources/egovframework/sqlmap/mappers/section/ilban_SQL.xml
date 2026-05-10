@@ -1430,37 +1430,30 @@
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 	</delete>
 
-
 	<insert id="insertList_ilb04040_resign" parameterType="list">
 		<if test="list != null and list.size > 0">
 			<foreach collection="list" item="row" separator=";">
 				INSERT INTO dbo.TAD_ABSENT_ITEM (
-					OFFICE_CODE,
-					ABSENT_CD,
-					ABSENT_NAME,
-					ABSENT_DESC,
-					REG_DATE,
-					USE_YN,
-					ORDER_SEQ
+				OFFICE_CODE,
+				ABSENT_CD,
+				ABSENT_NAME,
+				ABSENT_DESC,
+				REG_DATE,
+				USE_YN,
+				ORDER_SEQ
 				)
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE},
-					ABSENT_CD,
-					ABSENT_NAME,
-					ABSENT_DESC,
-					CONVERT(char(8), GETDATE(), 112),
-					USE_YN,
-					ORDER_SEQ
+				#{row.LOGINUSER_OFFICE_CODE},
+				ABSENT_CD,
+				ABSENT_NAME,
+				ABSENT_DESC,
+				CONVERT(char(8), GETDATE(), 112),
+				USE_YN,
+				ORDER_SEQ
 				FROM dbo.TAD_ABSENT_ITEM
 				WHERE OFFICE_CODE = '10001'
 			</foreach>
 		</if>
 	</insert>
-
-
-
-
-
-
 
 </mapper>

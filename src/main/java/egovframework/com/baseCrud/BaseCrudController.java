@@ -207,20 +207,21 @@ public class BaseCrudController {
     //다중 저장 + 수정
     @RequestMapping(value = "/saveList/{sectionId}/{component}", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResponse<Void> saveList(@PathVariable("sectionId") String sectionId,
+    public ApiResponse<List<Map<String, Object>>> saveList(@PathVariable("sectionId") String sectionId,
                                       @PathVariable("component") String component,
                                       @RequestBody Map<String, Object> param,
                                       @SessionAttribute("loginUser") LoginVO loginUser,
                                       @RequestAttribute(value = "PG_ID") String pgId,
                                       @RequestAttribute(value = "MENU_ID") String menuId) {
 
-        int resultRowCount = baseCrudService.saveList(sectionId, component, param, loginUser, pgId, menuId);
+        Map<String, Object> resultMap = baseCrudService.saveList(sectionId, component, param, loginUser, pgId, menuId);
 
-        ApiResponse<Void> result = new ApiResponse<>();
+        ApiResponse<List<Map<String, Object>>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
-        result.setO_RESULT(resultRowCount);
-        result.setO_MSG(resultRowCount + "건이 저장되었습니다.");
+        result.setO_RESULT((Integer) resultMap.get("resultRowCount"));
+        result.setO_MSG( (Integer) resultMap.get("resultRowCount") +  "건이 저장되었습니다.");
         result.setO_TYPE(ApiResponse.ApiType.SAVE);
+        result.setDATA((List<Map<String, Object>>) resultMap.get("key"));
         return result;
     }
 

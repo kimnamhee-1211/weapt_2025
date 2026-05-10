@@ -111,7 +111,6 @@
         const pgId = "${pgId}";	//프로그램ID
         const menuId = "${menuId}";	//메뉴ID
         let grid1;	// 그리드 컴포넌트
-        let focus = 0;	//그리드 컴포넌트 포커스
         let dong_table = document.querySelector("#dong_table");
 
         //그리드1 설정
@@ -175,8 +174,7 @@
                     //그리드 데이터 세팅
                     AUIGrid.setGridData(grid1, data);
                     //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
-                    AUIGrid.setSelectionByIndex(grid1, focus, 0);
-                    focus = 0;
+                    AUIGrid.setSelectionByIndex(grid1, 0, 0);
                     search_aptBlock_onclick();
                 }
             });
@@ -386,17 +384,18 @@
             }
         }
 
-
+        //클릭시 민원대장("0")/민원전표("1")열기
         dong_table.addEventListener('click', (e) => {
             if (e.target.tagName == "TD" && e.target.className != "blank_block") {
-                let pop_item = {
-                    pgId: pgId,
-                    menuId: menuId,
-                    querySet: "min001",
-                    pop_data: {...e.target.dataset}
+                getSelectOption_min_setting();
+                let pop_data = {...e.target.dataset}
+                if(setting[0].VIEW_GBN == "0"){
+                    open_popup_onclick(pop_data);
+                }else{
+                    pop_data.slipNo = null;
+                    pop_data.minwonDate = null;
+                    open_popup1_onclick(pop_data);
                 }
-                pop_onload(pop_item);
-                popupOpen(popupId);
             }
         })
 
@@ -410,12 +409,19 @@
             });
         }
 
+
         //로드
         window.onload = function () {
             //crud 권한 처리 함수
             checkCrudPermission(pgId);
-            //로드 시 그리드 바로 조회
-            search_grid1_onclick();
+
+            Promise.all([
+                getSelectOption_min_setting()
+            ]).then(function () {
+                //로드 시 그리드 바로 조회
+                search_grid1_onclick();
+            })
+
         };
 
     </script>

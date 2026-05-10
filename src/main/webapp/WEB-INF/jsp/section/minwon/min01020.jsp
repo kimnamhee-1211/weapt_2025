@@ -210,8 +210,8 @@
     const input_workUser = document.querySelector("#input_workUser");
     const input_workUserName = document.querySelector("#input_workUserName");
     const input_workDesc = document.querySelector("#input_workDesc");
-
-    let input_user = []
+    
+    let input_user = [];
 
     //그리드1 설정
     const grid1ColumnLayout = [
@@ -312,6 +312,10 @@
                 let data = json.DATA;
                 dataToInput(data[0], "min_div");
                 input_place.value = make_place(data[0]);
+                if (!input_user.some(row => row.NAME == data[0].WORK_USER)) {
+                    input_workUser.value = "write";
+                    input_workUserName.value = data[0].WORK_USER;
+                }
             }
         });
     }
@@ -331,8 +335,8 @@
             item.WORK_USER = item.WORK_USER_NAME
         }
 
-        let addedRowItems = null;
-        let editedRowItems = null;
+        let addedRowItems = [];
+        let editedRowItems = [];
 
         if (isNull(input_workSeq.value)) {
             addedRowItems = [{...item}];
@@ -453,37 +457,6 @@
         });
     }
 
-    function make_place(data){
-        let place = ""
-        if(data.GBN == "0"){
-            place =  data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + "호"
-        }else if(data.GBN == "1"){
-            if(data.LINE_GBN == "109999"){
-                place = data.HO_ID.split("-")[0] + "동 지하주차장"
-            }else{
-                let lineGbnNm = "";
-                switch (data.LINE_GBN){
-                    case "109003" :
-                        lineGbnNm = "현관";
-                        break;
-                    case "109997" :
-                        lineGbnNm = " EL";
-                        break;
-                    case "109998" :
-                        lineGbnNm = "옥탑";
-                        break;
-                    case "109002" :
-                        lineGbnNm = "계단";
-                        break;
-                }
-                place = data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + " " +  lineGbnNm
-            }
-        }else{
-            place = data.AREAR_NAME;
-        }
-        return place;
-    }
-
     async function getSelectOption_input1_minwonGbn() {
         input_minwonGbn.innerHTML = "";
         //검색데이터
@@ -519,13 +492,13 @@
             component: pgId + "_input1_user",
             param: param,
         }
-
         let list = await we_getSelectOption(data);
+        
         input_user = list;
 
-        if (list) {
+        if (input_user) {
             input_workUser.insertAdjacentHTML("beforeend", "<option value='write' selected>직접입력</option>");  //필요시
-            list.forEach(row => {
+            input_user.forEach(row => {
                 input_workUser.insertAdjacentHTML("beforeend",
                     "<option value='" + row.NAME + "'>" + row.NAME + "</option>");
             })

@@ -144,28 +144,8 @@
 
     //그리드 이벤트
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        let pop_data = {};
-
-        let gbn = AUIGrid.getSelectedRows(grid1)[0].GBN
-        let lineGbn = AUIGrid.getSelectedRows(grid1)[0].LINE_GBN
-        let dongId = AUIGrid.getSelectedRows(grid1)[0].DONG_ID
-        let hoId = AUIGrid.getSelectedRows(grid1)[0].HO_ID
-        let lineNo = AUIGrid.getSelectedRows(grid1)[0].LINE_NO
-
-        pop_data.gbn = gbn;
-        pop_data.lineGbn = lineGbn;
-        pop_data.dongId = dongId;
-        pop_data.hoId = hoId;
-        pop_data.lineNo = lineNo;
-
-        let pop_item = {
-            pgId: pgId,
-            menuId: menuId,
-            querySet: "min001",
-            pop_data: pop_data
-        }
-        pop_onload(pop_item);
-        popupOpen(popupId);
+        getSelectOption_min_setting();
+        open_popup_onclick(AUIGrid.getSelectedRows(grid1)[0]);
     });
 
     //팝업 닫기 이벤트

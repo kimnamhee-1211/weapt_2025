@@ -71,7 +71,7 @@
     let querySet;
 
     let popGrid1;	// 그리드 컴포넌트
-    let focus1;	//그리드 컴포넌트 포커스
+    let focus;	//그리드 컴포넌트 포커스
 
     //팝업 컴포넌트
     const pop_btn = document.querySelector("#pop_btn");
@@ -131,26 +131,11 @@
 
     //셀 선택 변경 이벤트 바인딩
     AUIGrid.bind(popGrid1, "cellDoubleClick", function(event) {
-        open_popup1_onclick();
+        pop_data.slipNo = AUIGrid.getSelectedRows(popGrid1)[0].SLIP_NO;
+        pop_data.minwonDate = AUIGrid.getSelectedRows(popGrid1)[0].MINWON_DATE;
+        open_popup1_onclick(pop_data);
     });
 
-    //팝업 닫기 이벤트
-    function open_popup1_onclick(){
-        let slipNo = AUIGrid.getSelectedRows(popGrid1)[0].SLIP_NO
-        let minwonDate = AUIGrid.getSelectedRows(popGrid1)[0].MINWON_DATE
-        pop_data.slipNo = slipNo;
-        pop_data.minwonDate = minwonDate;
-        pop_data.saveKey = "U"
-        let pop_item = {
-            pgId: pgId,
-            menuId: menuId,
-            popId : popupId,
-            querySet: "min011",
-            pop_data: pop_data
-        }
-        pop_onload1(pop_item);
-        popupOpen(popupId1);
-    }
 
     function close_popup1_onclick(){
         popupClose(popupId1);
@@ -159,16 +144,8 @@
 
     function add_popGrid1_onclick(){
         pop_data.slipNo = null;
-        pop_data.saveKey = "I"
-        let pop_item = {
-            pgId: pgId,
-            menuId: menuId,
-            popId : popupId,
-            querySet: "min011",
-            pop_data: pop_data
-        }
-        pop_onload1(pop_item);
-        popupOpen(popupId1);
+        pop_data.minwonDate = null;
+        open_popup1_onclick(pop_data);
     }
 
     //그리드 조회 함수
@@ -195,8 +172,8 @@
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(popGrid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
-                AUIGrid.setSelectionByIndex(popGrid1, focus1, 0);
-                focus1 = 0;
+                AUIGrid.setSelectionByIndex(popGrid1, focus, 0);
+                focus = 0;
             }
         });
     }
@@ -283,10 +260,10 @@
                     `
             info_table.innerHTML = inner;
         }
-        document.querySelector("#td_place").value = make_place_pop(pop_data);
+        document.querySelector("#td_place").value = make_place(pop_data);
     }
 
-    function search_cntTable() {
+    async function search_cntTable() {
 
         let selectParam = {
             GBN : pop_data.gbn,
@@ -303,7 +280,7 @@
             param: selectParam,
         }
 
-        we_select(selectData, {
+        return we_select(selectData, {
             successSelect: (json) => {
                 let data = json.DATA;
                 dataToInput(data[0], "cnt_table");
@@ -316,7 +293,7 @@
 
         querySet = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
         pop_data =  pop_item.pop_data
-        focus1 = 0;
+        focus = 0;
 
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#pop_btn", grid: "popGrid1", search: true, print : true});

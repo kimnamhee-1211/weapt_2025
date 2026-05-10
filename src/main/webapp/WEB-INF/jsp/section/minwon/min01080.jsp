@@ -7,9 +7,6 @@
         <div id="section">
             <div class="section1">
                 <span class="section1_nav"><i class="icon-phone-squared"></i>민원환경설정</span>
-                <span class="section1_nav_mic">&emsp;
-                    <i class="icon-mic"></i>[추가]로 그리드에 직접입력하고 사용폐기가 되었을 때에는 사용여부를 NO로 선택 후 [저장]합니다. 
-                </span>
             </div>
             <div class="section2">
                 <div class="section2_line0"></div>
@@ -17,16 +14,20 @@
             <div class="gridcont_left_370">
                 <div class="section_middle_title">
                     <span><i class="icon-pause"></i>동외공용민원 장소설정</span>
+                </div>
+                <div class="section_middle_title">
                     <span class="section_middle_btn" id="section_middle_btn1"></span>
                 </div> 
-                <div id="grid1"  style="height: 611px;"></div>
+                <div id="grid1" ></div>
             </div> 
             <div class="gridcont_left_370">
                 <div class="section_middle_title">
                     <span><i class="icon-pause"></i>민원구분</span>
+                </div>
+                <div class="section_middle_title">
                     <span class="section_middle_btn" id="section_middle_btn2"></span>
                 </div> 
-                <div id="grid2"  style="height: 611px;"></div>
+                <div id="grid2" ></div>
             </div> 
 
             <div class="gridcont_left_340">
@@ -34,7 +35,7 @@
                     <span><i class="icon-pause"></i>민원처리자</span>
                     <span class="section_middle_btn" id="section_middle_btn3"></span>
                 </div> 
-                <div id="grid3"  style="height: 280px;"></div>
+                <div id="grid3"></div>
 
                 <div class="section_middle_title">
                     <span><i class="icon-pause"></i>민원환경</span>
@@ -44,26 +45,26 @@
                     <div>
                         &ensp;&#9726&nbsp;민원접수방법 :&emsp;&ensp;
                         <span>
-                            <input type="radio" id="input_viewGbnA" name="VIEW_GBN" value="A" checked> 민원대장&emsp;
-                            <input type="radio" id="input_viewGbnB" name="VIEW_GBN" value="B"> 민원전표&emsp;
+                            <input type="radio" id="input_viewGbnA" name="VIEW_GBN" value="0"> 민원대장&emsp;
+                            <input type="radio" id="input_viewGbnB" name="VIEW_GBN" value="1"> 민원전표&emsp;
                         </span>
                     </div>
                     <div>
                         &ensp;&#9726&nbsp;민원접수자 :&emsp;&ensp;
                         <span>
-                            <input type="radio" id="input_viewUserA" name="VIEW_USER" value="A" checked> 로그인사용자&emsp;
-                            <input type="radio" id="input_viewUserB" name="VIEW_USER" value="B"> 민원접수자&emsp;
+                            <input type="radio" id="input_viewUserA" name="VIEW_USER" value="0"> 민원접수자&emsp;
+                            <input type="radio" id="input_viewUserB" name="VIEW_USER" value="1"> 로그인사용자&emsp;
                         </span>
                     </div>
                     <div>
                         &ensp;&#9726&nbsp;재고자산추가 :&emsp;&ensp; 
-                        <input type="checkbox" id="input_stockGbn" name="STOCK_GBN"><label for="input_stockGbn">소모품사용</label>&emsp;
-                        <input type="checkbox" id="input_gaugeGbn" name="GAUGE_GBN"><label for="input_gaugeGbn">계량기사용</label>
+                        <input type="checkbox" id="input_stockGbn" name="STOCK_GBN" value="1"><label for="input_stockGbn">소모품사용</label>&emsp;
+                        <input type="checkbox" id="input_gaugeGbn" name="GAUGE_GBN" value="1"><label for="input_gaugeGbn">계량기사용</label>
                     </div>
                     <div>
                         &ensp;&#9726&nbsp;기타추가 :&emsp;&ensp;
-                        <input type="checkbox" id="input_messageGbn" name="MESSAGE_GBN"><label for="input_messageGbn">메시지전송</label>&emsp;
-                        <input type="checkbox" id="input_timeGbn" name="TIME_GBN"><label for="input_timeGbn">접수시간</label>
+                        <input type="checkbox" id="input_messageGbn" name="MESSAGE_GBN" value="1"><label for="input_messageGbn">메시지전송</label>&emsp;
+                        <input type="checkbox" id="input_timeGbn" name="TIME_GBN" value="1"><label for="input_timeGbn">접수시간</label>
                     </div>
                 </div>
             </div>
@@ -99,31 +100,29 @@
     let grid1;	// 그리드 컴포넌트
     let grid2;	// 그리드 컴포넌트
     let grid3;	// 그리드 컴포넌트
-    let focus = 0;	//그리드 컴포넌트 포커스
     let focus1 = 0;	//그리드 컴포넌트 포커스
     let focus2 = 0;	//그리드 컴포넌트 포커스
+    let focus3 = 0;	//그리드 컴포넌트 포커스
 
     const input_setting = document.querySelector("#input_setting");
-
     const input_viewGbnA = document.querySelector("#input_viewGbnA"); // 민원대장
     const input_viewGbnB = document.querySelector("#input_viewGbnB"); // 민원전표
-
     const input_viewUserA = document.querySelector("#input_viewUserA"); // 로그인사용자
     const input_viewUserB = document.querySelector("#input_viewUserB"); // 민원접수자
-
     const input_stockGbn = document.querySelector("#input_stockGbn"); // 소모품사용
     const input_gaugeGbn = document.querySelector("#input_gaugeGbn"); // 계량기사용
-
     const input_messageGbn = document.querySelector("#input_messageGbn"); // 메시지전송
     const input_timeGbn = document.querySelector("#input_timeGbn"); // 접수시간
 
+    let input1 = []
 
     //그리드 설정
     const grid1ColumnLayout = [
         { dataField: "MINWON_AREAR_SEQ",
             headerText: "코드",
             dataType: "text",
-            width : "15%",
+            width : "20%",
+            editable : false
         },
         { dataField: "AREAR_NAME",
             headerText: "민원장소명",
@@ -134,7 +133,7 @@
         { dataField: "ORDER_SEQ",
             headerText: "정렬순서",
             dataType: "numeric",
-            width : "10%",
+            width : "20%",
         },
     ];
 
@@ -142,6 +141,8 @@
     grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
+                showRowNumColumn: false,
+                height: 573,
             })
     )
 
@@ -149,7 +150,8 @@
         { dataField: "GBN_ID",
             headerText: "코드",
             dataType: "text",
-            width : "15%",
+            width : "20%",
+            editable : false
         },
         { dataField: "GBN_NAME",
             headerText: "민원구분",
@@ -159,13 +161,13 @@
         },
         { dataField: "USE_YN",
             headerText: "사용여부",
-            width : "8%",
+            width : "20%",
             renderer : we_cb_10_Renderer
         },
         { dataField: "ORDER_SEQ",
             headerText: "정렬순서",
             dataType: "numeric",
-            width : "10%",
+            width : "20%",
         },
     ];
 
@@ -173,6 +175,8 @@
     grid2 = AUIGrid.create("#grid2", grid2ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
+                showRowNumColumn: false,
+                height: 573,
             })
     );
 
@@ -180,7 +184,8 @@
         { dataField: "COM_GBN",
             headerText: "코드",
             dataType: "text",
-            width : "15%",
+            width : "30%",
+            editable : false
         },
         { dataField: "COM_NAME",
             headerText: "민원처리자",
@@ -190,13 +195,13 @@
         },
         { dataField: "USE_YN",
             headerText: "사용여부",
-            width : "8%",
+            width : "20%",
             renderer : we_cb_10_Renderer
         },
         { dataField: "ORDER_SEQ",
             headerText: "정렬순서",
             dataType: "numeric",
-            width : "10%",
+            width : "20%",
         },
     ];
 
@@ -204,6 +209,8 @@
     grid3 = AUIGrid.create("#grid3", grid3ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
+                height: 410,
+                showRowNumColumn: false,
             })
     );
 
@@ -227,7 +234,6 @@
         //검색데이터
         let selectParam = {
         }
-
         //파라미터
         let selectData = {
             sectionId : sectionId,
@@ -241,8 +247,8 @@
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
-                AUIGrid.setSelectionByIndex(grid1, focus, 0);
-                focus = 0;
+                AUIGrid.setSelectionByIndex(grid1, focus1, 0);
+                focus1 = 0;
             }
         });
     }
@@ -252,7 +258,6 @@
         //검색데이터
         let selectParam = {
         }
-
         //파라미터
         let selectData = {
             sectionId : sectionId,
@@ -266,18 +271,16 @@
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid2, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
-                AUIGrid.setSelectionByIndex(grid2, focus, 0);
-                focus1 = 0;
+                AUIGrid.setSelectionByIndex(grid2, focus2, 0);
+                focus2 = 0;
             }
         });
     }
 
     function search_grid3_onclick(){
-
         //검색데이터
         let selectParam = {
         }
-
         //파라미터
         let selectData = {
             sectionId : sectionId,
@@ -291,11 +294,33 @@
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid3, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
-                AUIGrid.setSelectionByIndex(grid3, focus, 0);
-                focus2= 0;
+                AUIGrid.setSelectionByIndex(grid3, focus3, 0);
+                focus3= 0;
             }
         });
     }
+
+    function search_input1_onclick(){
+
+        //검색데이터
+        let selectParam = {
+        }
+        //파라미터
+        let selectData = {
+            sectionId : sectionId,
+            component : pgId + "_input1",
+            param: selectParam,
+        }
+
+        we_select( selectData,{
+            successSelect : (json) => {
+                let data = json.DATA;
+                input1 = data;
+                dataToInput(data[0], "input_setting");
+            }
+        });
+    }
+
 
     //그리드 추가 함수
     function add_grid1_onclick(){
@@ -350,13 +375,13 @@
         if(!requireCheck("SAVE_GRID1")) return;
 
         //포커스 지정
-        focus = gridFocus(grid1);
+        focus1 = gridFocus(grid1);
 
         //저장 데이터
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["MST_NO"],
+            key : ["MINWON_AREAR_SEQ"],
             before : {}
         };
 
@@ -397,13 +422,13 @@
         if(!requireCheck("SAVE_GRID2")) return;
 
         //포커스 지정
-        focus1 = gridFocus(grid2);
+        focus2 = gridFocus(grid2);
 
         //저장 데이터
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["MST_NO"],
+            key : ["GBN_ID"],
             before : {}
         };
 
@@ -444,13 +469,13 @@
         if(!requireCheck("SAVE_GRID3")) return;
 
         //포커스 지정
-        focus2 = gridFocus(grid3);
+        focus3 = gridFocus(grid3);
 
         //저장 데이터
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["MST_NO"],
+            key : ["COM_GBN"],
             before : {}
         };
 
@@ -474,9 +499,22 @@
     //그리드 저장 함수
     function save_input1_onclick(){
 
-        let item = {}
-        inputToData("input_setting",item)
-        let items = [...item]
+        let item = inputToData("input_setting")
+        item.VIEW_GBN = document.querySelector('input[name="VIEW_GBN"]:checked')?.value || "";
+        item.VIEW_USER = document.querySelector('input[name="VIEW_USER"]:checked')?.value || "";
+        item.STOCK_GBN = input_stockGbn.checked ? "1" : "0";
+        item.GAUGE_GBN = input_gaugeGbn.checked ? "1" : "0";
+        item.MESSAGE_GBN = input_messageGbn.checked ? "1" : "0";
+        item.TIME_GBN = input_timeGbn.checked ? "1" : "0";
+
+        let addedRowItems = [];
+        let editedRowItems = [];
+
+        if(isNull(input1)){
+            addedRowItems.push(item);
+        }else{
+            editedRowItems.push(item);
+        }
 
         //검증
         if(!confirm("변경사항을 저장하시겠습니까?")) return;
@@ -485,7 +523,7 @@
         //저장 데이터
         let saveParam = {
             insertParam : addedRowItems,
-            updateParam : items,
+            updateParam : editedRowItems,
             key : [],
             before : {}
         };
@@ -506,9 +544,9 @@
             }
         });
     }
+
     //그리드 삭제 함수
     function delete_grid1_onclick(){
-
         //검증
         const checkedItems = AUIGrid.getCheckedRowItems(grid1);
         let itemCount = checkedItems.length;
@@ -520,11 +558,11 @@
             alert("삭제는 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
             return;
         }
-        let delItemsName = checkedItems.map(row => row.item.TITLE).join(", ");
+        let delItemsName = checkedItems.map(row => row.item.AREAR_NAME).join(", ");
         if (!confirm( delItemsName + "을/를(총 " + itemCount +"건) 삭제하시겠습니까?")) return;
 
         //포커스 지정
-        focus = (checkedItems[0].rowIndex -1) < 1 ? 0 : (checkedItems[0].rowIndex -1)
+        focus1 = (checkedItems[0].rowIndex -1) < 1 ? 0 : (checkedItems[0].rowIndex -1)
 
         // 체크된 행 삭제 처리
         AUIGrid.removeCheckedRows(grid1);
@@ -564,11 +602,11 @@
             alert("삭제는 최대 200건까지만 가능합니다. (현재 " + itemCount + "건)");
             return;
         }
-        let delItemsName = checkedItems.map(row => row.item.TITLE).join(", ");
+        let delItemsName = checkedItems.map(row => row.item.GBN_NAME).join(", ");
         if (!confirm( delItemsName + "을/를(총 " + itemCount +"건) 삭제하시겠습니까?")) return;
 
         //포커스 지정
-        focus1 = (checkedItems[0].rowIndex -2) < 2 ? 0 : (checkedItems[0].rowIndex -2)
+        focus2 = (checkedItems[0].rowIndex -2) < 2 ? 0 : (checkedItems[0].rowIndex -2)
 
         // 체크된 행 삭제 처리
         AUIGrid.removeCheckedRows(grid2);
@@ -608,11 +646,11 @@
             alert("삭제는 최대 300건까지만 가능합니다. (현재 " + itemCount + "건)");
             return;
         }
-        let delItemsName = checkedItems.map(row => row.item.TITLE).join(", ");
+        let delItemsName = checkedItems.map(row => row.item.COM_NAME).join(", ");
         if (!confirm( delItemsName + "을/를(총 " + itemCount +"건) 삭제하시겠습니까?")) return;
 
         //포커스 지정
-        focus2 = (checkedItems[0].rowIndex -3) < 3 ? 0 : (checkedItems[0].rowIndex -3)
+        focus3 = (checkedItems[0].rowIndex -3) < 3 ? 0 : (checkedItems[0].rowIndex -3)
 
         // 체크된 행 삭제 처리
         AUIGrid.removeCheckedRows(grid3);
@@ -639,24 +677,46 @@
             }
         });
     }
-    
+
+    function regist_onclick(){
+
+        if (!confirm("기본 민원구분 목록을 불러오시겠습니까?(기존 목록은 모두 삭제됩니다.)")) return;
+        let checkedItems = AUIGrid.getColumnValues(grid1, "GBN_ID");
+
+        //저장 데이터
+        let saveParam = {
+            insertParam : checkedItems,
+            updateParam : null,
+            key : [],
+            before : {
+                action : "insert",
+                saveMode : "D",
+                beforeParam : checkedItems
+            }
+        }
+
+        //파라미터
+        let saveData  = {
+            sectionId : sectionId,
+            component : pgId + "_resign",
+            param: saveParam,
+        }
+
+        we_save( saveData ,{
+            successSave : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
+                    search_grid1_onclick()
+                }else return;
+            }
+        });
+    }
+
 
     //컴포넌트 필수항목 입력 체크
     function requireCheck(require){
         let isValid = true;
         switch(require){
-            case "SAVE_GRID1":
-                let addedRowItems = AUIGrid.getAddedRowItems(grid1);
-                let editedRowItems = AUIGrid.getEditedRowItems(grid1);
-                let items = [...addedRowItems,...editedRowItems];
-                for(const row of items){
-                    if(isNull(row.TITLE)){
-                        alert("제목은 반드시 입력해야 합니다.");
-                        isValid = false;
-                        break;
-                    }
-                }
-                break;
         }
         return isValid;
     }
@@ -671,29 +731,6 @@
         });
     }
 
-    async function getSelectOption_search_select(){
-
-        search_select.innerHTML = "";
-        //검색데이터
-        let param = {};
-
-        //파라미터
-        let data = {
-            sectionId : sectionId,
-            component : pgId + "_search_select",
-            param: param,
-        }
-        let list = await we_getSelectOption(data);
-
-        if(list){
-            list.forEach(row => {
-                search_mstDate.insertAdjacentHTML("beforeend",
-                    "<option value='" + row.CD + "'>" + row.NAME + "</option>");
-            })
-        }
-        search_select.selectedIndex = 0;
-    }
-
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
@@ -701,7 +738,7 @@
         btnMaker({ tag: "#section_middle_btn2", grid:"grid2", search: true, add: true, del: true, save: true});
         document.querySelector("#section_middle_btn2").insertAdjacentHTML("afterbegin", "<button id='regist_btn' onclick='regist_onclick()' class='admin_btn'>기본 등록</button>");
         btnMaker({ tag: "#section_middle_btn3", grid:"grid3", search: true, add: true, del: true, save: true});
-        btnMaker({ tag: "#section_middle_btn3", grid:"input1", save: true});
+        btnMaker({ tag: "#section_middle_btn4", grid:"input1", save: true});
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
 

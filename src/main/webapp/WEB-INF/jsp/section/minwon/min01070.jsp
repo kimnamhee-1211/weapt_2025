@@ -180,12 +180,8 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["MST_NO"],
-            before : {
-                action : "insert",
-                saveMode : "I",
-                beforeParam : addedRowItems
-            }
+            key : [],
+            before : {}
         };
 
         //파라미터

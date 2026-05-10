@@ -107,11 +107,16 @@
                 editable : false,
                 showRowCheckColumn: false,
                 height : 546,
-                rowHeight : 60
+                rowHeight : 60,
+                wordWrap: true,
             })
     );
 
     //그리드 이벤트
+    AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
+        getSelectOption_min_setting();
+        open_popup1_onclick(AUIGrid.getSelectedRows(grid1)[0]);
+    });
 
     //결재란 클릭 시
     AUIGrid.bind(apprGrid1, "cellDoubleClick", function(event) {
@@ -322,37 +327,6 @@
         });
     }
 
-    function make_place(data){
-        let place = ""
-        if(data.GBN == "0"){
-            place =  data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + "호"
-        }else if(data.GBN == "1"){
-            if(data.LINE_GBN == "109999"){
-                place = data.HO_ID.split("-")[0] + "동 지하주차장"
-            }else{
-                let lineGbnNm = "";
-                switch (data.LINE_GBN){
-                    case "109003" :
-                        lineGbnNm = "현관";
-                        break;
-                    case "109997" :
-                        lineGbnNm = " EL";
-                        break;
-                    case "109998" :
-                        lineGbnNm = "옥탑";
-                        break;
-                    case "109002" :
-                        lineGbnNm = "계단";
-                        break;
-                }
-                place = data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + " " +  lineGbnNm
-            }
-        }else{
-            place = data.AREAR_NAME;
-        }
-        return place;
-    }
-
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
@@ -360,7 +334,6 @@
         search_scDate.value = getToday("yyyy-MM-dd");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
-
         //결재란 생성
         getApprDutyLine_apprGrid1();
         //로드 시 그리드 바로 조회

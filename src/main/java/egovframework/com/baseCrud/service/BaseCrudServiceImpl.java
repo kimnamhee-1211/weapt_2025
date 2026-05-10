@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +26,12 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //다중 검색
     @Override
     @Transactional(readOnly = true)
-    public List<Map<String, Object>> selectList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
+    public List<Map<String, Object>> selectList(String sectionId,
+                                                String component,
+                                                Map<String, Object> param,
+                                                LoginVO loginUser,
+                                                String pgId,
+                                                String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "selectList");
         setLoginParam(param, loginUser);
@@ -38,7 +45,13 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //map 검색
     @Override
     @Transactional(readOnly = true)
-    public Map<String, Object> selectMap(String sectionId, String component, Map<String, Object> param, String mapKey, LoginVO loginUser, String pgId, String menuId) {
+    public Map<String, Object> selectMap(String sectionId,
+                                         String component,
+                                         Map<String, Object> param,
+                                         String mapKey,
+                                         LoginVO loginUser,
+                                         String pgId,
+                                         String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "selectMap");
         setLoginParam(param, loginUser);
@@ -51,7 +64,12 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //다중 저장
     @Override
     @Transactional
-    public int insertList(String sectionId, String component, List<Map<String, Object>> param, LoginVO loginUser, String pgId, String menuId) {
+    public int insertList(String sectionId,
+                          String component,
+                          List<Map<String, Object>> param,
+                          LoginVO loginUser,
+                          String pgId,
+                          String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "insertList");
         setLoginParam(param, loginUser);
@@ -69,7 +87,12 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //단일 저장
     @Override
     @Transactional
-    public int insertOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
+    public int insertOne(String sectionId,
+                         String component,
+                         Map<String, Object> param,
+                         LoginVO loginUser,
+                         String pgId,
+                         String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "insertOne");
         setLoginParam(param, loginUser);
@@ -87,7 +110,12 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //다중 수정
     @Override
     @Transactional
-    public int updateList(String sectionId, String component, List<Map<String, Object>> param, LoginVO loginUser, String pgId, String menuId) {
+    public int updateList(String sectionId,
+                          String component,
+                          List<Map<String, Object>> param,
+                          LoginVO loginUser,
+                          String pgId,
+                          String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "updateList");
         setLoginParam(param, loginUser);
@@ -105,7 +133,12 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //단일 수정
     @Override
     @Transactional
-    public int updateOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
+    public int updateOne(String sectionId,
+                         String component,
+                         Map<String, Object> param,
+                         LoginVO loginUser,
+                         String pgId,
+                         String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "updateOne");
         setLoginParam(param, loginUser);
@@ -124,7 +157,12 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //다중 삭제
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deleteList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
+    public int deleteList(String sectionId,
+                          String component,
+                          Map<String, Object> param,
+                          LoginVO loginUser,
+                          String pgId,
+                          String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "deleteList");
         List<Map<String, Object>> deleteParam = (List<Map<String, Object>>) param.get("deleteParam");
@@ -150,7 +188,12 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //단일 삭제
     @Override
     @Transactional
-    public int deleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
+    public int deleteOne(String sectionId,
+                         String component,
+                         Map<String, Object> param,
+                         LoginVO loginUser,
+                         String pgId,
+                         String menuId) {
 
         String statement = buildCrudStatement(sectionId, component, "deleteOne");
         setLoginParam(param, loginUser);
@@ -162,65 +205,151 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //다중 저장 + 수정
     @Override
     @Transactional
-    public int saveList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
+    public Map<String, Object> saveList(String sectionId,
+                                        String component,
+                                        Map<String, Object> param,
+                                        LoginVO loginUser,
+                                        String pgId,
+                                        String menuId) {
 
         List<Map<String, Object>> insertParam = (List<Map<String, Object>>) param.get("insertParam");
         List<Map<String, Object>> updateParam = (List<Map<String, Object>>) param.get("updateParam");
-        Object rawKey = param.get("key");
 
         //사전 함수 호출
         Map<String, Object> before = (Map<String, Object>) param.get("before");
-
         if (before != null && !before.isEmpty() && "all".equals(before.get("action"))) {
             callBefore(before, loginUser, sectionId, component, pgId, menuId);
         }
 
         //insert
+        Map<String, Object> resultInsert = new HashMap<>();
         int resultInsertRowCount = 0;
+        Map<String, Object> key = new HashMap<>();
         if (insertParam != null && !insertParam.isEmpty()) {
-            //사전 함수 호출
-            if (before != null && !before.isEmpty() && "insert".equals(before.get("action"))) {
-                callBefore(before, loginUser, sectionId, component, pgId, menuId);
-            }
-            if (rawKey != null &&
-                    ((rawKey instanceof String) ||
-                            (rawKey instanceof List && !((List<?>) rawKey).isEmpty()))) {
-                insertParam = getKeyToParam(insertParam, rawKey, sectionId, component, loginUser);
-                System.out.println("getKeyToParam : " + insertParam);
-            }
-
-            resultInsertRowCount = processInsert(sectionId, component, loginUser, insertParam, rawKey, pgId, menuId);
-
-            if (resultInsertRowCount <= 0) {
-                throw new CrudFailException(
-                        "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
-                        "저장 실패 : " + (resultInsertRowCount) + "건",
-                        ApiResponse.ApiType.INSERT);
-            }
+            List<String> rawKey = (List<String>) param.get("key");
+            resultInsert = saveInsert(sectionId,
+                                    component,
+                                    insertParam,
+                                    rawKey,
+                                    before,
+                                    loginUser, pgId, menuId);
+            resultInsertRowCount = (Integer) resultInsert.get("resultInsertRowCount");
+            key = (Map<String, Object>) resultInsert.get("key");
         }
 
         //update
         int resultUpdateRowCount = 0;
         if (updateParam != null && !updateParam.isEmpty()) {
-            //사전 함수 호출
-            if (before != null && !before.isEmpty() && "update".equals(before.get("action"))) {
-                callBefore(before, loginUser, sectionId, component, pgId, menuId);
+            resultUpdateRowCount = saveUpdate(sectionId,
+                                            component,
+                                            updateParam,
+                                            before,
+                                            loginUser, pgId, menuId);
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("resultRowCount", (resultInsertRowCount + resultUpdateRowCount));
+        result.put("key", key);
+
+        return result;
+    }
+
+    //다중 저장 (분기 처리)
+    private Map<String, Object> saveInsert(String sectionId,
+                                           String component,
+                                           List<Map<String, Object>> insertParam,
+                                           List<String> rawKey,
+                                           Map<String, Object> before,
+                                           LoginVO loginUser,
+                                           String pgId,
+                                           String menuId) {
+
+        List<Map<String, Object>> key = new ArrayList<Map<String, Object>>();
+
+        //사전 함수 호출
+        if (before != null && !before.isEmpty() && "insert".equals(before.get("action"))) {
+            callBefore(before,
+                        loginUser,
+                        sectionId,
+                        component,
+                        pgId,
+                        menuId);
             }
+        //pk 생성
+        if (rawKey != null && !rawKey.isEmpty()) {
+            insertParam = getKeyToParam(insertParam, rawKey, sectionId, component, loginUser);
+            System.out.println("getKeyToParam : " + insertParam);
 
-            resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId, menuId);
-
-            if (resultUpdateRowCount <= 0) {
-                throw new CrudFailException(
-                        "FAIL UPDATE " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
-                        "저장 실패 : " + (resultUpdateRowCount) + "건",
-                        ApiResponse.ApiType.UPDATE);
+            //return할 key값 구하기
+            for ( Map<String, Object> map : insertParam){
+                Map<String, Object> keyMap =  new HashMap<>();
+                for ( String keyStr  : rawKey){
+                    keyMap.put(keyStr, map.get(keyStr));
+                }
+                key.add(keyMap);
             }
         }
-        return (resultInsertRowCount + resultUpdateRowCount);
+
+        int resultInsertRowCount = processInsert(sectionId,
+                                                component,
+                                                loginUser,
+                                                insertParam,
+                                                rawKey,
+                                                pgId,
+                                                menuId);
+
+        if (resultInsertRowCount <= 0) {
+            throw new CrudFailException(
+                    "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + insertParam,
+                    "저장 실패 : " + (resultInsertRowCount) + "건",
+                    ApiResponse.ApiType.INSERT);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("key", key);
+        result.put("resultInsertRowCount", resultInsertRowCount);
+
+        return result;
+    }
+
+    //다중 수정 (분기 처리)
+    private int saveUpdate(String sectionId,
+                           String component,
+                           List<Map<String, Object>> updateParam,
+                           Map<String, Object> before,
+                           LoginVO loginUser,
+                           String pgId,
+                           String menuId) {
+
+        //사전 함수 호출
+        if (before != null && !before.isEmpty() && "update".equals(before.get("action"))) {
+            callBefore(before,
+                    loginUser,
+                    sectionId,
+                    component,
+                    pgId,
+                    menuId);
+        }
+
+        int resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId, menuId);
+
+        if (resultUpdateRowCount <= 0) {
+            throw new CrudFailException(
+                    "FAIL UPDATE " + sectionId + "/" + pgId + "/" + component + " : \n" + updateParam,
+                    "저장 실패 : " + (resultUpdateRowCount) + "건",
+                    ApiResponse.ApiType.UPDATE);
+        }
+
+        return resultUpdateRowCount;
     }
 
 
-    private int processInsert(String sectionId, String component, LoginVO loginUser, List<Map<String, Object>> insertParam, Object rawKey, String pgId, String menuId) {
+    private int processInsert(String sectionId,
+                              String component,
+                              LoginVO loginUser,
+                              List<Map<String, Object>> insertParam,
+                              Object rawKey,
+                              String pgId,
+                              String menuId) {
 
         //loginUser set
         setLoginParam(insertParam, loginUser);
@@ -231,7 +360,12 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     }
 
 
-    private int processUpdate(String sectionId, String component, LoginVO loginUser, List<Map<String, Object>> updateParam, String pgId, String menuId) {
+    private int processUpdate(String sectionId,
+                              String component,
+                              LoginVO loginUser,
+                              List<Map<String, Object>> updateParam,
+                              String pgId,
+                              String menuId) {
         //loginUser set
         setLoginParam(updateParam, loginUser);
         setPgIdParam(updateParam, pgId, menuId);
@@ -243,7 +377,12 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
 
     //사전 함수 호출
     @Override
-    public int callBefore(Map<String, Object> before, LoginVO loginUser, String sectionId, String component, String pgId, String menuId) {
+    public int callBefore(Map<String, Object> before,
+                          LoginVO loginUser,
+                          String sectionId,
+                          String component,
+                          String pgId,
+                          String menuId) {
 
         List<Map<String, Object>> beforeParam = (List<Map<String, Object>>) before.get("beforeParam");
         if (beforeParam == null || beforeParam.isEmpty()) return 0;
@@ -287,7 +426,11 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //pk 채번 && param set
     @Override
     @Transactional
-    public List<Map<String, Object>> getKeyToParam(List<Map<String, Object>> param, Object rawKey, String sectionId, String component, LoginVO loginUser) {
+    public List<Map<String, Object>> getKeyToParam(List<Map<String, Object>> param,
+                                                   Object rawKey,
+                                                   String sectionId,
+                                                   String component,
+                                                   LoginVO loginUser) {
 
         String statement = buildCrudStatement(sectionId, component, "getKey");
 
@@ -313,7 +456,10 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     //selectOption 검색
     @Override
     @Transactional(readOnly = true)
-    public List<Map<String, Object>> getSelectOption(String sectionId, String component, Map<String, Object> param, LoginVO loginUser) {
+    public List<Map<String, Object>> getSelectOption(String sectionId,
+                                                     String component,
+                                                     Map<String, Object> param,
+                                                     LoginVO loginUser) {
 
         String statement = buildCrudStatement(sectionId, component, "getSelectOption");
         setLoginParam(param, loginUser);

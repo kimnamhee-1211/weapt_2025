@@ -7,16 +7,16 @@
         <div id="section">
             <div class="section1">
                 <div class="section1_nav"><i class="icon-phone-squared"></i>삭제민원조회(관리자)</div>
-                <div class="section1_btn">
-                    <button id="search_btn" onclick="">검색</button>
-                    <button id="print_btn" onclick="" class="print_btn">인쇄</button>
-                </div>
+                <div class="section1_btn" id="section1_btn"></div>
+                <span class="search-box section1_btn">
+                    <button id="cancelResign_btn_grid1" class="del_btn" onclick="cancelResign_onclick()">복원</button>
+                </span>
             </div>
             <div class="section2">
                 <div class="section2_line1">
                     <div>
                         <span>기간 :&nbsp;
-                            <input type="date" id="search_stDate">&nbsp; ~ &nbsp;
+                            <input type="date" id="search_startDate">&nbsp; ~ &nbsp;
                             <input type="date" id="search_endDate">
                         </span>
                     </div>
@@ -53,35 +53,48 @@
     const menuId = "${menuId}";	//메뉴ID
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
-    const search_stDate = document.querySelector("#search_stDate")	//select 컴포넌트
-    const search_endDate = document.querySelector("#search_endDate")	//select 컴포넌트
+    const search_startDate = document.querySelector("#search_startDate");
+    const search_endDate = document.querySelector("#search_endDate");
+
 
     //그리드 설정
     const grid1ColumnLayout = [
         { dataField: "SLIP_NO",
-            visible : false
+            headerText: "전표번호",
+            dataType: "text",
+            width : "8%"
         },
         { dataField: "MINWON_DATE",
-            headerText: "접수일",
+            headerText: "접수일자",
             dataType: "date",
             formatString: "yyyy-mm-dd",
             width : "10%"
         },
+        { dataField: "PLACE",
+            headerText: "장소",
+            dataType: "text",
+            width : "20%"
+        },
         { dataField: "DESCR",
-            headerText: "접수 내역",
+            headerText: "내역",
             dataType: "text",
             width : "*%",
             style: "line-break-column",
         },
+        { dataField: "RECEIPT_USER",
+            headerText: "접수자",
+            dataType: "text",
+            width : "8%",
+        },
         { dataField: "STATUS_NAME",
             headerText: "처리상태",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
         { dataField: "WORK_USER",
             headerText: "처리자",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
     ];
 
@@ -89,24 +102,32 @@
     grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
-                showRowCheckColumn : false,
-                editable : false
+                showRowNumColumn : false,
+                editable : false,
+                height: 538,
+                wordWrap: true,
             })
     );
 
     //그리드 이벤트
+    AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
+        getSelectOption_min_setting();
+        open_popup1_onclick(AUIGrid.getSelectedRows(grid1)[0]);
+    });
+
+    //팝업 이벤트
+    function close_popup1_onclick(){
+        popupClose(popupId1);
+        clearInput(popupId1);
+    }
 
     //그리드 조회 함수
     function search_grid1_onclick(){
 
         //검색데이터
         let selectParam = {
-            ST_DATE : search_stDate.value,
-            END_DATE : search_endDate.value,
-            ST_DONG : search_stDong.value,
-            ST_HO : search_stHo.value,
-            END_DONG : search_endDong.value,
-            END_HO : search_endHo.value
+            START_DATE: search_startDate.value.replace(/-/g,""),
+            END_DATE: search_endDate.value.replace(/-/g,""),
         }
 
         //파라미터
@@ -119,11 +140,60 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
+                data.forEach(row=>{
+                    row.PLACE = make_place(row)
+                })
                 //그리드 데이터 세팅
                 AUIGrid.setGridData(grid1, data);
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
                 AUIGrid.setSelectionByIndex(grid1, focus, 0);
                 focus = 0;
+            }
+        });
+    }
+
+    function cancelDisuse_onclick(){
+        // 추가된 행 아이템들(배열)
+        let checkedItems = AUIGrid.getCheckedRowItemsAll(grid1);
+        let itemCount = checkedItems.length;
+
+        //검증
+        if(itemCount == 0){
+            alert("체크된 행이 없습니다.");
+            return;
+        }
+
+        if(itemCount > 100){
+            alert("변경사항 저장은 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
+            return;
+        }
+
+        if (!confirm("삭제 민원을/를(총 " + itemCount + "건) 복원처리하시겠습니까?")) return;
+
+        //포커스 지정
+        focus = gridFocus(grid1);
+
+        //저장 데이터
+        let saveParam = {
+            insertParam : null,
+            updateParam : checkedItems,
+            key : [],
+            before : {}
+        }
+
+        //파라미터
+        let saveData  = {
+            sectionId : sectionId,
+            component : pgId + "_cancelDisuse",
+            param: saveParam,
+        }
+
+        we_save( saveData ,{
+            successSave : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
+                    search_grid1_onclick()
+                }else return;
             }
         });
     }
@@ -146,16 +216,17 @@
         });
     }
 
-
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print : true});
-
+        search_startDate.value = getToday("yyyy-MM-dd");
+        search_endDate.value = addDate(getToday("yyyy-MM-dd"), 7, "yyyy-MM-dd");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
-        search_grid1_onclick();
 
+        //로드 시 그리드 바로 조회
+        search_grid1_onclick();
     };
 
 </script>

@@ -110,19 +110,28 @@
 				WHEN A.STATUS_CD = '3' THEN '반려'
 				WHEN A.STATUS_CD = '4' THEN '처리중'
 				ELSE '미결' END 		AS STATUS_NAME,
-			B.WORK_USER 			AS WORK_USER
+			B.WORK_USER 			AS WORK_USER,
+			A.GBN					AS GBN
+			A.DONG_ID				AS DONG_ID,
+			A.LINE_GBN				AS LINE_GBN,
+			A.HO_ID					AS HO_ID,
+			A.MINWON_AREAR_SEQ		AS MINWON_AREAR_SEQ,
+			D.AREAR_NAME			AS AREAR_NAME
 		FROM dbo.TMN_MINWON A
 		LEFT JOIN dbo.TMN_MINWON_WORK B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SLIP_NO = B.SLIP_NO AND A.MINWON_DATE = B.MINWON_DATE
-		LEFT JOIN TMN_MINWON_GBN C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MINWON_GBN = C.GBN_ID
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.GBN = #{GBN}
+		LEFT JOIN dbo.TMN_MINWON_GBN C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MINWON_GBN = C.GBN_ID
+		LEFT JOIN dbo.TMN_MINWON_AREAR D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.MINWON_AREAR_SEQ = D.MINWON_AREAR_SEQ
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 			AND (A.DEL_YN = '' OR ISNULL(A.DEL_YN,'N') != 'Y')
 			<choose>
 				<when test='GBN == "0"'>
+					AND A.GBN = #{GBN}
 					AND A.DONG_ID = #{DONG_ID}
 					AND A.LINE_GBN = #{LINE_GBN}
 					AND A.HO_ID  = #{HO_ID}
 				</when>
 				<when test='GBN == "1"'>
+					AND A.GBN = #{GBN}
 					AND A.DONG_ID = #{DONG_ID}
 					AND A.LINE_GBN = #{LINE_GBN}
 					<if test='LINE_GBN != "109999"'>
@@ -149,14 +158,23 @@
 	<select id="getSelectOption_min011_input_user" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE	AS OFFICE_CODE,
-			A.EMP_NO		AS EMP_NO,
 			A.NAME			AS NAME
 		FROM dbo.TAD_EMP A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 		  AND (A.USE_YN = '' OR ISNULL(A.USE_YN,'Y') = 'Y')
 		  AND (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR A.RESIGN_DATE &gt;= CONVERT(VARCHAR(8), GETDATE(), 112))
 		  AND A.JOIN_DATE &lt;= CONVERT(VARCHAR(8), GETDATE(), 112)
-		ORDER BY A.EMP_NO
+		ORDER BY A.NAME
+	</select>
+
+	<select id="getSelectOption_min011_input_workUser" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE	AS OFFICE_CODE,
+			A.COM_NAME		AS NAME
+		FROM dbo.TMN_MINWON_COMPANY A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  AND (A.USE_YN = '' OR ISNULL(A.USE_YN,'1') = '1')
+		ORDER BY A.NAME
 	</select>
 
 	<select id="getSelectOption_min011_info_tr" parameterType="map" resultType="map">
@@ -190,9 +208,8 @@
 		FROM dbo.TMN_MINWON A
 		LEFT JOIN dbo.TMN_MINWON_GBN B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.MINWON_GBN = B.GBN_ID
 		LEFT JOIN dbo.TMN_MINWON_WORK C ON A.OFFICE_CODE = C.OFFICE_CODE
-		    AND A.SLIP_NO = C.SLIP_NO AND A.MINWON_DATE = C.MINWON_DATE AND (C.DEL_YN = '' OR ISNULL(C.DEL_YN,'Y') = 'Y')
+		    AND A.SLIP_NO = C.SLIP_NO AND A.MINWON_DATE = C.MINWON_DATE
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.SLIP_NO = #{SLIP_NO} AND A.MINWON_DATE = #{MINWON_DATE}
-		  AND (A.DEL_YN = '' OR ISNULL(A.DEL_YN,'N') != 'Y')
 	</select>
 
 	<select id="selectList_min011_input2" parameterType="map" resultType="map">
@@ -211,9 +228,8 @@
 			B.GOODS_OUTPUT_YN	AS GOODS_OUTPUT_YN
 		FROM dbo.TMN_MINWON A
 		LEFT JOIN dbo.TMN_MINWON_WORK B ON A.OFFICE_CODE = B.OFFICE_CODE
-		    AND A.SLIP_NO = B.SLIP_NO AND A.MINWON_DATE = B.MINWON_DATE AND (B.DEL_YN = '' OR ISNULL(B.DEL_YN,'Y') = 'Y')
+		    AND A.SLIP_NO = B.SLIP_NO AND A.MINWON_DATE = B.MINWON_DATE
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.SLIP_NO = #{SLIP_NO} AND A.MINWON_DATE = #{MINWON_DATE}
-		  AND (B.DEL_YN = '' OR ISNULL(B.DEL_YN,'N') != 'Y')
 	</select>
 
 	<update id="updateList_min011_input1" parameterType="list">
@@ -531,14 +547,20 @@
 	<select id="getSelectOption_min01020_input1_user" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE	AS OFFICE_CODE,
-			A.EMP_NO		AS EMP_NO,
 			A.NAME			AS NAME
 		FROM dbo.TAD_EMP A
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
 		  AND (A.USE_YN = '' OR ISNULL(A.USE_YN,'Y') = 'Y')
 		  AND (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR A.RESIGN_DATE &gt;= CONVERT(VARCHAR(8), GETDATE(), 112))
 		  AND A.JOIN_DATE &lt;= CONVERT(VARCHAR(8), GETDATE(), 112)
-		ORDER BY A.EMP_NO
+		UNION ALL
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.COM_NAME			AS NAME
+		FROM dbo.TMN_MINWON_COMPANY A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		  AND (A.USE_YN = '' OR ISNULL(A.USE_YN,'1') = '1')
+		ORDER BY 2
 	</select>
 
 
@@ -981,7 +1003,7 @@
 	</select>
 
 
-	<select id="selectList_min01030_grid1" parameterType="map" resultType="map">
+	<select id="selectList_min01060_grid1" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE			AS OFFICE_CODE,
 			A.SLIP_NO 				AS SLIP_NO,
@@ -1017,18 +1039,18 @@
 
 	<select id="selectList_min01070_grid1" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE	AS OFFICE_CODE,
-			A.HO_ID			AS HO_ID,
-			A.DONG_ID		AS DONG_ID,
-			B.DONG_NAME		AS DONG_NAME
-			A.HO			AS HO,
-			A.HOUSE_SIZE	AS HOUSE_SIZE,
-			A.IBJU_DATE		AS IBJU_DATE,
-			A.HOUSEHOLDER	AS HOUSEHOLDER,
-			A.HOUSE_PHON_NO	AS HOUSE_PHON_NO,
-			A.HP_NO			AS HP_NO,
-			A.REMARKS		AS REMARKS,
-			A.LIVE_TYPE		AS LIVE_TYPE,
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.HO_ID				AS HO_ID,
+			A.DONG_ID			AS DONG_ID,
+			B.DONG_NAME			AS DONG_NAME,
+			A.SUBSTRING(A.HO_ID, CHARINDEX('-', A.HO_ID) + 1, LEN(A.HO_ID))			AS HO,
+			A.HOUSE_SIZE		AS HOUSE_SIZE,
+			A.IBJU_DATE			AS IBJU_DATE,
+			A.HOUSEHOLDER		AS HOUSEHOLDER,
+			A.HOUSE_PHON_NO		AS HOUSE_PHON_NO,
+			A.HP_NO				AS HP_NO,
+			A.REMARKS			AS REMARKS,
+			A.LIVE_TYPE			AS LIVE_TYPE
 		FROM dbo.TMN_DONG_HO A
 		LEFT JOIN dbo.TMN_DONG B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DONG_ID = B.DONG_ID
 		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
@@ -1079,10 +1101,406 @@
 	</update>
 
 
+	<select id="selectList_min01080_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE			AS OFFICE_CODE,
+			A.MINWON_AREAR_SEQ		AS MINWON_AREAR_SEQ,
+			A.AREAR_NAME			AS AREAR_NAME,
+			A.ORDER_SEQ				AS ORDER_SEQ
+		FROM dbo.TMN_MINWON_AREAR A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY A.MINWON_AREAR_SEQ
+	</select>
+
+	<update id="updateList_min01080_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.AREAR_NAME   			= U.AREAR_NAME,
+				A.ORDER_SEQ   			= U.ORDER_SEQ
+			FROM dbo.TMN_MINWON_AREAR A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+				#{row.MINWON_AREAR_SEQ} 	 AS MINWON_AREAR_SEQ,
+				#{row.AREAR_NAME} 			 AS AREAR_NAME,
+				#{row.ORDER_SEQ} 			 AS ORDER_SEQ
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.MINWON_AREAR_SEQ = U.MINWON_AREAR_SEQ
+		</if>
+	</update>
+
+	<select id="getKey_min01080_grid1" parameterType="map" resultType="map">
+		SELECT
+			ISNULL(MAX(A.MINWON_AREAR_SEQ), '600000') AS MINWON_AREAR_SEQ
+		FROM dbo.TMN_MINWON_AREAR A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+	<insert id="insertList_min01080_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TMN_MINWON_AREAR (
+				OFFICE_CODE,
+				MINWON_AREAR_SEQ,
+				AREAR_NAME,
+				REG_DATE,
+				ORDER_SEQ)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.MINWON_AREAR_SEQ},
+				#{row.AREAR_NAME},
+				#{row.REG_DATE},
+				#{row.ORDER_SEQ}
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="deleteList_min01080_grid1" parameterType="list">
+		DELETE FROM dbo.TMN_MINWON_AREAR
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					       #{row.MINWON_AREAR_SEQ} AS MINWON_AREAR_SEQ
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TMN_MINWON_AREAR.OFFICE_CODE
+			  AND temp.MINWON_AREAR_SEQ = TMN_MINWON_AREAR.MINWON_AREAR_SEQ
+		)
+	</delete>
+
+	<select id="selectList_min01080_grid2" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE			AS OFFICE_CODE,
+			A.REG_DATE				AS REG_DATE,
+			A.GBN_ID				AS GBN_ID,
+			A.GBN_NAME				AS GBN_NAME,
+			A.USE_YN				AS USE_YN,
+			A.ORDER_SEQ				AS ORDER_SEQ
+		FROM dbo.TMN_MINWON_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY A.GBN_ID
+	</select>
+
+	<update id="updateList_min01080_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.GBN_NAME   			= U.GBN_NAME,
+				A.USE_YN   				= U.USE_YN,
+				A.ORDER_SEQ   			= U.ORDER_SEQ
+			FROM dbo.TMN_MINWON_GBN A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} 	AS OFFICE_CODE,
+				#{row.REG_DATE} 	 			AS REG_DATE,
+				#{row.GBN_ID} 	 				AS GBN_ID,
+				#{row.GBN_NAME} 			 	AS GBN_NAME,
+				#{row.USE_YN} 			 		AS USE_YN,
+				#{row.ORDER_SEQ} 			 	AS ORDER_SEQ
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.REG_DATE = U.REG_DATE AND A.GBN_ID = U.GBN_ID
+		</if>
+	</update>
+
+	<select id="getKey_min01080_grid2" parameterType="map" resultType="map">
+		SELECT
+			ISNULL(MAX(A.GBN_ID), '500000') AS GBN_ID
+		FROM dbo.TMN_MINWON_GBN A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+	<insert id="insertList_min01080_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TMN_MINWON_GBN (
+				OFFICE_CODE,
+				REG_DATE,
+				GBN_ID,
+				GBN_NAME,
+				USE_YN,
+				REG_USER,
+				ORDER_SEQ)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.REG_DATE},
+				#{row.GBN_ID},
+				#{row.GBN_NAME},
+				#{row.USE_YN},
+				#{row.LOGINUSER_ID},
+				#{row.ORDER_SEQ}
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="deleteList_min01080_grid2" parameterType="list">
+		DELETE FROM dbo.TMN_MINWON_GBN
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT
+						#{row.LOGINUSER_OFFICE_CODE} 	AS OFFICE_CODE,
+						#{row.REG_DATE} 				AS REG_DATE,
+						#{row.GBN_ID} 					AS GBN_ID
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TMN_MINWON_GBN.OFFICE_CODE
+			AND temp.REG_DATE = TMN_MINWON_GBN.REG_DATE
+			AND temp.GBN_ID = TMN_MINWON_GBN.GBN_ID
+		)
+	</delete>
+
+	<select id="selectList_min01080_grid3" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE			AS OFFICE_CODE,
+			A.REG_DATE				AS REG_DATE,
+			A.COM_GBN				AS COM_GBN,
+			A.COM_NAME				AS COM_NAME,
+			A.USE_YN				AS USE_YN,
+			A.ORDER_SEQ				AS ORDER_SEQ
+		FROM dbo.TMN_MINWON_COMPANY A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		ORDER BY A.COM_GBN
+	</select>
+
+	<update id="updateList_min01080_grid3" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.COM_NAME   			= U.COM_NAME,
+				A.USE_YN   				= U.USE_YN,
+				A.ORDER_SEQ   			= U.ORDER_SEQ
+			FROM dbo.TMN_MINWON_COMPANY A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} 	AS OFFICE_CODE,
+				#{row.REG_DATE} 	 			AS REG_DATE,
+				#{row.COM_GBN} 	 				AS COM_GBN,
+				#{row.COM_NAME} 			 	AS COM_NAME,
+				#{row.USE_YN} 			 		AS USE_YN,
+				#{row.ORDER_SEQ} 			 	AS ORDER_SEQ
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.REG_DATE = U.REG_DATE AND A.COM_GBN = U.COM_GBN
+		</if>
+	</update>
+
+	<select id="getKey_min01080_grid3" parameterType="map" resultType="map">
+		SELECT
+			ISNULL(MAX(A.COM_GBN), '700000') AS COM_GBN
+		FROM dbo.TMN_MINWON_COMPANY A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+	<insert id="insertList_min01080_grid3" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TMN_MINWON_COMPANY (
+				OFFICE_CODE,
+				REG_DATE,
+				COM_GBN,
+				COM_NAME,
+				USE_YN,
+				REG_USER,
+				ORDER_SEQ)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.REG_DATE},
+				#{row.COM_GBN},
+				#{row.COM_NAME},
+				#{row.USE_YN},
+				#{row.LOGINUSER_ID},
+				#{row.ORDER_SEQ}
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="deleteList_min01080_grid3" parameterType="list">
+		DELETE FROM dbo.TMN_MINWON_COMPANY
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+			<foreach collection="list" item="row" separator="UNION ALL">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} 	AS OFFICE_CODE,
+				#{row.REG_DATE} 				AS REG_DATE,
+				#{row.COM_GBN} 					AS COM_GBN
+			</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TMN_MINWON_COMPANY.OFFICE_CODE
+			AND temp.REG_DATE = TMN_MINWON_COMPANY.REG_DATE
+			AND temp.COM_GBN = TMN_MINWON_COMPANY.COM_GBN
+		)
+	</delete>
 
 
+	<select id="selectList_min01080_input1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE				AS OFFICE_CODE,
+			A.VIEW_GBN					AS VIEW_GBN,
+			A.VIEW_USER					AS VIEW_USER,
+			A.STOCK_GBN					AS STOCK_GBN,
+			A.GAUGE_GBN					AS GAUGE_GBN,
+			A.MESSAGE_GBN				AS MESSAGE_GBN,
+			A.TIME_GBN					AS TIME_GBN
+		FROM dbo.TMN_MINWON_ENV A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
 
 
+	<update id="updateList_min01080_input1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.VIEW_GBN 					= U.VIEW_GBN,
+				A.VIEW_USER 				= U.VIEW_USER,
+				A.STOCK_GBN					= U.STOCK_GBN,
+				A.GAUGE_GBN					= U.GAUGE_GBN,
+				A.MESSAGE_GBN				= U.MESSAGE_GBN,
+				A.TIME_GBN					= U.TIME_GBN
+			FROM dbo.TMN_MINWON_ENV A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} 	AS OFFICE_CODE,
+				#{row.VIEW_GBN} 				AS VIEW_GBN,
+				#{row.VIEW_USER} 				AS VIEW_USER,
+				#{row.STOCK_GBN} 				AS STOCK_GBN,
+				#{row.GAUGE_GBN} 				AS GAUGE_GBN,
+				#{row.MESSAGE_GBN} 				AS MESSAGE_GBN,
+				#{row.TIME_GBN} 				AS TIME_GBN
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE
+		</if>
+	</update>
+
+	<insert id="insertList_min01080_input1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TMN_MINWON_ENV (
+				OFFICE_CODE,
+				VIEW_GBN,
+				VIEW_USER,
+				STOCK_GBN,
+				GAUGE_GBN,
+				MESSAGE_GBN,
+				TIME_GBN)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.VIEW_GBN},
+					#{row.VIEW_USER},
+					#{row.STOCK_GBN},
+					#{row.GAUGE_GBN},
+					#{row.MESSAGE_GBN},
+					#{row.TIME_GBN}
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="beforeDelete_ilb04040_resign" parameterType="list">
+		DELETE FROM dbo.TMN_MINWON_GBN
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</delete>
+
+	<insert id="insertList_ilb04040_resign" parameterType="list">
+		<if test="list != null and list.size > 0">
+			<foreach collection="list" item="row" separator=";">
+				INSERT INTO dbo.TMN_MINWON_GBN (
+				OFFICE_CODE,
+				REG_DATE,
+				GBN_ID,
+				GBN_NAME,
+				USE_YN,
+				REG_USER,
+				ORDER_SEQ)
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE},
+				CONVERT(char(8), GETDATE(), 112),
+				GBN_ID,
+				GBN_NAME,
+				USE_YN,
+				#{row.LOGINUSER_ID},
+				ORDER_SEQ
+				FROM dbo.TMN_MINWON_GBN
+				WHERE OFFICE_CODE = '10001'
+			</foreach>
+		</if>
+	</insert>
+
+	<select id="selectList_min_setting" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE				AS OFFICE_CODE,
+			A.VIEW_GBN					AS VIEW_GBN,
+			A.VIEW_USER					AS VIEW_USER,
+			A.STOCK_GBN					AS STOCK_GBN,
+			A.GAUGE_GBN					AS GAUGE_GBN,
+			A.MESSAGE_GBN				AS MESSAGE_GBN,
+			A.TIME_GBN					AS TIME_GBN
+		FROM dbo.TMN_MINWON_ENV A
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+	</select>
+
+	<select id="selectList_min01090_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE			AS OFFICE_CODE,
+			A.SLIP_NO 				AS SLIP_NO,
+			A.MINWON_DATE 			AS MINWON_DATE,
+			A.MINWON_GBN			AS MINWON_GBN,
+			'[' + ISNULL(C.GBN_NAME, ' ') + ']' + CHAR(13) + CHAR(10) + ISNULL(A.DESCR, '') AS DESCR,
+			A.STATUS_CD 			AS STATUS_CD,
+			CASE WHEN A.STATUS_CD = '1' THEN '처리'
+				WHEN A.STATUS_CD = '2' THEN '보류'
+				WHEN A.STATUS_CD = '3' THEN '반려'
+				WHEN A.STATUS_CD = '4' THEN '처리중'
+									ELSE '미결'
+			END 					AS STATUS_NAME,
+			A.GBN					AS GBN,
+			A.DONG_ID				AS DONG_ID,
+			A.HO_ID					AS HO_ID,
+			A.LINE_NO				AS LINE_NO,
+			A.LINE_GBN				AS LINE_GBN,
+			A.MINWON_AREAR_SEQ		AS MINWON_AREAR_SEQ,
+			B.AREAR_NAME 			AS AREAR_NAME,
+			A.RECEIPT_USER			AS RECEIPT_USER,
+			D.WORK_USER         	AS WORK_USER
+		FROM dbo.TMN_MINWON A
+		LEFT JOIN dbo.TMN_MINWON_AREAR B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.MINWON_AREAR_SEQ = B.MINWON_AREAR_SEQ
+		LEFT JOIN TMN_MINWON_GBN C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MINWON_GBN = C.GBN_ID
+		LEFT JOIN TMN_MINWON_WORK D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.SLIP_NO = D.SLIP_NO AND A.MINWON_DATE = D.MINWON_DATE
+		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DEL_YN = 'Y'
+			<if test='START_DATE != "" and START_DATE != null'>
+				AND A.MINWON_DATE &gt;= #{START_DATE}
+			</if>
+			<if test='END_DATE != "" and END_DATE != null'>
+				AND A.MINWON_DATE &lt;= #{END_DATE}
+			</if>
+	</select>
+
+	<update id="updateList_min01090_cancelDisuse" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+				SET
+				A.DEL_YN        	= 'N',
+				A.DEL_ID       		= NULL,
+				A.DEL_NM      		= NULL,
+				A.DEL_DT         	= NULL
+				FROM dbo.TMN_MINWON  A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+				#{row.SLIP_NO}               AS SLIP_NO,
+				#{row.MINWON_DATE}           AS MINWON_DATE,
+			</foreach>
+			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE
+			AND A.SLIP_NO = U.SLIP_NO AND A.MINWON_DATE = U.MINWON_DATE
+		</if>
+	</update>
 
 
 </mapper>

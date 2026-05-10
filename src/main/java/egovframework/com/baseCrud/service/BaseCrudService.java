@@ -23,7 +23,7 @@ public interface BaseCrudService {
 
     public int deleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
-    public int saveList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
+    public Map<String, Object> saveList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
     public int callBefore(Map<String, Object> before, LoginVO loginUser, String sectionId, String component, String pgId, String menuId);
 

@@ -367,20 +367,6 @@ function gridFocusFromKey(data, grid) {
         dataKeys.every(key => item[key] == data[key])
     );
 
-    // let rowIndex;
-    // l_grid1Data.forEach((index, item) =>{
-    //     let gbn = true;
-    //     for (let i = 0; i < dataKey.length; i++) {
-    //         if(item[dataKey[i]] != data[dataKey[i]]){
-    //             gbn = false;
-    //              break;
-    //         }
-    //     }
-    //     if(gbn){
-    //         rowIndex = index;
-    //     }
-    // })
-    // return rowIndex
 }
 
 

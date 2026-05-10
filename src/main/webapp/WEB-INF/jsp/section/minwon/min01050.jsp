@@ -119,34 +119,9 @@
 
     //그리드 이벤트
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        let pop_data = {};
-
-        let gbn = AUIGrid.getSelectedRows(grid1)[0].GBN
-        let lineGbn = AUIGrid.getSelectedRows(grid1)[0].LINE_GBN
-        let lineNo = AUIGrid.getSelectedRows(grid1)[0].LINE_NO
-        let dongId = AUIGrid.getSelectedRows(grid1)[0].DONG_ID
-        let hoId = AUIGrid.getSelectedRows(grid1)[0].HO_ID
-        let minwonArearSeq = AUIGrid.getSelectedRows(grid1)[0].MINWON_AREAR_SEQ
-        let arearName = AUIGrid.getSelectedRows(grid1)[0].AREAR_NAME
-
-        pop_data.gbn = gbn;
-        pop_data.lineGbn = lineGbn;
-        pop_data.lineNo = lineNo;
-        pop_data.dongId = dongId;
-        pop_data.hoId = hoId;
-        pop_data.minwonArearSeq = minwonArearSeq;
-        pop_data.arearName = arearName;
-
-        let pop_item = {
-            pgId: pgId,
-            menuId: menuId,
-            querySet: "min001",
-            pop_data: pop_data
-        }
-        pop_onload(pop_item);
-        popupOpen(popupId);
+        getSelectOption_min_setting();
+        open_popup_onclick(AUIGrid.getSelectedRows(grid1)[0]);
     });
-
 
     //팝업 닫기 이벤트
     function close_popup_onclick(){
@@ -204,37 +179,6 @@
                 btnPermission(data)
             }
         });
-    }
-
-    function make_place(data){
-        let place = ""
-        if(data.GBN == "0"){
-            place =  data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + "호"
-        }else if(data.GBN == "1"){
-            if(data.LINE_GBN == "109999"){
-                place = data.HO_ID.split("-")[0] + "동 지하주차장"
-            }else{
-                let lineGbnNm = "";
-                switch (data.LINE_GBN){
-                    case "109003" :
-                        lineGbnNm = "현관";
-                        break;
-                    case "109997" :
-                        lineGbnNm = " EL";
-                        break;
-                    case "109998" :
-                        lineGbnNm = "옥탑";
-                        break;
-                    case "109002" :
-                        lineGbnNm = "계단";
-                        break;
-                }
-                place = data.HO_ID.split("-")[0] + "동 " + data.HO_ID.split("-")[1] + " " +  lineGbnNm
-            }
-        }else{
-            place = data.AREAR_NAME;
-        }
-        return place;
     }
 
     //로드
