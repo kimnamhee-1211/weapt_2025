@@ -1,7 +1,6 @@
 package egovframework.com.exception;
 
-import egovframework.com.common.dto.ApiResponse;
-import egovframework.com.login.LoginController;
+import egovframework.com.common.model.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
@@ -11,10 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.HashMap;
-import java.util.Map;
-
 
 
 @Order(Ordered.HIGHEST_PRECEDENCE)

@@ -1,6 +1,6 @@
 package egovframework.com.exception;
 
-import egovframework.com.common.dto.ApiResponse;
+import egovframework.com.common.model.ApiResponse;
 
 public class CrudFailException extends RuntimeException {
 

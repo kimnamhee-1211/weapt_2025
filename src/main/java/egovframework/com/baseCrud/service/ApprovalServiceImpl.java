@@ -2,7 +2,7 @@ package egovframework.com.baseCrud.service;
 
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.BaseServiceSupport;
-import egovframework.com.common.dto.ApiResponse;
+import egovframework.com.common.model.ApiResponse;
 import egovframework.com.exception.ApprovalAuthException;
 import egovframework.com.exception.ApprovalFailException;
 import egovframework.com.login.model.LoginVO;

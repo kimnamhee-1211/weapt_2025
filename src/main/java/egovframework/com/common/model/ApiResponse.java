@@ -1,9 +1,6 @@
-package egovframework.com.common.dto;
+package egovframework.com.common.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
-import java.util.Map;
 
 public class ApiResponse<T> {
 
