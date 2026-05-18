@@ -209,7 +209,7 @@
     grid3 = AUIGrid.create("#grid3", grid3ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
-                height: 410,
+                height: 408,
                 showRowNumColumn: false,
             })
     );

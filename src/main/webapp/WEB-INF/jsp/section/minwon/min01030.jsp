@@ -43,10 +43,10 @@
                             <option value="12">공용</option>
                         </select>&emsp;
                         <span id="search_sedae" style="display: none">
-                            <input type="text" id="search_stDong" name="ST_DONG" class="box50" oninput="inputNumFormat(obj)">동
-                            <input type="text" id="search_stHo" name="ST_HO" class="box50" oninput="inputNumFormat(obj)">호&emsp;~
-                            <input type="text" id="search_endDong" name="END_DONG" class="box50" oninput="inputNumFormat(obj)"> 동
-                            <input type="text" id="search_endHo" name="END_HO" class="box50" oninput="inputNumFormat(obj)">호
+                            <input type="text" id="search_stDong" name="ST_DONG" class="box50" oninput="inputNumFormat(this)">동
+                            <input type="text" id="search_stHo" name="ST_HO" class="box50" oninput="inputNumFormat(this)">호&emsp;~
+                            <input type="text" id="search_endDong" name="END_DONG" class="box50" oninput="inputNumFormat(this)"> 동
+                            <input type="text" id="search_endHo" name="END_HO" class="box50" oninput="inputNumFormat(this)">호
                         </span>
                         <span id="search_gongyong" style="display: none">
                             <input type="radio" id="search_gbn12" value="all" name="GBN_12"> 전체공용&emsp;

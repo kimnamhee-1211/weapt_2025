@@ -5,7 +5,7 @@
 #woono_layer_popup:checked + label + #layer_bg{
     display: block;
 }
-#change_layer_popup:checked + label + #layer_bg{
+#change_office:checked + label + #layer_bg{
     display: block;
 }
 #pw_layer_popup:checked + label + #layer_bg{
@@ -25,7 +25,7 @@
 }
 
 
-.layer_popup{ /* 체크박스 없애기 */
+.hidden_check{ /* 체크박스 없애기 */
     display: none;
     cursor: pointer;
 }

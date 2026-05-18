@@ -17,10 +17,10 @@
                         <input type="date" id="search_endDate">
                     </span>&emsp;&emsp;
                     <span id="sedae">동호:&nbsp;
-                        <input type="text" id="search_stDong" name="" class="box50" oninput="inputNumFormat(obj)">동
-                        <input type="text" id="search_stHo" name="" class="box50" oninput="inputNumFormat(obj)">호&emsp;~
-                        <input type="text" id="search_endDong" name="" class="box50" oninput="inputNumFormat(obj)">동
-                        <input type="text" id="search_endHo" name="" class="box50" oninput="inputNumFormat(obj)">호&emsp;&emsp;&emsp;
+                        <input type="text" id="search_stDong" name="" class="box50" oninput="inputNumFormat(this)">동
+                        <input type="text" id="search_stHo" name="" class="box50" oninput="inputNumFormat(this)">호&emsp;~
+                        <input type="text" id="search_endDong" name="" class="box50" oninput="inputNumFormat(this)">동
+                        <input type="text" id="search_endHo" name="" class="box50" oninput="inputNumFormat(this)">호&emsp;&emsp;&emsp;
                     </span>
                 </div>
             </div>

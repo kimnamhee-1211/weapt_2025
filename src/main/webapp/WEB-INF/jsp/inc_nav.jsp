@@ -4,36 +4,21 @@
     <div id="header">
         <div class="header1"><h1>종합관리솔루션</h1></div>
         <div id="userOffice" class="header2"></div>
-         <!-- #### : 관리자 다르고 사용자 다르고 아이디 입력값에 따라 변경 [10002]우리나라만세센트럴프르지오(031-905-6741)-->
         <div class="header3">
+
             <span id="change">
-                <input type="checkbox" id="change_layer_popup" class="layer_popup">
-                <label for="change_layer_popup" class="pop_labal">관리소변경</label>
+                <input type="checkbox" id="change_office" class="hidden_check">
+                <label for="change_office" class="pop_labal">관리소변경</label>
                 <!-- 팝업시작-->
-                <div class="layer_bg">
-                    <div class="popup" style="width: 600px;">
-                        <div class="pop_title">&#10004; 관리소변경</div>                            
-                        <span>&emsp;&#9726&nbsp;관리소명(코드 외) :&nbsp;</span>
-                        <span><input type="text" id="office_name" name="" class="" style="width:250px;"></span>
-                        <span class="section_middle_btn">
-                            <button id="search_btn" onclick="">검색</button>&emsp;
-                        </span>
-                        <div id=""  style="height: 300px; border: 1px solid #bcbcbc;">
-                            <div id="" name="">
-                                단지코드 | 관리소명(전화번호) | 계약유형 
-                            </div>
-                        </div>
-                        <div class="pop_btn">
-                            <label for="change_layer_popup" class="popup_closs_btn">닫기</label>                    
-                        </div>
-                    </div>
-                </div>
-                <!-- 팝업끝-->
+                <jsp:include page="/WEB-INF/jsp/section/home/pop_changeOffice.jsp"/>
             </span>
-            <span id="home" style="color: blue;"><a a href="../home/hom01010.jsp">&emsp;결재현황&HOME</a></span>
+
+            <span id="home" class="nav_top" style="color: blue;"><a id="home/hom01010">&emsp;결재현황&HOME</a></span>
+
             <span id="support"><a href="https://6741.586.kr" target="blank">&emsp;원격지원</a></span>
+
             <span id="password">
-                <input type="checkbox" id="pw_layer_popup" class="layer_popup">
+                <input type="checkbox" id="pw_layer_popup" class="hidden_check">
                 <label for="pw_layer_popup" class="pop_labal">&emsp;비밀번호 변경&emsp;</label>
                 <!-- 팝업시작-->
                 <div class="layer_bg">
@@ -74,7 +59,7 @@
 
     <div id="nav_resize">
         <div id="nav">
-            <ul id="nav_ul">
+            <ul id="nav_top">
                 <li id="topnav_iljung"><a id="iljung/ilj01010">일정관리</a></li>
                 <li id="topnav_minwon"><a id="minwon/min01010">민원관리</a></li>
                 <li id="topnav_ilban"><a id="ilban/ilb01010">관리일반</a></li>
@@ -88,7 +73,7 @@
                 <li id="topnav_sojang"><a id="sojang/soj01010">관리소장</a></li>
             </ul>
            
-            <input type="checkbox" id="iconmenu_layer_popup" class="layer_popup" >
+            <input type="checkbox" id="iconmenu_layer_popup" class="hidden_check" >
             <label for="iconmenu_layer_popup" class="pop_labal iconmenu"><i class="icon-menu-1"></i></label>
     
             <!-- 팝업시작-->
@@ -101,10 +86,30 @@
 
     <script>
 
-        const nav = document.querySelector('#nav_ul');
+        const nav_top = document.querySelector("#nav_top");
         const userOffice = document.querySelector("#userOffice");
+        const change_office = document.querySelector("#change_office");
 
-        nav.addEventListener('click', (e) => {
+
+        change_office.addEventListener("change", () => {
+            popupOpen(pop_changeOffice);
+            pop_onload();
+        })
+
+
+
+
+
+
+
+        window.addEventListener("load", function () {
+            if(!isNull(loginUser.userId)){
+                userOffice.innerHTML = "[" + loginUser.officeCode + "] " + loginUser.officeName + " (" + loginUser.userName + ")";
+            }
+        })
+
+
+        nav_top.addEventListener('click', (e) => {
             var pg = null;
 
             if(e.target.tagName == 'LI'){
@@ -115,13 +120,6 @@
             }
             location.href = ctx + "/goMenu/" + pg
         });
-
-        window.addEventListener("load", function () {
-            if(!isNull(loginUser.userId)){
-                userOffice.innerHTML = "[" + loginUser.officeCode + "] " + loginUser.officeName + " (" + loginUser.userName + ")";
-            }
-        })
-
 
     </script>
 

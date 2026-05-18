@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<div class="wrap">
-    <div class="aside" id="aside_template">
+<div class="nav_wrap">
+    <div class="nav_aside" id="aside_template">
         <div class="nav">TEMPLATE</div>
-        <ul class="tree">
+        <ul class="nav_tree">
             <li>
                 <input type="checkbox" id="root1" class="tree_cb">
                 <label for="root1">TEMPLATE</label>
