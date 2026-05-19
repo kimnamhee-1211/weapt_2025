@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<div class="wrap">
-    <div class="aside" id="aside_danche">
+<div class="nav_wrap">
+    <div class="nav_aside" id="aside_danche">
         <div class="nav">회의단체</div>
-        <ul class="tree">
+        <ul class="nav_tree">
             <li>
                 <input type="checkbox" id="root" class="tree_cb">
                 <label for="root">입주자대표회의</label>

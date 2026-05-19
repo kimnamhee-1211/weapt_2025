@@ -12,9 +12,9 @@
 //aside_nav
 document.addEventListener("DOMContentLoaded", () => {
     //변수 설정
-    const wrap = document.querySelector(".wrap");
-    const aside = document.querySelector(".aside");
-    const tree = document.querySelector(".tree"); //스크롤 요소
+    const wrap = document.querySelector(".nav_wrap");
+    const aside = document.querySelector(".nav_aside");
+    const tree = document.querySelector(".nav_tree"); //스크롤 요소
 
     if (!wrap || !aside || !tree) return;
 
@@ -45,10 +45,12 @@ document.addEventListener("DOMContentLoaded", () => {
         nav_focus = localStorage.getItem('nav_focus');
         nav_focus_scroll = localStorage.getItem('nav_focus_scroll');
 
-        if (nav_focus !== null) {
+        if (nav_focus) {
             const focus_tag = document.getElementById(nav_focus);
-            focus_tag.classList.add("focus");
-            tree.scrollTop = parseInt(nav_focus_scroll, 10);
+            if (focus_tag) {
+                focus_tag.classList.add("focus");
+                tree.scrollTop = parseInt(nav_focus_scroll, 10);
+            }
         } else {
             const focus_tag = tree.querySelector("li");
             if (focus_tag) {

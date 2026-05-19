@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<div class="wrap">
-    <div class="aside">
+<div class="nav_wrap">
+    <div class="nav_aside">
         <div id="aside_jangsoo">
             <div class="nav">장기수선</div>
-            <ul class="tree">
+            <ul class="nav_tree">
                 <li id="soo01">
                     <input type="checkbox" id="root">
                     <label for="root">환경설정</label>

@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<div class="wrap">
-    <div class="aside" id="aside_sojang">
+<div class="nav_wrap">
+    <div class="nav_aside" id="aside_sojang">
         <div class="nav">관리소장</div>
-        <ul class="tree">
+        <ul class="nav_tree">
             <li id="soj02">
                 <input type="checkbox" id="root2" class="tree_cb">
                 <label for="root2">관리소장</label>

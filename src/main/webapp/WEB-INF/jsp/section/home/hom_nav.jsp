@@ -1,38 +1,37 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<div class="wrap">
-    <div class="aside">
-        <div id="aside_home">
+<div class="nav_wrap">
+    <div class="nav_aside" id="aside_home">
             <div class="nav">결재 & <span style="font-weight: 500;"> HOME </span></div>
-            <ul class="tree">
-                <li id="hom01">
-                    <input type="checkbox" id="root">
+            <ul class="nav_tree">
+                <li>
+                    <input type="checkbox" id="root" class="tree_cb">
                     <label for="root">결재현황</label>
                     <ul class="tree_nav">
-                        <li id="hom01010"><a href="hom01010.jsp">결재현황</a></li>
+                        <li id="hom01010">결재현황</li>
                     </ul>
                 </li>
-                <li id="hom011">
-                    <input type="checkbox" id="root2">
+                <li>
+                    <input type="checkbox" id="root2" class="tree_cb">
                     <label for="root2">HOME</label>
                     <ul class="tree_nav">
-                        <li id="hom02010"><a href="hom02010.jsp">공지사항</a></li>
-                        <li id="hom02020"><a href="hom02020.jsp">자주하는질의응답</a></li>
-                        <li id="hom02030"><a href="hom02030.jsp">질문/건의</a></li>
-                        <li id="hom02040"><a href="hom02040.jsp">하드용량보기</a></li>
+                        <li id="hom02010">공지사항</li>
+                        <li id="hom02020">자주하는질의응답</li>
+                        <li id="hom02030">질문/건의</li>
+                        <li id="hom02040">하드용량보기</li>
                     </ul>
                 </li>
-                <li id="hom012">
-                    <input type="checkbox" id="root3">
+                <li>
+                    <input type="checkbox" id="root3"  class="tree_cb">
                     <label for="root3">자료실</label>
                     <ul class="tree_nav">
-                        <li id="hom03010"><a href="hom03010.jsp">법령자료실</a></li>
-                        <li id="hom03020"><a href="hom03020.jsp">실무자료실</a></li>
-                        <li id="hom03030"><a href="hom03030.jsp">장기수선계획</a></li>
+                        <li id="hom03010">법령자료실</li>
+                        <li id="hom03020">실무자료실</li>
+                        <li id="hom03030">장기수선계획</li>
                     </ul>
                 </li>
-                <li id="hom04">
-                    <input type="checkbox" id="root4">
+                <li>
+                    <input type="checkbox" id="root4" class="tree_cb">
                     <label for="root4">LINK</label>
                         <ul class="tree_nav">
                         <li id="hom04010"><a href="http://www.anbit.co.kr/" target="_blank">에이앤비솔루션</a></li>
@@ -42,3 +41,8 @@
             </ul>
         </div>
     </div>
+
+<script>
+    const sectionId = "home";
+    const navId = "aside_home";
+</script>
