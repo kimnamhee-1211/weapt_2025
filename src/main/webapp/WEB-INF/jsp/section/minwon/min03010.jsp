@@ -7,17 +7,14 @@
     <div id="section">
         <div class="section1">
             <div class="section1_nav"><i class="icon-phone-squared"></i>월별통계</div>
-            <div class="section1_btn">
-                <button id="search_btn" onclick="">검색</button>
-                <button id="print_btn" onclick="" class="print_btn">인쇄</button>
-            </div>
+            <div class="section1_btn" id="section1_btn"></div>
         </div>
         <div class="section2">
             <div class="section2_line1">
-                    <span class="search-box">민원접수월 :&nbsp;
-                        <input type="month" id="" value="<%= yearMonth %>">&nbsp;~&nbsp;
-                        <input type="month" id="" value="<%= yearMonth %>">
-                    </span>
+                <span class="search-box">민원접수월 :&nbsp;
+                    <input type="month" id="search_startMonth">&nbsp;~&nbsp;
+                    <input type="month" id="search_endMonth">
+                </span>
             </div>
         </div>
         <div id="grid1"></div>
@@ -52,62 +49,40 @@
     const menuId = "${menuId}";	//메뉴ID
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
-    const search_select = document.querySelector("#search_select")	//select 컴포넌트
-    const search_date = document.querySelector("#search_date")	//select 컴포넌트
-    const search_input = document.querySelector("#search_input")	//select 컴포넌트
-    let DS_GBN = []
+    const search_startMonth = document.querySelector("#search_startMonth")	//select 컴포넌트
+    const search_endMonth = document.querySelector("#search_endMonth")	//select 컴포넌트
 
     //그리드 설정
     const grid1ColumnLayout = [
-        { dataField: "MST_NO",
-            visible : false
-        },
-        { dataField: "GBN",
-            headerText: "구분",
-            dataType: "text",
-            width : "10%",
-            renderer: {
-                type: "DropDownListRenderer",
-                listFunction: function (rowIndex, columnIndex, item, dataField) {
-                    return DS_GBN;
-                },
-                keyField: "CD", // key 에 해당되는 필드명
-                valueField: "NAME", // value 에 해당되는 필드명
-            }
-        },
-        { dataField: "TITLE",
-            headerText: "일정제목",
-            dataType: "text",
-            width : "20%",
-        },
-        { dataField: "DESCR",
-            headerText: "내용",
-            dataType: "text",
-            width : "*%",
-            style : "text-align-left",
-        },
-        { dataField: "REG_DATE",
-            headerText: "작성일",
+        { dataField: "MONTH",
+            headerText: "월",
             dataType: "date",
-            formatString: "yyyy-mm-dd",
-            width : "10%"
+            formatString: "yyyy-mm",
+            width : "20%"
         },
-        { dataField: "MAKE_DATE",
-            headerText: "생산일",
-            dataType: "date",
-            formatString: "yyyy-mm-dd",
-            width : "10%",
-            editRenderer : we_calendar_Renderer
+        { dataField: "TOTAL_CNT",
+            headerText: "민원건수",
+            dataType: "text",
         },
-        { dataField: "IMPORTANT_YN",
-            headerText: "중요일정",
-            width : "8%",
-            renderer : we_cb_10_Renderer
+        { dataField: "PROC_CNT",
+            headerText: "처리건수",
+            dataType: "text",
         },
-        { dataField: "IMPORTANT_YN",
-            headerText: "나만의 일정",
-            width : "8%",
-            renderer : we_cb_YN_Renderer
+        { dataField: "ING_CNT",
+            headerText: "처리중건수",
+            dataType: "text",
+        },
+        { dataField: "HOLD_CNT",
+            headerText: "보류건수",
+            dataType: "text",
+        },
+        { dataField: "REJECT_CNT",
+            headerText: "반려건수",
+            dataType: "text",
+        },
+        { dataField: "RPENDING_CNT",
+            headerText: "미처리건수",
+            dataType: "text",
         },
     ];
 
@@ -115,6 +90,9 @@
     grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
+                editable : false,
+                showRowCheckColumn : false,
+                showRowNumColumn : false,
             })
     );
 
@@ -123,11 +101,12 @@
     //그리드 조회 함수
     function search_grid1_onclick(){
 
+        if(!requireCheck("SEARCH_GRID1")) return;
+
         //검색데이터
         let selectParam = {
-            SELECT : search_select.value,
-            DATE : search_date.value,
-            INPUT : search_input.value
+            START_MONTH : search_startMonth.value.replace(/-/g,""),
+            END_MONTH : search_endMonth.value.replace(/-/g,""),
         }
 
         //파라미터
@@ -153,16 +132,16 @@
     function requireCheck(require){
         let isValid = true;
         switch(require){
-            case "SAVE_GRID1":
-                let addedRowItems = AUIGrid.getAddedRowItems(grid1);
-                let editedRowItems = AUIGrid.getEditedRowItems(grid1);
-                let items = [...addedRowItems,...editedRowItems];
-                for(const row of items){
-                    if(isNull(row.TITLE)){
-                        alert("제목은 반드시 입력해야 합니다.");
-                        isValid = false;
-                        break;
-                    }
+            case "SEARCH_GRID1":
+                if(isNull(search_startMonth.value)){
+                    alert("시작날짜는 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
+                }
+                if(isNull(search_endMonth.value)){
+                    alert("종료날짜는 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
                 }
                 break;
         }
@@ -173,7 +152,8 @@
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, print : true});
-
+        search_startMonth.value = getToday("yyyy-MM")
+        search_endMonth.value = getToday("yyyy-MM")
 
         //crud 권한 처리 함수
         checkCrudPermission(pgId);

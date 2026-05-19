@@ -41,6 +41,14 @@ function getToday(format) {
             return `${todayYr}.${todayMonth}.${todayDay}`;
         case "kor"            :
             return `${todayYr}년 ${todayMonth}월 ${todayDay}일`;
+        case "yyyy-MM"    :
+            return `${todayYr}-${todayMonth}`;
+        case "yyyy/MM"    :
+            return `${todayYr}/${todayMonth}`;
+        case "yyyyMM"        :
+            return `${todayYr}${todayMonth}}`;
+        case "yyyy.MM"    :
+            return `${todayYr}.${todayMonth}`;
         case "yyyy"            :
             return `${todayYr}`;
         case "MM"            :
