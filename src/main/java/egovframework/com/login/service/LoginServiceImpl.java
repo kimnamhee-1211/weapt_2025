@@ -36,4 +36,24 @@ public class LoginServiceImpl extends EgovAbstractServiceImpl implements LoginSe
         return loginUser;
     }
 
+    @Override
+    public List<Map<String, Object>> selectOffice(Map<String, Object> params) throws Exception {
+
+        List<Map<String, Object>> resultList = loginMapper.selectOffice(params);
+
+        return resultList;
+    }
+
+    @Override
+    public LoginVO changeOffice(Map<String, Object> params) throws Exception {
+
+        LoginVO resultList = loginMapper.changeOffice(params);
+
+        return resultList;
+    }
+
+
+
+
+
 }

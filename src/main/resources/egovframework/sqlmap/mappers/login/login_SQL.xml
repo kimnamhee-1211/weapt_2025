@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="egovframework.com.login.dao.LoginMapper">
+
 	<select id="selectLoginUser" parameterType="loginVO" resultType="loginVO">
 
 		SELECT A.USER_ID,
-		       A.PASSWD,
 		       A.USER_NAME,
 		       A.USE_YN,
 		       A.OFFICE_CODE,
@@ -41,4 +41,64 @@
 		   AND A.PASSWD  = #{password}
 		   AND ISNULL(D.STATUS,'') NOT IN ('104002','104003')  
 	</select>
+
+
+	<select id="selectList_pop_changeOffice_officeGrid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE					AS OFFICE_CODE,
+			A.OFFICE_NAME					AS OFFICE_NAME,
+			A.TEL							AS TEL,
+			B.CONT_KIND_CD					AS CONT_KIND_CD,
+			dbo.getCode_nm(B.CONT_KIND_CD) AS CONT_KIND_NM
+		FROM dbo.TPM_OFFICE A
+		LEFT JOIN dbo.TPM_CONTRACT B ON A.OFFICE_CODE = B.OFFICE_CODE
+		<if test='OFFICE_NAME != "" and OFFICE_NAME != null'>
+			AND A.OFFICE_NAME LIKE '%' + #{OFFICE_NAME} + '%'
+		</if>
+	</select>
+
+	<select id="selectLoginUser" parameterType="loginVO" resultType="loginVO">
+
+		SELECT A.USER_ID,
+			   A.USER_NAME,
+			   A.USE_YN,
+			   A.HP_NO,
+			   A.AUTH_CODE,
+			   B.OFFICE_CODE,
+			   B.OFFICE_NAME,
+			   A.USERGROUP_ID,
+			   C.USERGROUP_NM AS USERGROUP_NM,
+			   A.WORK_GROUP_ID,
+			   dbo.getCode_nm(A.WORK_GROUP_ID) as WORK_GROUP_NM,
+			   B.MGMCOMP_CODE,
+			   B.MGMCOMP_CODE AS MGMCOMP_NM,
+			   CASE WHEN B.STATUS = '104003' OR A.STATUS = '100003' THEN '9' ELSE '0' END AS STATUS,
+			   dbo.getCode_nm(A.STATUS) as STATUS_NM,
+			   A.MGM_CODE,
+			   A.UP_MGMUSER_ID,
+			   A.LEVEL_CODE,
+			   A.UP_MGMUSER_NAME,
+			   C.GROUP_GBN,
+			   ISNULL(B.TEL,E.TEL) AS TEL,
+			   ISNULL(ISNULL(B.COMP_CODE, A.COMP_CODE), E.COMP_CODE) AS COMP_CODE,
+			   E.COMP_NAME,
+			   A.EMP_NO
+		FROM TPM_USER A
+			 JOIN TPM_OFFICE B
+					   ON B.OFFICE_CODE = #{OFFICE_CODE}
+
+			 LEFT JOIN TPM_MGM_COMPANY D
+					   ON B.MGMCOMP_CODE = D.MGMCOMP_CODE
+			 LEFT JOIN TPM_MGTGROUP C
+					   ON A.USERGROUP_ID = C.USERGROUP_ID
+			 LEFT JOIN TPM_COMPANY E
+					   ON B.COMP_CODE = E.COMP_CODE
+		WHERE 1 = 1
+		  AND A.USER_ID = #{userId}
+		  AND A.PASSWD  = #{password}
+		  AND ISNULL(B.STATUS,'') NOT IN ('104002','104003')
+	</select>
+
+
+
 </mapper>

@@ -30,6 +30,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
 import com.nhncorp.lucy.security.xss.XssPreventer;
@@ -69,7 +70,7 @@ public class LoginController {
 	protected LoginService loginService;
 
 
-    
+    //index
 	@RequestMapping(value = "/start")
 	public String start(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LOGGER.debug("^o^ [ start ]");
@@ -87,7 +88,7 @@ public class LoginController {
 		return "index";
 	}
 	
-	
+	//login + 캡챠 인증
 	@RequestMapping(value = "/login", method = { RequestMethod.POST })
 	public String login(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		LOGGER.debug("^o^ [ login ] request params : "+params);
@@ -136,6 +137,37 @@ public class LoginController {
 
 	}
 
-	
+	//관리소변경 - 관리소 조회
+	@RequestMapping(value = "/selectOffice")
+	@ResponseBody
+	public List<Map<String, Object>> selectOffice(@RequestParam Map<String, Object> params) throws Exception {
+
+		List<Map<String, Object>> resultList  = loginService.selectOffice(params);
+
+		return resultList;
+	}
+
+	//관리소변경 - 관리소 조회
+	@RequestMapping(value = "/changeOffice",  method = { RequestMethod.POST })
+	public String changeOffice(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+
+		LoginVO resultList  = loginService.changeOffice(params);
+
+		if(resultList != null){
+			HttpSession session = request.getSession();
+
+			session.setAttribute("orginLoginUser", session.getAttribute("loginUser"));
+			session.setAttribute("loginUser", resultList);
+
+		}
+
+		return "section/home/hom01010";
+
+	}
+
+
+
+
+
 
 }

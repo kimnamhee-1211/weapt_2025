@@ -80,7 +80,7 @@ public class LoginVO{
 	private String tel;
 	/** 회사코드 */
 	private String compCode;
-	/** 회사코드 */
+	/** 회사명 */
 	private String compName;
 
 	public String getUserId() {

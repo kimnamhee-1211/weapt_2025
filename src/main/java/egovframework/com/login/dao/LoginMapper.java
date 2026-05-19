@@ -16,6 +16,7 @@
 package egovframework.com.login.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.egovframe.rte.psl.dataaccess.mapper.Mapper;
 
@@ -45,6 +46,14 @@ public interface LoginMapper {
 	 * @exception Exception
 	 */
 	LoginVO selectLoginUser(LoginVO vo) throws Exception;
+
+	List<Map<String, Object>> selectOffice(Map<String, Object> params) throws Exception;
+
+	LoginVO changeOffice(Map<String, Object> params) throws Exception;
+
+
+
+
 
 
 //	/**

@@ -54,8 +54,8 @@
 
     //그리드 설정
     const grid1ColumnLayout = [
-        { dataField: "DONG_NAME",
-            headerText: "동",
+        { dataField: "GBN_NAME",
+            headerText: "분야",
             dataType: "text",
             width : "20%"
         },
