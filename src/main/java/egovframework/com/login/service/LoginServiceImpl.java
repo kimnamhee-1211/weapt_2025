@@ -52,7 +52,13 @@ public class LoginServiceImpl extends EgovAbstractServiceImpl implements LoginSe
         return resultList;
     }
 
+    @Override
+    public int checkPass(String params) throws Exception {
 
+        int result = loginMapper.checkPass(params);
+
+        return result;
+    }
 
 
 

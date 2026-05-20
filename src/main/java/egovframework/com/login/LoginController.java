@@ -116,6 +116,7 @@ public class LoginController {
 		LOGGER.debug("^o^ [ login ] password 복호화 : " + password);
 
 
+		//로그인 && 로그인 정보 세션 저장
 		LoginVO loginUser = new LoginVO();
 
 		String userId = params.get("userId").toString();
@@ -166,6 +167,34 @@ public class LoginController {
 	}
 
 
+//	@RequestMapping(value = "/getPbkey")
+//	@ResponseBody
+//	public String getPbkey(HttpServletRequest request, HttpServletResponse response) throws Exception {
+//
+//		String publicKey = EgovProperties.getProperty("RSA.publicKey");
+//		HttpSession session = request.getSession();
+//		session.setAttribute("pbkey", publicKey);
+//
+//		return "index";
+//	}
+
+
+	@RequestMapping(value = "/checkPass")
+	@ResponseBody
+	public int checkPass(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// 패스워드 복호화
+		RSATest rsaTest = new RSATest();
+		String privateKey = EgovProperties.getProperty("RSA.privateKey");
+		String passwordEnc = params.get("PASSWORD").toString();
+		String password = rsaTest.decryptData(privateKey, passwordEnc);
+		params.put("PASSWORD", password);
+		params.put("PASSWORD", password);
+
+		int result = loginService.checkPass(password);
+
+		return result;
+	}
 
 
 

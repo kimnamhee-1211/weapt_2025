@@ -86,11 +86,10 @@
 		FROM TPM_USER A
 			 JOIN TPM_OFFICE B
 					   ON B.OFFICE_CODE = #{OFFICE_CODE}
-
-			 LEFT JOIN TPM_MGM_COMPANY D
-					   ON B.MGMCOMP_CODE = D.MGMCOMP_CODE
 			 LEFT JOIN TPM_MGTGROUP C
 					   ON A.USERGROUP_ID = C.USERGROUP_ID
+			 LEFT JOIN TPM_MGM_COMPANY D
+					   ON B.MGMCOMP_CODE = D.MGMCOMP_CODE
 			 LEFT JOIN TPM_COMPANY E
 					   ON B.COMP_CODE = E.COMP_CODE
 		WHERE 1 = 1
@@ -98,6 +97,20 @@
 		  AND A.PASSWD  = #{password}
 		  AND ISNULL(B.STATUS,'') NOT IN ('104002','104003')
 	</select>
+
+	<select id="checkPass" parameterType="string" resultType="map">
+
+		SELECT COUNT(*)
+		FROM TPM_USER A
+		WHERE 1 = 1
+		  AND A.USER_ID = #{userId}
+		  AND A.PASSWD  = #{password}
+		  AND ISNULL(B.STATUS,'') NOT IN ('104002','104003')
+	</select>
+
+
+
+
 
 
 

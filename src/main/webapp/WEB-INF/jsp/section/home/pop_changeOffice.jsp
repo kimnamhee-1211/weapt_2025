@@ -7,7 +7,7 @@
             <span><input type="text" id="search_officeName" name="OFFICE_NAME" style="width:250px;"></span>
             <div class="section_middle_btn" id="pop_changeOffice_btn"></div>
             <div id="officeGrid1"></div>
-            <form id="changeOffice_form" method="post" name="/changeOffice">
+            <form id="changeOffice_form" method="post" action="/changeOffice">
                 <input type="text" id="input_officeCode" name="OFFICE_CODE" hidden="hidden">
             </form>
         </div>
@@ -61,6 +61,12 @@
         AUIGrid.setSelectionByIndex(officeGrid1, event.rowIndex);
     });
 
+    //팝업 닫기 이벤트
+    function close_changeOffice_onclick(){
+        popupClose(pop_changeOffice);
+        clearInput(pop_changeOffice);
+    }
+
     //그리드 조회 함수
     function search_officeGrid1_onclick(){
 
@@ -70,7 +76,7 @@
         }
 
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), timeout);
+        const timer = setTimeout(() => controller.abort(), 60_000);
 
         try {
             const query = new URLSearchParams(selectParam)
@@ -117,18 +123,18 @@
 
         input_officeCode.value = AUIGrid.getSelectedRows(grid1)[0].OFFICE_CODE;
 
-        loginForm.submit();
+        changeOffice_form.submit();
 
     }
 
-    function pop_onload(){
+    function changeOffice_onload(){
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#pop_changeOffice_btn", grid: "officeGrid1", search : true});
         pop_changeOffice_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='select_officeGrid1_onclick()'>선택</button>" +
-            "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
+            "<button id='close_btn1' class='btn_left3' onclick='close_changeOffice_onclick()'>닫기</button>");
 
-        //공통코드 가져오기
+
         search_officeGrid1_onclick();
 
     }

@@ -93,13 +93,8 @@
 
         change_office.addEventListener("change", () => {
             popupOpen(pop_changeOffice);
-            pop_onload();
+            changeOffice_onload();
         })
-
-
-
-
-
 
 
         window.addEventListener("load", function () {
