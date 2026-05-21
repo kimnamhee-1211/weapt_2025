@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
     <div class="layer_bg" id="pop_changeOffice">
-        <div class="popup" style="width:600px;">
+        <div class="popup" style="width:800px;">
             <div class="pop_title" style="border:none" >&#10004; &nbsp;관리소 검색</div>
             <span>&emsp;&#9726&nbsp;관리소명(코드 외) :&nbsp;</span>
-            <span><input type="text" id="search_officeName" name="OFFICE_NAME" style="width:250px;"></span>
+            <span><input type="text" id="search_officeName" name="OFFICE_NAME" style="width:200px;"></span>
             <div class="section_middle_btn" id="pop_changeOffice_btn"></div>
             <div id="officeGrid1"></div>
-            <form id="changeOffice_form" method="post" action="/changeOffice">
+            <form id="changeOffice_form" method="post">
                 <input type="text" id="input_officeCode" name="OFFICE_CODE" hidden="hidden">
             </form>
         </div>
@@ -49,6 +49,7 @@
         Object.assign({}, we_grid_Props,
             {
                 height : 300,
+                width : 780,
                 editable : false,
                 showRowNumColumn: false,
                 rowCheckToRadio : true
@@ -68,10 +69,10 @@
     }
 
     //그리드 조회 함수
-    function search_officeGrid1_onclick(){
+    async function search_officeGrid1_onclick(){
 
         //검색데이터
-        let selectParam = {
+        let param = {
             OFFICE_NAME : search_officeName.value,
         }
 
@@ -79,23 +80,25 @@
         const timer = setTimeout(() => controller.abort(), 60_000);
 
         try {
-            const query = new URLSearchParams(selectParam)
+            const query = new URLSearchParams(param)
 
-            const res = fetch(
-                ctx + "/selectOffice/" + "?" + query,
+            const res = await fetch(
+                ctx + "/selectOffice" + "?" + query,
                 {
                     method: "GET",
                     headers: {
                         "Accept": "application/json",
+                        "X-PG-ID": pop_changeOffice,
                     },
                     credentials: "include",
                     signal: controller.signal
                 });
+
             if (!res.ok) {
                 alert("요청이 실패하였습니다");
                 return;
             }
-            const data = res.json();
+            const data = await res.json();
             //그리드 데이터 세팅
             AUIGrid.setGridData(officeGrid1, data);
             //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
@@ -109,6 +112,7 @@
                 console.error(err);
                 alert("조회에 실패하였습니다");
             }
+            err.printStackTrace();
             throw err;
 
         } finally {
@@ -119,10 +123,10 @@
 
     function select_officeGrid1_onclick(){
 
-        if(!confirm("'" + AUIGrid.getSelectedRows(grid1)[0].OFFICE_NAME + "' 관리소로 변경하시겠습니까?")) return;
+        if(!confirm("'" + AUIGrid.getSelectedRows(officeGrid1)[0].OFFICE_NAME + "' 관리소로 변경하시겠습니까?")) return;
 
-        input_officeCode.value = AUIGrid.getSelectedRows(grid1)[0].OFFICE_CODE;
-
+        input_officeCode.value = AUIGrid.getSelectedRows(officeGrid1)[0].OFFICE_CODE;
+        changeOffice_form.action = ctx + "/changeOffice";
         changeOffice_form.submit();
 
     }

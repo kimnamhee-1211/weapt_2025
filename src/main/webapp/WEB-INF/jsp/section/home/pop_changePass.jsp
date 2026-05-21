@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js"></script>
     <div class="layer_bg" id="pop_changePass">
-        <div class="popup" style="width:600px;">
-            <div class="pop_title" style="border:none" >&#10004; &nbsp;비밀번호 변경</div>
-            <div class="pop_btn" id="pop_changePass_btn"></div>
+        <div class="popup" style="width:450px;">
+            <span class="pop_title" style="border:none" >&#10004; &nbsp;비밀번호 변경</span>
+            <span class="section_middle_btn" id="pop_changePass_btn"></span>
             <div>
-                <span> &#9726&nbsp;사용자ID : <****> </span>&emsp;
-                <span> &#9726&nbsp;사용자명 : <****> </span>
+                <span id="text_userId" style="font-weight:bold;"> &#9726&nbsp;사용자ID : <****> </span>&emsp;
+                <span id="text_userName" style="font-weight:bold;"> &#9726&nbsp;사용자명 : <****> </span>
             </div>
             <form id="changePass_form" method="post" action="/changePass">
                 <table style="line-height:40px;">
@@ -17,11 +18,11 @@
                         </tr>
                         <tr>
                             <th style="width: 200px;">변경후 비밀번호</th>
-                            <td style="width: 200px;"><input type="password" id="input_nextPassword" name="PASSWORD"></td>
+                            <td style="width: 200px;"><input type="password" id="input_nextPassword" name="PASSWORD" oninput="match_password()"></td>
                         </tr>
                         <tr>
                             <th style="width: 200px;">변경후 비밀번호 확인</th>
-                            <td style="width: 200px;"><input type="password" id="input_nextPassword2" oninput="match_password"></td>
+                            <td style="width: 200px;"><input type="password" id="input_nextPassword2" oninput="match_password()"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -32,6 +33,8 @@
 <script>
     const pop_changePass = "pop_changePass";
     const pop_changePass_btn = document.querySelector("#pop_changePass_btn");
+    const text_userId = document.querySelector("#text_userId");
+    const text_userName = document.querySelector("#text_userName");
     const changePass_form = document.querySelector("#changePass_form");
     const input_password = document.querySelector("#input_password");
     const input_nextPassword = document.querySelector("#input_nextPassword");
@@ -44,8 +47,10 @@
         clearInput(pop_changePass);
     }
 
+    input_nextPassword.addEventListener("input", match_password);
+    input_nextPassword2.addEventListener("input", match_password);
 
-
+    //변경 후 비밀번호 == 변경 후 비밀번호 확인 검증
     function match_password(){
         if(input_nextPassword.value != input_nextPassword2.value){
             input_nextPassword2.style.borderColor = "red";
@@ -54,48 +59,118 @@
         }
     }
 
+    //입력 검증
+    function save_officeGrid1_onclick() {
 
-
-    function save_officeGrid1_onclick(){
-
-        if(input_nextPassword.value != input_nextPassword2.value){
+        if (isNull(input_password.value)) {
+            alert("기존 비밀번호를 입력해주십시오,");
+            return;
+        }
+        if (isNull(input_nextPassword.value)) {
+            alert("변경할 비밀번호를 입력해주십시오,");
+            return;
+        }
+        if (input_nextPassword.value != input_nextPassword2.value) {
             alert("변경 후 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
             return;
         }
 
-        if(!confirm("비밀번호를 변경하겠습니까?")) return;
+        if (!confirm("비밀번호를 변경하겠습니까?")) return;
 
-        //검색데이터
-        let selectParam = {
-            PASSWORD :  encryptWithJS(input_password)
+        checkPass();
+
+    }
+
+    //기존 비밀번호 검증
+    async function checkPass(){
+
+        let param = {
+            PASSWORD : encryptWithJS(input_password.value)
         }
-
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 60_000);
-
         try {
-            const query = new URLSearchParams(selectParam)
+            const jsonParam = JSON.stringify(param);
 
-            const res = fetch(
-                ctx + "/checkPass/" + "?" + query,
+            const res = await fetch(
+                ctx + "/checkPass",
                 {
-                    method: "GET",
+                    method: "POST",
                     headers: {
-                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                        "X-PG-ID": pop_changePass,
                     },
-                    credentials: "include",
-                    signal: controller.signal
+                    body: jsonParam,
+                    signal: controller.signal,
+                    credentials: 'include'
                 });
+
             if (!res.ok) {
                 alert("요청이 실패하였습니다");
                 return;
             }
+            const data = await res.json();
 
-            const data = res.json();
-
-            if(data < 1){
+            if (data.result < 1) {
                 alert("기존 비밀번호가 일치하지 않습니다.");
                 return;
+            }
+            changePass();
+
+        } catch (err) {
+            if (err.name === "AbortError") {
+                console.error("요청 타임아웃");
+                alert("조회 시간이 초과되었습니다");
+            } else {
+                console.error(err);
+                alert("조회에 실패하였습니다");
+            }
+            throw err;
+
+        } finally {
+            clearTimeout(timer);
+            //로딩종료
+        }
+    }
+
+    //비밀번호 변경
+    async function changePass() {
+
+        let param = {
+            PASSWORD: encryptWithJS(input_nextPassword.value)
+        }
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 60_000);
+        try {
+            const jsonParam = await JSON.stringify(param);
+
+            const res = await fetch(
+                ctx + "/changePass",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-PG-ID": pop_changePass,
+                    },
+                    body: jsonParam,
+                    signal: controller.signal,
+                    credentials: 'include'
+                });
+
+            if (!res.ok) {
+                alert("요청이 실패하였습니다");
+                return;
+            }
+            const data = await res.json();
+
+            if (data.result < 1) {
+                alert("비밀번호 변경에 실패하였습니다.");
+                return;
+            }else{
+                if(confirm("비밀번호 변경을 완료하였습니다. 새로운 비밀번호로 다시 로그인해주십시오")){
+                    location.href = ctx + "/restart"
+
+                }
             }
 
         } catch (err) {
@@ -112,9 +187,6 @@
             clearTimeout(timer);
             //로딩종료
         }
-
-        input_nextPassword.value = encryptWithJS(input_nextPassword);
-        changePass_form.submit();
 
     }
 
@@ -199,6 +271,9 @@
         btnMaker({ tag: "#pop_changePass_btn", grid: "officeGrid1", save : true});
         pop_changePass_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_changePass_onclick()'>닫기</button>");
+
+        text_userId.innerHTML = "사용자ID : " + loginUser.userId;
+        text_userName.innerHTML = "사용자명 : " +loginUser.userName;
 
         //getPublicKey 가져오기
         //get_pbkey()

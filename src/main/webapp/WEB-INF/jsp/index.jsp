@@ -127,7 +127,7 @@
             <div class="arrow right">&#10095;</div>
             <div id="allmenu_area_space"> </div>
             <div id="allmenu_area">
-                <input type="checkbox" id="allmenu_layer_popup" class="layer_popup" >
+                <input type="checkbox" id="allmenu_layer_popup" class="hidden_check">
                 <label for="allmenu_layer_popup" class="pop_labal iconmenu">
                     <h2><i class=" icon-menu-1"></i></h2>
                     <h3>전체메뉴</h3>

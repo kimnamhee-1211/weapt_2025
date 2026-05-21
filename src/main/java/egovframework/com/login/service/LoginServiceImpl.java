@@ -53,9 +53,17 @@ public class LoginServiceImpl extends EgovAbstractServiceImpl implements LoginSe
     }
 
     @Override
-    public int checkPass(String params) throws Exception {
+    public int checkPass(Map<String, Object> params) throws Exception {
 
         int result = loginMapper.checkPass(params);
+
+        return result;
+    }
+
+    @Override
+    public int changePass(Map<String, Object> params) throws Exception {
+
+        int result = loginMapper.changePass(params);
 
         return result;
     }

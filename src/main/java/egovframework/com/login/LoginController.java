@@ -18,6 +18,7 @@ package egovframework.com.login;
 import org.egovframe.rte.fdl.property.EgovPropertyService;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,10 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
 import com.nhncorp.lucy.security.xss.XssPreventer;
@@ -69,10 +67,11 @@ public class LoginController {
 	@Resource(name = "loginService")
 	protected LoginService loginService;
 
-
     //index
 	@RequestMapping(value = "/start")
-	public String start(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String start(@RequestParam Map<String, Object> params,
+						HttpServletRequest request,
+						HttpServletResponse response) throws Exception {
 		LOGGER.debug("^o^ [ start ]");
 //		RSATest rsaTest = new RSATest();
 //		rsaTest.getPublicKey();
@@ -90,7 +89,9 @@ public class LoginController {
 	
 	//login + 캡챠 인증
 	@RequestMapping(value = "/login", method = { RequestMethod.POST })
-	public String login(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String login(@RequestParam Map<String, Object> params,
+						HttpServletRequest request,
+						HttpServletResponse response) throws Exception {
 		LOGGER.debug("^o^ [ login ] request params : "+params);
 		
 		RSATest rsaTest = new RSATest();
@@ -111,7 +112,6 @@ public class LoginController {
 
 		// 패스워드 복호화
 		String passwordEnc = params.get("password").toString();
-		
 		String password = rsaTest.decryptData(privateKey, passwordEnc);
 		LOGGER.debug("^o^ [ login ] password 복호화 : " + password);
 
@@ -145,21 +145,30 @@ public class LoginController {
 
 		List<Map<String, Object>> resultList  = loginService.selectOffice(params);
 
+
 		return resultList;
 	}
 
+
 	//관리소변경 - 관리소 조회
 	@RequestMapping(value = "/changeOffice",  method = { RequestMethod.POST })
-	public String changeOffice(@RequestParam Map<String, Object> params, HttpServletRequest request) throws Exception {
+	public String changeOffice(@RequestParam Map<String, Object> params,
+							   HttpServletRequest request) throws Exception {
+
+		HttpSession session = request.getSession();
+		LoginVO loginUser = (LoginVO)session.getAttribute("loginUser");
+		params.put("userId", loginUser.getUserId());
 
 		LoginVO resultList  = loginService.changeOffice(params);
 
 		if(resultList != null){
-			HttpSession session = request.getSession();
-
-			session.setAttribute("orginLoginUser", session.getAttribute("loginUser"));
+			session.setAttribute("orginLoginUser",loginUser);
 			session.setAttribute("loginUser", resultList);
 
+			LOGGER.debug("^o^ [ login ] 관리소 변경 성공 : " + loginUser.getOfficeCode() + " / " + resultList.getOfficeCode());
+
+		}else{
+			LOGGER.debug("^o^ [ login ] 관리소 변경 실패 : " + loginUser.getOfficeCode() + " / " + params.get("OFFICE_CODE"));
 		}
 
 		return "section/home/hom01010";
@@ -181,22 +190,79 @@ public class LoginController {
 
 	@RequestMapping(value = "/checkPass")
 	@ResponseBody
-	public int checkPass(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public Map<String, Object> checkPass(@RequestBody Map<String, Object> params,
+						 HttpServletRequest request) throws Exception {
 
 		// 패스워드 복호화
 		RSATest rsaTest = new RSATest();
 		String privateKey = EgovProperties.getProperty("RSA.privateKey");
 		String passwordEnc = params.get("PASSWORD").toString();
 		String password = rsaTest.decryptData(privateKey, passwordEnc);
-		params.put("PASSWORD", password);
-		params.put("PASSWORD", password);
+		params.put("password", password);
+		//userId 세팅
+		HttpSession session = request.getSession();
+		LoginVO loginUser = (LoginVO)session.getAttribute("loginUser");
+		params.put("userId", loginUser.getUserId());
 
-		int result = loginService.checkPass(password);
+		int result = loginService.checkPass(params);
 
-		return result;
+		Map<String, Object> map = new HashMap<>();
+		map.put("result", result);
+
+		return map;
 	}
 
 
+	@RequestMapping(value = "/changePass")
+	@ResponseBody
+	public Map<String, Object> changePass(@RequestBody Map<String, Object> params,
+						  HttpServletRequest request ) throws Exception {
+
+		// 패스워드 복호화
+		RSATest rsaTest = new RSATest();
+		String privateKey = EgovProperties.getProperty("RSA.privateKey");
+		String passwordEnc = params.get("PASSWORD").toString();
+		String password = rsaTest.decryptData(privateKey, passwordEnc);
+		params.put("password", password);
+		////userId 세팅
+		HttpSession session = request.getSession();
+		LoginVO loginUser = (LoginVO)session.getAttribute("loginUser");
+		params.put("userId", loginUser.getUserId());
+
+		System.out.println(params);
+
+		Map<String, Object> map = new HashMap<>();
+		int result = 0;
+
+		try {
+			result = loginService.changePass(params);
+			System.out.println(result);
+
+			if(result < 1){
+				LOGGER.debug("^o^ [ login ] 비밀번호 변경 실패 : " + loginUser.getUserId() + "/" + loginUser.getOfficeCode());
+			}else{
+				LOGGER.debug("^o^ [ login ] 비밀번호 변경 성공 : " + loginUser.getUserId() + "/" + loginUser.getOfficeCode());
+			}
+		}catch(Exception e){
+			e.printStackTrace();  // ← 콘솔에 정확한 오류 출력
+
+		}
+		map.put("result", result);
+		return map;
+
+	}
+
+	@RequestMapping(value = "/restart")
+	public String restart(HttpServletRequest request) throws Exception {
+		LOGGER.debug("^o^ [ restart ]");
+//		RSATest rsaTest = new RSATest();
+//		rsaTest.getPublicKey();
+
+		HttpSession session = request.getSession();
+		session.removeAttribute("loginUser");
+		return "index";
+
+	}
 
 
 }

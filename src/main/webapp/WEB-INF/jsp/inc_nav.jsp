@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-
     <div id="header">
         <div class="header1"><h1>종합관리솔루션</h1></div>
         <div id="userOffice" class="header2"></div>
@@ -9,7 +8,7 @@
             <span id="change">
                 <input type="checkbox" id="change_office" class="hidden_check">
                 <label for="change_office" class="pop_labal">관리소변경</label>
-                <!-- 팝업시작-->
+                <!-- 팝업-->
                 <jsp:include page="/WEB-INF/jsp/section/home/pop_changeOffice.jsp"/>
             </span>
 
@@ -18,41 +17,10 @@
             <span id="support"><a href="https://6741.586.kr" target="blank">&emsp;원격지원</a></span>
 
             <span id="password">
-                <input type="checkbox" id="pw_layer_popup" class="hidden_check">
-                <label for="pw_layer_popup" class="pop_labal">&emsp;비밀번호 변경&emsp;</label>
-                <!-- 팝업시작-->
-                <div class="layer_bg">
-                    <div class="popup" style="width: 400px;">
-                        <div class="pop_title">&#10004; 비밀번호변경</div>                            
-                        <div>
-                            <span id=""> &#9726&nbsp;사용자ID : <****> </span>&emsp; 
-                            <span id=""> &#9726&nbsp;사용자명 : <****> </span>
-                        </div>
-                        <form action="." method="post">
-                            <table id="" style="line-height:40px;">
-                            <tbody>
-                                <tr>
-                                    <th style="width: 200px;">변경전 비밀번호</th>
-                                    <td style="width: 200px;"><input type="password" id="pw" name="" class=""></td>
-                                </tr>
-                                <tr>
-                                    <th style="width: 200px;">변경후 비밀번호</th>
-                                    <td style="width: 200px;"><input type="password" id="next_pw" name="" class=""></td>
-                                </tr>
-                                <tr>   
-                                    <th style="width: 200px;">변경후 비밀번호 확인</th>
-                                    <td style="width: 200px;"><input type="password" id="next_pw2" name="" class=""></td>
-                                </tr>
-                            </tbody>
-                            </table>
-                        </form>
-                        <div class="pop_btn">
-                            <button id="save_btn" onclick="">저장</button>
-                            <label for="pw_layer_popup" class="popup_closs_btn">닫기</label>                    
-                        </div>
-                    </div>
-                </div>
-                <!-- 팝업끝-->
+                <input type="checkbox" id="change_pass" class="hidden_check">
+                <label for="change_pass" class="pop_labal">&emsp;비밀번호 변경&emsp;</label>
+                <!-- 팝업-->
+                <jsp:include page="/WEB-INF/jsp/section/home/pop_changePass.jsp"/>
             </span>
         </div>
     </div>
@@ -89,11 +57,17 @@
         const nav_top = document.querySelector("#nav_top");
         const userOffice = document.querySelector("#userOffice");
         const change_office = document.querySelector("#change_office");
+        const change_pass = document.querySelector("#change_pass");
 
 
         change_office.addEventListener("change", () => {
             popupOpen(pop_changeOffice);
             changeOffice_onload();
+        })
+
+        change_pass.addEventListener("change", () => {
+            popupOpen(pop_changePass);
+            changePass_onload();
         })
 
 

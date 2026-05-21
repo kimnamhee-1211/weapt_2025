@@ -16,6 +16,8 @@ public interface LoginService {
 
     public LoginVO changeOffice(Map<String, Object> params) throws Exception;
 
-    public int checkPass(String param) throws Exception;
+    public int checkPass(Map<String, Object> param) throws Exception;
+
+    public int changePass(Map<String, Object> param) throws Exception;
 
 }

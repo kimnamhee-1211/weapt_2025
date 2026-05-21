@@ -31,11 +31,11 @@
                 <input type="checkbox" id="root3"  class="tree_cb">
                 <label for="root3">민원통계</label>
                 <ul class="tree_nav">
-                    <li id="min03010"><a>월별통계</a></li>
-                    <li id="min03020"><a>처리자별통계</a></li>
-                    <li id="min03030"><a>구분통계</a></li>
-                    <li id="min03040"><a>동별통계</a></li>
-                    <li id="min03050"><a>분야별통계</a></li>
+                    <li id="min03010">월별통계</li>
+                    <li id="min03020">처리자별통계</li>
+                    <li id="min03030">구분통계</li>
+                    <li id="min03040">동별통계</li>
+                    <li id="min03050">분야별통계</li>
                 </ul>
             </li>
         </ul>

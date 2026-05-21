@@ -51,9 +51,9 @@ public interface LoginMapper {
 
 	LoginVO changeOffice(Map<String, Object> params) throws Exception;
 
-	int checkPass(String param) throws Exception;
+	int checkPass( Map<String, Object>  param) throws Exception;
 
-
+	int changePass( Map<String, Object>  param) throws Exception;
 
 //	/**
 //	 * 글을 등록한다.

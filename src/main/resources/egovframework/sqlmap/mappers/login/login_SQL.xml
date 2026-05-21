@@ -3,7 +3,6 @@
 <mapper namespace="egovframework.com.login.dao.LoginMapper">
 
 	<select id="selectLoginUser" parameterType="loginVO" resultType="loginVO">
-
 		SELECT A.USER_ID,
 		       A.USER_NAME,
 		       A.USE_YN,
@@ -27,14 +26,14 @@
 		       ISNULL(ISNULL(D.COMP_CODE, A.COMP_CODE), E.COMP_CODE) AS COMP_CODE,
 			   E.COMP_NAME,
 			   A.EMP_NO
-		  FROM TPM_USER A
-		  LEFT JOIN TPM_MGM_COMPANY B                                                      
+		  FROM dbo.TPM_USER A
+		  LEFT JOIN dbo.TPM_MGM_COMPANY B
 		         ON A.MGMCOMP_CODE = B.MGMCOMP_CODE                                               
-		  LEFT JOIN TPM_MGTGROUP C                                                         
+		  LEFT JOIN dbo.TPM_MGTGROUP C
 		         ON A.USERGROUP_ID = C.USERGROUP_ID                                               
-		  LEFT JOIN TPM_OFFICE D                                                   		
+		  LEFT JOIN dbo.TPM_OFFICE D
 		         ON A.OFFICE_CODE = D.OFFICE_CODE                                             	
-		  LEFT JOIN TPM_COMPANY E                                                   		
+		  LEFT JOIN dbo.TPM_COMPANY E
 		         ON D.COMP_CODE = E.COMP_CODE
 		 WHERE 1 = 1                                                       					
 		   AND A.USER_ID = #{userId}
@@ -42,23 +41,32 @@
 		   AND ISNULL(D.STATUS,'') NOT IN ('104002','104003')  
 	</select>
 
-
-	<select id="selectList_pop_changeOffice_officeGrid1" parameterType="map" resultType="map">
+	<select id="selectOffice" parameterType="map" resultType="map">
 		SELECT
 			A.OFFICE_CODE					AS OFFICE_CODE,
 			A.OFFICE_NAME					AS OFFICE_NAME,
 			A.TEL							AS TEL,
-			B.CONT_KIND_CD					AS CONT_KIND_CD,
-			dbo.getCode_nm(B.CONT_KIND_CD) AS CONT_KIND_NM
+			C.CONT_KIND_CD					AS CONT_KIND_CD,
+			dbo.getCode_nm(C.CONT_KIND_CD)  AS CONT_KIND_NM
 		FROM dbo.TPM_OFFICE A
-		LEFT JOIN dbo.TPM_CONTRACT B ON A.OFFICE_CODE = B.OFFICE_CODE
+		LEFT JOIN (
+			SELECT CONT_KIND_CD, OFFICE_CODE
+			FROM dbo.TPM_CONTRACT T1
+			WHERE END_DATE = (
+				SELECT MAX(END_DATE)
+				FROM dbo.TPM_CONTRACT T2
+				WHERE T2.OFFICE_CODE = T1.OFFICE_CODE
+			)
+		) C ON A.OFFICE_CODE = C.OFFICE_CODE
+		WHERE 1=1
+		--AND ISNULL(A.STATUS,'') NOT IN ('104002','104003')
 		<if test='OFFICE_NAME != "" and OFFICE_NAME != null'>
-			AND A.OFFICE_NAME LIKE '%' + #{OFFICE_NAME} + '%'
+			AND (A.OFFICE_NAME LIKE '%' + #{OFFICE_NAME} + '%'
+			         OR A.OFFICE_CODE LIKE '%' + #{OFFICE_NAME} + '%')
 		</if>
 	</select>
 
-	<select id="selectLoginUser" parameterType="loginVO" resultType="loginVO">
-
+	<select id="changeOffice" parameterType="loginVO" resultType="loginVO">
 		SELECT A.USER_ID,
 			   A.USER_NAME,
 			   A.USE_YN,
@@ -83,33 +91,33 @@
 			   ISNULL(ISNULL(B.COMP_CODE, A.COMP_CODE), E.COMP_CODE) AS COMP_CODE,
 			   E.COMP_NAME,
 			   A.EMP_NO
-		FROM TPM_USER A
-			 JOIN TPM_OFFICE B
+		FROM dbo.TPM_USER A
+			 JOIN dbo.TPM_OFFICE B
 					   ON B.OFFICE_CODE = #{OFFICE_CODE}
-			 LEFT JOIN TPM_MGTGROUP C
+			 LEFT JOIN dbo.TPM_MGTGROUP C
 					   ON A.USERGROUP_ID = C.USERGROUP_ID
-			 LEFT JOIN TPM_MGM_COMPANY D
+			 LEFT JOIN dbo.TPM_MGM_COMPANY D
 					   ON B.MGMCOMP_CODE = D.MGMCOMP_CODE
-			 LEFT JOIN TPM_COMPANY E
+			 LEFT JOIN dbo.TPM_COMPANY E
 					   ON B.COMP_CODE = E.COMP_CODE
 		WHERE 1 = 1
 		  AND A.USER_ID = #{userId}
-		  AND A.PASSWD  = #{password}
 		  AND ISNULL(B.STATUS,'') NOT IN ('104002','104003')
 	</select>
 
-	<select id="checkPass" parameterType="string" resultType="map">
-
+	<select id="checkPass" parameterType="map" resultType="int">
 		SELECT COUNT(*)
-		FROM TPM_USER A
+		FROM dbo.TPM_USER A
 		WHERE 1 = 1
 		  AND A.USER_ID = #{userId}
 		  AND A.PASSWD  = #{password}
-		  AND ISNULL(B.STATUS,'') NOT IN ('104002','104003')
 	</select>
 
-
-
+	<update id="changePass" parameterType="map">
+		UPDATE dbo.TPM_USER
+		SET PASSWD  = #{password}
+		WHERE USER_ID = #{userId}
+	</update>
 
 
 
