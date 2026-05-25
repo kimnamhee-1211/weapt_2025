@@ -1,8 +1,8 @@
 package egovframework.com.baseCrud.service;
 
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
-import egovframework.com.baseCrud.support.BaseServiceSupport;
-import egovframework.com.common.model.ApiResponse;
+import egovframework.com.baseCrud.support.ServiceSupport;
+import egovframework.com.baseCrud.model.ApiResponse;
 import egovframework.com.exception.ApprovalAuthException;
 import egovframework.com.exception.ApprovalFailException;
 import egovframework.com.login.model.LoginVO;
@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service("ApprovalService")
+@Service("approvalService")
 @Transactional
-public class ApprovalServiceImpl extends BaseServiceSupport implements ApprovalService {
+public class ApprovalServiceImpl extends ServiceSupport implements ApprovalService {
 
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;

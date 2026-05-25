@@ -1,8 +1,8 @@
 package egovframework.com.baseCrud.service;
 
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
-import egovframework.com.baseCrud.support.BaseServiceSupport;
-import egovframework.com.common.model.ApiResponse;
+import egovframework.com.baseCrud.support.ServiceSupport;
+import egovframework.com.baseCrud.model.ApiResponse;
 import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static egovframework.com.baseCrud.support.KeyGenerator.setKeyToParam;
+import static egovframework.com.baseCrud.support.KeyGenerator.*;
 
 @Service("baseCrudService")
-public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudService {
+public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudService {
 
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
@@ -226,7 +226,8 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
         int resultInsertRowCount = 0;
         List<Map<String, Object>> key = new ArrayList<Map<String, Object>>();
         if (insertParam != null && !insertParam.isEmpty()) {
-            List<String> rawKey = (List<String>) param.get("key");
+
+            Map<String, Object> rawKey = (Map<String, Object>) param.get("key");
             resultInsert = saveInsert(sectionId,
                                     component,
                                     insertParam,
@@ -257,7 +258,7 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     private Map<String, Object> saveInsert(String sectionId,
                                            String component,
                                            List<Map<String, Object>> insertParam,
-                                           List<String> rawKey,
+                                           Map<String, Object> rawKey,
                                            Map<String, Object> before,
                                            LoginVO loginUser,
                                            String pgId,
@@ -276,13 +277,16 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
         //pk 생성
         List<Map<String, Object>> key = new ArrayList<Map<String, Object>>();
         if (rawKey != null && !rawKey.isEmpty()) {
+
             insertParam = getKeyToParam(insertParam, rawKey, sectionId, component, loginUser);
             System.out.println("getKeyToParam : " + insertParam);
 
+
+            List<String> column = (List<String>)rawKey.get("column");
             //return할 key값 구하기
             for ( Map<String, Object> map : insertParam){
                 Map<String, Object> keyMap =  new HashMap<>();
-                for ( String keyStr  : rawKey){
+                for ( String keyStr  : column){
                     keyMap.put(keyStr, map.get(keyStr));
                 }
                 key.add(keyMap);
@@ -423,11 +427,14 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
     }
 
 
+
+
+
     //pk 채번 && param set
     @Override
     @Transactional
     public List<Map<String, Object>> getKeyToParam(List<Map<String, Object>> param,
-                                                   Object rawKey,
+                                                   Map<String, Object> rawKey,
                                                    String sectionId,
                                                    String component,
                                                    LoginVO loginUser) {
@@ -442,6 +449,10 @@ public class BaseCrudServiceImpl extends BaseServiceSupport implements BaseCrudS
         param = setKeyToParam(param, rawKey, keyValues);
         return param;
     }
+
+
+
+
 
 
     //공통코드 검색

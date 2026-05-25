@@ -1,6 +1,6 @@
 package egovframework.com.photo;
 
-import egovframework.com.common.model.ApiResponse;
+import egovframework.com.baseCrud.model.ApiResponse;
 import egovframework.com.exception.PhotoFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.core.io.InputStreamResource;

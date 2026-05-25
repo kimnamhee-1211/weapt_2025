@@ -238,7 +238,10 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["DOC_GBN"],
+            key : {
+                column : ["DOC_GBN"],
+                seq : 1
+            },
             before : {}
         }
 
@@ -285,7 +288,10 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["STORAGE_CD"],
+            key : {
+                column : ["STORAGE_CD"],
+                seq : 1
+            },
             before : {}
         }
 
@@ -406,7 +412,7 @@
         let saveParam = {
             insertParam : checkedItems,
             updateParam : null,
-            key : [],
+            key : {},
             before : {
                 action : "insert",
                 saveMode : "D",
@@ -440,7 +446,7 @@
         let saveParam = {
             insertParam : checkedItems,
             updateParam : null,
-            key : [],
+            key : {},
             before : {
                 action : "insert",
                 saveMode : "D",

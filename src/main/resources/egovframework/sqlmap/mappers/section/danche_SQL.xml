@@ -41,7 +41,7 @@
 				dbo.TME_EMP_TOWN
 			</otherwise>
 		</choose> AS A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_GBN = '' OR ISNULL(A.DISUSE_GBN,'N') = 'N')
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND (A.DISUSE_GBN = '' OR ISNULL(A.DISUSE_GBN,'N') = 'N')
 		<if test="TEXT != null and TEXT != '' ">
 			<choose>
 				<when test="WHAT == 'name'">
@@ -88,7 +88,7 @@
 					dbo.TME_EMP_TOWN
 				</otherwise>
 			</choose> AS A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 	</select>
 
 	<insert id="insertList_dan001_grid1" parameterType="list">
@@ -134,7 +134,7 @@
 			)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.LOGIN_OFFICE_CODE},
 					#{row.EMP_NO},
 					#{row.REG_DATE},
 					#{row.DONG},
@@ -190,7 +190,7 @@
 			JOIN (
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-				#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+				#{row.LOGIN_OFFICE_CODE}    AS OFFICE_CODE,
 				#{row.EMP_NO}          			AS EMP_NO,
 				#{row.DONG}       				AS DONG,
 				#{row.HO}         				AS HO,
@@ -242,7 +242,7 @@
 			JOIN (
 				<foreach collection="list" item="row" separator=" UNION ALL ">
 					SELECT
-					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.LOGIN_OFFICE_CODE}    AS OFFICE_CODE,
 					#{row.EMP_NO}          			AS EMP_NO,
 					#{row.DISUSE_DATE}          	AS DISUSE_DATE,
 					#{row.DISUSE_REASON}          	AS DISUSE_REASON
@@ -267,7 +267,7 @@
 			FROM dbo.TME_FILE
 			GROUP BY OFFICE_CODE, BOARD_DIV, BOARD_NO
 		) B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.BOARD_DIV = B.BOARD_DIV AND A.BOARD_NO = B.BOARD_NO
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.BOARD_DIV = #{BOARD_DIV}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.BOARD_DIV = #{BOARD_DIV}
 		<if test="TEXT != null and TEXT != ''">
 			<choose>
 				<when test="WHAT == 'all'">
@@ -297,7 +297,7 @@
 			A.USER_ID		AS USER_ID,
 			A.WRITER		AS BOARD_WRITER
 		FROM dbo.TME_BOARD A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.BOARD_DIV = #{BOARD_DIV} AND A.BOARD_NO = #{BOARD_NO}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.BOARD_DIV = #{BOARD_DIV} AND A.BOARD_NO = #{BOARD_NO}
 		ORDER BY A.BOARD_DATE, A.BOARD_TITLE
 	</select>
 
@@ -313,16 +313,16 @@
 			WRITER
 		)
 		SELECT
-			#{LOGINUSER_OFFICE_CODE},
+			#{LOGIN_OFFICE_CODE},
 			#{BOARD_DIV},
 			ISNULL(MAX(BOARD_NO), 0) + 1,
 			#{BOARD_TITLE},
 			#{BOARD_CONTENT},
 			#{BOARD_DATE},
-			#{LOGINUSER_ID},
-			#{LOGINUSER_NAME}
+			#{LOGIN_ID},
+			#{LOGIN_NAME}
 		FROM dbo.TME_BOARD
-		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND BOARD_DIV = #{BOARD_DIV}
+		WHERE OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND BOARD_DIV = #{BOARD_DIV}
 	</insert>
 
 	<update id="boardUpdateOne_dan002_board1" parameterType="map">
@@ -330,12 +330,12 @@
 			SET
 				BOARD_TITLE   =  #{BOARD_TITLE},
 				BOARD_CONTENT =  #{BOARD_CONTENT}
-			WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND BOARD_DIV = #{BOARD_DIV} AND BOARD_NO = #{BOARD_NO}
+			WHERE OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND BOARD_DIV = #{BOARD_DIV} AND BOARD_NO = #{BOARD_NO}
 	</update>
 
 	<delete id="boardDeleteOne_dan002_board1" parameterType="map">
 		DELETE FROM dbo.TME_BOARD
-		WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND BOARD_DIV = #{BOARD_DIV} AND BOARD_NO = #{BOARD_NO}
+		WHERE OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND BOARD_DIV = #{BOARD_DIV} AND BOARD_NO = #{BOARD_NO}
 	</delete>
 
 	<select id="selectList_dan002_file1" parameterType="map" resultType="map">
@@ -348,7 +348,7 @@
 			A.SYS_FILE_NM
 		FROM dbo.TME_FILE A
 		JOIN dbo.TME_BOARD B ON  A.OFFICE_CODE = B.OFFICE_CODE AND A.BOARD_DIV = B.BOARD_DIV AND A.BOARD_NO = B.BOARD_NO
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.BOARD_DIV = #{BOARD_DIV} AND A.BOARD_NO = #{BOARD_NO}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.BOARD_DIV = #{BOARD_DIV} AND A.BOARD_NO = #{BOARD_NO}
 		ORDER BY A.FILE_SEQ, A.FILE_NM
 	</select>
 
@@ -393,7 +393,7 @@
 					dbo.TME_EMP_TOWN
 				</otherwise>
 			</choose> AS A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_GBN = 'Y' AND A.DISUSE_DATE IS NOT NULL)
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND (A.DISUSE_GBN = 'Y' AND A.DISUSE_DATE IS NOT NULL)
 		<if test="TEXT != null and TEXT != '' ">
 			<choose>
 				<when test="WHAT == 'name'">
@@ -447,7 +447,7 @@
 			JOIN (
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-				#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+				#{row.LOGIN_OFFICE_CODE}    AS OFFICE_CODE,
 				#{row.EMP_NO}          			AS EMP_NO
 			</foreach>
 			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO
@@ -494,7 +494,7 @@
 					dbo.TME_EMP_COM
 				</otherwise>
 			</choose> AS A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_GBN = '' OR ISNULL(A.DISUSE_GBN,'N') = 'N')
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND (A.DISUSE_GBN = '' OR ISNULL(A.DISUSE_GBN,'N') = 'N')
 		<if test="TEXT != null and TEXT != '' ">
 			<choose>
 				<when test="WHAT == 'name'">
@@ -538,7 +538,7 @@
 				dbo.TME_EMP_COM
 			</otherwise>
 		</choose> AS A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 	</select>
 
 	<insert id="insertList_dan004_grid1" parameterType="list">
@@ -582,7 +582,7 @@
 			)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.LOGIN_OFFICE_CODE},
 					#{row.EMP_NO},
 					#{row.REG_DATE},
 					#{row.DONG},
@@ -637,7 +637,7 @@
 			JOIN (
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.LOGIN_OFFICE_CODE}    AS OFFICE_CODE,
 					#{row.EMP_NO}          			AS EMP_NO,
 					#{row.DONG}       				AS DONG,
 					#{row.HO}         				AS HO,
@@ -687,7 +687,7 @@
 			JOIN (
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.LOGIN_OFFICE_CODE}    AS OFFICE_CODE,
 					#{row.EMP_NO}          			AS EMP_NO,
 					#{row.DISUSE_DATE}          	AS DISUSE_DATE,
 					#{row.DISUSE_REASON}          	AS DISUSE_REASON
@@ -735,7 +735,7 @@
 					dbo.TME_EMP_COM
 				</otherwise>
 			</choose> AS A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND (A.DISUSE_GBN = 'Y' AND A.DISUSE_DATE IS NOT NULL)
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND (A.DISUSE_GBN = 'Y' AND A.DISUSE_DATE IS NOT NULL)
 		<if test="TEXT != null and TEXT != '' ">
 			<choose>
 				<when test="WHAT == 'name'">
@@ -786,7 +786,7 @@
 			JOIN (
 				<foreach collection="list" item="row" separator=" UNION ALL ">
 					SELECT
-					#{row.LOGINUSER_OFFICE_CODE}    AS OFFICE_CODE,
+					#{row.LOGIN_OFFICE_CODE}    AS OFFICE_CODE,
 					#{row.EMP_NO}          			AS EMP_NO
 				</foreach>
 			) AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EMP_NO = B.EMP_NO

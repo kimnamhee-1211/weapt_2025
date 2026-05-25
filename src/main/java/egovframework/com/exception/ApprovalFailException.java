@@ -1,6 +1,6 @@
 package egovframework.com.exception;
 
-import egovframework.com.common.model.ApiResponse;
+import egovframework.com.baseCrud.model.ApiResponse;
 
 public class ApprovalFailException extends RuntimeException {
 

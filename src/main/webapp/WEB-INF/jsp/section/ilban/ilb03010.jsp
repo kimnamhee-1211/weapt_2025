@@ -238,7 +238,10 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["EMP_NO"],
+            key : {
+                column : ["EMP_NO"],
+                seq : 1
+            },
             before : {}
         }
 
@@ -291,7 +294,7 @@
         let saveParam = {
             insertParam : null,
             updateParam : checkedItems,
-            key : [],
+            key : {},
             before : {
                 action : "update",
                 saveMode : "U",

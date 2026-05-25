@@ -1,4 +1,4 @@
-package egovframework.com.common.model;
+package egovframework.com.baseCrud.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

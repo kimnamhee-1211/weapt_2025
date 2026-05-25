@@ -1,16 +1,19 @@
 package egovframework.com.common;
 
 
+import egovframework.com.common.service.MenuService;
+import egovframework.com.login.model.LoginVO;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.springframework.ui.Model;
+
+import javax.annotation.Resource;
 
 /**
  * @Class Name : MenuController.java
@@ -31,6 +34,9 @@ import org.springframework.ui.Model;
 
 @Controller
 public class MenuController {
+
+	@Resource(name = "menuService")
+	protected MenuService menuService;
 
 	//메뉴 이동
 	@RequestMapping(value = "/goMenu/{sectionId}/{pgId}", method = { RequestMethod.GET })
@@ -103,6 +109,14 @@ public class MenuController {
 			if (pgIdList5.contains(pgId)) {
 				goPgId = "dan01020";
 			}
+
+			//장비관리
+			List<String> pgIdList6 = Arrays.asList(
+
+			);
+			if (pgIdList6.contains(pgId)) {
+				goPgId = "jan01010";
+			}
 		}else goPgId = pgId;
 
 
@@ -123,6 +137,15 @@ public class MenuController {
 	}
 
 
+	@RequestMapping(value = "/getNavAside", method = { RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public List<Map<String, Object>> getNavAside(@PathVariable("menu_group") String menu_group,
+							  @SessionAttribute("loginUser") LoginVO loginUser,
+							  Model model) throws Exception {
 
+		List<Map<String, Object>> menuList = menuService.getNavAside(menu_group, loginUser);
+
+		return menuList;
+	}
 
 }

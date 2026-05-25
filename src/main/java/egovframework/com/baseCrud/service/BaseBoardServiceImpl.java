@@ -1,8 +1,8 @@
 package egovframework.com.baseCrud.service;
 
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
-import egovframework.com.baseCrud.support.BaseServiceSupport;
-import egovframework.com.common.model.ApiResponse;
+import egovframework.com.baseCrud.support.ServiceSupport;
+import egovframework.com.baseCrud.model.ApiResponse;
 import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 import java.util.Map;
 
 @Service("baseBoardService")
-public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoardService {
+public class BaseBoardServiceImpl extends ServiceSupport implements BaseBoardService {
 
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
@@ -35,7 +35,7 @@ public class BaseBoardServiceImpl extends BaseServiceSupport implements BaseBoar
                     ApiResponse.ApiType.SELECT);
         }
 
-        if ("Y".equals(param.get("cnt")) && param.get("LOGINUSER_ID") != result.get("USER_ID")) {
+        if ("Y".equals(param.get("cnt")) && param.get("LOGIN_ID") != result.get("USER_ID")) {
             String cntUpStatement = buildCrudStatement(sectionId, component, "boardCntUp");
             int cntUp = baseCrudMapper.updateOne(cntUpStatement, param);
             if (cntUp <= 0) {

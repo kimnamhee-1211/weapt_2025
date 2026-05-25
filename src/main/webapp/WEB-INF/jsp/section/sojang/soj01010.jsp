@@ -109,7 +109,7 @@
                 REG_DATE : getToday("yyyyMMdd"),
             }],
             updateParam : null,
-            key : [],
+            key : {},
             before : {}
         }
 

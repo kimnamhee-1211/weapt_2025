@@ -47,7 +47,6 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_code.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_crud.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_grid.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_nav.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_permission.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_ui.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_unit.js"></script>

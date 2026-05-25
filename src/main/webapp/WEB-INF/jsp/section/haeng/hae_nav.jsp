@@ -70,5 +70,8 @@
 
 <script>
     const sectionId = "haeng";
-    const navId = "aside_haeng";
+    const navId = "aside_haeng"
+
+
 </script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_nav.js"></script>

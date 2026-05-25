@@ -1,7 +1,7 @@
 package egovframework.com.baseCrud;
 
 import egovframework.com.baseCrud.service.BaseBoardService;
-import egovframework.com.common.model.ApiResponse;
+import egovframework.com.baseCrud.model.ApiResponse;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +29,6 @@ public class BaseBoardController {
 
     @Resource(name = "baseBoardService")
     protected BaseBoardService baseBoardService;
-
 
     //게시글 검색
     @RequestMapping(value = "/boardSelectOne/{sectionId}/{component}", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)

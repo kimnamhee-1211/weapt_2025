@@ -175,7 +175,7 @@
         let saveParam = {
             insertParam : null,
             updateParam : checkedItems,
-            key : [],
+            key : {},
             before : {}
         }
 

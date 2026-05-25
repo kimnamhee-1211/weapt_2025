@@ -177,7 +177,7 @@
             insertParam : null,
 
             updateParam : checkedItems,
-            key : [],
+            key : {},
             before : {}
         }
 

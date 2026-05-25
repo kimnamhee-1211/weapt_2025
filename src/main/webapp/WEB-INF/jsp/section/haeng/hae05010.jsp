@@ -221,7 +221,10 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["DOC_SEQ"],
+            key : {
+                column : ["DOC_SEQ"],
+                seq : 1
+            },
             before : {}
         };
 
@@ -318,7 +321,7 @@
         let saveParam = {
             insertParam : null,
             updateParam : checkedItems,
-            key : [],
+            key : {},
             before : {}
         };
 

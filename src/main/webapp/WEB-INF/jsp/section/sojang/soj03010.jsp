@@ -346,7 +346,7 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : [],
+            key : {},
             before : {
                 // action : "all",
                 // saveMode : "U",

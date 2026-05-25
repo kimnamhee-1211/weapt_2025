@@ -7,27 +7,27 @@
     <div id="section">
         <div class="section1">
             <div class="section1_nav">
-                <i class="icon-star-filled"></i>공통코드관리   <!-- 메뉴 이동시 코드명 그리드와 첫행 그리드 표시-->
+                <i class="icon-star-filled"></i>장비관리설정
             </div>
         </div>
         <div class="section2">
             <div class="section2_line0"></div>
         </div>
-        <div id="" class="gridcont_left_300">
+        <div id="" class="gridcont_left_450">
             <div class="section_middle_title">
-                <span><i class="icon-pause"></i>코드명</span>
+                <span><i class="icon-pause"></i>전기분야</span>
                 <span class="section_middle_btn" id="section_middle_btn1">
                 </span>
             </div>
             <div id="grid1"></div>
         </div>
-        <div id="" class="gridcont_right_770">
+        <div id="" class="gridcont_right_450">
             <div class="section_middle_title">
-                <span><i class="icon-pause"></i>세부코드명</span>
+                <span><i class="icon-pause"></i>설비영선</span>
                 <span class="section_middle_btn" id="section_middle_btn2">
                 </span>
             </div>
-                <div id="grid2"></div>
+            <div id="grid2"></div>
         </div>
     </div>
 
@@ -67,20 +67,25 @@
 
         //그리드1 설정
         const grid1ColumnLayout = [
-            { dataField: "CODEDV_NO",
-                headerText: "코드구분",
+            { dataField: "LEVEL_ORDER",
+                headerText: "순서",
                 dataType: "text",
-                width : "30%",
+                width : "10%",
                 editable : false
             },
-            { dataField: "CODEDV_NM",
-                headerText: "코드구분명",
+            { dataField: "MENU_NANE",
+                headerText: "메뉴명",
                 dataType: "text",
                 width : "50%",
                 style : "text-align-left",
             },
-            { dataField: "USE_YN",
+            { dataField: "FORM_USE",
                 headerText: "사용",
+                width : "20%",
+                renderer : we_cb_10_Renderer
+            },
+            { dataField: "TIME_INPUT_YN",
+                headerText: "고장시간",
                 width : "20%",
                 renderer : we_cb_YN_Renderer
             }
@@ -96,70 +101,29 @@
 
         //그리드2 설정
         const grid2ColumnLayout = [
-            { dataField: "CODEDV_NO",
-                headerText: "코드구분",
+            { dataField: "MENU_ID",
+                visible : false
+            },
+            { dataField: "LEVEL_ORDER",
+                headerText: "순서",
                 dataType: "text",
                 width : "10%",
                 editable : false
             },
-            { dataField: "CODE_NO",
-                headerText: "코드",
+            { dataField: "MENU_NANE",
+                headerText: "메뉴명",
                 dataType: "text",
-                width : "10%",
-                editRenderer : {
-                    type : "InputEditRenderer",
-                    onlyNumeric : true, // 0~9 까지만 허용
-                    maxlength : 6,
-                }
-            },
-            { dataField: "CODEDTL_NM",
-                headerText: "코드명",
-                dataType: "text",
-                width : "20%",
+                width : "50%",
                 style : "text-align-left",
             },
-            { dataField: "SHORT_NM",
-                headerText: "약어명",
-                dataType: "text",
-                width : "15%",
-            },
-            { dataField: "DIVISION1_NM",
-                headerText: "구분명1",
-                dataType: "text",
+            { dataField: "FORM_USE",
+                headerText: "사용",
                 width : "20%",
+                renderer : we_cb_10_Renderer
             },
-            { dataField: "DIVISION2_NM",
-                headerText: "구분명2",
-                dataType: "text",
+            { dataField: "TIME_INPUT_YN",
+                headerText: "고장시간",
                 width : "20%",
-            },
-            { dataField: "DIVISION3_NM",
-                headerText: "구분명3",
-                dataType: "text",
-                width : "20%",
-            },
-            { dataField: "DIVISION4_NM",
-                headerText: "구분명4",
-                dataType: "text",
-                width : "20%",
-            },
-            { dataField: "DIVISION5_NM",
-                headerText: "구분명5",
-                dataType: "text",
-                width : "20%",
-            },
-            { dataField: "SORTORDER",
-                headerText: "정렬순서",
-                width : "15%",
-                dataType: "text",
-                editRenderer : {
-                    type: "InputEditRenderer",
-                    onlyNumeric: true, // 0~9 까지만 허용
-                }
-            },
-            { dataField: "USE_YN",
-                headerText: "사용유무",
-                width : "15%",
                 renderer : we_cb_YN_Renderer
             }
         ];
@@ -180,17 +144,14 @@
         AUIGrid.bind(grid2, "rowCheckClick", function(event) {
             AUIGrid.setSelectionByIndex(grid2, event.rowIndex, 0);
         });
-        //셀 선택 변경 이벤트 바인딩
-        AUIGrid.bind(grid1, "selectionChange", function(event) {
-            search_grid2_onclick();
-        });
-
 
         //그리드 조회 함수
         function search_grid1_onclick(){
 
             //검색데이터
             let selectParam = {
+                UP_MENU_ID : "070010000",
+                MENU_GROUP : "070"
             }
 
             //파라미터
@@ -216,13 +177,14 @@
 
             //검색데이터
             let selectParam = {
-                CODEDV_NO : AUIGrid.getSelectedRows(grid1)[0].CODEDV_NO
+                UP_MENU_ID : "070610000",
+                MENU_GROUP : "070"
             }
 
             //파라미터
             let selectData = {
                 sectionId : sectionId,
-                component : pgId + "_grid2",
+                component : pgId + "_grid1",
                 param: selectParam,
             }
 
@@ -244,15 +206,20 @@
             AUIGrid.forceEditingComplete(grid1, null);
             //새행 만들기
             const item = {};
+            item.UP_MENU_ID = "070010000"
+            item.MENU_GROUP = "070"
+            item.FORM_URL = "E_JEONGGI::e01010.xml"
             AUIGrid.addRow(grid1, item, "last");
         }
+
         function add_grid2_onclick(){
             // 그리드의 편집 인푸터가 열린 경우 에디팅 완료 상태로 만듬.
             AUIGrid.forceEditingComplete(grid2, null);
             //새행 만들기
-            let selectRowItem = AUIGrid.getSelectedRows(grid1)[0];
             const item = {};
-            item.CODEDV_NO = selectRowItem.CODEDV_NO;
+            item.UP_MENU_ID = "070610000"
+            item.MENU_GROUP = "070"
+            item.FORM_URL = "F_SEOLBI::f01010.xml"
             AUIGrid.addRow(grid2, item, "last");
         }
 
@@ -270,7 +237,7 @@
                 return;
             }
             if(itemCount > 100){
-                alert("변경사항 저장은 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)")
+                alert("변경사항 저장은 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
                 return;
             }
             if(!confirm("총 " + itemCount + "건의 변경사항을 저장하시겠습니까?")) return;
@@ -284,8 +251,8 @@
                 insertParam : addedRowItems,
                 updateParam : editedRowItems,
                 key : {
-                    column : ["CODEDV_NO"],
-                    seq : 1
+                    column : ["MENU_ID", "PG_ID"],
+                    seq : 10
                 },
                 before : {}
             }
@@ -301,11 +268,12 @@
                 successSave : (data) => {
                     alert(data.O_MSG);
                     if(data.O_RESULT > 0){
-                        search_grid1_onclick()
+                        search_grid1_onclick();
                     }else return;
                 }
             });
         }
+
         function save_grid2_onclick(){
             // 추가된 행 아이템들(배열)
             let addedRowItems = AUIGrid.getAddedRowItems(grid2);
@@ -334,7 +302,10 @@
             let saveParam = {
                 insertParam : addedRowItems,
                 updateParam : editedRowItems,
-                key : {},
+                key : {
+                    column : ["MENU_ID", "PG_ID"],
+                    seq : 10
+                },
                 before : {}
             }
 
@@ -372,7 +343,7 @@
                 alert("하위에 세부코드가 " + AUIGrid.getRowCount(grid2) + "건 존재하여 삭제할 수 없습니다.");
                 return;
             }
-            let delItemsName = checkedItems.map(row => row.item.CODEDV_NM).join(", ");
+            let delItemsName = checkedItems.map(row => row.item.MENU_NAME).join(", ");
             if (!confirm( delItemsName + "을/를(총 " + itemCount +"건) 삭제하시겠습니까?")) return;
 
             //포커스 지정
@@ -415,7 +386,7 @@
                 alert("삭제는 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
                 return;
             }
-            let delItemsName = checkedItems.map(row => row.item.CODEDTL_NM).join(", ");
+            let delItemsName = checkedItems.map(row => row.item.MENU_NAME).join(", ");
             if (!confirm( delItemsName + "을/를(총 " + itemCount +"건) 삭제하시겠습니까?")) return;
 
             //포커스 지정
@@ -434,7 +405,7 @@
             //공통 저장 트렌젝션용 데이터
             let deleteData = {
                 sectionId :  sectionId,
-                component : pgId + "_grid2",
+                component : pgId + "_grid1",
                 param : param,
             }
 
@@ -457,8 +428,8 @@
                     let editedRowItems = AUIGrid.getEditedRowItems(grid1);
                     let items = [...addedRowItems,...editedRowItems];
                     for(const row of items){
-                        if(isNull(row.CODEDV_NM)){
-                            alert("코드구분명은 반드시 입력해야 합니다.");
+                        if(isNull(row.MENU_NAME)){
+                            alert("메뉴명은 반드시 입력해야 합니다.");
                             isValid = false;
                             break;
                         }
@@ -469,18 +440,8 @@
                     let editedRowItems2 = AUIGrid.getEditedRowItems(grid2);
                     let items2 = [...addedRowItems2,...editedRowItems2];
                     for(const row of items2){
-                        if(isNull(row.CODEDV_NO)){
-                            alert("코드구분은 반드시 입력해야 합니다.");
-                            isValid = false;
-                            break;
-                        }
-                        if(isNull(row.CODE_NO)){
-                            alert("코드는 반드시 입력해야 합니다.");
-                            isValid = false;
-                            break;
-                        }
-                        if(isNull(row.CODEDTL_NM)){
-                            alert("코드명은 반드시 입력해야 합니다.");
+                        if(isNull(row.MENU_NAME)){
+                            alert("메뉴명은 반드시 입력해야 합니다.");
                             isValid = false;
                             break;
                         }
@@ -504,12 +465,13 @@
         //로드
         window.onload = function() {
             //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-            btnMaker({ tag: "#section_middle_btn1", grid:"grid1", add: true, save: true});
-            btnMaker({ tag: "#section_middle_btn2", grid:"grid2", add: true, save: true});
+            btnMaker({ tag: "#section_middle_btn1", grid:"grid1", search: true, add: true, save: true, del: true});
+            btnMaker({ tag: "#section_middle_btn2", grid:"grid2",  search: true, add: true, save: true, del: true});
             //crud 권한 처리 함수
             checkCrudPermission(pgId);
             //로드 시 그리드 바로 조회
             search_grid1_onclick();
+            search_grid2_onclick();
         };
 
     </script>

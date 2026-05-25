@@ -36,7 +36,7 @@
                     <li id="soj04060"><a href="soj04060.jsp">기계실일지양식설정</a></li>
                     <li id="soj04070"><a href="soj04070.jsp">점검일지양식설정</a></li>
                     <li id="soj04080"><a href="soj04080.jsp">업무일지양식설정</a></li>
-                    <li id="soj04090"><a href="soj04090.jsp">장비관리설정</a></li>
+                    <li id="soj04090">장비관리설정</li>
                     <li id="soj04100"><a href="soj04100.jsp">재고관리설정</a></li>
                 </ul>
             </li>
@@ -86,5 +86,5 @@
     const sectionId = "sojang";
     const navId = "aside_sojang";
 
-
  </script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_nav.js"></script>

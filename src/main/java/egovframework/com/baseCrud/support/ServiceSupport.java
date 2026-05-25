@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static egovframework.com.baseCrud.support.SetParam.setUserToParam;
 
-public abstract class BaseServiceSupport {
+public abstract class ServiceSupport {
 
     //로그인 정보 주입 Map<String, Object>
     protected void setLoginParam(Map<String, Object> param, LoginVO loginUser){
@@ -28,15 +28,15 @@ public abstract class BaseServiceSupport {
     protected void setPgIdParam(List<Map<String, Object>> param, String pgId, String menuId){
 
         for(Map<String, Object> row : param){
-            row.put("PG_ID", pgId);
-            row.put("MENU_ID", menuId);
+            row.put("CALL_PG_ID", pgId);
+            row.put("CALL_MENU_ID", menuId);
         }
 
     }
 
     protected void setPgIdParam(Map<String, Object> param, String pgId, String menuId){
-            param.put("PG_ID", pgId);
-            param.put("MENU_ID", menuId);
+            param.put("CALL_PG_ID", pgId);
+            param.put("CALL_MENU_ID", menuId);
     }
 
 

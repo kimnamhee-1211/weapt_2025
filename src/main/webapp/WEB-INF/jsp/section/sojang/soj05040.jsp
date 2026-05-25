@@ -271,7 +271,10 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["MGMCOMP_CODE"],
+            key : {
+                column : ["MGMCOMP_CODE"],
+                seq : 1
+            },
             before : {}
         }
 

@@ -59,4 +59,7 @@
     const sectionId = "ilban";
     const navId = "aside_ilban";
 
+
+
 </script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_nav.js"></script>

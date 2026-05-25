@@ -381,7 +381,10 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["MINWON_AREAR_SEQ"],
+            key : {
+                column : ["MINWON_AREAR_SEQ"],
+                seq : 1
+            },
             before : {}
         };
 
@@ -428,7 +431,10 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["GBN_ID"],
+            key : {
+                column : ["GBN_ID"],
+                seq : 1
+            },
             before : {}
         };
 
@@ -475,7 +481,10 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["COM_GBN"],
+            key : {
+                column : ["COM_GBN"],
+                seq : 1
+            },
             before : {}
         };
 
@@ -524,7 +533,7 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : [],
+            key : {},
             before : {}
         };
 
@@ -687,7 +696,7 @@
         let saveParam = {
             insertParam : checkedItems,
             updateParam : null,
-            key : [],
+            key : {},
             before : {
                 action : "insert",
                 saveMode : "D",

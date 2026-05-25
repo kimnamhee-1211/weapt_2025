@@ -7,21 +7,21 @@
 			A.END_DATE	AS END_DATE,
 			A.SEQ		AS SEQ
 		FROM dbo.TPM_DEADLINE A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.DEAD_YN = 'Y'
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.DEAD_YN = 'Y'
 		  AND A.END_DATE = (
 			SELECT MAX(END_DATE)
 			FROM dbo.TPM_DEADLINE
-			WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			WHERE OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 			  AND DEAD_YN = 'Y')
 		  AND A.SEQ = (
 			SELECT MAX(SEQ)
 			FROM dbo.TPM_DEADLINE
-			WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+			WHERE OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 			  AND DEAD_YN = 'Y'
 			  AND END_DATE = (
 				SELECT MAX(END_DATE)
 				FROM dbo.TPM_DEADLINE
-				WHERE OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+				WHERE OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 				  AND DEAD_YN = 'Y'))
 	</select>
 
@@ -36,11 +36,11 @@
 				REG_DATE)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.LOGIN_OFFICE_CODE},
 				#{row.END_DATE},
 				#{row.SEQ},
 				'Y',
-				#{row.LOGINUSER_USER_ID},
+				#{row.LOGIN_USER_ID},
 				#{row.REG_DATE}
 			</foreach>
 		</if>
@@ -67,7 +67,7 @@
 			A.COMP_CODE   AS COMP_CODE
 		FROM dbo.TAD_EMP A
 		LEFT JOIN dbo.THR_DEPT B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DEPT_CD = B.DEPT_CD
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		  AND (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR CONVERT(DATE, A.RESIGN_DATE, 112) &gt;= CAST(GETDATE() AS DATE))
 		ORDER BY A.EMP_NO
 	</select>
@@ -77,7 +77,7 @@
 			A.DEPT_CD	AS DEPT_CD,
 			A.DEPT_NAME	AS DEPT_NAME
 		FROM dbo.THR_DEPT A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		ORDER BY A.DEPT_CD
 	</select>
 
@@ -86,7 +86,7 @@
 			A.JOB_DUTY_CD	AS JOB_DUTY_CD,
 			A.JOB_DUTY_NAME AS JOB_DUTY_NAME
 		FROM dbo.THR_JOB_DUTY A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		ORDER BY A.JOB_DUTY_CD
 	</select>
 
@@ -124,11 +124,11 @@
 		LEFT JOIN dbo.THR_DEPT B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.DEPT_CD = B.DEPT_CD
 		LEFT JOIN dbo.THR_JOB_DUTY C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.JOB_DUTY_CD = C.JOB_DUTY_CD
 		LEFT JOIN dbo.TAD_EMP D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.EMP_NO = D.EMP_NO
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
-<!--			<if test="LOGINUSER_COMP_CODE != null and LOGINUSER_COMP_CODE != ''">-->
-<!--				AND A.COMP_CODE = #{LOGINUSER_COMP_CODE}-->
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+<!--			<if test="LOGIN_COMP_CODE != null and LOGIN_COMP_CODE != ''">-->
+<!--				AND A.COMP_CODE = #{LOGIN_COMP_CODE}-->
 <!--			</if>-->
-<!--			<if test="LOGINUSER_COMP_CODE == null or LOGINUSER_COMP_CODE == ''">-->
+<!--			<if test="LOGIN_COMP_CODE == null or LOGIN_COMP_CODE == ''">-->
 <!--				AND (A.COMP_CODE IS NULL OR A.COMP_CODE = '')-->
 <!--			</if>-->
 		ORDER BY A.USER_ID, A.REGI_DATE
@@ -149,7 +149,7 @@
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-				#{row.LOGINUSER_OFFICE_CODE} 	AS OFFICE_CODE,
+				#{row.LOGIN_OFFICE_CODE} 	AS OFFICE_CODE,
 				#{row.EMP_NO}   	AS EMP_NO,
 				#{row.USER_ID}  	AS USER_ID,
 				#{row.DEPT_CD}   	AS DEPT_CD,
@@ -186,8 +186,8 @@
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-				#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
-				#{row.LOGINUSER_COMP_CODE} 	AS COMP_CODE,
+				#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
+				#{row.LOGIN_COMP_CODE} 	AS COMP_CODE,
 				#{row.USER_ID} 		AS USER_ID,
 				COALESCE(NULLIF(#{row.PASSWD1}, ''), RIGHT(CONVERT(varchar, #{row.HP_NO}), 4), '1234') AS PASSWD,
 				#{row.USER_NAME}  	AS USER_NAME,
@@ -240,22 +240,22 @@
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
 				    #{row.USER_ID},
-					#{row.LOGINUSER_USERGROUP_ID},
+					#{row.LOGIN_USERGROUP_ID},
 					COALESCE(NULLIF(#{row.PASSWD1}, ''), RIGHT(CONVERT(varchar, #{row.HP_NO}), 4), '1234'),
 					#{row.USER_NAME},
 					#{row.REGI_DATE},
 					'Y',
-					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.LOGIN_OFFICE_CODE},
 					#{row.HP_NO},
-					#{row.LOGINUSER_MGMCOMP_CODE},
-					#{row.LOGINUSER_COMP_CODE},
+					#{row.LOGIN_MGMCOMP_CODE},
+					#{row.LOGIN_COMP_CODE},
 					ISNULL(#{row.STATUS},'100001'),
-					#{row.LOGINUSER_MGM_CODE},
-					#{row.LOGINUSER_UP_MGMUSER_ID},
-					#{row.LOGINUSER_UP_MGMUSER_NAME},
+					#{row.LOGIN_MGM_CODE},
+					#{row.LOGIN_UP_MGMUSER_ID},
+					#{row.LOGIN_UP_MGMUSER_NAME},
 					#{row.REG_END_DATE},
-					#{row.LOGINUSER_WORK_GROUP_ID},
-					#{row.LOGINUSER_LEVEL_CODE},
+					#{row.LOGIN_WORK_GROUP_ID},
+					#{row.LOGIN_LEVEL_CODE},
 					#{row.DEPT_CD},
 					#{row.JOB_DUTY_CD},
 					#{row.ID_GBN},
@@ -279,11 +279,11 @@
 			A.EMP_NO         AS EMP_NO
 		FROM dbo.TPM_USER A
 		LEFT JOIN dbo.THR_JOB_DUTY B ON A.OFFICE_CODE = B.OFFICE_CODE AND  A.JOB_DUTY_CD = B.JOB_DUTY_CD
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND
-<!--			<if test="LOGINUSER_COMP_CODE != null and LOGINUSER_COMP_CODE != ''">-->
-<!--				A.COMP_CODE = #{LOGINUSER_COMP_CODE}-->
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND
+<!--			<if test="LOGIN_COMP_CODE != null and LOGIN_COMP_CODE != ''">-->
+<!--				A.COMP_CODE = #{LOGIN_COMP_CODE}-->
 <!--			</if>-->
-<!--			<if test="LOGINUSER_COMP_CODE == null or LOGINUSER_COMP_CODE == ''">-->
+<!--			<if test="LOGIN_COMP_CODE == null or LOGIN_COMP_CODE == ''">-->
 <!--				(A.COMP_CODE IS NULL OR A.COMP_CODE = '')-->
 <!--			</if>-->
 		ORDER BY A.USER_ID
@@ -341,10 +341,173 @@
 	</update>
 
 
+	<select id="selectList_soj04090_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE   				AS OFFICE_CODE,
+			A.MENU_ID   					AS MENU_ID,
+			A.MENU_GROUP            		AS MENU_GROUP,
+			A.MENU_NAME            			AS MENU_NAME,
+			A.M_LEVEL         				AS M_LEVEL,
+			A.LEVEL_ORDER           		AS LEVEL_ORDER,
+			A.UP_MENU_ID           			AS UP_MENU_ID,
+			A.FORM_USE            			AS FORM_USE,
+			ISNULL(A.TIME_INPUT_YN, 'N')	AS TIME_INPUT_YN
+		FROM dbo.TPM_MENU_ADD A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+		  AND A.UP_MENU_ID = #{UP_MENU_ID} AND A.MENU_GROUP = #{MENU_GROUP}
+		ORDER BY A.LEVEL_ORDER
+	</select>
+
+	<update id="updateList_soj04090_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.LEVEL_ORDER 	= U.LEVEL_ORDER,
+				A.FORM_USE 		= U.FORM_USE,
+				A.MENU_NAME    	= U.MENU_NAME,
+				A.TIME_INPUT_YN = U.TIME_INPUT_YN
+			FROM dbo.TPM_MENU_ADD A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.MENU_ID}  				AS MENU_ID,
+				#{row.LOGIN_OFFICE_CODE}   	AS LOGIN_OFFICE_CODE,
+				#{row.LEVEL_ORDER}  			AS LEVEL_ORDER,
+				#{row.FORM_USE}  				AS FORM_USE,
+				#{row.MENU_NAME}   				AS MENU_NAME,
+				#{row.TIME_INPUT_YN}     		AS TIME_INPUT_YN
+			</foreach>
+			) AS U ON A.MENU_ID	= U.MENU_ID AND A.LOGIN_OFFICE_CODE	= U.LOGIN_OFFICE_CODE
+		</if>
+	</update>
+
+	<update id="updateList_soj04090_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+			A.LEVEL_ORDER 	= U.LEVEL_ORDER,
+			A.FORM_USE 		= U.FORM_USE,
+			A.MENU_NAME    	= U.MENU_NAME,
+			A.TIME_INPUT_YN = U.TIME_INPUT_YN
+			FROM dbo.TPM_MENU_ADD A
+			JOIN(
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.MENU_ID}  				AS MENU_ID,
+				#{row.LOGIN_OFFICE_CODE}   	AS LOGIN_OFFICE_CODE,
+				#{row.LEVEL_ORDER}  			AS LEVEL_ORDER,
+				#{row.FORM_USE}  				AS FORM_USE,
+				#{row.MENU_NAME}   				AS MENU_NAME,
+				#{row.TIME_INPUT_YN}     		AS TIME_INPUT_YN
+			</foreach>
+			) AS U ON A.MENU_ID	= U.MENU_ID AND A.LOGIN_OFFICE_CODE	= U.LOGIN_OFFICE_CODE
+		</if>
+	</update>
 
 
+	<select id="getKey_soj04090_grid1" parameterType="map" resultType="map">
+		SELECT
+			ISNULL(MAX(A.MENU_ID), A.UP_MENU_ID) AS MENU_ID,
+			ISNULL(MAX(A.PG_ID), 'jan01010') AS PG_ID
+		FROM dbo.TPM_MENU_ADD A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+		AND A.UP_MENU_ID = #{UP_MENU_ID} AND AND A.MENU_GROUP = #{MENU_GROUP}
+	</select>
+
+	<select id="getKey_soj04090_grid2" parameterType="map" resultType="map">
+		SELECT
+			ISNULL(MAX(A.MENU_ID), A.UP_MENU_ID) AS MENU_ID,
+			ISNULL(MAX(A.PG_ID), 'jan02010') AS PG_ID
+		FROM dbo.TPM_MENU_ADD A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+		  AND A.UP_MENU_ID = #{UP_MENU_ID} AND AND A.MENU_GROUP = #{MENU_GROUP}
+	</select>
 
 
+	<insert id="insertList_soj04090_grid1" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TPM_MENU_ADD (
+				OFFICE_CODE,
+				MENU_ID,
+				MENU_GROUP,
+				MENU_NAME,
+				M_LEVLE,
+				LEVEL_ORDER,
+				UP_MENU_ID,
+				FORM_URL,
+				PG_ID,
+				FORM_USE,
+				REG_DATE,
+				REG_USER,
+				TIME_INPUT_YN)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				    #{row.LOGIN_OFFICE_CODE},
+					#{row.MENU_ID},
+					#{row.MENU_GROUP},
+					#{row.MENU_NAME},
+					#{row.M_LEVLE},
+					#{row.LEVEL_ORDER},
+					#{row.UP_MENU_ID},
+					#{row.FORM_URL},
+					#{row.PG_ID},
+					#{row.FORM_USE},
+					#{row.REG_DATE},
+					#{row.LOGIN_ID},
+					#{row.TIME_INPUT_YN}
+			</foreach>
+		</if>
+	</insert>
+
+	<insert id="insertList_soj04090_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TPM_MENU_ADD (
+				OFFICE_CODE,
+				MENU_ID,
+				MENU_GROUP,
+				MENU_NAME,
+				M_LEVLE,
+				LEVEL_ORDER,
+				UP_MENU_ID,
+				FORM_URL,
+				PG_ID,
+				FORM_USE,
+				REG_DATE,
+				REG_USER,
+				TIME_INPUT_YN)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGIN_OFFICE_CODE},
+				#{row.MENU_ID},
+				#{row.MENU_GROUP},
+				#{row.MENU_NAME},
+				#{row.M_LEVLE},
+				#{row.LEVEL_ORDER},
+				#{row.UP_MENU_ID},
+				#{row.FORM_URL},
+				#{row.PG_ID},
+				#{row.FORM_USE},
+				#{row.REG_DATE},
+				#{row.LOGIN_ID},
+				#{row.TIME_INPUT_YN}
+			</foreach>
+		</if>
+	</insert>
+
+	<delete id="deleteList_soj04090_grid1" parameterType="list">
+		DELETE FROM dbo.TPM_MENU_ADD
+		WHERE EXISTS (
+		SELECT 1
+		FROM (
+		<foreach collection="list" item="row" separator="UNION ALL">
+			SELECT #{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
+			#{row.MENU_ID} AS MENU_ID
+		</foreach>
+		) AS temp
+		WHERE temp.OFFICE_CODE = TPM_MENU_ADD.OFFICE_CODE
+		AND temp.MENU_ID = TPM_MENU_ADD.MENU_ID
+		)
+	</delete>
 
 
 
@@ -475,8 +638,6 @@
 			) AS U ON A.MGMCOMP_CODE	= U.MGMCOMP_CODE
 		</if>
 	</update>
-
-
 
 
 
@@ -712,11 +873,11 @@
 		<if test="END_DATE2 != null and END_DATE2 != ''">
 			AND B.END_DATE &lt;= #{END_DATE2}
 		</if>
-		<if test="LOGINUSER_OFFICE_CODE != '10001' and LOGINUSER_MGMCOMP_CODE != '101' and LOGINUSER_USERGROUP_ID !='900'" >
-			AND A.MGMCOMP_CODE = #{LOGINUSER_MGMCOMP_CODE}
+		<if test="LOGIN_OFFICE_CODE != '10001' and LOGIN_MGMCOMP_CODE != '101' and LOGIN_USERGROUP_ID !='900'" >
+			AND A.MGMCOMP_CODE = #{LOGIN_MGMCOMP_CODE}
 		</if>
-		<if test="LOGINUSER_USERGROUP_ID == '400'">
-			AND A.COMP_CODE = #{LOGINUSER_COMP_CODE}
+		<if test="LOGIN_USERGROUP_ID == '400'">
+			AND A.COMP_CODE = #{LOGIN_COMP_CODE}
 		</if>
 		ORDER BY A.OFFICE_CODE, A.REGI_DAY, B.START_DATE
 	</select>
@@ -757,7 +918,7 @@
 				SELECT #{row.OFFICE_CODE},
 					#{row.OFFICE_NAME},
 					#{row.COMP_CODE},
-					ISNULL(#{LOGINUSER_MGMCOMP_CODE}, '101'),
+					ISNULL(#{LOGIN_MGMCOMP_CODE}, '101'),
 					#{row.EXPLAN},
 					#{row.PART1},
 					#{row.PART2},
@@ -989,11 +1150,11 @@
 			<if test="CONT_KIND_CD != null and CONT_KIND_CD != ''">
 				AND B.CONT_KIND_CD LIKE '%' + #{CONT_KIND_CD} + '%'
 			</if>
-			<if test="LOGINUSER_OFFICE_CODE != '10001' and LOGINUSER_MGMCOMP_CODE != '101' and LOGINUSER_USERGROUP_ID !='900'" >
-				AND A.MGMCOMP_CODE = #{LOGINUSER_MGMCOMP_CODE}
+			<if test="LOGIN_OFFICE_CODE != '10001' and LOGIN_MGMCOMP_CODE != '101' and LOGIN_USERGROUP_ID !='900'" >
+				AND A.MGMCOMP_CODE = #{LOGIN_MGMCOMP_CODE}
 			</if>
-			<if test="LOGINUSER_USERGROUP_ID == '400'">
-				AND A.COMP_CODE = #{LOGINUSER_COMP_CODE}
+			<if test="LOGIN_USERGROUP_ID == '400'">
+				AND A.COMP_CODE = #{LOGIN_COMP_CODE}
 			</if>
 		ORDER BY A.OFFICE_CODE, A.REGI_DAY, B.START_DATE
 	</select>
@@ -1068,10 +1229,10 @@
 			ISNULL(MAX(BOARD_NO), 0) + 1,
 			#{BOARD_TITLE},
 			#{BOARD_CONTENT},
-			#{LOGINUSER_NAME},
+			#{LOGIN_NAME},
 			#{BOARD_DATE},
 			0,
-			#{LOGINUSER_ID}
+			#{LOGIN_ID}
 	</insert>
 
 	<update id="boardUpdateOne_soj05120_board1" parameterType="map">
@@ -1107,6 +1268,7 @@
 		SELECT
 			A.MENU_GROUP  AS MENU_GROUP,
 			A.MENU_ID     AS MENU_ID,
+			A.PG_ID		  AS PG_ID,
 			A.MENU_NAME   AS MENU_NAME,
 			A.M_LEVEL     AS M_LEVEL,
 			A.LEVEL_ORDER AS LEVEL_ORDER,
@@ -1123,6 +1285,7 @@
 		<if test="list != null and list.size > 0">
 			INSERT INTO dbo.TPM_MENU (
 				MENU_ID,
+				PG_ID,
 				MENU_GROUP,
 				MENU_NAME,
 				M_LEVEL,
@@ -1131,6 +1294,7 @@
 				FORM_USE)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT #{row.MENU_ID},
+				       #{row.PG_ID},
 					   #{row.MENU_GROUP},
 					   #{row.MENU_NAME},
 					   #{row.M_LEVEL},
@@ -1147,6 +1311,7 @@
 			SET
 				A.MENU_GROUP	= U.MENU_GROUP,
 				A.MENU_NAME		= U.MENU_NAME,
+				A.PG_ID			= U.PG_ID,
 				A.M_LEVEL		= U.M_LEVEL,
 				A.LEVEL_ORDER	= U.LEVEL_ORDER,
 				A.UP_MENU_ID	= U.UP_MENU_ID,
@@ -1154,13 +1319,14 @@
 			FROM dbo.TPM_MENU A
 			JOIN(
 				<foreach collection="list" item="row" separator=" UNION ALL ">
-					SELECT  #{row.MENU_ID} AS MENU_ID,
-							#{row.MENU_GROUP} AS MENU_GROUP,
-							#{row.MENU_NAME} AS MENU_NAME,
-							#{row.M_LEVEL} AS M_LEVEL,
-							#{row.LEVEL_ORDER} AS LEVEL_ORDER,
+					SELECT  #{row.MENU_ID}		AS MENU_ID,
+							#{row.PG_ID}		AS PG_ID,
+							#{row.MENU_GROUP}	AS MENU_GROUP,
+							#{row.MENU_NAME}	AS MENU_NAME,
+							#{row.M_LEVEL}		AS M_LEVEL,
+							#{row.LEVEL_ORDER}	AS LEVEL_ORDER,
 							#{row.UP_MENU_ID}	AS UP_MENU_ID,
-							#{row.FORM_USE} AS FORM_USE
+							#{row.FORM_USE} 	AS FORM_USE
 				</foreach>
 			) AS U ON A.MENU_ID	= U.MENU_ID
 		</if>

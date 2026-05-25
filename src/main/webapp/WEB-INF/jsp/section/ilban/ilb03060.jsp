@@ -193,7 +193,7 @@
         let saveParam = {
             insertParam : null,
             updateParam : checkedItems,
-            key : [],
+            key : {},
             before : {
                 // action : "update",
                 // saveMode : "U",

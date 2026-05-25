@@ -261,7 +261,7 @@
         let saveParam = {
             insertParam : addItem,
             updateParam : editItem,
-            key : [],
+            key : {},
             before : {}
         }
 

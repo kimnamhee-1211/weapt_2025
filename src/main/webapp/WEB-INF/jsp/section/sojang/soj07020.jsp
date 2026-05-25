@@ -193,7 +193,7 @@
                 insertParam : editedRowItems.filter(row => isNull(row.USERGROUP_ID))
                                             .map(row => ({ ...row, USERGROUP_ID: search_usergroupId.value })),
                 updateParam : editedRowItems.filter(row => !isNull(row.USERGROUP_ID)),
-                key : [],
+                key : {},
                 before : {}
             }
 

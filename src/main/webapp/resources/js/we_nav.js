@@ -11,6 +11,12 @@
 
 //aside_nav
 document.addEventListener("DOMContentLoaded", () => {
+
+
+
+
+
+
     //변수 설정
     const wrap = document.querySelector(".nav_wrap");
     const aside = document.querySelector(".nav_aside");
@@ -77,6 +83,72 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+
+
+async function nav_aside_make(menu_group, {successSelect} = {}, timeout = 60_000) {
+
+    //로딩시작
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeout);
+
+    try {
+
+        const query = new URLSearchParams(menu_group)
+        let method = "/getNavAside";
+
+        const res = await fetch(
+            ctx + method + "?" + query,
+            {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                },
+                credentials: "include",
+                signal: controller.signal
+            });
+        if (!res.ok) {
+            alert("요청이 실패하였습니다");
+            return;
+        }
+
+        const json = await res.json();
+
+        if (json.O_STATUS === "FAIL") {
+            alert(json.O_MSG);
+            return;
+        }
+        if (typeof successGetMenu === "function") await successGetMenu(json);
+
+    } catch (err) {
+        if (err.name === "AbortError") {
+            console.error("요청 타임아웃");
+            alert("조회 시간이 초과되었습니다");
+        } else {
+            console.error(err);
+            alert("조회에 실패하였습니다");
+        }
+        throw err;
+
+    } finally {
+        clearTimeout(timer);
+        //로딩종료
+    }
+}
+
+
+async function successGetMenu(date){
+
+
+
+
+
+
+
+
+
+}
+
 
     	
     	

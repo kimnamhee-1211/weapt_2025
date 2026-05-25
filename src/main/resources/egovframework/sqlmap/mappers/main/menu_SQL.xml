@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="menuMapper">
+
+	<select id="getNavAside" parameterType="map" resultType="map">
+		SELECT
+			A.MENU_ID,
+			A.MENU_GROUP,
+			A.MENU_NAME,
+			A.M_LEVEL,
+			A.LEVEL_ORDER,
+			A.UP_MENU_ID,
+			A.FORM_URL,
+			B.FORM_USE
+		FROM (SELECT
+				NULL AS MENU_ID,
+				S1.MENU_GROUP,
+				S1.MENU_NAME,
+				S1.M_LEVEL,
+				S1.LEVEL_ORDER,
+				S1.UP_MENU_ID,
+				S1.FORM_URL,
+				S1.FORM_USE
+              FROM dbo.TPM_MENU S1
+              WHERE S1.FORM_USE = '1'
+                AND S1.MENU_GROUP = #{MENU_GROUP}
+              UNION ALL
+              SELECT *
+				S2.MENU_ID,
+				S2.MENU_GROUP,
+				S2.MENU_NAME,
+				S2.M_LEVEL,
+				S2.LEVEL_ORDER,
+				S2.UP_MENU_ID,
+				S2.FORM_URL,
+				S2.FORM_USE
+              FROM dbo.TPM_MENU_ADD S2
+              WHERE S2.FORM_USE = '1'
+                AND S2.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+                AND S2.MENU_GROUP = #{MENU_GROUP}) A
+		LEFT JOIN dbo.TPM_USERMENU B ON A.MENU_ID = B.MENU_ID
+		     AND B.USER_ID = #{LOGIN_ID}
+		WHERE B.FORM_USE = '1'
+		ORDER BY A.MENU_ID
+	</select>
+
+
+</mapper>

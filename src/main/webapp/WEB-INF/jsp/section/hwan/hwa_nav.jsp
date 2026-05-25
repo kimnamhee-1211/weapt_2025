@@ -58,4 +58,7 @@
 <script>
     const sectionId = "hwan";
     const navId = "aside_hwan";
+
+
 </script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_nav.js"></script>

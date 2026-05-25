@@ -13,7 +13,7 @@
 		    CONVERT(varchar(10), CONVERT(date, A.SC_DATE, 112), 23) AS [end]
 		FROM dbo.TWK_SCHEDULE_NEW A
 		LEFT JOIN dbo.TWK_SCHEDULE_GBN AS F ON(A.OFFICE_CODE = F.OFFICE_CODE AND A.SCH_GBN = F.SCH_GBN)
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 			<if test="start != null and start != '' and end != null and end != ''">
 				AND A.SC_DATE  &gt;= #{start}
 				AND A.SC_DATE  &lt;= #{end}
@@ -30,7 +30,7 @@
 		FROM dbo.TAD_ABSENT AS B
 		LEFT JOIN dbo.TAD_EMP AS C ON B.OFFICE_CODE = C.OFFICE_CODE AND B.EMP_NO = C.EMP_NO
 		LEFT JOIN dbo.TAD_ABSENT_ITEM AS D ON B.ABSENT_CD = D.ABSENT_CD AND B.OFFICE_CODE = D.OFFICE_CODE
-		WHERE B.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE B.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 			<if test="start != null and start != '' and end != null and end != ''">
 				AND B.START_DATE  &gt;= #{start}
 				AND B.END_DATE  &lt;= #{end}
@@ -59,7 +59,7 @@
 			A.SCH_GBN	AS SCH_GBN,
 			A.GBN_NAME	AS GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
 
@@ -69,7 +69,7 @@
 			A.DEPT_CD	AS DEPT_CD,
 			A.DEPT_NAME	AS DEPT_NAME
 		FROM dbo.THR_DEPT A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
 		ORDER BY A.SORT_ORDER
 	</select>
 
@@ -78,7 +78,7 @@
 			A.EMP_NO	AS EMP_NO,
 			A.NAME		AS NAME
 		FROM dbo.TAD_EMP A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		  AND (NULLIF(LTRIM(RTRIM(A.RESIGN_DATE)), '') IS NULL OR CONVERT(DATE, A.RESIGN_DATE, 112) &gt;= CAST(GETDATE() AS DATE))
 		ORDER BY A.EMP_NO
 	</select>
@@ -98,7 +98,7 @@
 			A.WORK_USER_ID	AS WORK_USER_ID,
 			A.WORKER_NAME	AS WORKER_NAME
 			FROM dbo.TWK_SCHEDULE_NEW A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 			AND A.MST_NO = #{MST_NO} AND A.MST_MONTH = #{MST_MONTH}
 			AND A.SEQ = #{SEQ} AND A.SC_DATE = #{SC_DATE}
 	</select>
@@ -118,7 +118,7 @@
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
 					#{row.SC_DATE} 			 	 AS SC_DATE,
 					#{row.MST_NO} 				 AS MST_NO,
 					#{row.MST_MONTH}  			 AS MST_MONTH,
@@ -139,7 +139,7 @@
 		SELECT
 			ISNULL(MAX(A.MST_NO), 10000) AS MST_NO
 		FROM dbo.TWK_SCHEDULE_NEW A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 	</select>
 
 	<insert id="insertList_ilj01015_pop" parameterType="list">
@@ -162,7 +162,7 @@
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				<foreach collection="row.SC_DATE" item="date" separator=" UNION ALL ">
 					SELECT
-					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.LOGIN_OFFICE_CODE},
 					#{date},
 					LEFT(#{date},6),
 					#{row.MST_NO},
@@ -174,7 +174,7 @@
 					#{row.STATUS_CD},
 					#{row.WORK_USER_ID},
 					#{row.WORKER_NAME},
-					#{row.LOGINUSER_ID},
+					#{row.LOGIN_ID},
 					CONVERT(VARCHAR(8), GETDATE(), 112)
 				</foreach>
 			</foreach>
@@ -187,7 +187,7 @@
 			SELECT 1
 			FROM (
 				<foreach collection="list" item="row" separator="UNION ALL">
-					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.SC_DATE} AS SC_DATE,
+					SELECT #{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE, #{row.SC_DATE} AS SC_DATE,
 					#{row.MST_MONTH} AS MST_MONTH, #{row.MST_NO} AS MST_NO, #{row.SEQ} AS SEQ
 				</foreach>
 			) AS temp
@@ -202,7 +202,7 @@
 			A.SCH_GBN	AS SCH_GBN,
 			A.GBN_NAME	AS GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
 
@@ -211,7 +211,7 @@
 			A.DEPT_CD	AS DEPT_CD,
 			A.DEPT_NAME	AS DEPT_NAME
 		FROM dbo.THR_DEPT A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
 		ORDER BY A.SORT_ORDER
 	</select>
 
@@ -231,7 +231,7 @@
 		FROM dbo.TWK_SCHEDULE_NEW A
 		LEFT JOIN dbo.TWK_SCHEDULE_GBN AS B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.SCH_GBN = B.SCH_GBN
 		LEFT JOIN dbo.THR_DEPT AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MAIN_DEPT_CD = C.DEPT_CD
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 			<if test="START_DATE != null and START_DATE != ''">
 				AND A.SC_DATE &gt;= #{START_DATE}
 			</if>
@@ -279,7 +279,7 @@
 		LEFT JOIN dbo.THR_DEPT AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MAIN_DEPT_CD = C.DEPT_CD
 		LEFT JOIN dbo.TAD_EMP AS D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.WORK_USER_ID = D.EMP_NO
 			AND (NULLIF(LTRIM(RTRIM(D.RESIGN_DATE)), '') IS NULL OR CONVERT(DATE, D.RESIGN_DATE, 112) &gt;= CAST(GETDATE() AS DATE))
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 			<if test="START_DATE != null and START_DATE != ''">
 				AND A.SC_DATE &gt;= #{START_DATE}
 			</if>
@@ -317,7 +317,7 @@
 		LEFT JOIN dbo.THR_DEPT AS C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.MAIN_DEPT_CD = C.DEPT_CD
 		LEFT JOIN dbo.TAD_EMP AS D ON A.OFFICE_CODE = D.OFFICE_CODE AND A.WORK_USER_ID = D.EMP_NO
 		AND (NULLIF(LTRIM(RTRIM(D.RESIGN_DATE)), '') IS NULL OR CONVERT(DATE, D.RESIGN_DATE, 112) &gt;= CAST(GETDATE() AS DATE))
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.SC_DATE = #{SC_DATE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.SC_DATE = #{SC_DATE}
 	</select>
 
 
@@ -326,7 +326,7 @@
 			A.MST_DATE	AS MST_DATE,
 			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
 		FROM dbo.TWK_MONTH_BASIC A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		ORDER BY CONVERT(INT, A.MST_DATE) DESC
 	</select>
 
@@ -335,7 +335,7 @@
 			A.SCH_GBN	AS SCH_GBN,
 			A.GBN_NAME	AS GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
 		ORDER BY CONVERT(INT, A.ORDER_SEQ)
 	</select>
 
@@ -344,7 +344,7 @@
 			A.DEPT_CD	AS DEPT_CD,
 			A.DEPT_NAME	AS DEPT_NAME
 		FROM dbo.THR_DEPT A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND ISNULL(A.USE_YN,'Y') = 'Y'
 		ORDER BY A.SORT_ORDER
 	</select>
 
@@ -360,7 +360,7 @@
 			A.SCH_GBN 			AS SCH_GBN,
 			A.MAIN_DEPT_CD		AS MAIN_DEPT_CD
 		FROM dbo.TWK_MONTH_SCHEDULE A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 			AND A.MST_DATE = #{MST_DATE} AND A.MST_MONTH = #{MST_MONTH}
 		ORDER BY A.SCH_GBN, A.MST_NO
 	</select>
@@ -378,7 +378,7 @@
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
 					#{row.MST_DATE} 			 AS MST_DATE,
 					#{row.MST_NO} 				 AS MST_NO,
 					#{row.MST_MONTH}  			 AS MST_MONTH,
@@ -397,7 +397,7 @@
 		SELECT
 			ISNULL(MAX(A.MST_NO), 10000) AS MST_NO
 		FROM dbo.TWK_MONTH_SCHEDULE A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		 	 AND A.MST_DATE = #{MST_DATE} AND A.MST_MONTH = #{MST_MONTH}
 	</select>
 
@@ -417,7 +417,7 @@
 				REG_DATE)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.LOGIN_OFFICE_CODE},
 					#{row.MST_DATE},
 					#{row.MST_MONTH},
 					#{row.MST_NO},
@@ -426,7 +426,7 @@
 					#{row.DESCR},
 					#{row.SCH_GBN},
 					#{row.MAIN_DEPT_CD},
-					#{row.LOGINUSER_ID},
+					#{row.LOGIN_ID},
 					#{row.REG_DATE}
 			</foreach>
 		</if>
@@ -438,7 +438,7 @@
 			SELECT 1
 			FROM (
 				<foreach collection="list" item="row" separator="UNION ALL">
-					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.MST_DATE} AS MST_DATE,
+					SELECT #{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE, #{row.MST_DATE} AS MST_DATE,
 					#{row.MST_MONTH} AS MST_MONTH, #{row.MST_NO} AS MST_NO
 				</foreach>
 			) AS temp
@@ -453,7 +453,7 @@
 			A.MST_DATE AS MST_DATE,
 			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
 		FROM dbo.TWK_MONTH_BASIC A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		ORDER BY CONVERT(INT, A.MST_DATE) DESC
 	</select>
 
@@ -462,7 +462,7 @@
 			A.SCH_GBN 	AS SCH_GBN,
 			A.GBN_NAME	AS GBN_NAME
 		FROM dbo.TWK_SCHEDULE_GBN A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND ISNULL(A.USE_YN,'1') = '1'
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND ISNULL(A.USE_YN,'1') = '1'
 		ORDER BY A.ORDER_SEQ
 	</select>
 
@@ -472,7 +472,7 @@
 			A.TITLE 			AS TITLE,
 			A.SCH_GBN 			AS SCH_GBN
 		FROM dbo.TWK_MONTH_SCHEDULE A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE} AND A.MST_DATE = #{MST_DATE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.MST_DATE = #{MST_DATE}
 		ORDER BY A.MST_MONTH, A.MST_NO
 	</select>
 
@@ -482,7 +482,7 @@
 			A.MST_DATE AS MST_DATE,
 			CONVERT(VARCHAR(10), CONVERT(DATE, MST_DATE), 23) AS MST_DATE_FORMAT
 		FROM dbo.TWK_MONTH_BASIC A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		ORDER BY CONVERT(INT, A.MST_DATE) DESC
 	</select>
 
@@ -494,7 +494,7 @@
 			A.MST_NO			AS MST_NO,
 			A.TITLE 			AS TITLE
 		FROM dbo.TWK_MONTH_MAJOR_JOB A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		  AND A.MST_DATE = #{MST_DATE}
 		ORDER BY A.MST_NO
 	</select>
@@ -508,7 +508,7 @@
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-				#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+				#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
 				#{row.MST_DATE} 			 AS MST_DATE,
 				#{row.MST_NO} 				 AS MST_NO,
 				#{row.MST_MONTH}  			 AS MST_MONTH,
@@ -523,7 +523,7 @@
 		SELECT
 			ISNULL(MAX(A.MST_NO), 0) AS MST_NO
 		FROM dbo.TWK_MONTH_MAJOR_JOB A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		  AND A.MST_DATE = #{MST_DATE} AND A.MST_MONTH = #{MST_MONTH}
 	</select>
 
@@ -539,12 +539,12 @@
 				REG_DATE)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.LOGIN_OFFICE_CODE},
 					#{row.MST_DATE},
 					#{row.MST_MONTH},
 					#{row.MST_NO},
 					#{row.TITLE},
-					#{row.LOGINUSER_ID},
+					#{row.LOGIN_ID},
 					#{row.REG_DATE}
 			</foreach>
 		</if>
@@ -556,7 +556,7 @@
 			SELECT 1
 			FROM (
 				<foreach collection="list" item="row" separator="UNION ALL">
-					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.MST_DATE} AS MST_DATE,
+					SELECT #{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE, #{row.MST_DATE} AS MST_DATE,
 					#{row.MST_MONTH} AS MST_MONTH, #{row.MST_NO} AS MST_NO
 				</foreach>
 			) AS temp
@@ -571,7 +571,7 @@
 			A.OFFICE_CODE		AS OFFICE_CODE,
 			A.MST_DATE			AS MST_DATE
 		FROM dbo.TWK_MONTH_BASIC A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		ORDER BY A.MST_DATE DESC
 	</select>
 
@@ -584,7 +584,7 @@
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
 					#{row.MST_DATE} 			 AS MST_DATE
 			</foreach>
 			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE AND A.MST_DATE = U.MST_DATE
@@ -600,9 +600,9 @@
 				REG_DATE)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-				#{row.LOGINUSER_OFFICE_CODE},
+				#{row.LOGIN_OFFICE_CODE},
 				#{row.MST_DATE},
-				#{row.LOGINUSER_ID},
+				#{row.LOGIN_ID},
 				#{row.REG_DATE}
 			</foreach>
 		</if>
@@ -614,7 +614,7 @@
 			SELECT 1
 			FROM (
 				<foreach collection="list" item="row" separator="UNION ALL">
-					SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.MST_DATE} AS MST_DATE
+					SELECT #{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE, #{row.MST_DATE} AS MST_DATE
 				</foreach>
 			) AS temp
 			WHERE temp.OFFICE_CODE = TWK_MONTH_BASIC.OFFICE_CODE AND temp.MST_DATE = TWK_MONTH_BASIC.MST_DATE
@@ -632,7 +632,7 @@
 			ISNULL(A.USE_YN, '1')	AS USE_YN,
 			A.ORDER_SEQ				AS ORDER_SEQ
 		FROM dbo.TWK_SCHEDULE_GBN A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		ORDER BY A.SCH_GBN
 	</select>
 
@@ -648,7 +648,7 @@
 			JOIN(
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
 					#{row.SCH_GBN} 			 	 AS SCH_GBN,
 					#{row.REG_DATE} 			 AS REG_DATE,
 					#{row.GBN_NAME} 			 AS GBN_NAME,
@@ -664,7 +664,7 @@
 		SELECT
 			ISNULL(MAX(A.SCH_GBN), '100000') AS SCH_GBN
 		FROM dbo.TWK_SCHEDULE_GBN A
-		WHERE A.OFFICE_CODE = #{LOGINUSER_OFFICE_CODE}
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 	</select>
 
 	<insert id="insertList_ilj02040_grid2" parameterType="list">
@@ -680,13 +680,13 @@
 				REG_DATE)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
 				SELECT
-					#{row.LOGINUSER_OFFICE_CODE},
+					#{row.LOGIN_OFFICE_CODE},
 					#{row.SCH_GBN},
 					#{row.GBN_NAME},
 					#{row.GBN_DESCR},
 					#{row.USE_YN},
 					#{row.ORDER_SEQ},
-					#{row.LOGINUSER_ID},
+					#{row.LOGIN_ID},
 					#{row.REG_DATE}
 			</foreach>
 		</if>
@@ -698,7 +698,7 @@
 			SELECT 1
 			FROM (
 			<foreach collection="list" item="row" separator="UNION ALL">
-				SELECT #{row.LOGINUSER_OFFICE_CODE} AS OFFICE_CODE, #{row.SCH_GBN} AS SCH_GBN,
+				SELECT #{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE, #{row.SCH_GBN} AS SCH_GBN,
 				#{row.REG_DATE} AS REG_DATE
 			</foreach>
 			) AS temp

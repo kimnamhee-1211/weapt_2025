@@ -135,7 +135,10 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : ["ORDER_SEQ"],
+            key : {
+                column : ["ORDER_SEQ"],
+                seq : 1
+            },
             before : {}
         }
 

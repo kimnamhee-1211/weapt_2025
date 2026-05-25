@@ -1,6 +1,6 @@
 package egovframework.com.exception;
 
-import egovframework.com.common.model.ApiResponse;
+import egovframework.com.baseCrud.model.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;

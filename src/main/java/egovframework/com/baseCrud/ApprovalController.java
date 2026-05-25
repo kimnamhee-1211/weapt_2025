@@ -2,7 +2,7 @@ package egovframework.com.baseCrud;
 
 
 import egovframework.com.baseCrud.service.ApprovalService;
-import egovframework.com.common.model.ApiResponse;
+import egovframework.com.baseCrud.model.ApiResponse;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +29,7 @@ import java.util.Map;
 @Controller
 public class ApprovalController {
 
-    @Resource(name = "ApprovalService")
+    @Resource(name = "approvalService")
     protected ApprovalService approvalService;
 
 
