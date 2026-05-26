@@ -20,7 +20,8 @@ public class MenuServiceImpl extends ServiceSupport implements MenuService {
     @Resource(name = "menuMapper")
     private MenuMapper menuMapper;
 
-    public List<Map<String, Object>> getNavAside(@RequestParam("menu_group") String menu_group,
+    // nav_aside list
+    public List<Map<String, Object>> getNavAside(String menu_group,
                                                  LoginVO loginUser){
 
 

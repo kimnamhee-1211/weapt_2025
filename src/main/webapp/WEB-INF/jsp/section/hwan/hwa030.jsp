@@ -194,7 +194,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["REG_SEQ"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         }

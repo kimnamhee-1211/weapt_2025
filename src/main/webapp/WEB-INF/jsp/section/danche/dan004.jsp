@@ -199,7 +199,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["EMP_NO"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         };

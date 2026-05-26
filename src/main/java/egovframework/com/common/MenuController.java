@@ -46,12 +46,14 @@ public class MenuController {
 						 @RequestParam Map<String, Object> paramMap,
 						 Model model) throws Exception {
 
+
 		model.addAttribute("paramMap", paramMap);
 		model.addAttribute("pgId", pgId);
 		model.addAttribute("title", title);
 		model.addAttribute("menuId", getMenuId(pgId));
 
 		System.out.println("pgId :" + pgId + "/" + getMenuId(pgId) + "/" + title);
+
 		String goPgId = setPgId(sectionId, pgId);
 
 		return "section/" + sectionId + "/" + goPgId;
@@ -139,9 +141,8 @@ public class MenuController {
 
 	@RequestMapping(value = "/getNavAside", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
-	public List<Map<String, Object>> getNavAside(@PathVariable("menu_group") String menu_group,
-							  @SessionAttribute("loginUser") LoginVO loginUser,
-							  Model model) throws Exception {
+	public List<Map<String, Object>> getNavAside(@RequestParam("menu_group") String menu_group,
+												 @SessionAttribute("loginUser") LoginVO loginUser) throws Exception {
 
 		List<Map<String, Object>> menuList = menuService.getNavAside(menu_group, loginUser);
 

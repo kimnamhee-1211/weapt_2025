@@ -279,7 +279,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["SCH_GBN"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         }

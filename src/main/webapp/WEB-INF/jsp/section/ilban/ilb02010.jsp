@@ -207,7 +207,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["SUPPLIER_CD"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         }

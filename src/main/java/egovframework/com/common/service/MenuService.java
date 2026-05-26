@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface MenuService {
 
-    public List<Map<String, Object>> getNavAside(@RequestParam("menu_group") String menu_group,
+    public List<Map<String, Object>> getNavAside(String menu_group,
                                                  LoginVO loginUser);
 
 

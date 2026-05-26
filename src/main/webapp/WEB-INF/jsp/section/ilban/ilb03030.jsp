@@ -257,7 +257,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["SEQ"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         }

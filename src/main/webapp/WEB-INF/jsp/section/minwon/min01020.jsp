@@ -357,7 +357,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["WORK_SEQ"],
-                seq : 1
+                seq : [1]
             },
             before: {
                 action: "update",

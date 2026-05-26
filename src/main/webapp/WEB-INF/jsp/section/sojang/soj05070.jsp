@@ -468,7 +468,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["OFFICE_CODE"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         }
@@ -522,7 +522,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["CONT_SEQ"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         }

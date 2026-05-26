@@ -252,7 +252,7 @@
                 updateParam : editedRowItems,
                 key : {
                     column : ["MENU_ID", "PG_ID"],
-                    seq : 10
+                    seq : [1]0
                 },
                 before : {}
             }
@@ -304,7 +304,7 @@
                 updateParam : editedRowItems,
                 key : {
                     column : ["MENU_ID", "PG_ID"],
-                    seq : 10
+                    seq : [10, 10]
                 },
                 before : {}
             }

@@ -12,17 +12,18 @@
 //aside_nav
 document.addEventListener("DOMContentLoaded", () => {
 
-
-
-
-
-
     //변수 설정
     const wrap = document.querySelector(".nav_wrap");
     const aside = document.querySelector(".nav_aside");
     const tree = document.querySelector(".nav_tree"); //스크롤 요소
 
     if (!wrap || !aside || !tree) return;
+
+
+    //메뉴 만들기
+    if(!isNull(menu_group)){
+        nav_aside_make(menu_group, tree);
+    }
 
     let nav_focus = null;   //포커스
     let nav_focus_scroll = null; //포커스
@@ -86,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-async function nav_aside_make(menu_group, {successSelect} = {}, timeout = 60_000) {
+async function nav_aside_make(menu_group, tree, timeout = 10_000) {
 
     //로딩시작
     const controller = new AbortController();
@@ -94,7 +95,8 @@ async function nav_aside_make(menu_group, {successSelect} = {}, timeout = 60_000
 
     try {
 
-        const query = new URLSearchParams(menu_group)
+        let parm = { "menu_group" : menu_group }
+        const query = new URLSearchParams(parm)
         let method = "/getNavAside";
 
         const res = await fetch(
@@ -118,7 +120,8 @@ async function nav_aside_make(menu_group, {successSelect} = {}, timeout = 60_000
             alert(json.O_MSG);
             return;
         }
-        if (typeof successGetMenu === "function") await successGetMenu(json);
+
+       successGetMenu(json, tree);
 
     } catch (err) {
         if (err.name === "AbortError") {
@@ -127,8 +130,8 @@ async function nav_aside_make(menu_group, {successSelect} = {}, timeout = 60_000
         } else {
             console.error(err);
             alert("조회에 실패하였습니다");
+            throw err;
         }
-        throw err;
 
     } finally {
         clearTimeout(timer);
@@ -137,16 +140,47 @@ async function nav_aside_make(menu_group, {successSelect} = {}, timeout = 60_000
 }
 
 
-async function successGetMenu(date){
+function successGetMenu(date,tree){
 
 
+    date.forEach((row, index) => {
 
+        let ui;
+        if(row.M_LEVEL == "2"){
 
+            const li_2 = document.createElement('li');
 
+            // 체크박스
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = row.MENU_ID;
+            checkbox.className = "tree_cb";
 
+            // 라벨
+            const label = document.createElement("label");
+            label.htmlFor = row.MENU_ID;
+            label.textContent = row.MENU_NAME;
 
+            ul = document.createElement("ul");
+            label.className = "tree_nav";
 
+            li_2.appendChild(checkbox);
+            li_2.appendChild(label);
+            li_2.appendChild(ul);
 
+            tree.appendChild(li_2);
+
+        }else if(row.M_LEVEL == "3") {
+
+            const li_3 = document.createElement("li");
+           // li_3.id = row.MENU_ID + "/" +  row.PG_ID;
+            li_3.id = row.PG_ID;
+            li_3.textContent = row.MENU_NAME;
+
+            ul.appendChild(li_3);
+
+        }
+    })
 }
 
 

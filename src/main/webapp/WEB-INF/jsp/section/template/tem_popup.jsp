@@ -334,7 +334,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["OFFICE_CODE"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         }

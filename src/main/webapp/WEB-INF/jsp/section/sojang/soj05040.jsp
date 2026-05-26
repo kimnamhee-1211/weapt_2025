@@ -273,7 +273,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["MGMCOMP_CODE"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         }

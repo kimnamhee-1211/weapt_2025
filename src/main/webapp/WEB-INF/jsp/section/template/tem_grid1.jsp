@@ -196,7 +196,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["MST_NO"],
-                seq : 1
+                seq : [1]
             },
             before : {
                  action : "insert",

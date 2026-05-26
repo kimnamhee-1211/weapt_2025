@@ -383,7 +383,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["MINWON_AREAR_SEQ"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         };
@@ -433,7 +433,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["GBN_ID"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         };
@@ -483,7 +483,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["COM_GBN"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         };

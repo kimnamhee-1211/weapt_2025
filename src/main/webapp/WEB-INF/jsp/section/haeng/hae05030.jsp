@@ -240,7 +240,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["DOC_GBN"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         }
@@ -290,7 +290,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["STORAGE_CD"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         }

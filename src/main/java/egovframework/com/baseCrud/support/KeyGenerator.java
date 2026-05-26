@@ -14,14 +14,11 @@ public class KeyGenerator{
 														  Map<String, Object> rawKey,
 														  Map<String, Object> keyValues) {
 
+		List<String> key = (List<String>) rawKey.get("column");
+		List<Integer> seqArr = (List<Integer>) rawKey.get("seq");
 
-		List<String> key = new ArrayList<>();
-
-		List<String> column = (List<String>) rawKey.get("column");
-		int seq = (Integer) rawKey.get("seq");
-
-		if (column instanceof List<?>) {
-			for (Object obj : (List<?>) column) {
+		if (key instanceof List<?>) {
+			for (Object obj : (List<?>) key) {
 				if (obj instanceof String) {
 					key.add((String) obj);
 				} else {
@@ -29,16 +26,17 @@ public class KeyGenerator{
 				}
 			}
 		} else {
-			System.out.println("key 값이 올바르지 않음: " + column);
+			System.out.println("key 값이 올바르지 않음: " + key);
 		}
 
-		for (String k : key) {
+		for(int k = 0 ; k < key.size(); k++){
+			int seq = seqArr.get(k);
 			if(keyValues == null){
-				for(int i = 1 ; i<param.size() + 1; i++){
-					param.get(i-1).put(k, i);
+				for(int i = 1 ; i < param.size() + 1; i++){
+					param.get(i-1).put(key.get(k), i);
 				}
 			}else{
-				Object val = keyValues.get(k);
+				Object val = keyValues.get(key.get(k));
 				for(int i = 1 ; i<param.size() + 1; i++){
 					Object value;
 					if(val == null){
@@ -65,10 +63,11 @@ public class KeyGenerator{
 					}else{
 						value =  i*seq;
 					}
-					param.get((i*seq)-1).put(k, value);
+					param.get((i*seq)-1).put(key.get(k), value);
 				}
 			}
 		}
+
 		return param;
 	}
 

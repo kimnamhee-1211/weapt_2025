@@ -162,7 +162,7 @@
             updateParam : editedRowItems,
             key : {
                 column : ["ABSENT_CD"],
-                seq : 1
+                seq : [1]
             },
             before : {}
         }
@@ -242,7 +242,7 @@
             updateParam : null,
             key : {
                 column : ["ABSENT_CD"],
-                seq : 1
+                seq : [1]
             },
             before : {
                 action : "insert",

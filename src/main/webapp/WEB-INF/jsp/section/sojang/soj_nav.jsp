@@ -11,7 +11,7 @@
                     <li id="soj01010">관리업무마감</li>
                 </ul>
             </li>
-            <li id="soj03">
+            <li>
                 <input type="checkbox" id="root3" class="tree_cb">
                 <label for="root3">관리자</label>
                 <ul class="tree_nav">
