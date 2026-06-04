@@ -39,22 +39,26 @@ public class MenuController {
 	protected MenuService menuService;
 
 	//메뉴 이동
-	@RequestMapping(value = "/goMenu/{sectionId}/{pgId}", method = { RequestMethod.GET })
+	@RequestMapping(value = "/goMenu/{sectionId}/{id}", method = { RequestMethod.GET })
 	public String goMenu(@PathVariable("sectionId") String sectionId,
-						 @PathVariable("pgId") String pgId,
+						 @PathVariable("id") String id,
 						 @RequestParam(required = false) String title,
 						 @RequestParam Map<String, Object> paramMap,
 						 Model model) throws Exception {
 
+		String menuId = id.split("-")[0];
+		String pgId = id.split("-")[1];
 
 		model.addAttribute("paramMap", paramMap);
 		model.addAttribute("pgId", pgId);
 		model.addAttribute("title", title);
-		model.addAttribute("menuId", getMenuId(pgId));
+		model.addAttribute("menuId", menuId);
 
-		System.out.println("pgId :" + pgId + "/" + getMenuId(pgId) + "/" + title);
+		System.out.println("pgId :" + pgId + "/" + menuId + "/" + title);
 
-		String goPgId = setPgId(sectionId, pgId);
+		String goPgId = setPgId(sectionId, pgId, menuId);
+
+		System.out.println("section/" + sectionId + "/" + goPgId);
 
 		return "section/" + sectionId + "/" + goPgId;
 	}
@@ -72,7 +76,7 @@ public class MenuController {
 	}
 
 	//동일 jsp 사용하는 경우
-	private String setPgId(String sectionId, String pgId) {
+	private String setPgId(String sectionId, String pgId, String menuId) {
 		String goPgId = "";
 		//회의단체 메뉴
 		if(sectionId.equals("danche")){
@@ -111,7 +115,6 @@ public class MenuController {
 			if (pgIdList5.contains(pgId)) {
 				goPgId = "dan01020";
 			}
-
 			//장비관리
 			List<String> pgIdList6 = Arrays.asList(
 
@@ -148,5 +151,28 @@ public class MenuController {
 
 		return menuList;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

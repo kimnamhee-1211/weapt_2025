@@ -3,8 +3,7 @@
 <div class="nav_wrap">
     <div class="nav_aside" id="aside_jangbi">
         <div class="nav">장비관리</div>
-        <ul class="nav_tree">
-        </ul>
+        <ul class="nav_tree"></ul>
     </div>
 </div>
 

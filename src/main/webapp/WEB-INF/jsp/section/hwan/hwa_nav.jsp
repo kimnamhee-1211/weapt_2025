@@ -58,6 +58,7 @@
 <script>
     const sectionId = "hwan";
     const navId = "aside_hwan";
+    const menu_group = "080";
 
 
 </script>

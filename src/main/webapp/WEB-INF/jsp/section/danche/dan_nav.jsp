@@ -124,7 +124,7 @@
 <script>
     const sectionId = "danche";
     const navId = "aside_danche";
-
+    const menu_group = "100";
 
 
 </script>

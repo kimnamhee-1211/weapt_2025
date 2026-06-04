@@ -71,7 +71,7 @@
 <script>
     const sectionId = "haeng";
     const navId = "aside_haeng"
-
+    const menu_group = "040";
 
 </script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_nav.js"></script>

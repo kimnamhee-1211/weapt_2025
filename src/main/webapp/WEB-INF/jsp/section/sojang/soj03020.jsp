@@ -28,13 +28,7 @@
             <div class="gridcont_right_770">
                 <div class="section_middle_title">
                     <span><i class="icon-pause"></i>사용자권한등록</span>
-                    <span>
-                    <span class="section_middle_btn" id="section2_btn">
-                    </span>&emsp;&emsp;
-                    <span> &emsp;&#9726 직책 : &nbsp;</span>
-                    <span id="title_jobDutyName"></span>
-                    <span> &emsp;&#9726 성명 : &nbsp;</span>
-                    <span id="title_userName"></span>
+                    <span class="section_middle_btn" id="section2_btn"></span>&emsp;&emsp;
                 </div>
                 <div id="grid2"></div>
             </div>
@@ -261,11 +255,12 @@
         }
 
         function save_grid2_onclick(){
-            // 추가된 행 아이템들(배열)
-            let addedRowItems = AUIGrid.getAddedRowItems(grid2);
-            // 수정된 행 아이템들(배열) : 수정된 필드와 수정안된 필드 모두를 얻음.
-            let editedRowItems = AUIGrid.getEditedRowItems(grid2);
+            let editedRowItem = AUIGrid.getEditedRowItems(grid2);
 
+            // 추가된 행 아이템들(배열)
+            let addedRowItems = AUIGrid.getEditedRowItems(grid2).filter(row => row.USERMENU_ID == null);
+            // 수정된 행 아이템들(배열) : 수정된 필드와 수정안된 필드 모두를 얻음.
+            let editedRowItems = AUIGrid.getEditedRowItems(grid2).filter(row => row.USERMENU_ID != null);
             //검증
             let itemCount = addedRowItems.length + editedRowItems.length;
             if(itemCount == 0){

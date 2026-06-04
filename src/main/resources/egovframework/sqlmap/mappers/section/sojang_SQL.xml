@@ -279,12 +279,12 @@
 			A.EMP_NO         AS EMP_NO
 		FROM dbo.TPM_USER A
 		LEFT JOIN dbo.THR_JOB_DUTY B ON A.OFFICE_CODE = B.OFFICE_CODE AND  A.JOB_DUTY_CD = B.JOB_DUTY_CD
-		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 <!--			<if test="LOGIN_COMP_CODE != null and LOGIN_COMP_CODE != ''">-->
-<!--				A.COMP_CODE = #{LOGIN_COMP_CODE}-->
+<!--				AND A.COMP_CODE = #{LOGIN_COMP_CODE}-->
 <!--			</if>-->
 <!--			<if test="LOGIN_COMP_CODE == null or LOGIN_COMP_CODE == ''">-->
-<!--				(A.COMP_CODE IS NULL OR A.COMP_CODE = '')-->
+<!--				AND (A.COMP_CODE IS NULL OR A.COMP_CODE = '')-->
 <!--			</if>-->
 		ORDER BY A.USER_ID
 	</select>
@@ -298,16 +298,16 @@
 			B.USER_ID     	AS USER_ID,
 			B.USER_NAME   	AS USER_NAME,
 			E.JOB_DUTY_NAME AS JOB_DUTY_NAME,
-			COALESCE(C.FORM_USE,   D.FORM_USE,   '0') AS FORM_USE,
-			COALESCE(C.GRD_READ,   D.GRD_READ,   '0') AS GRD_READ,
-			COALESCE(C.GRD_CREATE, D.GRD_CREATE, '0') AS GRD_CREATE,
-			COALESCE(C.GRD_UPDATE, D.GRD_UPDATE, '0') AS GRD_UPDATE,
-			COALESCE(C.GRD_DELETE, D.GRD_DELETE, '0') AS GRD_DELETE,
-			COALESCE(C.GRD_EXCEL,  D.GRD_EXCEL,  '0') AS GRD_EXCEL
+			C.MENU_ID		AS USERMENU_ID,
+			ISNULL(C.FORM_USE,  '0') AS FORM_USE,
+			ISNULL(C.GRD_READ,  '0') AS GRD_READ,
+			ISNULL(C.GRD_CREATE, '0') AS GRD_CREATE,
+			ISNULL(C.GRD_UPDATE, '0') AS GRD_UPDATE,
+			ISNULL(C.GRD_DELETE, '0') AS GRD_DELETE,
+			ISNULL(C.GRD_EXCEL, '0') AS GRD_EXCEL
 		FROM dbo.TPM_MENU A
 		INNER JOIN dbo.TPM_USER B ON B.USER_ID = #{USER_ID}
 		LEFT JOIN dbo.TPM_USERMENU C ON A.MENU_ID = C.MENU_ID AND B.USER_ID = C.USER_ID
-		LEFT JOIN dbo.TPM_GROUPMENU D ON A.MENU_ID = D.MENU_ID AND D.USERGROUP_ID = #{USERGROUP_ID}
 		LEFT JOIN dbo.THR_JOB_DUTY E ON B.OFFICE_CODE = E.OFFICE_CODE AND B.JOB_DUTY_CD = E.JOB_DUTY_CD
 		WHERE A.FORM_USE = '1'
 		ORDER BY A.MENU_ID, A.M_LEVEL, A.LEVEL_ORDER;
@@ -340,6 +340,31 @@
 		</if>
 	</update>
 
+	<insert id="insertList_soj03020_grid2" parameterType="list">
+		<if test="list != null and list.size > 0">
+			INSERT INTO dbo.TPM_USERMENU (
+				MENU_ID,
+				GRD_CREATE,
+				FORM_USE,
+				GRD_READ,
+				GRD_DELETE,
+				GRD_UPDATE,
+				USER_ID,
+				GRD_EXCEL
+			)
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.MENU_ID},
+				#{row.GRD_CREATE},
+				#{row.FORM_USE},
+				#{row.GRD_READ},
+				#{row.GRD_DELETE},
+				#{row.GRD_UPDATE},
+				#{row.USER_ID},
+				#{row.GRD_EXCEL}
+			</foreach>
+		</if>
+	</insert>
 
 	<select id="selectList_soj04090_grid1" parameterType="map" resultType="map">
 		SELECT

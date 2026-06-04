@@ -47,6 +47,7 @@
     //변수 설정
     const sectionId = "minwon";
     const navId = "aside_minwon";
+    const menu_group = "020";
 
 </script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_nav.js"></script>

@@ -220,9 +220,10 @@ input[type="file"]{
     color: blue;
     font-weight: 600;
 }
-.nav_tree a:hover{
+.nav_tree .menu_nav:hover{
     font-weight: 700;
 }
+
 .nav_tree input[type="checkbox"] {
     display: none;
 }

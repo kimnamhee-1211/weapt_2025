@@ -45,4 +45,5 @@
 <script>
     const sectionId = "home";
     const navId = "aside_home";
+    const menu_group = "999";
 </script>

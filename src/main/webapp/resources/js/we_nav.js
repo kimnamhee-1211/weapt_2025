@@ -173,9 +173,9 @@ function successGetMenu(date,tree){
         }else if(row.M_LEVEL == "3") {
 
             const li_3 = document.createElement("li");
-           // li_3.id = row.MENU_ID + "/" +  row.PG_ID;
-            li_3.id = row.PG_ID;
+            li_3.id = row.MENU_ID + "-" +  row.PG_ID;
             li_3.textContent = row.MENU_NAME;
+            li_3.className = "menu_nav";
 
             ul.appendChild(li_3);
 

@@ -58,7 +58,7 @@
 
     const sectionId = "ilban";
     const navId = "aside_ilban";
-
+    const menu_group = "030";
 
 
 </script>

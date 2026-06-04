@@ -38,7 +38,7 @@
                 <li id="topnav_hwan"><a id="hwan/hwa01010">환경보완</a></li>
                 <li id="topnav_jangsoo"><a id="jangsoo/soo01010">장기수선</a></li>
                 <li id="topnav_danche"><a id="danche/dan01010">회의단체</a></li>
-                <li id="topnav_sojang"><a id="sojang/soj01010">관리소장</a></li>
+                <li id="topnav_sojang"><a id="sojang/110010020-soj01010">관리소장</a></li>
             </ul>
            
             <input type="checkbox" id="iconmenu_layer_popup" class="hidden_check" >

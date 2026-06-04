@@ -44,6 +44,6 @@
 
     const sectionId = "iljung";
     const navId = "aside_iljung";
-
+    const menu_group = "010";
 </script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_nav.js"></script>
