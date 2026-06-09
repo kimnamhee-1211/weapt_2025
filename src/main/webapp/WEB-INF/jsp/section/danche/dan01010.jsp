@@ -61,7 +61,7 @@
     window.onload = function() {
 
         let pg_title = document.getElementById("pg_title");
-        const title = "${title}";
+        const title = "${menuName}";
         if(!isNull(title)){
             pg_title.innerHTML = '<i class="icon-user-add"></i>';
             pg_title.append(document.createTextNode(title));
@@ -71,7 +71,7 @@
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, add: true, save: true});
         checkCrudPermission(pgId);
 
-                let pop_item = {
+        let pop_item = {
             pgId : pgId,
 		    menuId : menuId,
             querySet : "dan001",

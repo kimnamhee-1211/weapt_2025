@@ -25,19 +25,20 @@
         </div>
     </div>
 
+    <!--top_nav-->
     <div id="nav_resize">
         <div id="nav">
             <ul id="nav_top">
-                <li id="topnav_iljung"><a id="iljung/ilj01010">일정관리</a></li>
-                <li id="topnav_minwon"><a id="minwon/min01010">민원관리</a></li>
-                <li id="topnav_ilban"><a id="ilban/ilb01010">관리일반</a></li>
-                <li id="topnav_haeng"><a id="haeng/hae01010">행정관리</a></li>
+                <li id="topnav_iljung"><a id="iljung/010010010-ilj01010">일정관리</a></li>
+                <li id="topnav_minwon"><a id="minwon/020010010-min01010">민원관리</a></li>
+                <li id="topnav_ilban"><a id="ilban/030010010-ilb01010">관리일반</a></li>
+                <li id="topnav_haeng"><a id="haeng/100010010-hae01010">행정관리</a></li>
                 <li id="topnav_ilgee"><a id="ilgee/ilg01010">일지결재</a></li>
                 <li id="topnav_jaego"><a id="jaego/jae01010">재고관리</a></li>
-                <li id="topnav_jangbi"><a id="jangbi/jan01010">장비관리</a></li>
+                <li id="topnav_jangbi"><a id="jangbi/070">장비관리</a></li>
                 <li id="topnav_hwan"><a id="hwan/hwa01010">환경보완</a></li>
                 <li id="topnav_jangsoo"><a id="jangsoo/soo01010">장기수선</a></li>
-                <li id="topnav_danche"><a id="danche/dan01010">회의단체</a></li>
+                <li id="topnav_danche"><a id="danche/100020010-dan01010">회의단체</a></li>
                 <li id="topnav_sojang"><a id="sojang/110010020-soj01010">관리소장</a></li>
             </ul>
            
@@ -47,49 +48,16 @@
             <!-- 팝업시작-->
             <%@ include file = "popup/pop_mymenu.jsp" %>
             <!-- 팝업끝-->
-            
+        </div>
+    </div>
+    <!--aside_nav-->
+    <div class="nav_wrap">
+        <div class="nav_aside">
+            <div class="nav_title"></div>
+            <ul class="nav_tree"></ul>
         </div>
     </div>
 
-
-    <script>
-
-        const nav_top = document.querySelector("#nav_top");
-        const userOffice = document.querySelector("#userOffice");
-        const change_office = document.querySelector("#change_office");
-        const change_pass = document.querySelector("#change_pass");
-
-
-        change_office.addEventListener("change", () => {
-            popupOpen(pop_changeOffice);
-            changeOffice_onload();
-        })
-
-        change_pass.addEventListener("change", () => {
-            popupOpen(pop_changePass);
-            changePass_onload();
-        })
-
-
-        window.addEventListener("load", function () {
-            if(!isNull(loginUser.userId)){
-                userOffice.innerHTML = "[" + loginUser.officeCode + "] " + loginUser.officeName + " (" + loginUser.userName + ")";
-            }
-        })
-
-
-        nav_top.addEventListener('click', (e) => {
-            var pg = null;
-
-            if(e.target.tagName == 'LI'){
-                pg = e.target.querySelector('a').id;
-            }
-            else if(e.target.tagName == 'A'){
-                 pg = e.target.id;
-            }
-            location.href = ctx + "/goMenu/" + pg
-        });
-
-    </script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/we_nav.js"></script>
 
 

@@ -2,7 +2,7 @@
 
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
-<%@ include file = "jan_nav.jsp" %>
+
 
         <div id="section">
             <div class="section1">

@@ -62,8 +62,7 @@
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, add: true, save: true});
         checkCrudPermission(pgId);
-
-                let pop_item = {
+        let pop_item = {
             pgId : pgId,
 		    menuId : menuId,
             querySet : "dan004",

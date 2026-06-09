@@ -2,7 +2,7 @@
 
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
-<%@ include file = "jan_nav.jsp" %>
+
 
         <div id="section">
             <div class="section1">
@@ -18,12 +18,7 @@
                 </div>
             </div>
 
-            <div id=""  style="height: 658px; border: 1px solid #bcbcbc;">
-                <div id="" name="">
-                    그리드영역
-                </div>
-            </div>           
+            <div id="grid1"></div>
         </div>
-    </div>
 
 <%@ include file = "../../inc_footer.jsp" %>

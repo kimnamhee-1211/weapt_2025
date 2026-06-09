@@ -10,31 +10,68 @@
 
 
 //aside_nav
-document.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("load", function () {
 
     //변수 설정
+    //top_nav
+    const nav_top = document.querySelector("#nav_top");
+    const userOffice = document.querySelector("#userOffice");
+    const change_office = document.querySelector("#change_office");
+    const change_pass = document.querySelector("#change_pass");
+    //aside_nav
     const wrap = document.querySelector(".nav_wrap");
     const aside = document.querySelector(".nav_aside");
     const tree = document.querySelector(".nav_tree"); //스크롤 요소
+    const nav_title = document.querySelector(".nav_title"); //스크롤 요소
 
-    if (!wrap || !aside || !tree) return;
-
-
-    //메뉴 만들기
-    if(!isNull(menu_group)){
-        nav_aside_make(menu_group, tree);
-    }
+    let menu_group =
+        sessionStorage.getItem("menu_group") || "";
+    let sectionId =
+        sessionStorage.getItem("sectionId") || "";
 
     let nav_focus = null;   //포커스
     let nav_focus_scroll = null; //포커스
 
-    //폰트 스타일 제거
-    let fontWeightTags = tree.querySelectorAll("li[id]");
-    fontWeightTags.forEach(li => {
-        li.style.fontWeight = "400";
-    });
+    if (!wrap || !aside || !tree) return;
+
+
+    //aside_nav
+    //메뉴 만들기
+    if(!isNull(menu_group)){
+        nav_title.innerText = sessionStorage.getItem("nav_title");
+
+        nav_aside_make(menu_group, tree);
+    }
+
 
     //메뉴 이동
+    //top_nav
+    nav_top.addEventListener('click', async (e) => {
+        let target = null
+
+        if(e.target.tagName == 'LI'){
+            target = e.target.querySelector('a');
+        }
+        else if(e.target.tagName == 'A'){
+            target = e.target;
+        }
+        sectionId = target.id.split("/")[0]
+        menu_group = target.id.split("/")[1]
+        if (isNull(menu_group)) return;
+
+        sessionStorage.setItem("menu_group", menu_group);
+        sessionStorage.setItem("sectionId", sectionId);
+        sessionStorage.setItem("nav_title", target.innerText);
+        sessionStorage.removeItem("nav_aside_" + menu_group);
+        await nav_aside_make(menu_group, tree);
+
+        const firstMenu = tree.querySelector(".menu_nav");
+        if (firstMenu) {
+            firstMenu.click();
+        }
+
+    });
+    //aside_nav
     tree.addEventListener('click', (e) => {
         let pg = "";
         if (e.target.tagName == 'LI' && !isNull(e.target.id)) {
@@ -43,7 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem('nav_focus_scroll', tree.scrollTop);
 
             pg = e.target;
-            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id + "?title=" + encodeURIComponent(pg.textContent);
+            let param = new URLSearchParams({...pg.dataset});
+            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id + "?" + param.toString();
         }
     });
 
@@ -67,27 +105,36 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 체크박스 상태 복원
-    const checkboxes = document.querySelectorAll(".tree_cb");
 
-    checkboxes.forEach(checkbox => {
-        const id = checkbox.id;
-        if (localStorage.getItem(id) === 'true') {
-            checkbox.checked = true;
-        } else {
-            checkbox.checked = false;
-        }
 
-        // 체크박스 상태 저장
-        checkbox.addEventListener('change', function () {
-            localStorage.setItem(id, checkbox.checked);
-        });
-    });
+    //상단 메뉴
+    //사용자 표기
+    if(!isNull(loginUser.userId)){
+        userOffice.innerHTML = "[" + loginUser.officeCode + "] " + loginUser.officeName + " (" + loginUser.userName + ")";
+    }
+    //관리소변경
+    change_office.addEventListener("change", () => {
+        popupOpen(pop_changeOffice);
+        changeOffice_onload();
+    })
+    //비밀번호 변경
+    change_pass.addEventListener("change", () => {
+        popupOpen(pop_changePass);
+        changePass_onload();
+    })
+
 });
 
 
-
 async function nav_aside_make(menu_group, tree, timeout = 10_000) {
+
+    const cacheKey = "nav_aside_" + menu_group;
+    const cached = sessionStorage.getItem(cacheKey);
+
+    if (cached) {
+        successGetMenu(JSON.parse(cached), tree);
+        return;
+    }
 
     //로딩시작
     const controller = new AbortController();
@@ -120,8 +167,9 @@ async function nav_aside_make(menu_group, tree, timeout = 10_000) {
             alert(json.O_MSG);
             return;
         }
+        sessionStorage.setItem(cacheKey, JSON.stringify(json));
+        successGetMenu(json, tree);
 
-       successGetMenu(json, tree);
 
     } catch (err) {
         if (err.name === "AbortError") {
@@ -141,11 +189,10 @@ async function nav_aside_make(menu_group, tree, timeout = 10_000) {
 
 
 function successGetMenu(date,tree){
-
-
+    tree.innerHTML = "";
+    let ul = null;
     date.forEach((row, index) => {
 
-        let ui;
         if(row.M_LEVEL == "2"){
 
             const li_2 = document.createElement('li');
@@ -176,11 +223,36 @@ function successGetMenu(date,tree){
             li_3.id = row.MENU_ID + "-" +  row.PG_ID;
             li_3.textContent = row.MENU_NAME;
             li_3.className = "menu_nav";
+            li_3.dataset.menuName = row.MENU_NAME;
+            li_3.dataset.div = row.DIV;
+            li_3.dataset.menuGroup = row.MENU_GROUP;
 
             ul.appendChild(li_3);
 
         }
     })
+    // 체크박스 상태 복원
+    const checkboxes = document.querySelectorAll(".tree_cb");
+    checkboxes.forEach(checkbox => {
+        const id = checkbox.id;
+        if (localStorage.getItem(id) === 'true') {
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false;
+        }
+
+        // 체크박스 상태 저장
+        checkbox.addEventListener('change', function () {
+            localStorage.setItem(id, checkbox.checked);
+        });
+    });
+
+    //폰트 스타일 제거
+    let fontWeightTags = tree.querySelectorAll("li[id]");
+    fontWeightTags.forEach(li => {
+        li.style.fontWeight = "400";
+    });
+
 }
 
 

@@ -12,6 +12,7 @@
 			A.LEVEL_ORDER,
 			A.UP_MENU_ID,
 			A.FORM_URL,
+			A.DIV,
 			B.FORM_USE
 		FROM (SELECT
 				S1.MENU_ID,
@@ -22,7 +23,8 @@
 				S1.LEVEL_ORDER,
 				S1.UP_MENU_ID,
 				S1.FORM_URL,
-				S1.FORM_USE
+				S1.FORM_USE,
+		      	''				AS DIV
               FROM dbo.TPM_MENU S1
               WHERE S1.FORM_USE = '1'
                 AND S1.MENU_GROUP = #{MENU_GROUP}
@@ -36,7 +38,8 @@
 				S2.LEVEL_ORDER,
 				S2.UP_MENU_ID,
 				S2.FORM_URL,
-				S2.FORM_USE
+				S2.FORM_USE,
+              	'ADD'			AS DIV
               FROM dbo.TPM_MENU_ADD S2
               WHERE S2.FORM_USE = '1'
                 AND S2.OFFICE_CODE = #{LOGIN_OFFICE_CODE}

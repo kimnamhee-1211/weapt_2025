@@ -68,7 +68,7 @@
 
         checkCrudPermission(pgId);
 
-                let pop_item = {
+        let pop_item = {
             pgId : pgId,
 		    menuId : menuId,
             querySet : "dan006",
