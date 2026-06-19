@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.ui.Model;
@@ -54,18 +55,37 @@ public class MenuController {
 			String menuId = id.split("-")[0];
 			String pgId = id.split("-")[1];
 
-			model.addAttribute("pgId", pgId);
-			model.addAttribute("menuId", menuId);
-			model.addAttribute("menuName",  param.get("menuName"));
+			Map<String, Object> goMenuParam = new HashMap<>();
+			Map<String, Object> menuParam = new HashMap<>();
 
-			String goPgId = setPgId(sectionId, pgId, menuId, param);
-			LOGGER.info("pgId : " + pgId + "/" + menuId + "/" +  param.get("menuName") + "/ goPgId : " + goPgId);
+			if (param != null) {
+				for (Map.Entry<String, Object> entry : param.entrySet()) {
+					String key = entry.getKey();
+					Object value = entry.getValue();
+
+					if ("menuName".equals(key)
+							|| "div".equals(key)
+							|| "menuGroup".equals(key)) {
+						goMenuParam.put(key, value);
+					} else {
+						menuParam.put(key, value);
+					}
+				}
+			}
+			model.addAttribute("sectionId", sectionId);
+			model.addAttribute("menuId", menuId);
+			model.addAttribute("pgId", pgId);
+			model.addAttribute("menuName", goMenuParam.get("menuName"));
+			model.addAttribute("menuParam", menuParam);
+
+			String goPgId = setPgId(pgId, menuId, goMenuParam);
+
+			LOGGER.info("pgId : " + pgId + "/" + menuId + "/" +  goMenuParam.get("menuName") + "/ goPgId : " + goPgId);
 
 			return "section/" + sectionId + "/" + goPgId;
 
 		} catch (Exception e) {
-			LOGGER.error("메뉴 이동 중 오류 발생. sectionId={} / id={}",
-					sectionId, id, e);
+			LOGGER.error("메뉴 이동 중 오류 발생. id={}", id, e);
 			return "error/error";
 		}
 	}
@@ -83,8 +103,7 @@ public class MenuController {
 	}
 
 	//동일 jsp 사용하는 경우
-	private String setPgId(String sectionId,
-						   String pgId,
+	private String setPgId(String pgId,
 						   String menuId,
 						   Map<String, Object> param) {
 		String goPgId = "";

@@ -59,6 +59,7 @@
      */
 
         //변수 선언
+const sectionId = "${sectionId}";	//섹션ID
     const pgId = "${pgId}";	//프로그램ID
     const menuId = "${menuId}";	//메뉴ID
     const board_div = "100001";	//게시판 구분

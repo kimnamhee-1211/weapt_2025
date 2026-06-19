@@ -41,7 +41,8 @@
     */
 
        //변수 선언
-   const pgId = "${pgId}";	//프로그램ID
+const sectionId = "${sectionId}";	//섹션ID
+    const pgId = "${pgId}";	//프로그램ID
    const menuId = "${menuId}";	//메뉴ID
 
    //crud 권한 처리 함수

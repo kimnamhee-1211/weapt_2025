@@ -141,6 +141,7 @@
      */
 
         //변수 선언
+    const sectionId = "${sectionId}";	//섹션ID
     const pgId = "${pgId}";	//프로그램ID
     const menuId = "${menuId}";	//메뉴ID
     let grid1;	// 그리드 컴포넌트
@@ -151,11 +152,11 @@
     const search_contKindCd = document.querySelector("#search_contKindCd"); //select 컴포넌트
     const search_endDate1 = document.querySelector("#search_endDate1"); //select 컴포넌트
     const search_endDate2 = document.querySelector("#search_endDate2"); //select 컴포넌트
-    const input_status = document.querySelector("#input_status"); //select 컴포넌트
-    const input_part1 = document.querySelector("#input_part1"); //select 컴포넌트
-    const input_part2 = document.querySelector("#input_part2"); //select 컴포넌트
-    const input_compCode = document.querySelector("#input_compCode"); //select 컴포넌트
-    const input_mgmuserId = document.querySelector("#input_mgmuserId"); //select 컴포넌트
+    const input_status = document.querySelector("#input_status"); //input 컴포넌트
+    const input_part1 = document.querySelector("#input_part1"); //input 컴포넌트
+    const input_part2 = document.querySelector("#input_part2"); //input 컴포넌트
+    const input_compCode = document.querySelector("#input_compCode"); //input 컴포넌트
+    const input_mgmuserId = document.querySelector("#input_mgmuserId"); //input 컴포넌트
 
     //그리드 설정
     const grid1ColumnLayout = [

@@ -44,6 +44,7 @@
      */
 
         //변수 선언
+   const sectionId = "${sectionId}";	//섹션ID
     const pgId = "${pgId}";	//프로그램ID
     const menuId = "${menuId}";	//메뉴ID
 
@@ -61,7 +62,7 @@
     window.onload = function() {
 
         let pg_title = document.getElementById("pg_title");
-        const title = "${menuName}";
+        const title = "${menuParam.menuName}";
         if(!isNull(title)){
             pg_title.innerHTML = '<i class="icon-user-add"></i>';
             pg_title.append(document.createTextNode(title));

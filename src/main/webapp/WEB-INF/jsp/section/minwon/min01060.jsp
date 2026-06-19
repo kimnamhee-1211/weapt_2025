@@ -46,6 +46,7 @@
      */
 
         //변수 선언
+    const sectionId = "${sectionId}";	//섹션ID
     const pgId = "${pgId}";	//프로그램ID
     const menuId = "${menuId}";	//메뉴ID
     let apprGrid1;	// 결재란 그리드 컴포넌트
