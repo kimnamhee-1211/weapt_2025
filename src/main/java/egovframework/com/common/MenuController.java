@@ -55,32 +55,20 @@ public class MenuController {
 			String menuId = id.split("-")[0];
 			String pgId = id.split("-")[1];
 
-			Map<String, Object> goMenuParam = new HashMap<>();
 			Map<String, Object> menuParam = new HashMap<>();
 
-			if (param != null) {
-				for (Map.Entry<String, Object> entry : param.entrySet()) {
-					String key = entry.getKey();
-					Object value = entry.getValue();
 
-					if ("menuName".equals(key)
-							|| "div".equals(key)
-							|| "menuGroup".equals(key)) {
-						goMenuParam.put(key, value);
-					} else {
-						menuParam.put(key, value);
-					}
-				}
-			}
 			model.addAttribute("sectionId", sectionId);
 			model.addAttribute("menuId", menuId);
 			model.addAttribute("pgId", pgId);
-			model.addAttribute("menuName", goMenuParam.get("menuName"));
-			model.addAttribute("menuParam", menuParam);
+			model.addAttribute("menuName", param.get("menuName"));
 
-			String goPgId = setPgId(pgId, menuId, goMenuParam);
 
-			LOGGER.info("pgId : " + pgId + "/" + menuId + "/" +  goMenuParam.get("menuName") + "/ goPgId : " + goPgId);
+			//model.addAttribute("menuParam", menuParam);
+
+			String goPgId = setPgId(pgId, menuId, param);
+
+			LOGGER.info("pgId : " + pgId + "/" + menuId + "/" +  param.get("menuName") + "/ goPgId : " + goPgId);
 
 			return "section/" + sectionId + "/" + goPgId;
 
@@ -150,6 +138,7 @@ public class MenuController {
 			//전기실
 			if ("0700".equals(menuId.substring(0, 4))
 					&& "ADD".equals(param.get("div"))) {
+
 				goPgId = "jan01010";
 			}
 			//설비실

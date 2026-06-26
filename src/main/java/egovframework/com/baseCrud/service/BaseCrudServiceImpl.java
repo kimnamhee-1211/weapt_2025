@@ -3,6 +3,7 @@ package egovframework.com.baseCrud.service;
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.ServiceSupport;
 import egovframework.com.baseCrud.model.ApiResponse;
+import egovframework.com.common.service.CrudAuthService;
 import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,77 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
 
+    @Resource(name = "crudAuthService")
+    protected CrudAuthService crudAuthService;
+
+    private Map<String, Object> getCrudPermission(String userId, String menuId) {
+
+        Map<String, Object> data = crudAuthService.getCrudAuth(userId, menuId);
+
+        if(data == null){
+            throw new CrudFailException(
+                    "GRD Permission Denied : " + String.valueOf(data),
+                    "권한정보가 없습니다.",
+                    ApiResponse.ApiType.GRD
+            );
+        }
+        if ( !"1".equals(data.get("FORM_USE"))) {
+            throw new CrudFailException(
+                    "USE Permission Denied : " + String.valueOf(data),
+                    "사용 권한이 없습니다.",
+                    ApiResponse.ApiType.FORM_USE
+            );
+        }
+        return data;
+    }
+
+    private void checkCrudPermission(String userId, String menuId, String type){
+
+        Map<String, Object> data = getCrudPermission(userId, menuId);
+
+        if (!"1".equals(data.get(type))) {
+            throw new CrudFailException(
+                    type + " Permission Denied : " + String.valueOf(data),
+                    getPermissionMessage(type),
+                    getApiType(type)
+            );
+        }
+
+    }
+
+    private void checkCrudPermission(String type, Map<String, Object> data){
+
+        if (!"1".equals(data.get(type))) {
+            throw new CrudFailException(
+                    type + " Permission Denied : " + String.valueOf(data),
+                    getPermissionMessage(type),
+                    getApiType(type)
+            );
+        }
+
+    }
+
+    private String getPermissionMessage(String type) {
+        switch (type) {
+            case "GRD_READ": return "조회 권한이 없습니다.";
+            case "GRD_CREATE": return "추가 권한이 없습니다.";
+            case "GRD_UPDATE": return "수정 권한이 없습니다.";
+            case "GRD_DELETE": return "삭제 권한이 없습니다.";
+            case "GRD_EXCEL": return "엑셀 권한이 없습니다.";
+            default: return "권한정보가 없습니다.";
+        }
+    }
+
+    private ApiResponse.ApiType getApiType(String type) {
+        switch (type) {
+            case "GRD_READ": return ApiResponse.ApiType.GRD_READ;
+            case "GRD_CREATE": return ApiResponse.ApiType.GRD_CREATE;
+            case "GRD_UPDATE": return ApiResponse.ApiType.GRD_UPDATE;
+            case "GRD_DELETE": return ApiResponse.ApiType.GRD_DELETE;
+            case "GRD_EXCEL": return ApiResponse.ApiType.GRD_EXCEL;
+            default: return ApiResponse.ApiType.GRD;
+        }
+    }
 
     //다중 검색
     @Override
@@ -32,6 +104,7 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                                                 LoginVO loginUser,
                                                 String pgId,
                                                 String menuId) {
+        checkCrudPermission(loginUser.getUserId(), menuId, "GRD_READ");
 
         String statement = buildCrudStatement(sectionId, component, "selectList");
         setLoginParam(param, loginUser);
@@ -52,6 +125,7 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                                          LoginVO loginUser,
                                          String pgId,
                                          String menuId) {
+        checkCrudPermission(loginUser.getUserId(), menuId, "GRD_READ");
 
         String statement = buildCrudStatement(sectionId, component, "selectMap");
         setLoginParam(param, loginUser);
@@ -70,6 +144,7 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                           LoginVO loginUser,
                           String pgId,
                           String menuId) {
+        checkCrudPermission(loginUser.getUserId(), menuId, "GRD_CREATE");
 
         String statement = buildCrudStatement(sectionId, component, "insertList");
         setLoginParam(param, loginUser);
@@ -93,6 +168,7 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                          LoginVO loginUser,
                          String pgId,
                          String menuId) {
+        checkCrudPermission(loginUser.getUserId(), menuId, "GRD_CREATE");
 
         String statement = buildCrudStatement(sectionId, component, "insertOne");
         setLoginParam(param, loginUser);
@@ -116,6 +192,7 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                           LoginVO loginUser,
                           String pgId,
                           String menuId) {
+        checkCrudPermission(loginUser.getUserId(), menuId, "GRD_UPDATE");
 
         String statement = buildCrudStatement(sectionId, component, "updateList");
         setLoginParam(param, loginUser);
@@ -139,6 +216,7 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                          LoginVO loginUser,
                          String pgId,
                          String menuId) {
+        checkCrudPermission(loginUser.getUserId(), menuId, "GRD_UPDATE");
 
         String statement = buildCrudStatement(sectionId, component, "updateOne");
         setLoginParam(param, loginUser);
@@ -163,6 +241,7 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                           LoginVO loginUser,
                           String pgId,
                           String menuId) {
+        checkCrudPermission(loginUser.getUserId(), menuId, "GRD_DELETE");
 
         String statement = buildCrudStatement(sectionId, component, "deleteList");
         List<Map<String, Object>> deleteParam = (List<Map<String, Object>>) param.get("deleteParam");
@@ -194,6 +273,7 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                          LoginVO loginUser,
                          String pgId,
                          String menuId) {
+        checkCrudPermission(loginUser.getUserId(), menuId, "GRD_DELETE");
 
         String statement = buildCrudStatement(sectionId, component, "deleteOne");
         setLoginParam(param, loginUser);
@@ -214,6 +294,15 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
 
         List<Map<String, Object>> insertParam = (List<Map<String, Object>>) param.get("insertParam");
         List<Map<String, Object>> updateParam = (List<Map<String, Object>>) param.get("updateParam");
+
+        Map<String, Object> data = getCrudPermission(loginUser.getUserId(), menuId);
+
+        if (insertParam != null && !insertParam.isEmpty()) {
+            checkCrudPermission("GRD_CREATE", data);
+        }
+        if (updateParam != null && !updateParam.isEmpty()) {
+            checkCrudPermission("GRD_UPDATE", data);
+        }
 
         //사전 함수 호출
         Map<String, Object> before = (Map<String, Object>) param.get("before");

@@ -123,35 +123,101 @@
     const input_installDate = document.querySelector("#input_installDate");
     const input_remarks = document.querySelector("#input_remarks");
 
+    let DS_EMP_NO = [];
+
     let equGbn = "";
     let equNo = "";
 
     //그리드1 설정
     const grid1ColumnLayout = [
-        { dataField: "CODEDV_NO",
-            headerText: "코드구분",
+        { dataField: "REPAIR_SEQ",
+            headerText: "수선순번",
             dataType: "text",
-            width : "30%",
+            width : "8%",
             editable : false
         },
-        { dataField: "CODEDV_NM",
-            headerText: "코드구분명",
-            dataType: "text",
-            width : "50%",
-            style : "text-align-left",
+        { dataField: "ST_DATE",
+            headerText: "시작일",
+            dataType: "date",
+            formatString: "yyyy-mm-dd",
+            width : "10%",
         },
-        { dataField: "USE_YN",
-            headerText: "사용",
+        { dataField: "END_DATE",
+            headerText: "종료일",
+            dataType: "date",
+            formatString: "yyyy-mm-dd",
+            width : "10%",
+        },
+        { dataField: "TRO_USER",
+            headerText: "처리자",
+            dataType: "text",
+            width : "8%",
+            renderer: {
+                type: "DropDownListRenderer",
+                listFunction: function (rowIndex, columnIndex, item, dataField) {
+                    return DS_EMP_NO;
+                },
+                keyField: "EMP_NO", // key 에 해당되는 필드명
+                valueField: "NAME", // value 에 해당되는 필드명
+            }
+        },
+        { dataField: "TRO_AMT",
+            headerText: "처리금액",
+            dataType : "numeric",
+            formatString : "#,###",
+            width : "10%",
+        },
+        { dataField: "EQU_USER",
+            headerText: "담당자",
+            dataType: "text",
+            width : "8%",
+            renderer: {
+                type: "DropDownListRenderer",
+                listFunction: function (rowIndex, columnIndex, item, dataField) {
+                    return DS_EMP_NO;
+                },
+                keyField: "EMP_NO", // key 에 해당되는 필드명
+                valueField: "NAME", // value 에 해당되는 필드명
+            }
+        },
+        { dataField: "EQU_HP",
+            headerText: "연락처",
+            dataType: "text",
+            width : "10%",
+        },
+        { dataField: "CONTENT",
+            headerText: "내역",
+            dataType: "text",
             width : "20%",
-            renderer : we_cb_YN_Renderer
-        }
+        },
+        { dataField: "REMARKS",
+            headerText: "비고",
+            dataType: "text",
+            width : "15%",
+        },
+        { dataField: "REQ_TIME",
+            headerText: "접수시간",
+            dataType: "text",
+            width : "10%",
+        },
+        { dataField: "ARRIVE_TIME",
+            headerText: "도착시간",
+            dataType: "text",
+            width : "10%",
+        },
+        { dataField: "RESTORE_TIME",
+            headerText: "복구시간",
+            dataType: "text",
+            width : "10%",
+        },
+
     ];
 
     //그리드1 생성
     grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
-                showRowNumColumn: false,
+
             })
     );
 
@@ -212,12 +278,15 @@
         });
     }
 
+
+    //사진조회 함수
+
+
     //그리드 추가 함수
     function add_grid1_onclick(){
         // 그리드의 편집 인푸터가 열린 경우 에디팅 완료 상태로 만듬.
         AUIGrid.forceEditingComplete(grid1, null);
         //새행 만들기
-        let selectRowItem = AUIGrid.getSelectedRows(grid1)[0];
         const item = {};
         item.EQU_GBN = input_equGbn.value;
         item.EQU_NO = input_equNo.value;
@@ -449,6 +518,19 @@
                 btnPermission(data)
             }
         });
+    }
+
+
+    async function getSelect_grid1_empId(){
+        //검색데이터
+        let param = {};
+        //파라미터
+        let data = {
+            sectionId : sectionId,
+            component : pgId + "_grid1_empId",
+            param: param,
+        }
+        DS_EMP_NO = await we_getSelect(data);
     }
 
     //로드

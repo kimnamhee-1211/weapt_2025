@@ -2,12 +2,12 @@ package egovframework.com.exception;
 
 import egovframework.com.baseCrud.model.ApiResponse;
 
-public class PhotoFailException extends RuntimeException {
+public class FileFailException extends RuntimeException {
 
     private final String userMessage;
     private ApiResponse.ApiType apiType;
 
-    public PhotoFailException(String devMessage, String userMessage, ApiResponse.ApiType apiType) {
+    public FileFailException(String devMessage, String userMessage, ApiResponse.ApiType apiType) {
         super(devMessage);
         this.userMessage = userMessage;
         this.apiType = apiType;

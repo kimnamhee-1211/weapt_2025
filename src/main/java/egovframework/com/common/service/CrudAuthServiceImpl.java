@@ -3,36 +3,32 @@ package egovframework.com.common.service;
 
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.ServiceSupport;
-
-import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import javax.annotation.Resource;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-@Service("menuService")
+@Service("crudAuthService")
 @Transactional
-public class MenuServiceImpl extends ServiceSupport implements MenuService {
+public class CrudAuthServiceImpl extends ServiceSupport implements CrudAuthService {
 
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
 
     // nav_aside list
-    public List<Map<String, Object>> getNavAside(String menu_group,
-                                                 LoginVO loginUser){
+    public Map<String, Object> getCrudAuth(String menuId,
+                                           String userid){
 
 
         Map<String, Object> param = new HashMap<String, Object>();
-        param.put("MENU_GROUP", menu_group);
-        setLoginParam(param, loginUser);
-        String statement = "getNavAside";
-        List<Map<String, Object>> menuList = baseCrudMapper.selectList(statement, param);
+        param.put("MENU_ID", menuId);
+        param.put("LOGIN_ID", userid);
+        String statement = "getCrudAuth";
+        Map<String, Object> result = baseCrudMapper.selectOne(statement, param);
 
-        return menuList;
+        return result;
     };
 
 

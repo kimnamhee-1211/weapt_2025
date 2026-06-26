@@ -15,6 +15,14 @@ public class ApiResponse<T> {
         APPROVAL,
         NULL_DATA,
 
+        GRD,
+        FORM_USE,
+        GRD_READ,
+        GRD_CREATE,
+        GRD_UPDATE,
+        GRD_DELETE,
+        GRD_EXCEL
+
     }
 
     private String O_STATUS;

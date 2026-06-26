@@ -240,7 +240,8 @@
 			SELECT 1
 			FROM (
 				<foreach collection="list" item="row" separator="UNION ALL">
-					SELECT #{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE, #{row.SUPPLIER_CD} AS SUPPLIER_CD
+					SELECT #{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
+					       #{row.SUPPLIER_CD} AS SUPPLIER_CD
 				</foreach>
 			) AS temp
 			WHERE temp.OFFICE_CODE = TMG_SUPPLIER.OFFICE_CODE AND temp.SUPPLIER_CD = TMG_SUPPLIER.SUPPLIER_CD
