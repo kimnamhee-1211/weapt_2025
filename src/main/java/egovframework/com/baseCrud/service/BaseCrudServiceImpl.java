@@ -3,7 +3,6 @@ package egovframework.com.baseCrud.service;
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.ServiceSupport;
 import egovframework.com.baseCrud.model.ApiResponse;
-import egovframework.com.common.service.CrudAuthService;
 import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Service;
@@ -22,9 +21,6 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
 
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
-
-    @Resource(name = "crudAuthService")
-    protected CrudAuthService crudAuthService;
 
     private Map<String, Object> getCrudPermission(String userId, String menuId) {
 
