@@ -17,23 +17,15 @@ public class KeyGenerator{
 		List<String> key = (List<String>) rawKey.get("column");
 		List<Integer> seqArr = (List<Integer>) rawKey.get("seq");
 
-		if (key instanceof List<?>) {
-			for (Object obj : (List<?>) key) {
-				if (obj instanceof String) {
-					key.add((String) obj);
-				} else {
-					System.out.println("key 안에 String이 아닌 요소가 있습니다: " + obj);
-				}
-			}
-		} else {
-			System.out.println("key 값이 올바르지 않음: " + key);
-		}
+		if (key == null || seqArr == null) return param;
+		if (key.size() != seqArr.size()) return param;
 
 		for(int k = 0 ; k < key.size(); k++){
 			int seq = seqArr.get(k);
 			if(keyValues == null){
 				for(int i = 1 ; i < param.size() + 1; i++){
-					param.get(i-1).put(key.get(k), i);
+					param.get(i-1).put(key.get(k), i*seq);
+
 				}
 			}else{
 				Object val = keyValues.get(key.get(k));
@@ -63,7 +55,7 @@ public class KeyGenerator{
 					}else{
 						value =  i*seq;
 					}
-					param.get((i*seq)-1).put(key.get(k), value);
+					param.get(i-1).put(key.get(k), value);
 				}
 			}
 		}

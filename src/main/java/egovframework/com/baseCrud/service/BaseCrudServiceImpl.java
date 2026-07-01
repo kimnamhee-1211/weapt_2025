@@ -5,6 +5,7 @@ import egovframework.com.baseCrud.support.ServiceSupport;
 import egovframework.com.baseCrud.model.ApiResponse;
 import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,9 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
 
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
+
+    @Autowired
+    private CrudAuthServiceImpl crudAuthService;
 
     private Map<String, Object> getCrudPermission(String userId, String menuId) {
 
