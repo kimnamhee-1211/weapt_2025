@@ -121,7 +121,7 @@
 		</foreach>
 	</insert>
 
-	<delete id="deleteList_ilb02010_grid1" parameterType="list">
+	<delete id="deleteList_jan01090_input1" parameterType="list">
 		DELETE FROM dbo.TEC_EQUIPMENT
 		WHERE EXISTS (
 		SELECT 1
@@ -252,7 +252,7 @@
 		</if>
 	</insert>
 
-	<delete id="deleteList_ilb02010_grid1" parameterType="list">
+	<delete id="deleteList_jan01090_grid1" parameterType="list">
 		DELETE FROM dbo.TEC_TROUBLE
 		WHERE EXISTS (
 			SELECT 1
