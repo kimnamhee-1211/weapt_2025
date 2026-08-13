@@ -16,8 +16,9 @@
 			A.INSTALL_PLACE		AS INSTALL_PLACE,
 			A.DISUSE_GBN		AS DISUSE_GBN
 		FROM dbo.TEC_EQUIPMENT A
-		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.EQU_GBN = #{EQU_GBN}
-		ORDER BY A.REG_DATE DESC, A.EQU_NO
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.EQU_GBN = #{CALL_MENU_ID}
+		  AND ISNULL(A.DISUSE_GBN, 'N') != 'Y'
+		ORDER BY CONVERT(INT, A.EQU_NO) DESC, A.REG_DATE DESC
 	</select>
 
 	<select id="selectList_jan01090_input1" parameterType="map" resultType="map">
@@ -39,9 +40,14 @@
 		FROM dbo.TEC_EQUIPMENT A
 		LEFT JOIN dbo.TEC_EQUIPMENT_FILE B
 			ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EQU_GBN = B.EQU_GBN AND A.EQU_NO = B.EQU_NO
+			AND B.FILE_SEQ = (SELECT MAX(F.FILE_SEQ)
+								FROM dbo.TEC_EQUIPMENT_FILE F
+								WHERE F.OFFICE_CODE = A.OFFICE_CODE
+								AND F.EQU_GBN = A.EQU_GBN
+								AND F.EQU_NO = A.EQU_NO)
 		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
-		    AND A.EQU_GBN = #{EQU_GBN} AND EQU_NO = #{EQU_NO}
-		ORDER BY A.REG_DATE DESC, A.EQU_NO
+		    AND A.EQU_GBN = #{EQU_GBN} AND A.EQU_NO = #{EQU_NO}
+		ORDER BY CONVERT(INT, A.EQU_NO) DESC, A.REG_DATE DESC
 	</select>
 
 
@@ -85,9 +91,10 @@
 			CONVERT(VARCHAR, MAX(CONVERT(INT, A.EQU_NO))) AS EQU_NO
 		FROM dbo.TEC_EQUIPMENT A
 		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+		  AND A.EQU_GBN = #{EQU_GBN}
 	</select>
 
-	<insert id="updateList_jan01090_input1" parameterType="list">
+	<insert id="insertList_jan01090_input1" parameterType="list">
 		INSERT INTO dbo.TEC_EQUIPMENT (
 			OFFICE_CODE,
 			EQU_GBN,
@@ -117,27 +124,32 @@
 			#{row.INSTALL_PLACE},
 			#{row.DISUSE_GBN},
 			#{row.LOGIN_ID},
-			GETDATE()
+			CONVERT(VARCHAR(8), GETDATE(), 112)
 		</foreach>
 	</insert>
 
-	<delete id="deleteList_jan01090_input1" parameterType="list">
-		DELETE FROM dbo.TEC_EQUIPMENT
-		WHERE EXISTS (
-		SELECT 1
-		FROM (
-		<foreach collection="list" item="row" separator="UNION ALL">
-			SELECT #{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
-			       #{row.EQU_GBN} AS EQU_GBN,
-			       #{row.EQU_NO} AS EQU_NO
-		</foreach>
-		) AS temp
-		WHERE temp.OFFICE_CODE = TEC_EQUIPMENT.OFFICE_CODE
-		  AND temp.EQU_GBN = TEC_EQUIPMENT.EQU_GBN
-		  AND temp.EQU_NO = TEC_EQUIPMENT.EQU_NO
-		)
-	</delete>
-
+	<update id="updateList_jan01090_resign" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+			A.DISUSE_GBN     = 'Y',
+			A.DISUSE_DATE    = U.DISUSE_DATE,
+			A.DISUSE_REASON  = U.DISUSE_REASON
+			FROM dbo.TEC_EQUIPMENT A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGIN_OFFICE_CODE} 	AS OFFICE_CODE,
+				#{row.EQU_GBN}              AS EQU_GBN,
+				#{row.EQU_NO}               AS EQU_NO,
+				#{row.DISUSE_DATE}          AS DISUSE_DATE,
+				#{row.DISUSE_REASON}        AS DISUSE_REASON
+			</foreach>
+			) U
+			ON A.OFFICE_CODE = U.OFFICE_CODE
+			AND A.EQU_GBN = U.EQU_GBN AND A.EQU_NO = U.EQU_NO
+		</if>
+	</update>
 
 	<select id="selectList_jan01090_grid1" parameterType="map" resultType="map">
 		SELECT
@@ -158,8 +170,8 @@
 			A.RESTORE_TIME		AS RESTORE_TIME
 		FROM dbo.TEC_TROUBLE A
 		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
-		  AND A.EQU_GBN = #{EQU_GBN} AND EQU_NO = #{EQU_NO}
-		ORDER BY A.REG_DATE DESC, A.EQU_NO
+		  AND A.EQU_GBN = #{EQU_GBN} AND A.EQU_NO = #{EQU_NO}
+		ORDER BY CONVERT(INT, A.REPAIR_SEQ) DESC, A.ST_DATE
 	</select>
 
 	<update id="updateList_jan01090_grid1" parameterType="list">
@@ -207,9 +219,11 @@
 
 	<select id="getKey_jan01090_grid1" parameterType="map" resultType="map">
 		SELECT
-			CONVERT(VARCHAR, MAX(CONVERT(INT, A.REPAIR_SEQ))) AS EQU_NO
+			CONVERT(VARCHAR, MAX(CONVERT(INT, A.REPAIR_SEQ))) AS REPAIR_SEQ
 		FROM dbo.TEC_TROUBLE A
 		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+		  AND A.EQU_GBN     = #{EQU_GBN}
+		  AND A.EQU_NO      = #{EQU_NO}
 	</select>
 
 	<insert id="insertList_jan01090_grid1" parameterType="list">
@@ -271,5 +285,108 @@
 		)
 	</delete>
 
+	<select id="getSelect_jan01090_search_equName" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.EQU_GBN			AS EQU_GBN,
+			A.EQU_NO			AS EQU_NO,
+			A.EQU_NAME			AS EQU_NAME
+		FROM dbo.TEC_EQUIPMENT A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.EQU_GBN = #{EQU_GBN}
+		ORDER BY CONVERT(INT, A.EQU_NO) DESC, A.REG_DATE DESC
+	</select>
 
+	<select id="getSelect_jan01092_search_equGbn" parameterType="map" resultType="map">
+		SELECT
+			A.MENU_ID			AS MENU_ID,
+			A.MENU_NAME			AS MENU_NAME
+		FROM dbo.TPM_MENU_ADD A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+		  AND A.MENU_GROUP = '070' AND SUBSTRING(A.MENU_ID, 1, 4) = '0700'
+		ORDER BY A.MENU_ID
+	</select>
+
+	<select id="getSelect_jan01092_search_equNo" parameterType="map" resultType="map">
+		SELECT
+			A.EQU_GBN			AS EQU_GBN,
+			A.EQU_NO			AS EQU_NO,
+			A.EQU_NAME			AS EQU_NAME
+		FROM dbo.TEC_EQUIPMENT A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.EQU_GBN = #{EQU_GBN}
+		  AND ISNULL(A.DISUSE_GBN, 'N') != 'Y'
+		ORDER BY CONVERT(INT, A.EQU_NO) DESC, A.REG_DATE DESC
+	</select>
+
+	<select id="selectList_jan01092_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.EQU_GBN			AS EQU_GBN,
+			C.MENU_NAME			AS EQU_GBN_NM,
+			A.EQU_NO			AS EQU_NO,
+			B.EQU_NAME			AS EQU_NAME,
+			A.REPAIR_SEQ		AS REPAIR_SEQ,
+			A.ST_DATE			AS ST_DATE,
+			A.END_DATE			AS END_DATE,
+			A.TRO_USER			AS TRO_USER,
+			A.TRO_AMT			AS TRO_AMT,
+			A.EQU_USER			AS EQU_USER,
+			A.EQU_HP			AS EQU_HP,
+			A.CONTENT			AS CONTENT,
+			A.REMARKS			AS REMARKS
+		FROM dbo.TEC_TROUBLE A
+		INNER JOIN dbo.TEC_EQUIPMENT B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EQU_GBN = B.EQU_GBN AND A.EQU_NO = B.EQU_NO
+		LEFT JOIN dbo.TPM_MENU_ADD C ON A.OFFICE_CODE = C.OFFICE_CODE AND A.EQU_GBN = C.MENU_ID
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.EQU_GBN = #{EQU_GBN}
+			<if test="EQU_NO != null and EQU_NO != ''">
+				AND A.EQU_NO = #{EQU_NO}
+			</if>
+			<if test="START_DATE != null and START_DATE != ''">
+				AND A.ST_DATE &gt;= #{START_DATE}
+			</if>
+			<if test="END_DATE != null and END_DATE != ''">
+				AND A.END_DATE &lt;= #{END_DATE}
+			</if>
+		ORDER BY CONVERT(INT, A.REPAIR_SEQ) DESC, A.ST_DATE
+	</select>
+
+	<select id="selectList_jan01094_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE		AS OFFICE_CODE,
+			A.EQU_GBN			AS EQU_GBN,
+			B.MENU_NAME			AS EQU_GBN_NM,
+			A.EQU_NO			AS EQU_NO,
+			A.EQU_NAME			AS EQU_NAME,
+			A.MAKE_BY			AS MAKE_BY,
+			A.INSTALL_DATE		AS INSTALL_DATE,
+			A.INSTALL_PLACE		AS INSTALL_PLACE,
+			A.DISUSE_GBN		AS DISUSE_GBN,
+			A.DISUSE_DATE		AS DISUSE_DATE,
+			A.DISUSE_REASON		AS DISUSE_REASON
+		FROM dbo.TEC_EQUIPMENT A
+		LEFT JOIN dbo.TPM_MENU_ADD B ON A.OFFICE_CODE = B.OFFICE_CODE AND A.EQU_GBN = B.MENU_ID
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND SUBSTRING(A.EQU_GBN, 1, 4) = '0700'
+		  AND ISNULL(A.DISUSE_GBN, 'N') = 'Y'
+		ORDER BY CONVERT(INT, A.EQU_NO) DESC, A.REG_DATE DESC
+	</select>
+
+	<update id="updateList_jan01094_cancelResign" parameterType="list">
+		<if test="list != null and list.size > 0">
+			UPDATE A
+			SET
+				A.DISUSE_GBN     = 'N',
+				A.DISUSE_DATE    = '',
+				A.DISUSE_REASON    = ''
+			FROM dbo.TEC_EQUIPMENT A
+			JOIN (
+			<foreach collection="list" item="row" separator=" UNION ALL ">
+				SELECT
+				#{row.LOGIN_OFFICE_CODE} 	AS OFFICE_CODE,
+				#{row.EQU_GBN}              AS EQU_GBN,
+				#{row.EQU_NO}               AS EQU_NO
+			</foreach>
+			) U
+			ON A.OFFICE_CODE = U.OFFICE_CODE
+			AND A.EQU_GBN = U.EQU_GBN AND A.EQU_NO = U.EQU_NO
+		</if>
+	</update>
 </mapper>

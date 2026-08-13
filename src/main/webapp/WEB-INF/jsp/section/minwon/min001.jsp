@@ -71,7 +71,7 @@
     let querySet;
 
     let popGrid1;	// 그리드 컴포넌트
-    let focus;	//그리드 컴포넌트 포커스
+    //let focus;	//그리드 컴포넌트 포커스
 
     //팝업 컴포넌트
     const pop_btn = document.querySelector("#pop_btn");

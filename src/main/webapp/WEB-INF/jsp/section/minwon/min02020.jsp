@@ -2,7 +2,7 @@
 
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
-<jsp:include page="/WEB-INF/jsp/section/minwon/min_nav.jsp" />
+
 
         <div id="section">
             <div class="section1">

@@ -17,6 +17,7 @@ public class BaseBoardServiceImpl extends ServiceSupport implements BaseBoardSer
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
 
+
     //게시글 검색
     @Override
     @Transactional

@@ -2,7 +2,7 @@
 
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
-<jsp:include page="/WEB-INF/jsp/section/minwon/min_nav.jsp" />
+<%@ include file="min_comm.jsp" %>
 
         <div id="section">
             <div class="section1">
@@ -168,7 +168,7 @@
             return;
         }
 
-        if (!confirm("삭제 민원을/를(총 " + itemCount + "건) 복원처리하시겠습니까?")) return;
+        if (!confirm("삭제 민원을(총 " + itemCount + "건) 복원처리하시겠습니까?")) return;
 
         //포커스 지정
         focus = gridFocus(grid1);

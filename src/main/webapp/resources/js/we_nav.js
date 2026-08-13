@@ -80,8 +80,8 @@ window.addEventListener("load", function () {
             localStorage.setItem('nav_focus_scroll', tree.scrollTop);
 
             pg = e.target;
-            let param = new URLSearchParams({...pg.dataset});
-            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id + "?" + param.toString();
+            let menuParam = new URLSearchParams({...pg.dataset});
+            location.href = ctx + "/goMenu/" + sectionId + "/" + pg.id + "?" + menuParam.toString();
         }
     });
 

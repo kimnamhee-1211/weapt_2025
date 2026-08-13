@@ -46,7 +46,7 @@
                 AND S2.MENU_GROUP = #{MENU_GROUP}) A
 		LEFT JOIN dbo.TPM_USERMENU B ON A.MENU_ID = B.MENU_ID
 		     AND B.USER_ID = #{LOGIN_ID}
-	--	WHERE B.FORM_USE = '1'
+		WHERE B.FORM_USE = '1'
 		ORDER BY A.MENU_ID
 	</select>
 

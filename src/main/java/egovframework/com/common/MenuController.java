@@ -48,27 +48,26 @@ public class MenuController {
 	@RequestMapping(value = "/goMenu/{sectionId}/{id}", method = { RequestMethod.GET })
 	public String goMenu(@PathVariable("sectionId") String sectionId,
 						 @PathVariable("id") String id,
-						 @RequestParam(required = false) Map<String, Object> param,
+						 @RequestParam(required = false) Map<String, Object> menuParam,
+						 @RequestParam(required = false) Map<String, Object> requestParams,
 						 Model model) throws Exception {
 
 		try {
 			String menuId = id.split("-")[0];
 			String pgId = id.split("-")[1];
 
-			Map<String, Object> menuParam = new HashMap<>();
-
-
 			model.addAttribute("sectionId", sectionId);
 			model.addAttribute("menuId", menuId);
 			model.addAttribute("pgId", pgId);
-			model.addAttribute("menuName", param.get("menuName"));
+			model.addAttribute("menuName", menuParam.get("menuName"));
+			if(requestParams != null) {
+				model.addAttribute("requestParams", requestParams);
+			}
 
+			String goPgId = setPgId(pgId, menuId, menuParam);
+			model.addAttribute("goPgId", goPgId);
 
-			//model.addAttribute("menuParam", menuParam);
-
-			String goPgId = setPgId(pgId, menuId, param);
-
-			LOGGER.info("pgId : " + pgId + "/" + menuId + "/" +  param.get("menuName") + "/ goPgId : " + goPgId);
+			LOGGER.info(pgId + "/" + menuId + "/" +  menuParam.get("menuName") + "/ goPgId : " + goPgId);
 
 			return "section/" + sectionId + "/" + goPgId;
 

@@ -2,7 +2,7 @@
 
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
-<jsp:include page="/WEB-INF/jsp/section/danche/dan_nav.jsp" />
+
 
         <div id="section">
             <div class="section1">
@@ -62,7 +62,7 @@
     window.onload = function() {
 
         let pg_title = document.getElementById("pg_title");
-        const title = "${menuParam.menuName}";
+        const title = "${menuName}";
         if(!isNull(title)){
             pg_title.innerHTML = '<i class="icon-user-add"></i>';
             pg_title.append(document.createTextNode(title));

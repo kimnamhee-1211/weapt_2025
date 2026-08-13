@@ -17,11 +17,11 @@
                 <table style="width:720px;" id="minwon_table">
                     <colgroup>
                         <col style="width:12%">
-                        <col style="width:32%">
+                        <col style="width:24%">
                         <col style="width:12%">
-                        <col style="width:16%">
+                        <col style="width:20%">
                         <col style="width:12%">
-                        <col style="width:16%">
+                        <col style="width:20%">
                     </colgroup>
                     <tbody>
                     <tr id="info_tr"></tr>
@@ -61,7 +61,7 @@
                     <tr>
                         <th>접수내역</th>
                         <td colspan="5" class="min_memo">
-                            <textarea id="input_descr" name="DESCR" class="min01020_textarea"></textarea>
+                            <textarea id="input_descr" name="DESCR" style="width: 100%; height: 100%"></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -142,7 +142,7 @@
                     <tr>
                         <th>처리내역</th>
                         <td colspan="5" class="min_memo">
-                            <textarea id="input_workDesc" name="WORK_DESC" class="min01020_textarea"></textarea>
+                            <textarea id="input_workDesc" name="WORK_DESC"  style="width: 100%; height: 100%" ></textarea>
                         </td>
                     </tr>
                     <tr>

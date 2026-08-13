@@ -56,7 +56,7 @@ const we_grid_Props = {
     wrapSelectionMove: true,            // 칼럼 끝에서 오른쪽 이동 시 다음 행, 처음 칼럼으로 이동할지 여부
     autoGridHeight: false,
     height: 611,                       // autoGridHeight : false 함께 쓰임
-    showSelectionBorder: true,         // 셀 선택 시 선택된 셀에 테두리(border) 를 표시할지 여부,
+    showSelectionBorder: false,         // 셀 선택 시 선택된 셀에 테두리(border) 를 표시할지 여부,
     editingOnKeyDown: false,           // 키보드 입력으로 바로 편집할 수 있는지 여부
     enterKeyColumnBase: true,          // 엔터키가 다음 행이 아닌 다음 컬럼으로 이동함
     rowCheckDependingTree: true,       // 트리 그리드에서 엑스트라열 체크 박스를 사용하는 경우, 부모를 체크 할 때 그 자손들도 체크하게 할지 여부를 지정합니다.

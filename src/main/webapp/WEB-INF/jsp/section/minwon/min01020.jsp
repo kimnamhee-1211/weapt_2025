@@ -2,7 +2,7 @@
 
 <%@ include file="../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
-<jsp:include page="/WEB-INF/jsp/section/minwon/min_nav.jsp"/>
+<%@ include file="min_comm.jsp" %>
 
     <div id="section">
         <div class="section1">
@@ -267,7 +267,7 @@
         //검색데이터
         let selectParam = {
             START_DATE : search_startDate.value.replace(/-/g,""),
-            END_DATE : search_startDate.value.replace(/-/g,""),
+            END_DATE : search_endDate.value.replace(/-/g,""),
             DESC : search_desc.checked ? "Y" : "N"
         }
 

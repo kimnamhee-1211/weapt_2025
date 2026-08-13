@@ -5,7 +5,7 @@
 
     <div id="section">
         <div class="section1">
-            <span class="section1_nav"><i class="icon-cog-alt"></i><****></span> <!--장비관리설정에서 설정된메뉴-->
+            <span class="section1_nav"><i class="icon-cog-alt"></i>${menuName}</span> <!--장비관리설정에서 설정된메뉴-->
             <span class="section1_nav_mic">&emsp;<i class="icon-mic"></i>
                 장비명 행을 더블 클릭하면 해당 장비이력카드메뉴로 이동됩니다.
             </span>
@@ -40,7 +40,7 @@
 
     //변수 선언
     const sectionId = "${sectionId}";	//섹션ID
-    const pgId = "${pgId}";	//프로그램ID
+    const pgId = "${goPgId}";	//프로그램ID
     const menuId = "${menuId}";	//메뉴ID
     const title = "${menuName}";
     let grid1;	// 그리드 컴포넌트
@@ -54,7 +54,8 @@
         { dataField: "EQU_NAME",
             headerText: "장비명",
             dataType: "text",
-            width : "*%",
+            width : "20%",
+            style : "text-align-left",
         },
         { dataField: "SIZE",
             headerText: "규격",
@@ -64,17 +65,18 @@
         { dataField: "FORM",
             headerText: "형식",
             dataType: "text",
-            width : "20%",
+            width : "15%",
         },
         { dataField: "MAKE_BY",
             headerText: "제조사",
             dataType: "text",
             width : "20%",
+            style : "text-align-left",
         },
         { dataField: "DIMENSION",
             headerText: "제원",
             dataType: "text",
-            width : "20%",
+            width : "10%",
         },
         { dataField: "INSTALL_DATE",
             headerText: "설치일",
@@ -99,22 +101,22 @@
         Object.assign({}, we_grid_Props,
             {
                 editable: false,
-                showRowCheckColumn : false
+                showRowCheckColumn : false,
+                height: 659,
             })
     );
 
     //그리드 이벤트
     //체크박스 클릭 시
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        let selectRowItem = AUIGrid.getSelectedRows(grid1)[event.rowIndex];
         let pop_data = {
-            menuName: "장비이력카드",
             equGbn : menuId,
-            equNo : selectRowItem.EQU_NO,
+            equNo : AUIGrid.getSelectedRows(grid1)[0].EQU_NO,
+            returnUrl : window.location.search
         }
 
-        const param = new URLSearchParams(pop_data)
-        location.href = ctx + "/goMenu/" + sectionId + "/00000-jan01090?" + param.toString();
+        const requestParams = new URLSearchParams(pop_data)
+        location.href = ctx + "/goMenu/jangbi/"+menuId+"-jan01090?"+ requestParams.toString();
 
     });
 
@@ -147,12 +149,11 @@
     //그리드 추가 함수
     function add_grid1_onclick(){
         let pop_data = {
-            menuName: "장비이력카드",
-            equGbn: menuId,
-
+            equGbn : menuId,
+            returnUrl : window.location.search
         }
-        const param = new URLSearchParams(pop_data)
-        location.href = ctx + "/goMenu/" + sectionId + "/00000-jan01090?" + param;
+        const requestParams = new URLSearchParams(pop_data)
+        location.href = ctx + "/goMenu/jangbi/"+menuId+"-jan01090?"+ requestParams.toString();
 
     }
 
@@ -182,6 +183,7 @@
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, add: true, print : true});
+
 
         //crud 권한 처리 함수
         checkCrudPermission(pgId);

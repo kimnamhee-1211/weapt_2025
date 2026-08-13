@@ -2,7 +2,7 @@
 
 <%@ include file="../../inc_head.jsp" %>
 <%@ include file="../../inc_nav.jsp" %>
-<jsp:include page="/WEB-INF/jsp/section/minwon/min_nav.jsp"/>
+<%@ include file="min_comm.jsp" %>
 
 <style>
 
@@ -109,7 +109,7 @@
 
             //변수 선언
         const sectionId = "${sectionId}";	//섹션ID
-    const pgId = "${pgId}";	//프로그램ID
+        const pgId = "${pgId}";	//프로그램ID
         const menuId = "${menuId}";	//메뉴ID
         let grid1;	// 그리드 컴포넌트
         let dong_table = document.querySelector("#dong_table");

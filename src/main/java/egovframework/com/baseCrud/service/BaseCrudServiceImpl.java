@@ -9,13 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static egovframework.com.baseCrud.support.KeyGenerator.*;
+import static egovframework.com.baseCrud.support.KeyGenerator.setKeyToParam;
 
 @Service("baseCrudService")
 public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudService {
@@ -24,7 +28,9 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
     private BaseCrudMapper baseCrudMapper;
 
     @Autowired
-    private CrudAuthServiceImpl crudAuthService;
+    private CrudAuthService crudAuthService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseCrudServiceImpl.class);
 
     private Map<String, Object> getCrudPermission(String userId, String menuId) {
 
@@ -51,6 +57,8 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
 
         Map<String, Object> data = getCrudPermission(userId, menuId);
 
+        LOGGER.info("CRUD AUTH {} : {}", type, data);
+
         if (!"1".equals(data.get(type))) {
             throw new CrudFailException(
                     type + " Permission Denied : " + String.valueOf(data),
@@ -62,6 +70,8 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
     }
 
     private void checkCrudPermission(String type, Map<String, Object> data){
+
+        LOGGER.info("CRUD AUTH {} : {}", type, data);
 
         if (!"1".equals(data.get(type))) {
             throw new CrudFailException(
@@ -234,7 +244,7 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
 
     //다중 삭제
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public int deleteList(String sectionId,
                           String component,
                           Map<String, Object> param,
@@ -563,7 +573,6 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
 
         String statement = buildCrudStatement(sectionId, component, "getSelect");
         setLoginParam(param, loginUser);
-
         List<Map<String, Object>> result = baseCrudMapper.getSelect(statement, param);
         return result;
     }

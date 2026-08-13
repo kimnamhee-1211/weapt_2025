@@ -16,15 +16,15 @@ public class CrudAuthServiceImpl extends ServiceSupport implements CrudAuthServi
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
 
-    // nav_aside list
-    public Map<String, Object> getCrudAuth(String menuId,
-                                           String userid){
+
+    public Map<String, Object> getCrudAuth(String userid,
+                                           String menuId){
 
 
         Map<String, Object> param = new HashMap<String, Object>();
-        param.put("MENU_ID", menuId);
         param.put("LOGIN_ID", userid);
-        String statement = "getCrudAuth";
+        param.put("MENU_ID", menuId);
+        String statement = "authMapper.getCrudAuth";
         Map<String, Object> result = baseCrudMapper.selectOne(statement, param);
 
         return result;

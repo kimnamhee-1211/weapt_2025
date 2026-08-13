@@ -2,7 +2,7 @@
 
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
-<jsp:include page="/WEB-INF/jsp/section/ilban/ilb_nav.jsp" />
+
 
 <%@ include file = "pop_contract.jsp" %>
 

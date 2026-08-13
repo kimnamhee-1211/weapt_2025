@@ -6,7 +6,7 @@
         <ul class="nav_tree"></ul>
     </div>
 </div>
-<jsp:include page="/WEB-INF/jsp/section/minwon/min_comm.jsp" />
+<%@ include file="min_comm.jsp" %>
 
 <script>
     //변수 설정

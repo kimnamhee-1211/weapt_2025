@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="authMapper">
+
+	<select id="getCrudAuth" parameterType="map" resultType="map">
+		SELECT
+			A.FORM_USE					AS FORM_USE,
+			A.GRD_CREATE				AS GRD_CREATE,
+			A.GRD_READ					AS GRD_READ,
+			A.GRD_UPDATE				AS GRD_UPDATE,
+			A.GRD_DELETE				AS GRD_DELETE,
+			A.GRD_EXCEL					AS GRD_EXCEL
+		FROM dbo.TPM_USERMENU A
+		WHERE A.MENU_ID = #{MENU_ID} AND A.USER_ID = #{LOGIN_ID}
+	</select>
+
+</mapper>
