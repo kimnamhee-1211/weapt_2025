@@ -25,7 +25,6 @@
         <div id="grid1"></div>
     </div>
 
-
 <script>
     /** 작성 순서
      *
@@ -104,7 +103,7 @@
         Object.assign({}, we_grid_Props,
             {
                 showRowCheckColumn : false,
-                height: 659,
+                height: 616,
                 editable : false
             })
     );
@@ -231,7 +230,5 @@
     };
 
 </script>
-
-
 
 <%@ include file = "../../inc_footer.jsp" %>

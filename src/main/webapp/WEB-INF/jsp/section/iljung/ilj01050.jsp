@@ -111,6 +111,7 @@
                 showRowCheckColumn: false,
                 rowHeight : 60,
                 wordWrap: true,
+                height: 615,
             })
     );
 

@@ -4,86 +4,86 @@
 <%@ include file = "../../inc_nav.jsp" %>
 
 
-        <div id="section">
-            <div class="section1">
-                <div class="section1_nav"><i class="icon-cog-alt"></i>장비이력카드</div>
-                <div class="section1_btn" id="section1_btn"></div>
-                <span class="search-box section1_btn">
-                    <button id="find_btn" class="left_btn" onclick="" >사진찾기</button>
-                    <button id="list_btn" class="left_btn" onclick="goEquList_onclick()">목록</button>
-                </span>
-                <span class="search-box section1_btn">
-                    폐기일 :
-                    <input type="date" id="input_resignDate" class="box_width100">
-                     &nbsp; 폐기사유 :
-                    <input type="text" id="input_resignReason" class="box_width100">
-                    <button id="list_btn" class="del_btn" onclick="resign_onclick()">폐기</button>
-                </span>
-            </div>
-            <div class="section2">
-                <div class="section2_line1">
-                    <span class="search-box">장비명선택 :&nbsp;
-                        <select id="search_equName" class="select_cont300"></select>
-                    </span>
-                </div> 
-            </div>
-            <div style=height:282px;>
-                <div id="sajin" class="gridcont_left_535">
-                    <div class="jangbi_sajin" style="height: 280px; border: 1px solid #bcbcbc;">
-                    사진
-                    </div>
-                </div>
-                <div id="jangbi_table" class="gridcont_right_535">
-                    <input type="text" name="EQU_GBN" id="input_equGbn" hidden="hidden">
-                    <table class="input_table">
-                        <tbody>
-                            <tr>
-                                <th style="width:100px;">관리번호</th>
-                                <td style="width:433px;"><input type="text" name="EQU_NO" id="input_equNo" disabled></td>
-                            </tr>
-                            <tr>
-                                <th>장비명</th>
-                                <td><input type="text" name="EQU_NAME" id="input_equName"></td>
-                            </tr>
-                            <tr>
-                                <th>규격</th>
-                                <td><input type="text" name="SIZE" id="input_size" ></td>
-                            </tr>
-                            <tr>
-                                <th>형식</th>
-                                <td><input type="text" name="FORM"  id="input_form"></td>
-                            </tr>
-                            <tr>
-                                <th>제원</th>
-                                <td><input type="text" name="DIMENSION" id="input_dimension"></td>
-                            </tr>
-                            <tr>
-                                <th>제조사</th>
-                                <td><input type="text" name="MAKE_BY" id="input_makeBy"></td>
-                            </tr>
-                            <tr>
-                                <th>설치일</th>
-                                <td><input type="date" name="INSTALL_DATE" id="input_installDate" data-format="date"></td>
-                            </tr>
-                            <tr>
-                                <th style="height:53px;">비고</th>
-                                <td> <textarea style="height:53px;" class="jan01015_textarea" name="REMARKS" id="input_remarks"></textarea></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>            
-            <div>
-                <div class="section_middle_title">                
-                    <span> <i class="icon-edit"></i>고장발생 및 처리내역</span>
-                    <span class="section1_nav_mic">&emsp;
-                        <i class="icon-mic"></i>처리금액이 발생된 정비내역만 기록합니다.
-                    </span>
-                    <span class="section_middle_btn" id="section_middle_btn"></span>
-                </div>                            
-                <div id="grid1"></div>
-            </div>           
+    <div id="section">
+        <div class="section1">
+            <div class="section1_nav"><i class="icon-cog-alt"></i>장비이력카드</div>
+            <div class="section1_btn" id="section1_btn"></div>
+            <span class="search-box section1_btn">
+                <button id="find_btn" class="left_btn" onclick="" >사진찾기</button>
+                <button id="list_btn" class="left_btn" onclick="goEquList_onclick()">목록</button>
+            </span>
+            <span class="search-box section1_btn">
+                폐기일 :
+                <input type="date" id="input_resignDate" class="box_width100">
+                 &nbsp; 폐기사유 :
+                <input type="text" id="input_resignReason" class="box_width100">
+                <button id="list_btn" class="del_btn" onclick="resign_onclick()">폐기</button>
+            </span>
         </div>
+        <div class="section2">
+            <div class="section2_line1">
+                <span class="search-box">장비명선택 :&nbsp;
+                    <select id="search_equName" class="select_cont300"></select>
+                </span>
+            </div>
+        </div>
+        <div style=height:282px;>
+            <div id="sajin" class="gridcont_left_535">
+                <div class="jangbi_sajin" style="height: 280px; border: 1px solid #bcbcbc;">
+                사진
+                </div>
+            </div>
+            <div id="jangbi_table" class="gridcont_right_535">
+                <input type="text" name="EQU_GBN" id="input_equGbn" hidden="hidden">
+                <table class="input_table">
+                    <tbody>
+                        <tr>
+                            <th style="width:100px;">관리번호</th>
+                            <td style="width:433px;"><input type="text" name="EQU_NO" id="input_equNo" disabled></td>
+                        </tr>
+                        <tr>
+                            <th>장비명</th>
+                            <td><input type="text" name="EQU_NAME" id="input_equName"></td>
+                        </tr>
+                        <tr>
+                            <th>규격</th>
+                            <td><input type="text" name="SIZE" id="input_size" ></td>
+                        </tr>
+                        <tr>
+                            <th>형식</th>
+                            <td><input type="text" name="FORM"  id="input_form"></td>
+                        </tr>
+                        <tr>
+                            <th>제원</th>
+                            <td><input type="text" name="DIMENSION" id="input_dimension"></td>
+                        </tr>
+                        <tr>
+                            <th>제조사</th>
+                            <td><input type="text" name="MAKE_BY" id="input_makeBy"></td>
+                        </tr>
+                        <tr>
+                            <th>설치일</th>
+                            <td><input type="date" name="INSTALL_DATE" id="input_installDate" data-format="date"></td>
+                        </tr>
+                        <tr>
+                            <th style="height:53px;">비고</th>
+                            <td> <textarea style="height:53px;" class="jan01015_textarea" name="REMARKS" id="input_remarks"></textarea></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            <div class="section_middle_title">
+                <span> <i class="icon-edit"></i>고장발생 및 처리내역</span>
+                <span class="section1_nav_mic">&emsp;
+                    <i class="icon-mic"></i>처리금액이 발생된 정비내역만 기록합니다.
+                </span>
+                <span class="section_middle_btn" id="section_middle_btn"></span>
+            </div>
+            <div id="grid1"></div>
+        </div>
+    </div>
 
 <script>
     /** 작성 순서

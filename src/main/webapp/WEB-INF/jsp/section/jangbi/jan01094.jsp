@@ -103,6 +103,7 @@
             {
                 showRowNumColumn : false,
                 editable : false,
+                height: 616,
             })
     );
 
@@ -212,7 +213,5 @@
     };
 
 </script>
-
-
 
 <%@ include file = "../../inc_footer.jsp" %>

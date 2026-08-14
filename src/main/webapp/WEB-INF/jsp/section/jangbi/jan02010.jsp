@@ -3,27 +3,190 @@
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
 
-
-        <div id="section">
-            <div class="section1">
-                <span class="section1_nav"><i class="icon-cog-alt"></i><****></span> <!--장비관리설정 - 설비 영선 -에서 설정된메뉴-->
-                <span class="section1_nav_mic">&emsp;<i class="icon-mic"></i>
-                    장비명 행을 더블 클릭하면 해당 장비이력카드메뉴로 이동됩니다.
-                </span>
-                <div class="section1_btn">
-                    <button id="search_btn" onclick="">검색</button>
-                    <button id="add_btn" onclick=""><a href="jan02090.jsp">추가</a></button> 
-                    <!-- 해당 관리번호 장비명 장비이력카드 메뉴로-->               
-                    <button id="print_btn" onclick="" class="print_btn">인쇄</button>
-                </div>
-            </div>
-
-            <div id=""  style="height: 658px; border: 1px solid #bcbcbc;">
-                <div id="" name="">
-                    그리드영역
-                </div>
-            </div>           
-        </div>
+<div id="section">
+    <div class="section1">
+        <span class="section1_nav"><i class="icon-cog-alt"></i>${menuName}</span> <!--장비관리설정에서 설정된메뉴-->
+        <span class="section1_nav_mic">&emsp;<i class="icon-mic"></i>
+                장비명 행을 더블 클릭하면 해당 장비이력카드메뉴로 이동됩니다.
+            </span>
+        <div class="section1_btn" id="section1_btn"></div>
     </div>
 
+    <div id="grid1"></div>
+</div>
+
+<script>
+    /** 작성 순서
+     *
+     * 변수 선언 :  pgId, 컴포넌트, 컴포넌트 포커스
+     * 그리드 설정
+     * 그리드 생성
+     * 그리드 이벤트 : 체크박스 클릭 시 셀렉트 이벤트(엑스트라 체크박스 있을 시) + 필요 시
+     * 그리드 조회 함수
+     * 그리드 추가 함수    (미사용시 생략)
+     * 그리드 저장 함수    (미사용시 생략)
+     * 그리드 삭제 함수    (미사용시 생략)
+     * 컴포넌트 필수항목 입력 체크    (미사용시 생략)
+     * crud 권한 처리 호출 함수
+     *
+     * 기타
+     * 로드 :
+     * 		기본 crud 버튼 생성
+     * 		crud 권한 처리 함수 호출
+     * 		공통코드 가져오기		(미사용시 생략)
+     * 		(필요 시)그리드 조회 함수 호출    (미사용시 생략)
+     *
+     */
+
+        //변수 선언
+    const sectionId = "${sectionId}";	//섹션ID
+    const pgId = "${goPgId}";	//프로그램ID
+    const menuId = "${menuId}";	//메뉴ID
+    const title = "${menuName}";
+    let grid1;	// 그리드 컴포넌트
+    let focus = 0;	//그리드 컴포넌트 포커스
+
+    //그리드 설정
+    const grid1ColumnLayout = [
+        { dataField: "EQU_NO",
+            visible : false
+        },
+        { dataField: "EQU_NAME",
+            headerText: "장비명",
+            dataType: "text",
+            width : "20%",
+            style : "text-align-left",
+        },
+        { dataField: "SIZE",
+            headerText: "규격",
+            dataType: "text",
+            width : "10%",
+        },
+        { dataField: "FORM",
+            headerText: "형식",
+            dataType: "text",
+            width : "15%",
+        },
+        { dataField: "MAKE_BY",
+            headerText: "제조사",
+            dataType: "text",
+            width : "20%",
+            style : "text-align-left",
+        },
+        { dataField: "DIMENSION",
+            headerText: "제원",
+            dataType: "text",
+            width : "10%",
+        },
+        { dataField: "INSTALL_DATE",
+            headerText: "설치일",
+            dataType: "date",
+            formatString: "yyyy-mm-dd",
+            width : "10%",
+        },
+        { dataField: "INSTALL_PLACE",
+            headerText: "설치장소",
+            dataType: "text",
+            width : "20%",
+        },
+        { dataField: "DISUSE_GBN",
+            headerText: "폐기구분",
+            width : "8%",
+            renderer : we_cb_YN_Renderer
+        },
+    ];
+
+    //그리드 생성
+    grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
+        Object.assign({}, we_grid_Props,
+            {
+                editable: false,
+                showRowCheckColumn : false,
+                height: 659,
+            })
+    );
+
+    //그리드 이벤트
+    //체크박스 클릭 시
+    AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
+        let pop_data = {
+            equGbn : menuId,
+            equNo : AUIGrid.getSelectedRows(grid1)[0].EQU_NO,
+            returnUrl : window.location.search
+        }
+
+        const requestParams = new URLSearchParams(pop_data)
+        location.href = ctx + "/goMenu/jangbi/"+menuId+"-jan02090?"+ requestParams.toString();
+
+    });
+
+    //그리드 조회 함수
+    function search_grid1_onclick(){
+
+        //검색데이터
+        let selectParam = {
+        }
+
+        //파라미터
+        let selectData = {
+            sectionId : sectionId,
+            component : pgId + "_grid1",
+            param: selectParam,
+        }
+
+        we_select( selectData,{
+            successSelect : (json) => {
+                let data = json.DATA;
+                //그리드 데이터 세팅
+                AUIGrid.setGridData(grid1, data);
+                //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
+                AUIGrid.setSelectionByIndex(grid1, focus, 0);
+                focus = 0;
+            }
+        });
+    }
+
+    //그리드 추가 함수
+    function add_grid1_onclick(){
+        let pop_data = {
+            equGbn : menuId,
+            returnUrl : window.location.search
+        }
+        const requestParams = new URLSearchParams(pop_data)
+        location.href = ctx + "/goMenu/jangbi/"+menuId+"-jan02090?"+ requestParams.toString();
+
+    }
+
+    //컴포넌트 필수항목 입력 체크
+    function requireCheck(require){
+        let isValid = true;
+        switch(require){
+
+        }
+        return isValid;
+    }
+
+    //crud 권한 처리 함수
+    function checkCrudPermission(pgId){
+        we_checkCrudPermission(pgId,{
+            successPer : (data) => {
+                //권한에 따라 버튼 숨김
+                btnPermission(data)
+            }
+        });
+    }
+
+    //로드
+    window.onload = function() {
+        //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
+        btnMaker({ tag: "#section1_btn", grid:"grid1", search: true, add: true, print : true});
+
+        //crud 권한 처리 함수
+        checkCrudPermission(pgId);
+        //로드 시 그리드 바로 조회
+        search_grid1_onclick();
+
+    };
+
+</script>
 <%@ include file = "../../inc_footer.jsp" %>

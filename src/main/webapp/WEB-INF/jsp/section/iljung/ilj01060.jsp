@@ -19,7 +19,7 @@
             </div>
             <div id="apprGrid1" class="conf_line_right"></div>
         </div>
-        <div id="grid1"  style="height: 546px;"></div>
+        <div id="grid1"></div>
     </div>
 
 
@@ -107,7 +107,7 @@
             {
                 editable : false,
                 showRowCheckColumn: false,
-                height : 546,
+                height : 584,
                 rowHeight : 60,
                 wordWrap: true,
             })
