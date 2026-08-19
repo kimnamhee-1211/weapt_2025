@@ -8,7 +8,7 @@
             <div class="section_middle_btn" id="pop_changeOffice_btn"></div>
             <div id="officeGrid1"></div>
             <form id="changeOffice_form" method="post">
-                <input type="text" id="input_officeCode" name="OFFICE_CODE" hidden="hidden">
+                <input type="text" id="input_changeOfficeCode" name="CHANGE_OFFICE_CODE" hidden="hidden">
             </form>
         </div>
     </div>
@@ -18,16 +18,16 @@
     let officeGrid1;	// 그리드 컴포넌트
     const pop_changeOffice_btn = document.querySelector("#pop_changeOffice_btn");
     const search_officeName = document.querySelector("#search_officeName"); //search 컴포넌트
-    const input_officeCode = document.querySelector("#input_officeCode");
+    const input_changeOfficeCode = document.querySelector("#input_changeOfficeCode");
     const changeOffice_form = document.querySelector("#changeOffice_form");
 
     const officeGrid1ColumnLayout = [
-        { dataField: "OFFICE_CODE",
+        { dataField: "CHANGE_OFFICE_CODE",
             headerText: "단지코드",
             dataType: "text",
             width : "20%",
         },
-        { dataField: "OFFICE_NAME",
+        { dataField: "CHANGE_OFFICE_NAME",
             headerText: "관리소명",
             dataType: "text",
             width : "*%",
@@ -123,9 +123,9 @@
 
     function select_officeGrid1_onclick(){
 
-        if(!confirm("'" + AUIGrid.getSelectedRows(officeGrid1)[0].OFFICE_NAME + "' 관리소로 변경하시겠습니까?")) return;
+        if(!confirm("'" + AUIGrid.getSelectedRows(officeGrid1)[0].CHANGE_OFFICE_NAME + "' 관리소로 변경하시겠습니까?")) return;
 
-        input_officeCode.value = AUIGrid.getSelectedRows(officeGrid1)[0].OFFICE_CODE;
+        input_changeOfficeCode.value = AUIGrid.getSelectedRows(officeGrid1)[0].CHANGE_OFFICE_CODE;
         changeOffice_form.action = ctx + "/changeOffice";
         changeOffice_form.submit();
 

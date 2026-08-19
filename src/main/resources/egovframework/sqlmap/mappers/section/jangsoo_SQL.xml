@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jangsooMapper">
+
+
+	<!-- 단지개요 조회 -->
+	<select id="selectList_soo01010_input1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE                  AS OFFICE_CODE,
+			A.HOUSE_NAME                   AS HOUSE_NAME,
+			A.HOUSE_TEL                    AS HOUSE_TEL,
+			A.HOUSE_ADDR                   AS ADDR1,
+			A.BUSINESS_AGENT               AS BUSINESS_AGENT,
+			A.BUSINESS_CON_DATE            AS BUSINESS_CON_DATE,
+			A.USE_TEST_DATE                AS USE_TEST_DATE,
+			A.BOUGHT_DATE                  AS BOUGHT_DATE,
+			A.BUILD_COMP                   AS BUILD_COMP,
+			A.BUILD_STRUCTURE              AS BUILD_STRUCTURE,
+			A.HEAT_TYPE                    AS HEAT_TYPE,
+			A.WATER_TYPE                   AS WATER_TYPE,
+			A.HOUSE_TYPE                   AS HOUSE_TYPE,
+			A.HOUSE_NUM                    AS HOUSE_NUM,
+			A.EXIT_NUM                     AS EXIT_NUM,
+			A.DONG_NUM                     AS DONG_NUM,
+			A.TOT_BOUGHT_AREA              AS TOT_BOUGHT_AREA,
+			A.BUILD_AREA                   AS BUILD_AREA,
+			A.TOT_GROUND_AREA              AS TOT_GROUND_AREA,
+			A.DEFENSIVE_CAPACITY           AS DEFENSIVE_CAPACITY,
+			A.GENERATOR_CAPACITY           AS GENERATOR_CAPACITY,
+			A.PARK_GROUND_NUM              AS PARK_GROUND_NUM,
+			A.PARK_UNDER_NUM               AS PARK_UNDER_NUM,
+			A.LOT_AREA                     AS LOT_AREA,
+			A.BUILD_LAND_RATIO             AS BUILD_LAND_RATIO,
+			A.FLOOR_AREA_RATIO             AS FLOOR_AREA_RATIO,
+			A.OFFICE_GROUND_AREA           AS OFFICE_GROUND_AREA,
+			A.SILVER_GROUND_AREA           AS SILVER_GROUND_AREA,
+			A.LIBRARY_GROUND_AREA          AS LIBRARY_GROUND_AREA,
+			A.SECURITY_PLACE               AS SECURITY_PLACE,
+			A.SECURITY_CCTV_1              AS SECURITY_CCTV_1,
+			A.PLAYGROUND_TOT_AREA          AS PLAYGROUND_TOT_AREA,
+			A.RESIDENT_WORKOUT_1           AS RESIDENT_WORKOUT_1,
+			A.PARK_NUM                     AS PARK_NUM,
+			A.STORAGE_WATER_CAPACITY       AS STORAGE_WATER_CAPACITY,
+			A.STORAGE_WATER_UNDER_TANK     AS STORAGE_WATER_UNDER_TANK,
+			A.STORAGE_WATER_TANK           AS STORAGE_WATER_TANK,
+			A.DRINK_CAPACITY               AS DRINK_CAPACITY,
+			A.DRINK_PLACE                  AS DRINK_PLACE,
+			A.ELEVATOR_COMP                AS ELEVATOR_COMP,
+			A.ELEVATOR_NUM                 AS ELEVATOR_NUM,
+			A.AREA_UNIT                    AS AREA_UNIT,
+			A.REMARKS                      AS REMARKS,
+			A.RESIDENT_WORKOUT_2           AS RESIDENT_WORKOUT_2,
+			A.RESIDENT_WORKOUT_3           AS RESIDENT_WORKOUT_3,
+			A.RESIDENT_WORKOUT_4           AS RESIDENT_WORKOUT_4,
+			A.FIRST_YEAR                   AS FIRST_YEAR,
+			A.FIRST_MONTH                  AS FIRST_MONTH,
+			A.PARK_REMARKS                 AS PARK_REMARKS,
+			A.SECURITY_CCTV_2              AS SECURITY_CCTV_2,
+			A.PLAYGROUND_EACH_1            AS PLAYGROUND_EACH_1,
+			A.PLAYGROUND_EACH_2            AS PLAYGROUND_EACH_2,
+			A.DV_ROUND                     AS DV_ROUND,
+			A.DV_CHIPHER                   AS DV_CHIPHER,
+			A.KAPT_NM                      AS KAPT_NM,
+			A.KAPT_CODE                    AS KAPT_CODE
+		FROM dbo.TRP_HOUSE A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+	</select>
+
+
+	<insert id="insertList_soo01010_input1" parameterType="list">
+		INSERT INTO dbo.TRP_HOUSE (
+			OFFICE_CODE,
+			HOUSE_NAME,
+			HOUSE_ADDR,
+			USE_TEST_DATE,
+			BUILD_COMP,
+			HOUSE_TYPE,
+			LOT_AREA,
+			DONG_NUM,
+			HOUSE_NUM,
+			TOT_GROUND_AREA,
+			FLOOR_AREA_RATIO,
+			BUILD_AREA,
+			BUILD_LAND_RATIO,
+			BUILD_STRUCTURE,
+			WATER_TYPE,
+			HEAT_TYPE,
+			OFFICE_GROUND_AREA,
+			SILVER_GROUND_AREA,
+			PLAYGROUND_TOT_AREA,
+			RESIDENT_WORKOUT_1,
+			PARK_GROUND_NUM,
+			PARK_UNDER_NUM,
+			STORAGE_WATER_CAPACITY,
+			ELEVATOR_COMP,
+			ELEVATOR_NUM,
+			DV_ROUND,
+			DEFENSIVE_CAPACITY,
+			GENERATOR_CAPACITY,
+			REMARKS
+		)
+		<foreach collection="list" item="row" separator=" UNION ALL ">
+			SELECT
+			#{row.LOGIN_OFFICE_CODE},
+			#{row.HOUSE_NAME},
+			#{row.HOUSE_ADDR},
+			#{row.USE_TEST_DATE},
+			#{row.BUILD_COMP},
+			#{row.HOUSE_TYPE},
+			#{row.LOT_AREA},
+			#{row.DONG_NUM},
+			#{row.HOUSE_NUM},
+			#{row.TOT_GROUND_AREA},
+			#{row.FLOOR_AREA_RATIO},
+			#{row.BUILD_AREA},
+			#{row.BUILD_LAND_RATIO},
+			#{row.BUILD_STRUCTURE},
+			#{row.WATER_TYPE},
+			#{row.HEAT_TYPE},
+			#{row.OFFICE_GROUND_AREA},
+			#{row.SILVER_GROUND_AREA},
+			#{row.PLAYGROUND_TOT_AREA},
+			#{row.RESIDENT_WORKOUT_1},
+			#{row.PARK_GROUND_NUM},
+			#{row.PARK_UNDER_NUM},
+			#{row.STORAGE_WATER_CAPACITY},
+			#{row.ELEVATOR_COMP},
+			#{row.ELEVATOR_NUM},
+			#{row.DV_ROUND},
+			#{row.DEFENSIVE_CAPACITY},
+			#{row.GENERATOR_CAPACITY},
+			#{row.REMARKS}
+		</foreach>
+	</insert>
+
+
+	<update id="updateList_soo01010_input1" parameterType="list">
+		UPDATE A
+		SET
+			A.HOUSE_NAME               = B.HOUSE_NAME,
+			A.HOUSE_ADDR               = B.HOUSE_ADDR,
+			A.USE_TEST_DATE            = B.USE_TEST_DATE,
+			A.BUILD_COMP               = B.BUILD_COMP,
+			A.HOUSE_TYPE               = B.HOUSE_TYPE,
+			A.LOT_AREA                 = B.LOT_AREA,
+			A.DONG_NUM                 = B.DONG_NUM,
+			A.HOUSE_NUM                = B.HOUSE_NUM,
+			A.TOT_GROUND_AREA          = B.TOT_GROUND_AREA,
+			A.FLOOR_AREA_RATIO         = B.FLOOR_AREA_RATIO,
+			A.BUILD_AREA               = B.BUILD_AREA,
+			A.BUILD_LAND_RATIO         = B.BUILD_LAND_RATIO,
+			A.BUILD_STRUCTURE          = B.BUILD_STRUCTURE,
+			A.WATER_TYPE               = B.WATER_TYPE,
+			A.HEAT_TYPE                = B.HEAT_TYPE,
+			A.OFFICE_GROUND_AREA       = B.OFFICE_GROUND_AREA,
+			A.SILVER_GROUND_AREA       = B.SILVER_GROUND_AREA,
+			A.PLAYGROUND_TOT_AREA      = B.PLAYGROUND_TOT_AREA,
+			A.RESIDENT_WORKOUT_1       = B.RESIDENT_WORKOUT_1,
+			A.PARK_GROUND_NUM          = B.PARK_GROUND_NUM,
+			A.PARK_UNDER_NUM           = B.PARK_UNDER_NUM,
+			A.STORAGE_WATER_CAPACITY   = B.STORAGE_WATER_CAPACITY,
+			A.ELEVATOR_COMP            = B.ELEVATOR_COMP,
+			A.ELEVATOR_NUM             = B.ELEVATOR_NUM,
+			A.DV_ROUND                 = B.DV_ROUND,
+			A.DEFENSIVE_CAPACITY       = B.DEFENSIVE_CAPACITY,
+			A.GENERATOR_CAPACITY       = B.GENERATOR_CAPACITY,
+			A.REMARKS                  = B.REMARKS
+		FROM dbo.TRP_HOUSE A
+		JOIN (
+		<foreach collection="list" item="row" separator=" UNION ALL ">
+			SELECT
+				#{row.LOGIN_OFFICE_CODE}          AS OFFICE_CODE,
+				#{row.HOUSE_NAME}                 AS HOUSE_NAME,
+				#{row.HOUSE_ADDR}                 AS HOUSE_ADDR,
+				#{row.USE_TEST_DATE}              AS USE_TEST_DATE,
+				#{row.BUILD_COMP}                 AS BUILD_COMP,
+				#{row.HOUSE_TYPE}                 AS HOUSE_TYPE,
+				#{row.LOT_AREA}                   AS LOT_AREA,
+				#{row.DONG_NUM}                   AS DONG_NUM,
+				#{row.HOUSE_NUM}                  AS HOUSE_NUM,
+				#{row.TOT_GROUND_AREA}            AS TOT_GROUND_AREA,
+				#{row.FLOOR_AREA_RATIO}           AS FLOOR_AREA_RATIO,
+				#{row.BUILD_AREA}                 AS BUILD_AREA,
+				#{row.BUILD_LAND_RATIO}           AS BUILD_LAND_RATIO,
+				#{row.BUILD_STRUCTURE}            AS BUILD_STRUCTURE,
+				#{row.WATER_TYPE}                 AS WATER_TYPE,
+				#{row.HEAT_TYPE}                  AS HEAT_TYPE,
+				#{row.OFFICE_GROUND_AREA}         AS OFFICE_GROUND_AREA,
+				#{row.SILVER_GROUND_AREA}         AS SILVER_GROUND_AREA,
+				#{row.PLAYGROUND_TOT_AREA}        AS PLAYGROUND_TOT_AREA,
+				#{row.RESIDENT_WORKOUT_1}         AS RESIDENT_WORKOUT_1,
+				#{row.PARK_GROUND_NUM}            AS PARK_GROUND_NUM,
+				#{row.PARK_UNDER_NUM}             AS PARK_UNDER_NUM,
+				#{row.STORAGE_WATER_CAPACITY}     AS STORAGE_WATER_CAPACITY,
+				#{row.ELEVATOR_COMP}              AS ELEVATOR_COMP,
+				#{row.ELEVATOR_NUM}               AS ELEVATOR_NUM,
+				#{row.DV_ROUND}                   AS DV_ROUND,
+				#{row.DEFENSIVE_CAPACITY}         AS DEFENSIVE_CAPACITY,
+				#{row.GENERATOR_CAPACITY}         AS GENERATOR_CAPACITY,
+				#{row.REMARKS}                    AS REMARKS
+		</foreach>
+		) B
+		ON A.OFFICE_CODE = B.OFFICE_CODE
+	</update>
+
+
+
+</mapper>

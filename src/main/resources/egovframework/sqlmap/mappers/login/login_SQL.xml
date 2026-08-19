@@ -43,8 +43,8 @@
 
 	<select id="selectOffice" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE					AS OFFICE_CODE,
-			A.OFFICE_NAME					AS OFFICE_NAME,
+			A.OFFICE_CODE					AS CHANGE_OFFICE_CODE,
+			A.OFFICE_NAME					AS CHANGE_OFFICE_NAME,
 			A.TEL							AS TEL,
 			C.CONT_KIND_CD					AS CONT_KIND_CD,
 			dbo.getCode_nm(C.CONT_KIND_CD)  AS CONT_KIND_NM
@@ -93,7 +93,7 @@
 			   A.EMP_NO
 		FROM dbo.TPM_USER A
 			 JOIN dbo.TPM_OFFICE B
-					   ON B.OFFICE_CODE = #{OFFICE_CODE}
+					   ON B.OFFICE_CODE = #{CHANGE_OFFICE_CODE}
 			 LEFT JOIN dbo.TPM_MGTGROUP C
 					   ON A.USERGROUP_ID = C.USERGROUP_ID
 			 LEFT JOIN dbo.TPM_MGM_COMPANY D

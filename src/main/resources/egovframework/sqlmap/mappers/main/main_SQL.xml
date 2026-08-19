@@ -4,8 +4,8 @@
 
 	<select id="selectList_pop_changeOffice_officeGrid1" parameterType="map" resultType="map">
 		SELECT
-			A.OFFICE_CODE					AS OFFICE_CODE,
-			A.OFFICE_NAME					AS OFFICE_NAME,
+			A.OFFICE_CODE					AS CHANGE_OFFICE_CODE,
+			A.OFFICE_NAME					AS CHANGE_OFFICE_NAME,
 			A.TEL							AS TEL,
 			B.CONT_KIND_CD					AS CONT_KIND_CD,
 			dbo.getCode_nm(B.CONT_KIND_CD) AS CONT_KIND_NM
