@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="jangsooMapper">
 
-
 	<!-- 단지개요 조회 -->
 	<select id="selectList_soo01010_input1" parameterType="map" resultType="map">
 		SELECT
@@ -65,7 +64,6 @@
 		FROM dbo.TRP_HOUSE A
 		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 	</select>
-
 
 	<insert id="insertList_soo01010_input1" parameterType="list">
 		INSERT INTO dbo.TRP_HOUSE (
@@ -132,7 +130,6 @@
 			#{row.REMARKS}
 		</foreach>
 	</insert>
-
 
 	<update id="updateList_soo01010_input1" parameterType="list">
 		UPDATE A
@@ -203,6 +200,286 @@
 		ON A.OFFICE_CODE = B.OFFICE_CODE
 	</update>
 
+	<select id="selectList_soo01020_grid1" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE AS OFFICE_CODE,
+			A.MANAGE_NO   AS MANAGE_NO,
+			A.MANAGE_NM   AS MANAGE_NM,
+			A.USE_YN      AS USE_YN,
+			A.REG_ID      AS REG_ID,
+			A.REG_DT      AS REG_DT,
+			A.UPD_ID      AS UPD_ID,
+			A.UPD_DT      AS UPD_DT
+		FROM dbo.TRP_MANAGE A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+		ORDER BY A.MANAGE_NO
+	</select>
+
+	<update id="updateList_soo01020_grid1" parameterType="list">
+		UPDATE A
+		SET
+		A.MANAGE_NM = B.MANAGE_NM,
+		A.USE_YN    = B.USE_YN,
+		A.UPD_ID    = B.UPD_ID,
+		A.UPD_DT    = GETDATE()
+		FROM dbo.TRP_MANAGE A
+		JOIN (
+		<foreach collection="list" item="row" separator=" UNION ALL ">
+			SELECT
+			#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
+			#{row.MANAGE_NO}         AS MANAGE_NO,
+			#{row.MANAGE_NM}         AS MANAGE_NM,
+			#{row.USE_YN}            AS USE_YN,
+			#{row.LOGIN_ID}          AS UPD_ID
+		</foreach>
+		) B
+		ON A.OFFICE_CODE = B.OFFICE_CODE
+		AND A.MANAGE_NO = B.MANAGE_NO
+	</update>
+
+	<select id="getKey_ilb02010_grid1" parameterType="map" resultType="map">
+		SELECT
+			CONVERT(VARCHAR, MAX(CONVERT(INT, A.MANAGE_NO))) AS MANAGE_NO
+		FROM dbo.TRP_MANAGE A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+	</select>
+
+	<insert id="insertList_soo01020_grid1" parameterType="list">
+		INSERT INTO dbo.TRP_MANAGE (
+		OFFICE_CODE,
+		MANAGE_NO,
+		MANAGE_NM,
+		USE_YN,
+		DEL_YN,
+		REG_ID,
+		REG_DT,
+		UPD_ID,
+		UPD_DT
+		)
+		<foreach collection="list" item="row" separator=" UNION ALL ">
+			SELECT
+			#{row.LOGIN_OFFICE_CODE},
+			#{row.MANAGE_NO},
+			#{row.MANAGE_NM},
+			#{row.USE_YN},
+			'N',
+			#{row.LOGIN_ID},
+			GETDATE(),
+			#{row.LOGIN_ID},
+			GETDATE()
+		</foreach>
+	</insert>
+
+	<delete id="deleteList_soo01020_grid1" parameterType="list">
+		DELETE FROM dbo.TRP_MANAGE
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT
+					#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.MANAGE_NO}         AS MANAGE_NOSEQ
+				</foreach>
+				) AS temp
+			WHERE temp.OFFICE_CODE = TRP_DONG_SUB.OFFICE_CODE
+			AND temp.MANAGE_NOSEQ = TRP_DONG_SUB.MANAGE_NOSEQ
+		)
+	</delete>
+
+	<select id="selectList_soo01020_grid2" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.DONG,
+			A.SEQ,
+			A.AREAR,
+			A.PYEONG,
+			A.HOUSEHOLDS_NUMBER,
+			A.TOT_AREAR
+		FROM dbo.TRP_DONG_SUB A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+		ORDER BY A.SEQ
+	</select>
+
+	<update id="updateList_soo01020_grid2" parameterType="list">
+		UPDATE A
+		SET
+			A.AREAR             = B.AREAR,
+			A.PYEONG            = B.PYEONG,
+			A.HOUSEHOLDS_NUMBER = B.HOUSEHOLDS_NUMBER,
+			A.TOT_AREAR         = B.TOT_AREAR
+		FROM dbo.TRP_DONG_SUB A
+		INNER JOIN (
+			<foreach collection="list" item="row" separator="UNION ALL">
+				SELECT
+				#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
+				#{row.DONG} AS DONG,
+				#{row.SEQ} AS SEQ,
+				#{row.AREAR} AS AREAR,
+				#{row.PYEONG} AS PYEONG,
+				#{row.HOUSEHOLDS_NUMBER} AS HOUSEHOLDS_NUMBER,
+				#{row.TOT_AREAR} AS TOT_AREAR
+			</foreach>
+		) AS B	ON A.OFFICE_CODE = B.OFFICE_CODE
+		AND A.DONG = B.DONG AND A.SEQ = B.SEQ
+	</update>
+
+	<select id="getKey_ilb02010_grid2" parameterType="map" resultType="map">
+		SELECT
+			CONVERT(VARCHAR, MAX(CONVERT(INT, A.SEQ))) AS SEQ
+		FROM dbo.TRP_DONG_SUB A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+	</select>
+
+	<insert id="insertList_soo01020_grid2" parameterType="list">
+		INSERT INTO dbo.TRP_DONG_SUB (
+			OFFICE_CODE,
+			DONG,
+			SEQ,
+			AREAR,
+			PYEONG,
+			HOUSEHOLDS_NUMBER,
+			TOT_AREAR
+		)
+		<foreach collection="list" item="row" separator="UNION ALL">
+			SELECT
+				#{row.LOGIN_OFFICE_CODE},
+				'1',
+				#{row.SEQ},
+				#{row.AREAR},
+				#{row.PYEONG},
+				#{row.HOUSEHOLDS_NUMBER},
+				#{row.TOT_AREAR}
+		</foreach>
+	</insert>
+
+	<delete id="deleteList_soo01020_grid2" parameterType="list">
+		DELETE FROM dbo.TRP_DONG_SUB
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT
+					#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.DONG} AS DONG,
+					#{row.SEQ} AS SEQ
+				</foreach>
+			) AS temp
+			WHERE temp.OFFICE_CODE = TRP_DONG_SUB.OFFICE_CODE
+			AND temp.DONG = TRP_DONG_SUB.DONG
+			AND temp.SEQ = TRP_DONG_SUB.SEQ
+		)
+	</delete>
+
+	<select id="selectList_soo01020_grid3" parameterType="map" resultType="map">
+		SELECT
+			A.OFFICE_CODE,
+			A.DONG,
+			A.HOUSEHOLDS_NUMBER,
+			A.APT_TYPE,
+			A.FLOOR_CNT,
+			A.UNDER_FLOOR_CNT,
+			A.LENGTH,
+			A.WIDTH,
+			A.ELEVATER_CNT,
+			A.PASSAGE_CNT,
+			A.REMARKS,
+			A.MANAGE_NO
+		FROM dbo.TRP_DONG A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+		ORDER BY A.DONG
+	</select>
+
+	<update id="updateList_soo01020_grid3" parameterType="list">
+		UPDATE A
+		SET
+			A.HOUSEHOLDS_NUMBER = B.HOUSEHOLDS_NUMBER,
+			A.APT_TYPE          = B.APT_TYPE,
+			A.FLOOR_CNT         = B.FLOOR_CNT,
+			A.UNDER_FLOOR_CNT   = B.UNDER_FLOOR_CNT,
+			A.LENGTH            = B.LENGTH,
+			A.WIDTH             = B.WIDTH,
+			A.ELEVATER_CNT      = B.ELEVATER_CNT,
+			A.PASSAGE_CNT       = B.PASSAGE_CNT,
+			A.REMARKS           = B.REMARKS,
+			A.MANAGE_NO         = B.MANAGE_NO
+		FROM dbo.TRP_DONG A
+		INNER JOIN (
+		<foreach collection="list" item="row" separator="UNION ALL">
+			SELECT
+			#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
+			#{row.DONG}              AS DONG,
+			#{row.HOUSEHOLDS_NUMBER} AS HOUSEHOLDS_NUMBER,
+			#{row.APT_TYPE}          AS APT_TYPE,
+			#{row.FLOOR_CNT}         AS FLOOR_CNT,
+			#{row.UNDER_FLOOR_CNT}   AS UNDER_FLOOR_CNT,
+			#{row.LENGTH}            AS LENGTH,
+			#{row.WIDTH}             AS WIDTH,
+			#{row.ELEVATER_CNT}      AS ELEVATER_CNT,
+			#{row.PASSAGE_CNT}       AS PASSAGE_CNT,
+			#{row.REMARKS}           AS REMARKS,
+			#{row.MANAGE_NO}         AS MANAGE_NO
+		</foreach>
+		) AS B
+		ON A.OFFICE_CODE = B.OFFICE_CODE
+		AND A.DONG = B.DONG
+	</update>
+
+	<insert id="insertList_soo01020_grid3" parameterType="list">
+		INSERT INTO dbo.TRP_DONG (
+			OFFICE_CODE,
+			DONG,
+			HOUSEHOLDS_NUMBER,
+			APT_TYPE,
+			FLOOR_CNT,
+			UNDER_FLOOR_CNT,
+			LENGTH,
+			WIDTH,
+			ELEVATER_CNT,
+			PASSAGE_CNT,
+			REMARKS,
+			MANAGE_NO
+		)
+		<foreach collection="list" item="row" separator="UNION ALL">
+			SELECT
+			#{row.LOGIN_OFFICE_CODE},
+			#{row.DONG},
+			#{row.HOUSEHOLDS_NUMBER},
+			#{row.APT_TYPE},
+			#{row.FLOOR_CNT},
+			#{row.UNDER_FLOOR_CNT},
+			#{row.LENGTH},
+			#{row.WIDTH},
+			#{row.ELEVATER_CNT},
+			#{row.PASSAGE_CNT},
+			#{row.REMARKS},
+			#{row.MANAGE_NO}
+		</foreach>
+	</insert>
+
+	<delete id="deleteList_soo01020_grid3" parameterType="list">
+		DELETE FROM dbo.TRP_DONG
+		WHERE EXISTS (
+			SELECT 1
+			FROM (
+				<foreach collection="list" item="row" separator="UNION ALL">
+					SELECT
+					#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
+					#{row.DONG}              AS DONG
+				</foreach>
+			) AS temp
+		WHERE temp.OFFICE_CODE = TRP_DONG.OFFICE_CODE
+		AND temp.DONG = TRP_DONG.DONG
+		)
+	</delete>
+
+	<select id="getSelect_soo01020_grid3_manageNo" parameterType="map" resultType="map">
+		SELECT
+			A.MANAGE_NO	AS CD,
+			A.MANAGE_NM	AS NAME
+		FROM dbo.TRP_MANAGE A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.USE_YN = '1'
+		ORDER BY A.MANAGE_NO
+	</select>
 
 
 </mapper>
