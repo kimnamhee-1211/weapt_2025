@@ -17,24 +17,16 @@
                 <div class="section2_line1">
                     <form action="." method="post">
                         <span class="search-box">수립조정년월 :&nbsp;
-                            <select id="year_month" class="select_cont100">
-                                <option value="year_month"><****></option>  <!-- ****-** -->  
-                            </select>&emsp;                       
+                            <select id="year_month" class="select_cont100"></select>&emsp;
                         </span>
                         <span class="select-container">&emsp;
-                            <select id="jan_label_1" class="select_cont150">
-                                <option value="jan_label_1"><****></option> <!-- 예) 건물외부  전체우선-->  
-                            </select>
+                            <select id="jan_label_1" class="select_cont150"></select>
                         </span>
                         <span class="select-container">&emsp;
-                            <select id="jan_label_2" class="select_cont150"> 
-                                <option value="jan_label_2"><****></option> <!-- 예) 지붕 전체우선-->  
-                            </select>
+                            <select id="jan_label_2" class="select_cont150"></select>
                         </span>
                         <span class="select-container">&emsp;
-                            <select id="jan_label_3" class="select_cont150"> 
-                                <option value="jan_label_3"><****></option> <!-- 예) 방수 전체우선-->  
-                            </select>
+                            <select id="jan_label_3" class="select_cont150"></select>
                         </span>
                         <span id="" class="search-box">&emsp;&emsp;&emsp;&#9726&nbsp;최초설치년월 :&nbsp;<****>  <!-- ****년 **월-->                     
                         </span>                       

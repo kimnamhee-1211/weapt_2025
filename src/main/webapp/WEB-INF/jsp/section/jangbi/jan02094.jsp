@@ -8,8 +8,8 @@
             <div class="section1_nav"><i class="icon-calendar-plus-o"></i>폐기장비조회</div>
             <div class="section1_btn" id="section1_btn"></div>
             <span class="search-box section1_btn">
-                    <button id="cancelResign_btn_grid1" class="del_btn" onclick="cancelResign_onclick()">복원</button>
-                </span>
+                <button id="cancelResign_btn_grid1" class="del_btn" onclick="cancelResign_onclick()">복원</button>
+            </span>
         </div>
         <div class="section2">
             <div class="section2_line1">

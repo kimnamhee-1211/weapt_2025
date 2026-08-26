@@ -254,7 +254,7 @@
         }];
 
     const footerLayout3 = [{
-        dataField: "HOUSEHOLDS_NUMBER",
+        dataField: "HOUSEHOLDS_NUMBER",an
         positionField: "HOUSEHOLDS_NUMBER",
         operation: "SUM",
         formatString: "##0"
@@ -274,7 +274,6 @@
     grid3 = AUIGrid.create("#grid3", grid3ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
-                showRowCheckColumn: false,
                 showFooter: true,
                 height : 614
             })

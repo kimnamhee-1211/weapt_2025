@@ -58,7 +58,7 @@
         </div>
         <div style="height:40px; line-height:40px;">
             &#9726&nbsp;민원접수 및 처리내역
-            <div class="section1_btn" id="pop_btn1"></div>
+            <div class="section1_btn" id="pop_btn2"></div>
         </div>
         <div id="popGrid1"></div>
     </div>
@@ -302,7 +302,7 @@
         btnMaker({ tag: "#pop_btn", grid: "popGrid1", search: true, print : true});
         pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
-        btnMaker({ tag: "#pop_btn1", grid: "popGrid1", add: true});
+        btnMaker({ tag: "#pop_btn2", grid: "popGrid1", add: true});
         if(!isNull(pop_item.btnHidden)){
             btnHidden(pop_item.btnHidden, pop_item.popupId);
         }

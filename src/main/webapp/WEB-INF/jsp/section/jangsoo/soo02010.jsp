@@ -2,7 +2,6 @@
 
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
-<%@ include file = "soo_nav.jsp" %>
 
         <div id="section">
             <div class="section1">
@@ -11,7 +10,7 @@
                 </div>
                 <div class="section1_btn">
                     최초설치년월 : <input type="month">
-                    <button id="ymsave_btn" onclick="">저장</button>                  
+                    <button id="" onclick="save_init_onclick()">저장</button>
                 </div>
             </div>
             <div class="section2">
@@ -22,151 +21,113 @@
                     <div class="section_middle_title">
                         <span><i class="icon-pause"></i>수립조정상태</span>                
                     </div>
-                    <div style="height: 611px; border: 1px solid #bcbcbc;">
-                        <div id="" name="" class="">
-                            수립조정상태 그리드영역
-                        </div>
-                    </div>
+                    <div style="height: 611px;" id="grid1"></div>
                 </div>
                 <div class="gridcont_right_870">
                     <div class="section_middle_title">
                         <span><i class="icon-pause"></i>수립조정기초</span>
-                        <span class="section_middle_btn">
-                            <input type="checkbox" id="layer_popup" class="layer_popup">
-                            <label for="layer_popup" class="pop_labal popup_btn" class="admin_btn">변경</label>
+                        <span class="section_middle_btn" id="section_middle_btn"></span>
+                        <span class="search-box section_middle_btn">
+                            <button id="" class="del_btn" onclick="popupOpen(popupId);">조정년월변경</button>
                              <!-- 변경 팝업시작--> 
-                            <div class="layer_bg">
+                            <div class="layer_bg" id="change_popup">
                                 <div class="popup" style="width:420px;">
                                     <div class="pop_title">&#10004;조정년월변경</div>
-                                    <form action="." method="post">
                                         <div style="height:100px; padding: 15px; border: 1px solid #bcbcbc;">
                                             <div id="">&#9726&nbsp;변경전 수립조정년월 :&nbsp;<****>  <!--변경전 수립조정년월 표시 2024년 03월--> 
                                             </div>
                                             <span class="search-box">&#9726&nbsp;변경후 수립조정년월 :&nbsp;
-                                                <select id="new_year" class="select_cont70">
-                                                    <option  value="new_year"><****></option> 
-                                                </select>년&emsp;
-                                                <select id="new_month" class="select_cont70">&nbsp;
-                                                    <option value="new_month"><****></option>
-                                                </select>월&nbsp;                        
+                                                <input type="month">
                                             </span>
                                         </div>
-                                    </form>
-                                    <div class="pop_btn">
-                                        <button id="new_save_btn" onclick="">저장</button>
-                                        <label for="layer_popup" class="popup_closs_btn">닫기</label>                    
-                                    </div>
+                                    <div class="pop_btn" id="pop_btn"></div>
                                 </div>
                             </div>
                             <!-- 팝업끝-->
-                            
-                            <button id="del_btn" onclick="" class="admin_btn">삭제</button>
-
-                            <input type="checkbox" id="layer_popup2" class="layer_popup">
-                            <label for="layer_popup2" class="pop_labal popup_btn">복사</label>
+                            <button id="" class="del_btn" onclick="popupOpen(popupId2);">복사</button>
                              <!-- 팝업시작--> 
-                            <div class="layer_bg">
+                            <div class="layer_bg" id="copy_popup">
                                 <div class="popup" style="width:420px;">
                                     <div class="pop_title">&#10004;수선계획복사</div>
-                                    <form action="." method="post">
-                                        <div style="height:290px; padding: 15px; border: 1px solid #bcbcbc;">
-                                            <div id="">&#9726&nbsp;복사원년 :&nbsp;<****>  <!--복사대상 년월 2024년 03월--> 
-                                            </div>
-                                            <div class="select-container">&#9726&nbsp;구분 :&nbsp;
-                                                <select id="gubun" class="select_cont100">
-                                                    <option value="junggi">정기</option> <!-- 조정이 정기와 수시로 나누어 짐 현재 조정은 정기로 표시--> 
-                                                    <option value="soosi">수시</option>
-                                                </select>
-                                            </div>
-                                            <div class="search-box">&#9726&nbsp;수립조정년월 :&nbsp;
-                                                <select id="copy_year" class="select_cont70"> 
-                                                    <option  value="copy_year"><****></option> 
-                                                </select>년&emsp;
-                                                <select id="copy_month" class="select_cont70">&nbsp;
-                                                    <option value="copy_month"><****></option>
-                                                </select>월&nbsp;                        
-                                            </div>
-                                            <div class="search-box">&#9726&nbsp;수립조정년월 :&nbsp;
-                                                <select id="copy_st_year" class="select_cont70"> 
-                                                    <option  value="copy_st_year"><****></option> 
-                                                </select>년부터&emsp;
-                                                <select id="copy_st_month" class="select_cont70">&nbsp;
-                                                    <option value="copy_st_month"><****></option>
-                                                </select>월까지&nbsp;                        
-                                            </div>
-                                            <div class="search-box">&#9726&nbsp;수립조정관계자 :&nbsp;
-                                                <input type="text" id="copy_person" name="" class="" style="width:200px;">                                                
-                                            </div>
-                                            <div class="search-box">&#9726&nbsp;수립(조정)일 현재 충당금잔액 :&nbsp;                             
-                                                <input type="text" id="copy_balance" name="" class="" style="width:150px;">                   
-                                            </div>
-                                            <div class="search-box">&#9726&nbsp;단가(금액)할증율 :&nbsp;                             
-                                                <input type="text" id="copy_add" name="" class="" style="width:100px;">&nbsp;%                   
-                                            </div>
+                                    <div style="height:290px; padding: 15px; border: 1px solid #bcbcbc;">
+                                        <div id="">&#9726&nbsp;복사원년 :&nbsp;<****>  <!--복사대상 년월 2024년 03월-->
                                         </div>
-                                    </form>
-                                    <div class="pop_btn">
-                                        <button id="copy_save_btn" onclick="">저장</button>
-                                        <label for="layer_popup2" class="popup_closs_btn">닫기</label>                    
+                                        <div class="select-container">&#9726&nbsp;구분 :&nbsp;
+                                            <select id="gubun" class="select_cont100">
+                                                <option value="junggi">정기</option> <!-- 조정이 정기와 수시로 나누어 짐 현재 조정은 정기로 표시-->
+                                                <option value="soosi">수시</option>
+                                            </select>
+                                        </div>
+                                        <div class="search-box">&#9726&nbsp;수립조정년월 :&nbsp;
+                                            <select id="copy_year" class="select_cont70">
+                                                <option  value="copy_year"><****></option>
+                                            </select>년&emsp;
+                                            <select id="copy_month" class="select_cont70">&nbsp;
+                                                <option value="copy_month"><****></option>
+                                            </select>월&nbsp;
+                                        </div>
+                                        <div class="search-box">&#9726&nbsp;수립조정년월 :&nbsp;
+                                            <select id="copy_st_year" class="select_cont70">
+                                                <option  value="copy_st_year"><****></option>
+                                            </select>년부터&emsp;
+                                            <select id="copy_st_month" class="select_cont70">&nbsp;
+                                                <option value="copy_st_month"><****></option>
+                                            </select>월까지&nbsp;
+                                        </div>
+                                        <div class="search-box">&#9726&nbsp;수립조정관계자 :&nbsp;
+                                            <input type="text" id="copy_person" name="" class="" style="width:200px;">
+                                        </div>
+                                        <div class="search-box">&#9726&nbsp;수립(조정)일 현재 충당금잔액 :&nbsp;
+                                            <input type="text" id="copy_balance" name="" class="" style="width:150px;">
+                                        </div>
+                                        <div class="search-box">&#9726&nbsp;단가(금액)할증율 :&nbsp;
+                                            <input type="text" id="copy_add" name="" class="" style="width:100px;">&nbsp;%
+                                        </div>
                                     </div>
+                                    <div class="pop_btn" id="pop2_btn"></div>
                                 </div>
                             </div>
                             <!-- 팝업끝-->
-                            <button id="add-btn" onclick="">추가</button>
-                            <button id="save_btn" onclick="">저장</button>
                         </span>
                     </div>
                     <div class="section2">
                         <div id="" class="section2_line2">
-                            <form action="." method="post">
-                                <div>   
-                                    <span class="select-container">구분 :&nbsp;
-                                        <select id="gubun" class="select_cont100">
-                                            <option value="junggi">정기</option> <!-- 조정이 정기와 수시로 나누어 짐 현재 조정은 정기로 표시--> 
-                                            <option value="soosi">수시</option>
-                                            <option value="soolib">수립</option>
-                                        </select>
-                                    </span>
-                                    <span class="search-box">&emsp;&emsp;&emsp;&emsp;&emsp;수립조정년월 :&nbsp;
-                                        <select id="year" class="select_cont70">
-                                            <option  value="year"><****></option>
-                                        </select>년&emsp;
-                                        <select id="month" class="select_cont70">&nbsp;
-                                            <option value="month"><****></option>
-                                        </select>월&nbsp;                        
-                                    </span>
-                                    <span class="search-box">&emsp;&emsp;&emsp;&emsp;&emsp;총계획기간 :&nbsp;
-                                        <select id="st_year" class="select_cont70">
-                                            <option value="st_year"><****></option>
-                                        </select>&emsp;~&emsp;
-                                        <select id="end_year" class="select_cont70">&nbsp;
-                                            <option value="end_year"><****></option>
-                                        </select>                         
-                                    </span>
-                                </div>
-                                <div>
-                                    <span class="search-box">수립조정관계자 :&nbsp;                             
-                                        <input type="text" id="person" name="" class="" style="width:309px;">                   
-                                    </span>                                    
-                                    <span class="search-box">&emsp;&emsp;&emsp;&emsp;수립(조정)일 현재 충당금잔액 :&nbsp;                             
-                                        <input type="text" id="balance" name="" class="" style="width:150px;">                   
-                                    </span>
-                                </div>
-                            </form>                                               
+                            <div>
+                                <span class="select-container">구분 :&nbsp;
+                                    <select id="gubun" class="select_cont100">
+                                        <option value="junggi">정기</option> <!-- 조정이 정기와 수시로 나누어 짐 현재 조정은 정기로 표시-->
+                                        <option value="soosi">수시</option>
+                                        <option value="soolib">수립</option>
+                                    </select>
+                                </span>
+                                <span class="search-box">&emsp;&emsp;&emsp;&emsp;&emsp;수립조정년월 :&nbsp;
+                                    <input type="month" id="input_planGbn" name="PLAN_GBN" disabled>
+                                </span>
+                                <span class="search-box">&emsp;&emsp;&emsp;&emsp;&emsp;총계획기간 :&nbsp;
+                                    <select id="input_planStYear" name="PLAN_ST_YEAR" class="select_cont70"></select>&emsp;~&emsp;
+                                    <select id="input_planEndYear" name="PLAN_END_YEAR" class="select_cont70"></select>
+                                </span>
+                            </div>
+                            <div>
+                                <span class="search-box">수립조정관계자 :&nbsp;
+                                    <input type="text" id="input_planUser" name="PLAN_USER" style="width:309px;">
+                                </span>
+                                <span class="search-box">&emsp;&emsp;&emsp;&emsp;수립(조정)일 현재 충당금잔액 :&nbsp;
+                                    <input type="text" id="input_readyAmt" name="READY_AMT" oninput="inputMoneyFormat(this)" style="width:150px;">
+                                </span>
+                            </div>
                         </div> 
                     </div>
                     <div class="section_middle_title">
                         <span><i class="icon-pause"></i>공사종별수립기준</span>
                         <span class="section_middle_btn">
-                            <input type="checkbox" id="layer_popup3" class="layer_popup">
-                            <label for="layer_popup3" class="pop_labal popup_btn">공사종별추가</label>
+                            <button id="" class="del_btn" onclick="popupOpen(popupId3);">공사종별추가</button>
                              <!-- 팝업시작--> 
-                            <div class="layer_bg">
+                            <div class="layer_bg" id="add_popup">
                                 <div class="popup" style="width:900px;">
                                     <div class="pop_title">&#10004; 공사종별추가</div>
-                                    <form action="." method="post">
+                                    <div>
                                         <span>&emsp;&#9726&nbsp;검색조건 :&nbsp;</span>
-
                                         <span class="select-container">&emsp;
                                             <select id="jan_label_1" name="" class="select_cont150">
                                                 <option value="jan_label_1"><****></option>
@@ -188,19 +149,14 @@
                                                 <option value="yes">Y</option>
                                                 <option value="no">N</option>
                                             </select>
-                                        </span>                                                                 
+                                        </span>
                                         <span class="section_middle_btn">
                                             <button id="search_btn" onclick="">검색</button>&emsp;
                                         </span>
-                                    </form>                                   
-                                    <div id=""  style="height: 600px; border: 1px solid #bcbcbc;">
-                                        <div id="" name="">
-                                            선택 code 공사종별 ... 그리드
-                                        </div>
-                                    </div>&emsp;&#9726&nbsp;이미 선택된 공사종별도 추가선택 저장이 가능합니다.
-                                    <div>
                                     </div>
-                                    <div class="pop_btn">
+                                    <div style="height: 600px;" id="pop3Grid1"></div>
+                                    &emsp;&#9726&nbsp;이미 선택된 공사종별도 추가선택 저장이 가능합니다.
+                                    <div class="pop_btn" id="pop3_btn">
                                         <button id="save_btn" onclick="">저장</button>
                                         <label for="layer_popup3" class="popup_closs_btn">닫기</label>                    
                                     </div>
@@ -209,13 +165,430 @@
                             <!-- 팝업끝--> 
                         </span>
                     </div>
-                    <div style="height: 489px; border: 1px solid #bcbcbc;">
-                        <div id="gongchu" class="">
-                            선택된 공사종별을 나타내는 그리드영역
-                        </div>
-                    </div>
+                    <div id="grid2"></div>
                 </div>
             </div>            
         </div>
-    </div>
+
+<script>
+    /** 작성 순서
+     *
+     * 변수 선언 :
+     *      pgId, 그리드 컴포넌트, 그리드 컴포넌트 포커스, 입력부 컴포넌트, 팝업 컴포넌트, select 컴포넌트
+     * 그리드 설정
+     * 그리드 생성
+     * 그리드 이벤트 :
+     *      체크박스 클릭 시 셀렉트 이벤트, 셀 선택 변경 이벤트, 더블 클릭 시 팝업 오픈 이벤트
+     * 팝업 이벤트 : (미사용시 생략)
+     * 그리드 조회 함수
+     * 그리드 추가 함수    (미사용시 생략)
+     * 그리드 저장 함수    (미사용시 생략)
+     * 그리드 삭제 함수    (미사용시 생략)
+     * 컴포넌트 필수항목 입력 체크    (미사용시 생략)
+     * crud 권한 처리 호출 함수
+     *
+     * 기타
+     * 로드 :
+     *      기본 crud 버튼 생성
+     *      crud 권한 처리 함수 호출
+     *      공통코드 가져오기		(미사용시 생략)
+     *      그리드 DDL 설정       (미사용시 생략)
+     *      (필요 시)그리드 조회 함수 호출    (미사용시 생략)
+     *
+     */
+
+        //변수 선언
+    const sectionId = "${sectionId}";	//섹션ID
+    const pgId = "${pgId}";	//프로그램ID
+    const menuId = "${menuId}";	//메뉴ID
+    let grid1;	// 그리드 컴포넌트
+    let grid2;	// 그리드 컴포넌트
+    let focus = 0;	//그리드 컴포넌트 포커스
+    let focus2 = 0;	//그리드 컴포넌트 포커스
+    const popupId = "change_popup"; //팝업 컴포넌트
+    const popupId2 = "copy_popup"; //팝업 컴포넌트
+    const popupId3 = "add_popup"; //팝업 컴포넌트
+    const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
+    const pop2_btn = document.querySelector("#pop2_btn"); //팝업버튼 컴포넌트
+    const pop3_btn = document.querySelector("#pop2_btn"); //팝업버튼 컴포넌트
+    const search_status = document.querySelector("#search_status"); //select 컴포넌트
+    const search_contKindCd = document.querySelector("#search_contKindCd"); //select 컴포넌트
+    const search_endDate1 = document.querySelector("#search_endDate1"); //select 컴포넌트
+    const search_endDate2 = document.querySelector("#search_endDate2"); //select 컴포넌트
+    const input_stYear = document.querySelector("#input_stYear"); //input 컴포넌트
+    const input_endYear = document.querySelector("#input_endYear"); //input 컴포넌트
+    const input_part2 = document.querySelector("#input_part2"); //input 컴포넌트
+    const input_compCode = document.querySelector("#input_compCode"); //input 컴포넌트
+    const input_mgmuserId = document.querySelector("#input_mgmuserId"); //input 컴포넌트
+
+    //그리드 설정
+    const grid1ColumnLayout = [
+        { dataField: "OFFICE_CODE",
+            headerText: "구분",
+            dataType: "text",
+            width : "30%",
+            editable : false,
+        },
+        { dataField: "START_DATE",
+            headerText: "년월",
+            dataType: "date",
+            formatString: "yyyy-mm",
+            width : "*%",
+            editable : false,
+        },
+        { dataField: "STATUS_NM",
+            headerText: "상태",
+            dataType: "text",
+            width : "30%",
+        },
+    ];
+
+    //그리드 생성
+    grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
+        Object.assign({}, we_grid_Props,
+            {
+                editable : false,
+                showRowNumColumn : false,
+                showRowCheckColumn : false
+            })
+    );
+
+    const grid2ColumnLayout = [
+        { dataField: "OFFICE_CODE",
+            headerText: "공사종별",
+            dataType: "text",
+            width : "*%",
+            editable : false,
+        },
+        { dataField: "OFFICE_CODE",
+            headerText: "시행규칙",
+            dataType: "text",
+            width : "10%",
+            editable : false,
+        },
+        { headerText: "전면",
+            children : [{
+                dataField : "FLOOR_CNT",
+                headerText : "수선주기",
+                width : "8%",
+                editable : false,
+            }]
+        },
+        { headerText: "부분",
+            children : [{
+                dataField : "FLOOR_CNT",
+                headerText : "수선주기",
+                width : "8%",
+                editable : false,
+            }, {
+                dataField : "UNDER_FLOOR_CNT",
+                headerText : "수선율",
+                width : "8%",
+                editable : false,
+            }]
+        },
+        { dataField: "STATUS_NM",
+            headerText: "비고",
+            dataType: "text",
+            width : "20%",
+        },
+        { dataField: "CODE_NO",
+            headerText: "만기년도",
+            dataType: "text",
+            width : "8%",
+            editRenderer : {
+                type : "InputEditRenderer",
+                onlyNumeric : true, // 0~9 까지만 허용
+                maxlength : 4,
+            }
+        },
+    ];
+
+    //그리드 생성
+    grid2 = AUIGrid.create("#grid2", grid2ColumnLayout,
+        Object.assign({}, we_grid_Props,
+            {
+                height: 489,
+                showRowCheckColumn : false
+            })
+    );
+
+
+    //그리드 이벤트
+    //체크박스 클릭 시
+    AUIGrid.bind(grid1, "rowCheckClick", function(event) {
+        AUIGrid.setSelectionByIndex(grid1, event.rowIndex, 0);
+    });
+    //행 클릭 시
+    AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
+        if(!isNull(AUIGrid.getSelectedRows(grid1)[0].COMP_CODE)) {
+            getSelect_input_mgmuserId();
+        }
+        //그리드-input 태그 바인딩
+        gridToInput(grid1, popupId);
+        //팝업 열기 이벤트
+        popupOpen(popupId);
+    });
+
+    //팝업 이벤트
+
+    //팝업 닫기 이벤트
+    function close_popup_onclick(){
+        popupClose(popupId);
+        clearInput(popupId);
+    }
+
+    //그리드 조회 함수
+    function search_grid1_onclick(){
+        //검색데이터
+        let selectParam = {
+            STATUS : search_status.value,
+            CONT_KIND_CD : search_contKindCd.value,
+            END_DATE1 : search_endDate1.value.replace(/-/g, ""),
+            END_DATE2 : search_endDate2.value.replace(/-/g, "")
+        }
+
+        //파라미터
+        let selectData = {
+            sectionId : sectionId,
+            component : pgId + "_grid1",
+            param: selectParam,
+        }
+
+        we_select( selectData,{
+            successSelect : (json) => {
+                let data = json.DATA;
+                //그리드 데이터 세팅
+                AUIGrid.setGridData(grid1, data);
+                //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
+                AUIGrid.setSelectionByIndex(grid1, focus, 0);
+                focus = 0;
+            }
+        });
+    }
+
+    //그리드 추가 함수
+    function add_grid1_onclick(){
+        // 그리드의 편집 인푸터가 열린 경우 에디팅 완료 상태로 만듬.
+        AUIGrid.forceEditingComplete(grid1, null);
+        //새행 만들기
+        const item = {};
+        AUIGrid.addRow(grid1, item, "last");
+        //팝업 열기 이벤트
+        popupOpen(popupId);
+        //그리드-input 태그 바인딩
+        gridToInput(grid1, popupId);
+    }
+
+
+    //그리드 저장 함수
+    function save_grid1_onclick(){
+        // 추가된 행 아이템들(배열)
+        let addedRowItems = AUIGrid.getAddedRowItems(grid1);
+        // 수정된 행 아이템들(배열) : 수정된 필드와 수정안된 필드 모두를 얻음.
+        let editedRowItems = AUIGrid.getEditedRowItems(grid1);
+
+        //검증
+        let itemCount = addedRowItems.length + editedRowItems.length;
+        if(itemCount == 0){
+            alert("변경된 항목이 없습니다");
+            return;
+        }
+        if(itemCount > 100){
+            alert("변경사항 저장은 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
+            return;
+        }
+        if(!confirm("총 " + itemCount + "건의 변경사항을 저장하시겠습니까?")) return;
+        if(!requireCheck("SAVE_GRID1")) return;
+
+        //포커스 지정
+        focus = gridFocus(grid1);
+
+        //저장 데이터
+        let saveParam = {
+            insertParam : addedRowItems,
+            updateParam : editedRowItems,
+            key : {
+                column : ["OFFICE_CODE"],
+                seq : [1]
+            },
+            before : {}
+        }
+
+        //파라미터
+        let saveData  = {
+            sectionId : sectionId,
+            component : pgId + "_grid1",
+            param: saveParam,
+        }
+
+        we_save( saveData ,{
+            successSave : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
+                    //팝업 닫기
+                    search_grid1_onclick()
+                }else return;
+            }
+        });
+    }
+
+    //그리드 삭제 함수
+    function delete_grid1_onclick(){
+        //검증
+        const checkedItems = AUIGrid.getCheckedRowItems(grid1);
+        let itemCount = checkedItems.length;
+        if (itemCount=== 0) {
+            alert("체크된 항목이 없습니다");
+            return;
+        }
+        if(itemCount > 100){
+            alert("삭제는 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
+            return;
+        }
+        let delItemsName = checkedItems.map(row => row.item.COMP_NAME).join(", ");
+        if (!confirm( delItemsName + "을/를(총 " + itemCount +"건) 삭제하시겠습니까?")) return;
+
+        //포커스 지정
+        focus = (checkedItems[0].rowIndex -1) < 1 ? 0 : (checkedItems[0].rowIndex -1);
+
+        // 체크된 행 삭제 처리
+        AUIGrid.removeCheckedRows(grid1);
+
+        // 삭제된 행 아이템들(배열) -> 삭제 데이터
+        let param = {
+            deleteParam : AUIGrid.getRemovedItems(grid1),
+            before : {}
+        };
+        //공통 저장 트렌젝션용 데이터
+        let deleteData = {
+            sectionId : sectionId,
+            component : pgId + "_grid1",
+            param : param,
+        }
+
+        we_delete(deleteData,{
+            successDelete : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
+                    //팝업 닫기
+                    close_popup_onclick();
+                    search_grid1_onclick();
+                }else return;
+            }
+        });
+    }
+
+    //컴포넌트 필수항목 입력 체크
+    function requireCheck(require){
+        let isValid = true;
+        switch(require){
+            case "SAVE_GRID1":
+                let addedRowItems = AUIGrid.getAddedRowItems(grid1);
+                let editedRowItems = AUIGrid.getEditedRowItems(grid1);
+                let items = [...addedRowItems,...editedRowItems];
+                for(const row of items){
+                    if(isNull(row.OFFICE_NAME)){
+                        alert("관리소명은 반드시 입력해야 합니다.");
+                        isValid = false;
+                        break;
+                    }
+                }
+                break;
+
+        }
+        return isValid;
+    }
+
+    //crud 권한 처리 함수
+    function checkCrudPermission(pgId){
+        we_checkCrudPermission(pgId,{
+            successPer : (data) => {
+                //권한에 따라 버튼 숨김
+                btnPermission(data)
+            }
+        });
+    }
+
+    async function getSelect_input_compCode(){
+        input_compCode.innerHTML = "";
+        //검색데이터
+        let param = {
+        }
+        //파라미터
+        let data = {
+            sectionId : sectionId,
+            component : pgId + "_input_compCode",
+            param: param,
+        }
+        let list = await we_getSelect(data);
+
+        if(list){
+            input_compCode.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
+            list.forEach(row => {
+                input_compCode.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.COMP_CODE + "'>" + row.COMP_NAME + "</option>");
+            })
+        }
+        input_compCode.selectedIndex = 0;
+
+    }
+
+    async function getSelect_input_mgmuserId(){
+        input_mgmuserId.innerHTML = "";
+        //검색데이터
+        let param = {
+            COMP_CODE :  AUIGrid.getSelectedRows(grid1)[0].COMP_CODE
+        }
+        //파라미터
+        let data = {
+            sectionId : sectionId,
+            component : pgId + "_input_mgmuserId",
+            param: param,
+        }
+        let list = await we_getSelect(data);
+
+        if(list) {
+            input_mgmuserId.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
+            list.forEach(row => {
+                input_mgmuserId.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.MGMUSER_ID + "'>" + row.MGMUSER_ID + "</option>");
+            })
+        }
+        input_mgmuserId.value = AUIGrid.getSelectedRows(grid1)[0].MGMUSER_ID
+    }
+
+    async function getSelect_input_year(){
+        input_stYear.innerHTML = "";
+        input_endYear.innerHTML = "";
+        let thisYear = getToday("YYYY");
+        for(let year = thisYear - 50 ; year <= (thisYear + 20); year++){
+            input_stYear.insertAdjacentHTML("beforeend",
+                "<option value='" + year + "'>" + year + "</option>");
+            input_endYear.insertAdjacentHTML("beforeend",
+                "<option value='" + year + "'>" + year + "</option>");
+        }
+    }
+
+    //로드
+    window.onload = function() {
+        //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
+        btnMaker({ tag: "#section_middle_btn", grid: "grid1", search : true, add : true, print : true});
+        btnMaker({ tag: "#pop_btn", grid: "grid1", save : true});
+        pop_btn.insertAdjacentHTML("beforeend",
+            "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
+        //crud 권한 처리 함수
+        checkCrudPermission(pgId);
+
+        Promise.all([
+            //그리드 DDL
+            getSelect_input_year(),
+        ]).then(function (){
+            //로드 시 그리드 바로 조회
+            search_grid1_onclick();
+        })
+    };
+
+</script>
+
 <%@ include file = "../../inc_footer.jsp" %>

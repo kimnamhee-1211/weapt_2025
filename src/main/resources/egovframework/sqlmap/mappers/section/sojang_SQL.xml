@@ -1371,6 +1371,7 @@
 		SELECT
 			A.MENU_NAME        AS MENU_NAME,
 			A.MENU_ID          AS MENU_ID,
+			A.PG_ID            AS PG_ID,
 			A.M_LEVEL          AS M_LEVEL,
 			A.UP_MENU_ID       AS UP_MENU_ID,
 			ISNULL(B.FORM_USE, '0')    AS FORM_USE,
