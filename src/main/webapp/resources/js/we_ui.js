@@ -87,6 +87,45 @@ function btnHidden(btnIds, btnDivId) {
     }
 }
 
+/* function btnEnable
+ * @description : 버튼 활성화 제어
+ * @param data ({}) : 권한 data
+ * @return : null
+ */
+function btnEnable({   grid = 1,
+                       search = true,
+                       add = true,
+                       del = true,
+                       save = true,
+                       print = true
+                   } = {}) {
+
+    const btnTags = document.querySelectorAll("button");
+    for (let btnTag of btnTags) {
+        let btnId = btnTag.id;
+        let btn_type = btnId.split("_")[0]
+        let btn_grid =  btnId.split("_")[2]
+        if(grid == btn_grid){
+            if (btn_type === "search") {
+                btnTag.disabled = !search;
+            }
+            if (btn_type === "add") {
+                btnTag.disabled = !add;
+            }
+            if (btn_type === "delete") {
+                btnTag.disabled = !del;
+            }
+            if (btn_type === "save") {
+                btnTag.disabled = !save;
+            }
+            if (btn_type === "print") {
+                btnTag.disabled = !print;
+            }
+        }
+    }
+}
+
+
 /* function btnPermission
  * @description : crud 권한별 버튼 제어
  * @param data ({}) : 권한 data
@@ -295,6 +334,7 @@ function dataToInput(data, inputDivId) {
  */
 function gridToInput(grid, inputDivId) {
     let selectedRow = AUIGrid.getSelectedRows(grid)[0];
+
     const inputDiv = document.querySelector("#" + inputDivId);
     const namedElements = inputDiv.querySelectorAll('[name]');
     for (let el of namedElements) {

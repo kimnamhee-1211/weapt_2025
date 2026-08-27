@@ -8,8 +8,8 @@
                 <div class="section1_nav">
                 <i class="icon-recycle"></i>수립기준
                 </div>
-                <div class="section1_btn">
-                    최초설치년월 : <input type="month">
+                <div class="section1_btn" id="input">
+                    최초설치년월 : <input type="month" id="input_firstYrMm">
                     <button id="" onclick="save_init_onclick()">저장</button>
                 </div>
             </div>
@@ -91,17 +91,17 @@
                         </span>
                     </div>
                     <div class="section2">
-                        <div id="" class="section2_line2">
+                        <div id="grid1_input" class="section2_line2" onchange="inputToGrid(grid1, grid1_input)" >>
                             <div>
                                 <span class="select-container">구분 :&nbsp;
-                                    <select id="gubun" class="select_cont100">
-                                        <option value="junggi">정기</option> <!-- 조정이 정기와 수시로 나누어 짐 현재 조정은 정기로 표시-->
-                                        <option value="soosi">수시</option>
-                                        <option value="soolib">수립</option>
+                                    <select  id="input_planGbn" name="PLAN_GBN"  class="select_cont100">
+                                        <option value="2" selected>정기</option> <!-- 기존의 조정 -->
+                                        <option value="3">수시</option>
+                                        <option value="1">수립</option>
                                     </select>
                                 </span>
                                 <span class="search-box">&emsp;&emsp;&emsp;&emsp;&emsp;수립조정년월 :&nbsp;
-                                    <input type="month" id="input_planGbn" name="PLAN_GBN" disabled>
+                                    <input type="month" id="input_planMonth" name="PLAN_MONTH" disabled>
                                 </span>
                                 <span class="search-box">&emsp;&emsp;&emsp;&emsp;&emsp;총계획기간 :&nbsp;
                                     <select id="input_planStYear" name="PLAN_ST_YEAR" class="select_cont70"></select>&emsp;~&emsp;
@@ -211,10 +211,9 @@
     const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const pop2_btn = document.querySelector("#pop2_btn"); //팝업버튼 컴포넌트
     const pop3_btn = document.querySelector("#pop2_btn"); //팝업버튼 컴포넌트
-    const search_status = document.querySelector("#search_status"); //select 컴포넌트
-    const search_contKindCd = document.querySelector("#search_contKindCd"); //select 컴포넌트
-    const search_endDate1 = document.querySelector("#search_endDate1"); //select 컴포넌트
-    const search_endDate2 = document.querySelector("#search_endDate2"); //select 컴포넌트
+    const input_firstYrMm = document.querySelector("#input_firstYrMm"); //input 컴포넌트
+    const grid1_input = document.querySelector("#grid1_input"); //input 컴포넌트
+
     const input_stYear = document.querySelector("#input_stYear"); //input 컴포넌트
     const input_endYear = document.querySelector("#input_endYear"); //input 컴포넌트
     const input_part2 = document.querySelector("#input_part2"); //input 컴포넌트
@@ -223,24 +222,31 @@
 
     //그리드 설정
     const grid1ColumnLayout = [
-        { dataField: "OFFICE_CODE",
+        { dataField: "PLAN_GBN",
             headerText: "구분",
             dataType: "text",
             width : "30%",
             editable : false,
         },
-        { dataField: "START_DATE",
+        { dataField: "PLAN_MONTH",
             headerText: "년월",
             dataType: "date",
             formatString: "yyyy-mm",
             width : "*%",
             editable : false,
         },
-        { dataField: "STATUS_NM",
+        { dataField: "STATUS",
             headerText: "상태",
             dataType: "text",
             width : "30%",
         },
+        { dataField: "PLAN_ST_YEAR",
+            visible : false
+        },
+        { dataField: "PLAN_END_YEAR",
+            visible : false
+        },
+
     ];
 
     //그리드 생성
@@ -254,13 +260,13 @@
     );
 
     const grid2ColumnLayout = [
-        { dataField: "OFFICE_CODE",
+        { dataField: "NAME",
             headerText: "공사종별",
             dataType: "text",
             width : "*%",
             editable : false,
         },
-        { dataField: "OFFICE_CODE",
+        { dataField: "REGUL_YN",
             headerText: "시행규칙",
             dataType: "text",
             width : "10%",
@@ -268,7 +274,7 @@
         },
         { headerText: "전면",
             children : [{
-                dataField : "FLOOR_CNT",
+                dataField : "ALL_PERIOD",
                 headerText : "수선주기",
                 width : "8%",
                 editable : false,
@@ -276,23 +282,23 @@
         },
         { headerText: "부분",
             children : [{
-                dataField : "FLOOR_CNT",
+                dataField : "SUB_PERIOD",
                 headerText : "수선주기",
                 width : "8%",
                 editable : false,
             }, {
-                dataField : "UNDER_FLOOR_CNT",
+                dataField : "SUB_RATE",
                 headerText : "수선율",
                 width : "8%",
                 editable : false,
             }]
         },
-        { dataField: "STATUS_NM",
+        { dataField: "REMARKS",
             headerText: "비고",
             dataType: "text",
             width : "20%",
         },
-        { dataField: "CODE_NO",
+        { dataField: "END_YEAR",
             headerText: "만기년도",
             dataType: "text",
             width : "8%",
@@ -319,16 +325,12 @@
     AUIGrid.bind(grid1, "rowCheckClick", function(event) {
         AUIGrid.setSelectionByIndex(grid1, event.rowIndex, 0);
     });
-    //행 클릭 시
-    AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
-        if(!isNull(AUIGrid.getSelectedRows(grid1)[0].COMP_CODE)) {
-            getSelect_input_mgmuserId();
-        }
-        //그리드-input 태그 바인딩
+    //셀 선택 변경 이벤트 바인딩
+    AUIGrid.bind(grid1, "selectionChange", function(event) {
         gridToInput(grid1, popupId);
-        //팝업 열기 이벤트
-        popupOpen(popupId);
+        search_grid2_onclick();
     });
+
 
     //팝업 이벤트
 
@@ -337,17 +339,39 @@
         popupClose(popupId);
         clearInput(popupId);
     }
+    function close_popup2_onclick(){
+        popupClose(popupId2);
+        clearInput(popupId2);
+    }
+    function close_popup3_onclick(){
+        popupClose(popupId3);
+    }
+
+    function search_input1_onclick(){
+        //검색데이터
+        let selectParam = {
+        }
+
+        //파라미터
+        let selectData = {
+            sectionId : sectionId,
+            component : pgId + "_input1",
+            param: selectParam,
+        }
+
+        we_select( selectData,{
+            successSelect : (json) => {
+                let data = json.DATA;
+                input_firstYrMm.value = data[0].FIRST_YR_MM;
+            }
+        });
+    }
 
     //그리드 조회 함수
     function search_grid1_onclick(){
         //검색데이터
         let selectParam = {
-            STATUS : search_status.value,
-            CONT_KIND_CD : search_contKindCd.value,
-            END_DATE1 : search_endDate1.value.replace(/-/g, ""),
-            END_DATE2 : search_endDate2.value.replace(/-/g, "")
         }
-
         //파라미터
         let selectData = {
             sectionId : sectionId,
@@ -363,6 +387,33 @@
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
                 AUIGrid.setSelectionByIndex(grid1, focus, 0);
                 focus = 0;
+
+            }
+        });
+    }
+
+    function search_grid2_onclick(){
+
+        //검색데이터
+        let selectParam = {
+            PLAN_MONTH : AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH
+        }
+
+        //파라미터
+        let selectData = {
+            sectionId : sectionId,
+            component : pgId + "_grid2",
+            param: selectParam,
+        }
+
+        we_select( selectData,{
+            successSelect : (json) => {
+                let data = json.DATA;
+                //그리드 데이터 세팅
+                AUIGrid.setGridData(grid2, data);
+                //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
+                AUIGrid.setSelectionByIndex(grid2, focus2, 0);
+                focus2 = 0;
             }
         });
     }
@@ -373,13 +424,8 @@
         AUIGrid.forceEditingComplete(grid1, null);
         //새행 만들기
         const item = {};
-        AUIGrid.addRow(grid1, item, "last");
-        //팝업 열기 이벤트
-        popupOpen(popupId);
-        //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        AUIGrid.addRow(grid1, item, "first");
     }
-
 
     //그리드 저장 함수
     function save_grid1_onclick(){
@@ -408,10 +454,7 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : {
-                column : ["OFFICE_CODE"],
-                seq : [1]
-            },
+            key : {},
             before : {}
         }
 
@@ -436,7 +479,8 @@
     //그리드 삭제 함수
     function delete_grid1_onclick(){
         //검증
-        const checkedItems = AUIGrid.getCheckedRowItems(grid1);
+        const checkedItems = AUIGrid.getSelectedRows(grid);
+
         let itemCount = checkedItems.length;
         if (itemCount=== 0) {
             alert("체크된 항목이 없습니다");
@@ -446,8 +490,8 @@
             alert("삭제는 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
             return;
         }
-        let delItemsName = checkedItems.map(row => row.item.COMP_NAME).join(", ");
-        if (!confirm( delItemsName + "을/를(총 " + itemCount +"건) 삭제하시겠습니까?")) return;
+        let delItemsName = checkedItems.map(row => row.item.PLAN_MONTH).join(", ");
+        if (!confirm( delItemsName + " 수립조정기준을(총 " + itemCount +"건) 삭제하시겠습니까?")) return;
 
         //포커스 지정
         focus = (checkedItems[0].rowIndex -1) < 1 ? 0 : (checkedItems[0].rowIndex -1);
@@ -471,8 +515,6 @@
             successDelete : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
-                    //팝업 닫기
-                    close_popup_onclick();
                     search_grid1_onclick();
                 }else return;
             }
@@ -510,53 +552,6 @@
         });
     }
 
-    async function getSelect_input_compCode(){
-        input_compCode.innerHTML = "";
-        //검색데이터
-        let param = {
-        }
-        //파라미터
-        let data = {
-            sectionId : sectionId,
-            component : pgId + "_input_compCode",
-            param: param,
-        }
-        let list = await we_getSelect(data);
-
-        if(list){
-            input_compCode.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
-            list.forEach(row => {
-                input_compCode.insertAdjacentHTML("beforeend",
-                    "<option value='" + row.COMP_CODE + "'>" + row.COMP_NAME + "</option>");
-            })
-        }
-        input_compCode.selectedIndex = 0;
-
-    }
-
-    async function getSelect_input_mgmuserId(){
-        input_mgmuserId.innerHTML = "";
-        //검색데이터
-        let param = {
-            COMP_CODE :  AUIGrid.getSelectedRows(grid1)[0].COMP_CODE
-        }
-        //파라미터
-        let data = {
-            sectionId : sectionId,
-            component : pgId + "_input_mgmuserId",
-            param: param,
-        }
-        let list = await we_getSelect(data);
-
-        if(list) {
-            input_mgmuserId.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");  //필요시
-            list.forEach(row => {
-                input_mgmuserId.insertAdjacentHTML("beforeend",
-                    "<option value='" + row.MGMUSER_ID + "'>" + row.MGMUSER_ID + "</option>");
-            })
-        }
-        input_mgmuserId.value = AUIGrid.getSelectedRows(grid1)[0].MGMUSER_ID
-    }
 
     async function getSelect_input_year(){
         input_stYear.innerHTML = "";
