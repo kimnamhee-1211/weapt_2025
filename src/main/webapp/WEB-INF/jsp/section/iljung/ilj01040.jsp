@@ -123,6 +123,7 @@
             {
                 editable : false,
                 showRowCheckColumn: false,
+                height: 578,
             })
     );
 

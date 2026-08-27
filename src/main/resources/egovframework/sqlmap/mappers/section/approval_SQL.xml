@@ -6,7 +6,7 @@
 		SELECT
 			A.CODE_NO 			AS MENU_GROUP
 		FROM dbo.TPM_CODEBODY	AS A
-		WHERE A.CODEDV_NO = '113' AND A.DIVISION3_NM = #{MENU_ID}
+		WHERE A.CODEDV_NO = '113' AND A.DIVISION3_NM = #{CALL_MENU_ID}
 	</select>
 
 	<select id="getConfirmLine" parameterType="map" resultType="map">

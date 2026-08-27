@@ -88,7 +88,6 @@ const we_board_Props = {
     enableHScrollByWheel: false,
     showRowCheckColumn: false,          // 엑스트라 컬럼의 행 체크박스 출력 여부를 지정합니다.
     showRowNumColumn: true,             // 행 줄번호(로우 넘버링) 칼럼의 출력 여부를 지정합니다.
-    rowCheckColumnWidth: 40,            // 엑스트라 행 체크박스 칼럼의 가로 사이즈(width)
     showTooltip: false,                // 툴팁 출력 지정
     //tooltipSensitivity : 300,         // 툴팁 마우스 오버 후 300ms 이후 출력시킴.
     enableFilter: true,
@@ -175,8 +174,8 @@ const we_appr_Props = {
     noDataMessage: "결재 담당자가 없습니다..",
     wrapSelectionMove: true,            // 칼럼 끝에서 오른쪽 이동 시 다음 행, 처음 칼럼으로 이동할지 여부
     autoGridHeight: true,
-   // height: 66,                       // autoGridHeight : false 함께 쓰임
-    showSelectionBorder: true,         // 셀 선택 시 선택된 셀에 테두리(border) 를 표시할지 여부,
+   // height: 64,                       // autoGridHeight : false 함께 쓰임
+    showSelectionBorder: false,         // 셀 선택 시 선택된 셀에 테두리(border) 를 표시할지 여부,
     editingOnKeyDown: false,           // 키보드 입력으로 바로 편집할 수 있는지 여부
     enterKeyColumnBase: false,          // 엔터키가 다음 행이 아닌 다음 컬럼으로 이동함
     softRemoveRowMode: false

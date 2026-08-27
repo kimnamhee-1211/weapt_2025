@@ -168,7 +168,7 @@ public class LoginController {
 			LOGGER.debug("^o^ [ login ] 관리소 변경 성공 : " + loginUser.getOfficeCode() + " / " + resultList.getOfficeCode());
 
 		}else{
-			LOGGER.debug("^o^ [ login ] 관리소 변경 실패 : " + loginUser.getOfficeCode() + " / " + params.get("OFFICE_CODE"));
+			LOGGER.debug("^o^ [ login ] 관리소 변경 실패 : " + loginUser.getOfficeCode() + " / " + params.get("CHANGE_OFFICE_CODE"));
 		}
 
 		return "section/home/hom01010";

@@ -386,9 +386,8 @@ button:hover{
     margin-top: 5px; 
 }
 #conf_line{        /** 결재란 **/
-    height:100px;
+    height:70px;
     width: 100%;
-    margin-bottom: 5px;
 }
 .conf_line_left{
     line-height: 30px;
@@ -398,6 +397,8 @@ button:hover{
 .conf_line_right{
     float: right !important;
     border : none !important;
+    height: 64px;
+    width: auto;
 }
 .border10 {
     border: 1px solid #bcbcbc;

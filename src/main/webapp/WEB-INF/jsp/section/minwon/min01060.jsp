@@ -107,7 +107,7 @@
             {
                 editable : false,
                 showRowCheckColumn: false,
-                height : 546,
+                height : 584,
                 rowHeight : 60,
                 wordWrap: true,
             })

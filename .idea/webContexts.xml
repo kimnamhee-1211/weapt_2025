@@ -10,6 +10,7 @@
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/minwon/min01020.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/minwon" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/minwon/min01050.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/minwon" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/minwon/pop_min_jeon01.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/minwon" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/template/tem_grid1.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/template" />
       </map>
     </option>
   </component>

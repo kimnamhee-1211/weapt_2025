@@ -13,6 +13,10 @@
                 var addr = ''; // 주소 변수
                 var extraAddr = ''; // 참고항목 변수
 
+                let input_zip = document.getElementById("input_zip");
+                let input_addr1 = document.getElementById("input_addr1");
+                let input_addr2 = document.getElementById("input_addr2");
+
                 //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
                 if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
                     addr = data.roadAddress;
@@ -36,17 +40,14 @@
                         extraAddr = ' (' + extraAddr + ')';
                     }
                     // 조합된 참고항목을 해당 필드에 넣는다.
-                    document.getElementById("input_addr2").value = extraAddr;
-
+                    if (input_addr2) input_addr2.value = extraAddr;
                 } else {
-                    document.getElementById("input_addr2").value = '';
+                    if (input_addr2) input_addr2.value = '';
                 }
-
                 // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                document.getElementById('input_zip').value = data.zonecode;
-                document.getElementById("input_addr1").value = addr;
-                // 커서를 상세주소 필드로 이동한다.
-                document.getElementById("input_addr2").focus();
+                if (input_zip) input_zip.value = data.zonecode;
+                if (input_addr1) input_addr1.value = (!input_addr2 && data.userSelectedType === 'R') ? addr + " " + extraAddr : addr;
+                input_addr2?.focus();
             }
         }).open();
     }
