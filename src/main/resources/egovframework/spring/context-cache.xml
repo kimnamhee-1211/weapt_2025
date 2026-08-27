@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/cache
+           http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+    <!-- @Cacheable / @CacheEvict 활성화 -->
+    <cache:annotation-driven cache-manager="cacheManager"/>
+
+    <!-- Caffeine 캐시 -->
+    <bean id="cacheManager"
+          class="org.springframework.cache.caffeine.CaffeineCacheManager">
+
+        <property name="cacheNames">
+            <list>
+                <value>crudAuth</value>
+            </list>
+        </property>
+
+        <!-- 최대 10,000개 / 저장 후 30분 만료 -->
+        <property name="cacheSpecification"
+                  value="maximumSize=10000,expireAfterWrite=30m"/>
+
+    </bean>
+
+</beans>
