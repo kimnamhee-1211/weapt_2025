@@ -10,7 +10,7 @@
                 </div>
                 <div class="section1_btn" id="input">
                     최초설치년월 : <input type="month" id="input_firstYrMm">
-                    <button id="" onclick="save_init_onclick()">저장</button>
+                    <button id="init_btn" onclick="save_init_onclick()">저장</button>
                 </div>
             </div>
             <div class="section2">
@@ -28,23 +28,24 @@
                         <span><i class="icon-pause"></i>수립조정기초</span>
                         <span class="section_middle_btn" id="section_middle_btn"></span>
                         <span class="search-box section_middle_btn">
-                            <button id="" class="del_btn" onclick="popupOpen(popupId);">조정년월변경</button>
+                            <button id="change_btn" class="del_btn" onclick="popupOpen(popupId);">조정년월변경</button>
                              <!-- 변경 팝업시작--> 
                             <div class="layer_bg" id="change_popup">
                                 <div class="popup" style="width:420px;">
                                     <div class="pop_title">&#10004;조정년월변경</div>
                                         <div style="height:100px; padding: 15px; border: 1px solid #bcbcbc;">
-                                            <div id="">&#9726&nbsp;변경전 수립조정년월 :&nbsp;<****>  <!--변경전 수립조정년월 표시 2024년 03월--> 
+                                            <div id="">&#9726&nbsp;변경전 수립조정년월 :&nbsp;
+                                                <input type="month" id="pop_planMonth" name="PLAN_MONTH"><!--변경전 수립조정년월 표시 2024년 03월-->
                                             </div>
                                             <span class="search-box">&#9726&nbsp;변경후 수립조정년월 :&nbsp;
-                                                <input type="month">
+                                                <input type="month" id="pop_ChangePlanMonth" name="CHANGE_PLAN_MONTH">
                                             </span>
                                         </div>
-                                    <div class="pop_btn" id="pop_btn"></div>
+                                    <div class="pop_btn" id="pop_btn" onclick="save_change_onclick()"></div>
                                 </div>
                             </div>
                             <!-- 팝업끝-->
-                            <button id="" class="del_btn" onclick="popupOpen(popupId2);">복사</button>
+                            <button id="copy_btn" class="del_btn" onclick="popupOpen(popupId2);">복사</button>
                              <!-- 팝업시작--> 
                             <div class="layer_bg" id="copy_popup">
                                 <div class="popup" style="width:420px;">
@@ -101,7 +102,7 @@
                                     </select>
                                 </span>
                                 <span class="search-box">&emsp;&emsp;&emsp;&emsp;&emsp;수립조정년월 :&nbsp;
-                                    <input type="month" id="input_planMonth" name="PLAN_MONTH" disabled>
+                                    <input type="month" id="input_planMonth" name="PLAN_MONTH">
                                 </span>
                                 <span class="search-box">&emsp;&emsp;&emsp;&emsp;&emsp;총계획기간 :&nbsp;
                                     <select id="input_planStYear" name="PLAN_ST_YEAR" class="select_cont70"></select>&emsp;~&emsp;
@@ -121,7 +122,7 @@
                     <div class="section_middle_title">
                         <span><i class="icon-pause"></i>공사종별수립기준</span>
                         <span class="section_middle_btn">
-                            <button id="" class="del_btn" onclick="popupOpen(popupId3);">공사종별추가</button>
+                            <button id="add_btn" class="del_btn" onclick="popupOpen(popupId3);">공사종별추가</button>
                              <!-- 팝업시작--> 
                             <div class="layer_bg" id="add_popup">
                                 <div class="popup" style="width:900px;">
@@ -211,9 +212,14 @@
     const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const pop2_btn = document.querySelector("#pop2_btn"); //팝업버튼 컴포넌트
     const pop3_btn = document.querySelector("#pop2_btn"); //팝업버튼 컴포넌트
+    const change_btn = document.querySelector("#change_btn"); //팝업버튼 컴포넌트
+    const copy_btn = document.querySelector("#copy_btn"); //팝업버튼 컴포넌트
+    const add_btn = document.querySelector("#add_btn"); //팝업버튼 컴포넌트
+
+    const init_btn = document.querySelector("#init_btn"); //팝업버튼 컴포넌트
     const input_firstYrMm = document.querySelector("#input_firstYrMm"); //input 컴포넌트
     const grid1_input = document.querySelector("#grid1_input"); //input 컴포넌트
-
+    const input_planMonth = document.querySelector("#input_planMonth"); //input 컴포넌트
     const input_stYear = document.querySelector("#input_stYear"); //input 컴포넌트
     const input_endYear = document.querySelector("#input_endYear"); //input 컴포넌트
     const input_part2 = document.querySelector("#input_part2"); //input 컴포넌트
@@ -328,7 +334,27 @@
     //셀 선택 변경 이벤트 바인딩
     AUIGrid.bind(grid1, "selectionChange", function(event) {
         gridToInput(grid1, popupId);
-        search_grid2_onclick();
+        if(AUIGrid.isAddedById(grid1, event.rowIdValue)){
+            change_btn.disable = true;
+            copy_btn.disable = false;
+            add_btn.disable = true;
+            input_planMonth.disable = false;
+            AUIGrid.clearGridData(grid2);
+        }else{
+            if(event.item.STATUS ==  "만기"){
+                btnEnable({ grid: "grid1", save : false});
+                change_btn.disable = true;
+                copy_btn.disable = true;
+                add_btn.disable = true;
+            }else{
+                btnEnable({ grid: "grid1", save : true});
+                change_btn.disable = false;
+                copy_btn.disable = true;
+                add_btn.disable = false;
+            }
+            input_planMonth.disable = true;
+            search_grid2_onclick();
+        }
     });
 
 
@@ -362,7 +388,16 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
-                input_firstYrMm.value = data[0].FIRST_YR_MM;
+                if(data.length > 0){
+                    input_firstYrMm.value = data[0].FIRST_YR_MM;
+                    input_firstYrMm.disable = true
+                    init_btn.disable = true;
+
+                }else{
+                    input_firstYrMm.value = '';
+                    input_firstYrMm.disable = false
+                    init_btn.disable = false;
+                }
             }
         });
     }
@@ -387,7 +422,6 @@
                 //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
                 AUIGrid.setSelectionByIndex(grid1, focus, 0);
                 focus = 0;
-
             }
         });
     }
@@ -476,6 +510,48 @@
         });
     }
 
+    //그리드 저장 함수
+    function save_change_onclick(){
+
+        let param = [{
+            PLAN_MONTH : pop_planMonth.value,
+            CHANGE_PLAN_MONTH : pop_ChangePlanMonth.value
+        }]
+
+        if(!requireCheck("SAVE_CHANGE")) return;
+
+        if(!confirm("수립조정년월을 " + pop_planMonth.value + "에서 "
+            + pop_ChangePlanMonth.value + "로 변경하시겠습니까?")) return;
+
+        //포커스 지정
+        focus = gridFocus(grid1);
+
+        //저장 데이터
+        let saveParam = {
+            insertParam : null,
+            updateParam : param,
+            key : {},
+            before : {}
+        }
+
+        //파라미터
+        let saveData  = {
+            sectionId : sectionId,
+            component : pgId + "_change",
+            param: saveParam,
+        }
+
+        we_save( saveData ,{
+            successSave : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
+                    //팝업 닫기
+                    search_grid1_onclick()
+                }else return;
+            }
+        });
+    }
+
     //그리드 삭제 함수
     function delete_grid1_onclick(){
         //검증
@@ -530,8 +606,8 @@
                 let editedRowItems = AUIGrid.getEditedRowItems(grid1);
                 let items = [...addedRowItems,...editedRowItems];
                 for(const row of items){
-                    if(isNull(row.OFFICE_NAME)){
-                        alert("관리소명은 반드시 입력해야 합니다.");
+                    if(isNull(row.PLAN_MONTH)){
+                        alert("관리년월은 반드시 입력해야 합니다.");
                         isValid = false;
                         break;
                     }
@@ -568,7 +644,7 @@
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        btnMaker({ tag: "#section_middle_btn", grid: "grid1", search : true, add : true, print : true});
+        btnMaker({ tag: "#section_middle_btn", grid: "grid1", search : true, add : true, save:true, print : true});
         btnMaker({ tag: "#pop_btn", grid: "grid1", save : true});
         pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");

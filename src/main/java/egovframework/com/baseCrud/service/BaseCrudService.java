@@ -25,8 +25,6 @@ public interface BaseCrudService {
 
     public Map<String, Object> saveList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
-    public int callBefore(Map<String, Object> before, LoginVO loginUser, String sectionId, String component, String pgId, String menuId);
-
     public List<Map<String, Object>> getKeyToParam(List<Map<String, Object>> insertParam, Map<String, Object> rawKey, String sectionId, String component, LoginVO loginUser);
 
     public List<Map<String, Object>> getCode(String CODEDV_NO);

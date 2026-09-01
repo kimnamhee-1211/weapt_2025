@@ -72,7 +72,7 @@ function btnMaker({
 }
 
 /* function btnHidden
- * @description : 틀정버튼 숨기기
+ * @description : 특정버튼 숨기기
  * @param btnIds ([str]) : 숨길 버튼 id
  * @param btnDivId (str) : 태그 id
  * @return : null
