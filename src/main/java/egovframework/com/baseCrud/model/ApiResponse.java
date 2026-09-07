@@ -15,6 +15,7 @@ public class ApiResponse<T> {
         APPROVAL,
         NULL_DATA,
 
+        AUTH,
         GRD,
         FORM_USE,
         GRD_READ,

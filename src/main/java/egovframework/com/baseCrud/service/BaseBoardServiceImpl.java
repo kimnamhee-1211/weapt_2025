@@ -5,6 +5,7 @@ import egovframework.com.baseCrud.support.ServiceSupport;
 import egovframework.com.baseCrud.model.ApiResponse;
 import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,10 +13,16 @@ import javax.annotation.Resource;
 import java.util.Map;
 
 @Service("baseBoardService")
-public class BaseBoardServiceImpl extends ServiceSupport implements BaseBoardService {
+public class BaseBoardServiceImpl implements BaseBoardService {
 
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
+
+    @Autowired
+    private CrudAuthService crudAuthService;
+
+    @Autowired
+    private ServiceSupport serviceSupport;
 
 
     //게시글 검색
@@ -23,27 +30,19 @@ public class BaseBoardServiceImpl extends ServiceSupport implements BaseBoardSer
     @Transactional
     public Map<String, Object> boardSelectOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
-        String statement = buildCrudStatement(sectionId, component, "boardSelectOne");
-        setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId, menuId);
+        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_READ");
+
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "boardSelectOne");
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         System.out.println(param);
 
         Map<String, Object> result = baseCrudMapper.selectOne(statement, param);
-        if (result == null || result.isEmpty()) {
-            throw new CrudFailException(
-                    "FAIL BOARD SLELECT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
-                    "게시글 조회 실패",
-                    ApiResponse.ApiType.SELECT);
-        }
 
         if ("Y".equals(param.get("cnt")) && param.get("LOGIN_ID") != result.get("USER_ID")) {
-            String cntUpStatement = buildCrudStatement(sectionId, component, "boardCntUp");
+            String cntUpStatement = serviceSupport.buildCrudStatement(sectionId, component, "boardCntUp");
             int cntUp = baseCrudMapper.updateOne(cntUpStatement, param);
             if (cntUp <= 0) {
-                throw new CrudFailException(
-                        "FAIL CNT " + component,
-                        "조회수 증가 실패 : " + cntUp + "건",
-                        ApiResponse.ApiType.CNT);
+                throw CrudFailException.cntFail(sectionId, pgId, component, param, cntUp);
             }
         }
 
@@ -64,20 +63,14 @@ public class BaseBoardServiceImpl extends ServiceSupport implements BaseBoardSer
         if (insertParam != null && !insertParam.isEmpty()) {
             resultInsertRowCount = processInsert(sectionId, component, loginUser, insertParam, pgId, menuId);
             if (resultInsertRowCount <= 0) {
-                throw new CrudFailException(
-                        "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
-                        "저장 실패 : " + (resultInsertRowCount) + "건",
-                        ApiResponse.ApiType.INSERT);
+                throw CrudFailException.insertFail(sectionId, pgId, component, insertParam, resultInsertRowCount);
             }
         }
 
         if (updateParam != null && !updateParam.isEmpty()) {
             resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId, menuId);
             if (resultUpdateRowCount <= 0) {
-                throw new CrudFailException(
-                        "FAIL UPDATE " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
-                        "저장 실패 : " + (resultUpdateRowCount) + "건",
-                        ApiResponse.ApiType.UPDATE);
+                throw CrudFailException.updateFail(sectionId, pgId, component, updateParam, resultUpdateRowCount);
             }
         }
 
@@ -85,21 +78,25 @@ public class BaseBoardServiceImpl extends ServiceSupport implements BaseBoardSer
     }
 
     private int processInsert(String sectionId, String component, LoginVO loginUser, Map<String, Object> insertParam, String pgId, String menuId) {
+
+        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_CREATE");
+
         //loginUser set
-        setLoginParam(insertParam, loginUser);
-        setPgIdParam(insertParam, pgId, menuId);
+        serviceSupport.setParam(insertParam, loginUser, pgId, menuId);
         System.out.println(insertParam);
-        String statement = buildCrudStatement(sectionId, component, "insertList");
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "insertList");
         return baseCrudMapper.insertOne(statement, insertParam);
     }
 
 
     private int processUpdate(String sectionId, String component, LoginVO loginUser, Map<String, Object> updateParam, String pgId, String menuId) {
+
+        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_UPDATE");
+
         //loginUser set
-        setLoginParam(updateParam, loginUser);
-        setPgIdParam(updateParam, pgId, menuId);
+        serviceSupport.setParam(updateParam, loginUser, pgId, menuId);
         System.out.println(updateParam);
-        String statement = buildCrudStatement(sectionId, component, "boardUpdateOne");
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "boardUpdateOne");
         return baseCrudMapper.updateOne(statement, updateParam);
     }
 
@@ -109,18 +106,15 @@ public class BaseBoardServiceImpl extends ServiceSupport implements BaseBoardSer
     @Transactional
     public int boardDeleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
-        String statement = buildCrudStatement(sectionId, component, "boardDeleteOne");
-        Map<String, Object> deleteParam = (Map<String, Object>) param.get("deleteParam");
-        setLoginParam(deleteParam, loginUser);
-        setPgIdParam(deleteParam, pgId, menuId);
+        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_DELETE");
 
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "boardDeleteOne");
+        Map<String, Object> deleteParam = (Map<String, Object>) param.get("deleteParam");
+        serviceSupport.setParam(deleteParam, loginUser, pgId, menuId);
         int resultRowCount = baseCrudMapper.deleteOne(statement, deleteParam);
 
         if (resultRowCount <= 0) {
-            throw new CrudFailException(
-                    "FAIL DELETE " + sectionId + "/" + pgId + "/" + component + " : \n" + deleteParam,
-                    "삭제 실패 : " + resultRowCount + "건",
-                    ApiResponse.ApiType.DELETE);
+            throw CrudFailException.deleteFail(sectionId, pgId, component, deleteParam, resultRowCount);
         }
 
         return resultRowCount;

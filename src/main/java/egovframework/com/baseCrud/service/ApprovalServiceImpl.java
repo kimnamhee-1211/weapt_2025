@@ -3,9 +3,9 @@ package egovframework.com.baseCrud.service;
 import egovframework.com.baseCrud.dao.BaseCrudMapper;
 import egovframework.com.baseCrud.support.ServiceSupport;
 import egovframework.com.baseCrud.model.ApiResponse;
-import egovframework.com.exception.ApprovalAuthException;
 import egovframework.com.exception.ApprovalFailException;
 import egovframework.com.login.model.LoginVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,26 +17,28 @@ import java.util.Map;
 
 @Service("approvalService")
 @Transactional
-public class ApprovalServiceImpl extends ServiceSupport implements ApprovalService {
+public class ApprovalServiceImpl implements ApprovalService {
 
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
+
+    @Autowired
+    private ServiceSupport serviceSupport;
 
     //결재 직책 조회(개별)
     @Override
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getApprDuty(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
-        String statement = buildApprovalStatement(sectionId, component, "confirmDuty");
+        String statement = serviceSupport.buildApprovalStatement(sectionId, component, "confirmDuty");
 
-        setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId, menuId);
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         System.out.println(param);
 
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
         if (result == null || result.isEmpty()) {
-            throw new ApprovalAuthException(
+            throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 직책 정보가 없습니다.",
                     ApiResponse.ApiType.NULL_DATA);
@@ -53,16 +55,14 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getApprDutyLine(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
-        setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId, menuId);
-
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         List<Map<String, Object>> menuGroup = baseCrudMapper.selectList("approvalMapper.confirmLine_menuGroup", param);
         param.put("MENU_GROUP", menuGroup.get(0).get("MENU_GROUP"));
 
         List<Map<String, Object>> result = baseCrudMapper.selectList("approvalMapper.getConfirmLine", param);
 
         if (result == null || result.isEmpty()) {
-            throw new ApprovalAuthException(
+            throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 직책 정보가 없습니다.",
                     ApiResponse.ApiType.NULL_DATA);
@@ -76,9 +76,7 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
     @Transactional(readOnly = true)
     public List<Map<String, Object>> selectApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
-        setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId, menuId);
-
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         List<Map<String, Object>> menuGroup = baseCrudMapper.selectList("approvalMapper.confirmLine_menuGroup", param);
         param.put("MENU_GROUP", menuGroup.get(0).get("MENU_GROUP"));
 
@@ -92,11 +90,10 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
 
     //결재 처리 프로세스
     @Override
-    @Transactional(rollbackFor = Exception.class, noRollbackFor = ApprovalAuthException.class)
+    @Transactional(rollbackFor = Exception.class, noRollbackFor = ApprovalFailException.class)
     public List<Map<String, Object>> processApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
-        setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId, menuId);
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         System.out.println("param1 : " + param);
 
         List<Map<String, Object>> menuGroup = baseCrudMapper.selectList("approvalMapper.confirmLine_menuGroup", param);
@@ -117,14 +114,14 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
     //결재 권한 확인
     private boolean checkApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser) {
 
-        String statement = buildApprovalStatement(sectionId, component, "getApprAuth");
+        String statement = serviceSupport.buildApprovalStatement(sectionId, component, "getApprAuth");
 
         //직책별 결재 권한 정보 조회
         List<Map<String, Object>> approvalAuthority = baseCrudMapper.selectList(statement, param);
         System.out.println("approvalAuthority : " + approvalAuthority);
         if (approvalAuthority == null || approvalAuthority.isEmpty()) {
             System.out.println("????");
-            throw new ApprovalAuthException(
+            throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 정보가 없습니다.",
                     ApiResponse.ApiType.NULL_DATA);
@@ -133,7 +130,7 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
         //결재 처리 여부 확인
         String confirm_date = (String) approvalAuthority.get(0).get("REAL_DATE");
         if (confirm_date != null && !confirm_date.isEmpty()) {
-            throw new ApprovalAuthException(
+            throw new ApprovalFailException(
                     "ALREADY_APPROVAL " + sectionId + "/" + component + " : \n" + param,
                     "이미 결재 처리되었습니다.",
                     ApiResponse.ApiType.APPROVAL);
@@ -146,7 +143,7 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
         if (loginUser.getUserId().equals(confirm_id1) || loginUser.getUserId().equals(confirm_id2)) {
             return true;
         } else {
-            throw new ApprovalAuthException(
+            throw new ApprovalFailException(
                     "NO_AUTHORITY " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한이 없습니다.",
                     ApiResponse.ApiType.APPROVAL);
@@ -155,7 +152,7 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
 
     //결재 처리
     private int approval(String sectionId, String component, Map<String, Object> param) {
-        String statement = buildApprovalStatement(sectionId, component, "approval");
+        String statement = serviceSupport.buildApprovalStatement(sectionId, component, "approval");
 
         int result = baseCrudMapper.insertOne(statement, param);
 
@@ -170,11 +167,10 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
 
     //결재 취소 처리 프로세스
     @Override
-    @Transactional(rollbackFor = Exception.class, noRollbackFor = ApprovalAuthException.class)
+    @Transactional(rollbackFor = Exception.class, noRollbackFor = ApprovalFailException.class)
     public List<Map<String, Object>> processCnlApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
-        setLoginParam(param, loginUser);
-        setPgIdParam(param, pgId, menuId);
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         System.out.println(param);
 
         List<Map<String, Object>> menuGroup = baseCrudMapper.selectList("approvalMapper.confirmLine_menuGroup", param);
@@ -196,13 +192,13 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
     //결재 취소 권한 확인
     private boolean checkCnlApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser) {
         System.out.println("param : " + param);
-        String statement = buildApprovalStatement(sectionId, component, "getApprAuth");
+        String statement = serviceSupport.buildApprovalStatement(sectionId, component, "getApprAuth");
 
         //직책별 결재 권한 정보 조회
         List<Map<String, Object>> approvalAuthority = baseCrudMapper.selectList(statement, param);
         System.out.println("approvalAuthority : " + approvalAuthority);
         if (approvalAuthority == null || approvalAuthority.isEmpty()) {
-            throw new ApprovalAuthException(
+            throw new ApprovalFailException(
                     "NULL_DATA " + sectionId + "/" + component + " : \n" + param,
                     "결재 권한 정보가 없습니다.",
                     ApiResponse.ApiType.NULL_DATA);
@@ -211,7 +207,7 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
         //결재 처리 여부 확인
         String confirm_date = (String) approvalAuthority.get(0).get("REAL_DATE");
         if (confirm_date == null && confirm_date.isEmpty()) {
-            throw new ApprovalAuthException(
+            throw new ApprovalFailException(
                     "NO_APPROVAL " + sectionId + "/" + component + " : \n" + param,
                     "취소할 결재내역이 없습니다.",
                     ApiResponse.ApiType.APPROVAL);
@@ -222,7 +218,7 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
 
         //결재 권한 확인
         if (!loginUser.getUserId().equals(confirm_userId) || !loginUser.getUserName().equals(confirm_userNm)) {
-            throw new ApprovalAuthException(
+            throw new ApprovalFailException(
                     "NO_CANCEL_AUTHORITY " + sectionId + "/" + component + " : \n" + param,
                     "결재 취소 권한이 없습니다.",
                     ApiResponse.ApiType.APPROVAL);
@@ -234,7 +230,7 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
     //결재 취소
     private int cancelApproval(String sectionId, String component, Map<String, Object> param) {
 
-        String statement = buildApprovalStatement(sectionId, component, "cancelApproval");
+        String statement = serviceSupport.buildApprovalStatement(sectionId, component, "cancelApproval");
         int result = baseCrudMapper.deleteOne(statement, param);
 
         if (result < 1) {
@@ -250,7 +246,7 @@ public class ApprovalServiceImpl extends ServiceSupport implements ApprovalServi
     private List<Map<String, Object>> getApproval(String sectionId, String component, Map<String, Object> param) {
 
         //결재 현황 조회
-        String statement = buildApprovalStatement(sectionId, component, "selectApproval");
+        String statement = serviceSupport.buildApprovalStatement(sectionId, component, "selectApproval");
 
         List<Map<String, Object>> getApproval = baseCrudMapper.selectList(statement, param);
         List<Map<String, Object>> result = new ArrayList<>();

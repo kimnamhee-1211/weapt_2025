@@ -22,7 +22,7 @@ import java.util.Map;
 import static egovframework.com.baseCrud.support.KeyGenerator.setKeyToParam;
 
 @Service("baseCrudService")
-public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudService {
+public class BaseCrudServiceImpl implements BaseCrudService {
 
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
@@ -32,6 +32,9 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
 
     @Autowired
     private CrudBeforeService crudBeforeService;
+
+    @Autowired
+    private ServiceSupport serviceSupport;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseCrudServiceImpl.class);
 
@@ -45,10 +48,10 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                                                 String pgId,
                                                 String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_READ");
+        crudAuthService.checkCrudPermission("GRD_READ", loginUser.getUserId(), menuId);
 
-        String statement = buildCrudStatement(sectionId, component, "selectList");
-        setParam(param, loginUser, pgId, menuId);
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "selectList");
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         System.out.println(param);
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
@@ -66,10 +69,10 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                                          String pgId,
                                          String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_READ");
+        crudAuthService.checkCrudPermission("GRD_READ",loginUser.getUserId(), menuId);
 
-        String statement = buildCrudStatement(sectionId, component, "selectMap");
-        setParam(param, loginUser, pgId, menuId);
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "selectMap");
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         Map<String, Object> result = baseCrudMapper.selectMap(statement, param, mapKey);
 
         return result;
@@ -85,16 +88,13 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                           String pgId,
                           String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_CREATE");
+        crudAuthService.checkCrudPermission("GRD_CREATE", loginUser.getUserId(), menuId);
 
-        String statement = buildCrudStatement(sectionId, component, "insertList");
-        setParam(param, loginUser, pgId, menuId);
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "insertList");
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         int resultRowCount = baseCrudMapper.insertList(statement, param);
         if (resultRowCount <= 0) {
-            throw new CrudFailException(
-                    "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
-                    "저장 실패 : " + (resultRowCount) + "건",
-                    ApiResponse.ApiType.INSERT);
+            throw CrudFailException.insertFail(sectionId, pgId, component, param, resultRowCount);
         }
         return resultRowCount;
     }
@@ -109,16 +109,13 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                          String pgId,
                          String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_CREATE");
+        crudAuthService.checkCrudPermission("GRD_CREATE", loginUser.getUserId(), menuId);
 
-        String statement = buildCrudStatement(sectionId, component, "insertOne");
-        setParam(param, loginUser, pgId, menuId);
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "insertOne");
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         int resultRowCount = baseCrudMapper.insertOne(statement, param);
         if (resultRowCount <= 0) {
-            throw new CrudFailException(
-                    "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
-                    "저장 실패 : " + (resultRowCount) + "건",
-                    ApiResponse.ApiType.INSERT);
+            throw CrudFailException.insertFail(sectionId, pgId, component, param, resultRowCount);
         }
         return resultRowCount;
     }
@@ -133,16 +130,13 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                           String pgId,
                           String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_UPDATE");
+        crudAuthService.checkCrudPermission("GRD_UPDATE", loginUser.getUserId(), menuId);
 
-        String statement = buildCrudStatement(sectionId, component, "updateList");
-        setParam(param, loginUser, pgId, menuId);
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "updateList");
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         int resultRowCount = baseCrudMapper.updateList(statement, param);
         if (resultRowCount <= 0) {
-            throw new CrudFailException(
-                    "FAIL UPDATE " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
-                    "저장 실패 : " + (resultRowCount) + "건",
-                    ApiResponse.ApiType.UPDATE);
+            throw CrudFailException.updateFail(sectionId, pgId, component, param, resultRowCount);
         }
         return resultRowCount;
     }
@@ -157,16 +151,13 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                          String pgId,
                          String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_UPDATE");
+        crudAuthService.checkCrudPermission("GRD_UPDATE", loginUser.getUserId(), menuId);
 
-        String statement = buildCrudStatement(sectionId, component, "updateOne");
-        setParam(param, loginUser, pgId, menuId);
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "updateOne");
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         int resultRowCount = baseCrudMapper.updateOne(statement, param);
         if (resultRowCount <= 0) {
-            throw new CrudFailException(
-                    "FAIL UPDATE " + sectionId + "/" + pgId + "/" + component + " : \n" + param,
-                    "저장 실패 : " + (resultRowCount) + "건",
-                    ApiResponse.ApiType.UPDATE);
+            throw CrudFailException.updateFail(sectionId, pgId, component, param, resultRowCount);
         }
         return resultRowCount;
     }
@@ -182,24 +173,23 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                           String pgId,
                           String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_DELETE");
+        crudAuthService.checkCrudPermission("GRD_DELETE", loginUser.getUserId(), menuId);
 
-        String statement = buildCrudStatement(sectionId, component, "deleteList");
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "deleteList");
         List<Map<String, Object>> deleteParam = (List<Map<String, Object>>) param.get("deleteParam");
-        setParam(deleteParam, loginUser, pgId, menuId);
+        serviceSupport.setParam(deleteParam, loginUser, pgId, menuId);
 
         //사전 함수 호출
-        Map<String, Object> before = (Map<String, Object>) param.get("before");
-        if (before != null && !before.isEmpty()) {
-            crudBeforeService.callBefore(before, loginUser, sectionId, component, pgId, menuId);
-        }
+        crudBeforeService.callBeforeIfAction((Map<String, Object>) param.get("before"),
+                loginUser,
+                sectionId,
+                component,
+                pgId,
+                menuId, "delete");
 
         int resultRowCount = baseCrudMapper.deleteList(statement, deleteParam);
         if (resultRowCount <= 0) {
-            throw new CrudFailException(
-                    "FAIL DELETE " + sectionId + "/" + pgId + "/" + component + " : \n" + deleteParam,
-                    "삭제 실패 : " + resultRowCount + "건",
-                    ApiResponse.ApiType.DELETE);
+            throw CrudFailException.deleteFail(sectionId, pgId, component, deleteParam, resultRowCount);
         }
         return resultRowCount;
     }
@@ -214,11 +204,14 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                          String pgId,
                          String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_DELETE");
+        crudAuthService.checkCrudPermission("GRD_DELETE", loginUser.getUserId(), menuId);
 
-        String statement = buildCrudStatement(sectionId, component, "deleteOne");
-        setParam(param, loginUser, pgId, menuId);
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "deleteOne");
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
         int resultRowCount = baseCrudMapper.deleteOne(statement, param);
+        if (resultRowCount <= 0) {
+            throw CrudFailException.deleteFail(sectionId, pgId, component, param, resultRowCount);
+        }
         return resultRowCount;
     }
 
@@ -245,10 +238,13 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
         }
 
         //사전 함수 호출
-        Map<String, Object> before = (Map<String, Object>) param.get("before");
-        if (before != null && !before.isEmpty() && "all".equals(before.get("action"))) {
-            crudBeforeService.callBefore(before, loginUser, sectionId, component, pgId, menuId);
-        }
+        Map<String, Object> beforeMap = (Map<String, Object>) param.get("before");
+        crudBeforeService.callBeforeIfAction(beforeMap,
+                loginUser,
+                sectionId,
+                component,
+                pgId,
+                menuId, "all");
 
         //insert
         Map<String, Object> resultInsert = new HashMap<>();
@@ -261,7 +257,7 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                                     component,
                                     insertParam,
                                     rawKey,
-                                    before,
+                                    beforeMap,
                                     loginUser, pgId, menuId);
             resultInsertRowCount = (Integer) resultInsert.get("resultInsertRowCount");
             key = (List<Map<String, Object>>) resultInsert.get("key");
@@ -273,7 +269,7 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
             resultUpdateRowCount = saveUpdate(sectionId,
                                             component,
                                             updateParam,
-                                            before,
+                                            beforeMap,
                                             loginUser, pgId, menuId);
         }
         Map<String, Object> result = new HashMap<>();
@@ -295,14 +291,12 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                                            String menuId) {
 
         //사전 함수 호출
-        if (before != null && !before.isEmpty() && "insert".equals(before.get("action"))) {
-            crudBeforeService.callBefore(before,
-                        loginUser,
-                        sectionId,
-                        component,
-                        pgId,
-                        menuId);
-        }
+        crudBeforeService.callBeforeIfAction(before,
+                loginUser,
+                sectionId,
+                component,
+                pgId,
+                menuId, "insert");
 
         //pk 생성
         List<Map<String, Object>> key = new ArrayList<Map<String, Object>>();
@@ -322,19 +316,13 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
             }
         }
 
-        int resultInsertRowCount = processInsert(sectionId,
-                                                component,
-                                                loginUser,
-                                                insertParam,
-                                                rawKey,
-                                                pgId,
-                                                menuId);
+        serviceSupport.setParam(insertParam, loginUser, pgId, menuId);
+        System.out.println(insertParam);
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "insertList");
+        int resultInsertRowCount = baseCrudMapper.insertList(statement, insertParam);
 
         if (resultInsertRowCount <= 0) {
-            throw new CrudFailException(
-                    "FAIL INSERT " + sectionId + "/" + pgId + "/" + component + " : \n" + insertParam,
-                    "저장 실패 : " + (resultInsertRowCount) + "건",
-                    ApiResponse.ApiType.INSERT);
+            throw CrudFailException.insertFail(sectionId, pgId, component, insertParam, resultInsertRowCount);
         }
 
         Map<String, Object> result = new HashMap<>();
@@ -354,55 +342,24 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                            String menuId) {
 
         //사전 함수 호출
-        if (before != null && !before.isEmpty() && "update".equals(before.get("action"))) {
-            crudBeforeService.callBefore(before,
-                    loginUser,
-                    sectionId,
-                    component,
-                    pgId,
-                    menuId);
-        }
+        crudBeforeService.callBeforeIfAction(before,
+                loginUser,
+                sectionId,
+                component,
+                pgId,
+                menuId, "update");
 
-        int resultUpdateRowCount = processUpdate(sectionId, component, loginUser, updateParam, pgId, menuId);
+
+        serviceSupport.setParam(updateParam, loginUser, pgId, menuId);
+        System.out.println(updateParam);
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "updateList");
+        int resultUpdateRowCount = baseCrudMapper.updateList(statement, updateParam);
 
         if (resultUpdateRowCount <= 0) {
-            throw new CrudFailException(
-                    "FAIL UPDATE " + sectionId + "/" + pgId + "/" + component + " : \n" + updateParam,
-                    "저장 실패 : " + (resultUpdateRowCount) + "건",
-                    ApiResponse.ApiType.UPDATE);
+            throw CrudFailException.updateFail(sectionId, pgId, component, updateParam, resultUpdateRowCount);
         }
 
         return resultUpdateRowCount;
-    }
-
-
-    private int processInsert(String sectionId,
-                              String component,
-                              LoginVO loginUser,
-                              List<Map<String, Object>> insertParam,
-                              Object rawKey,
-                              String pgId,
-                              String menuId) {
-
-        //loginUser set
-        setParam(insertParam, loginUser, pgId, menuId);
-        System.out.println(insertParam);
-        String statement = buildCrudStatement(sectionId, component, "insertList");
-        return baseCrudMapper.insertList(statement, insertParam);
-    }
-
-
-    private int processUpdate(String sectionId,
-                              String component,
-                              LoginVO loginUser,
-                              List<Map<String, Object>> updateParam,
-                              String pgId,
-                              String menuId) {
-        //loginUser set
-        setParam(updateParam, loginUser, pgId, menuId);
-        System.out.println(updateParam);
-        String statement = buildCrudStatement(sectionId, component, "updateList");
-        return baseCrudMapper.updateList(statement, updateParam);
     }
 
     //pk 채번 && param set
@@ -414,10 +371,10 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                                                    String component,
                                                    LoginVO loginUser) {
 
-        String statement = buildCrudStatement(sectionId, component, "getKey");
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "getKey");
 
         Map<String, Object> keyParam = param.get(0);
-        setLoginParam(keyParam, loginUser);
+        serviceSupport.setUserToParam(loginUser, keyParam);
         Map<String, Object> keyValues = baseCrudMapper.selectOne(statement, keyParam);
         System.out.println(keyValues);
 
@@ -442,8 +399,8 @@ public class BaseCrudServiceImpl extends ServiceSupport implements BaseCrudServi
                                                      Map<String, Object> param,
                                                      LoginVO loginUser) {
 
-        String statement = buildCrudStatement(sectionId, component, "getSelect");
-        setLoginParam(param, loginUser);
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "getSelect");
+        serviceSupport.setUserToParam(loginUser, param);
         List<Map<String, Object>> result = baseCrudMapper.getSelect(statement, param);
         return result;
     }

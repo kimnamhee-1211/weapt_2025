@@ -17,23 +17,48 @@ public class CrudBeforeServiceImpl extends ServiceSupport implements CrudBeforeS
     @Resource(name = "baseCrudMapper")
     private BaseCrudMapper baseCrudMapper;
 
-    //사전 함수 호출
     @Override
-    public int callBefore(Map<String, Object> before,
-                          LoginVO loginUser,
+    public void callBeforeIfAction(Map<String, Object> before,
+                                   LoginVO loginUser,
+                                   String sectionId,
+                                   String component,
+                                   String pgId,
+                                   String menuId,
+                                   String action){
+
+        if (before == null || before.isEmpty()) return;
+
+
+        if (!action.equals(before.get("action"))) return;
+
+        if(action.equals(before.get("action"))){
+            List<Map<String, Object>> beforeParam = (List<Map<String, Object>>) before.get("beforeParam");
+            if (beforeParam == null || beforeParam.isEmpty()) return;
+            String saveMode = (String) before.get("saveMode");
+            if (saveMode == null) return;
+            callBefore(beforeParam,
+                    saveMode,
+                    loginUser,
+                    sectionId,
+                    component,
+                    pgId,
+                    menuId);
+        }
+    }
+
+
+    //사전 함수 호출
+    private void callBefore(List<Map<String, Object>> beforeParam,
+                            String saveMode,
+                            LoginVO loginUser,
                           String sectionId,
                           String component,
                           String pgId,
                           String menuId) {
 
-        List<Map<String, Object>> beforeParam = (List<Map<String, Object>>) before.get("beforeParam");
-        if (beforeParam == null || beforeParam.isEmpty()) return 0;
-
         //loginUser set
         setParam(beforeParam, loginUser, pgId, menuId);
         System.out.println(beforeParam);
-
-        String saveMode = (String) before.get("saveMode");
 
         int resultRowCount = 0;
         if ("I".equals(saveMode)) {
@@ -47,20 +72,12 @@ public class CrudBeforeServiceImpl extends ServiceSupport implements CrudBeforeS
             String statement = buildCrudStatement(sectionId, component, "beforeDelete");
             resultRowCount = baseCrudMapper.deleteList(statement, beforeParam);
         } else {
-            throw new CrudFailException(
-                    "FAIL CALLBEFOR " + sectionId + "/" + pgId + "/" + component + "/" + saveMode,
-                    "callBefore 실패",
-                    ApiResponse.ApiType.CALLBEFORE);
+            throw CrudFailException.callBeforeFail(sectionId, pgId, component, beforeParam, resultRowCount);
         }
 
         if (resultRowCount <= 0) {
-            throw new CrudFailException(
-                    "FAIL CALLBEFORE " + sectionId + "/" + pgId + "/" + component + "/" + saveMode + " : \n" + beforeParam,
-                    "callBefore 실패 : " + resultRowCount + "건",
-                    ApiResponse.ApiType.CALLBEFORE);
+            throw CrudFailException.callBeforeFail(sectionId, pgId, component, beforeParam, resultRowCount);
         }
-
-        return resultRowCount;
     }
 
 }

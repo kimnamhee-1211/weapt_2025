@@ -6,10 +6,12 @@ import java.util.Map;
 
 public interface CrudBeforeService {
 
-    public int callBefore(Map<String, Object> before,
-                          LoginVO loginUser,
-                          String sectionId,
-                          String component,
-                          String pgId,
-                          String menuId);
+    public void callBeforeIfAction(Map<String, Object> before,
+                           LoginVO loginUser,
+                           String sectionId,
+                           String component,
+                           String pgId,
+                           String menuId,
+                           String action);
+
 }

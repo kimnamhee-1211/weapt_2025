@@ -28,7 +28,7 @@ public class MenuServiceImpl extends ServiceSupport implements MenuService {
 
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("MENU_GROUP", menu_group);
-        setLoginParam(param, loginUser);
+        setUserToParam(loginUser, param);
         String statement = "getNavAside";
         List<Map<String, Object>> menuList = baseCrudMapper.selectList(statement, param);
 

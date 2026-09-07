@@ -36,13 +36,13 @@ public class ExceptionController {
                 .body(result);
     }
 
-    @ExceptionHandler(ApprovalAuthException.class)
-    public ResponseEntity<ApiResponse<Void>> handleApprovalAuthException(ApprovalAuthException ex) {
+    @ExceptionHandler(CrudAuthFailException.class)
+    public ResponseEntity<ApiResponse<Void>>  handleCrudAuthFailException(CrudAuthFailException ex) {
 
-        LOGGER.error("APPR FAIL : {}", ex.getMessage(), ex);
+        LOGGER.error("CRUD AUTH FAIL : {}", ex.getMessage(), ex);
 
         ApiResponse<Void> result = new ApiResponse<>();
-        result.setO_STATUS("FAIL");
+        result.setO_STATUS("CRUD AUTH FAIL");
         result.setO_RESULT(-1);
         result.setO_MSG(ex.getUserMessage());
         result.setO_TYPE(ex.getApiType());
@@ -53,13 +53,14 @@ public class ExceptionController {
                 .body(result);
     }
 
+
     @ExceptionHandler(ApprovalFailException.class)
     public ResponseEntity<ApiResponse<Void>> handleApprovalFailException(ApprovalFailException ex) {
 
         LOGGER.error("APPR FAIL : {}", ex.getMessage(), ex);
 
         ApiResponse<Void> result = new ApiResponse<>();
-        result.setO_STATUS("FAIL");
+        result.setO_STATUS("APPR FAIL");
         result.setO_RESULT(-1);
         result.setO_MSG(ex.getUserMessage());
         result.setO_TYPE(ex.getApiType());
