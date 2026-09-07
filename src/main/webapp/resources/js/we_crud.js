@@ -106,7 +106,6 @@ async function we_select(data, {successSelect} = {}, timeout = 60_000) {
 async function we_insert(data, {successInsert} = {}, timeout = 60_000) {
 
     //로딩시작
-
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeout);
 
@@ -170,7 +169,6 @@ async function we_insert(data, {successInsert} = {}, timeout = 60_000) {
 async function we_update(data, {successUpdate} = {}, timeout = 60_000) {
 
     //로딩시작
-
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeout);
 
@@ -233,7 +231,6 @@ async function we_update(data, {successUpdate} = {}, timeout = 60_000) {
 async function we_delete(data, {successDelete} = {}, timeout = 60_000) {
 
     //로딩시작
-
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeout);
 

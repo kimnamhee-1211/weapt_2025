@@ -92,6 +92,14 @@ function dateFormat(obj) {
         result = String(result);
         result = result.slice(0, 4) + '-' + result.slice(4, 6) + '-' + result.slice(6);
         return result;
+    }else if (!isNull(result) && result.length == 6) {
+        result = String(result);
+        result = result.slice(0, 4) + '-' + result.slice(4, 6);
+        return result;
+    }else if (!isNull(result) && result.length == 4) {
+        result = String(result);
+        result = result.slice(0, 2) + '-' + result.slice(2, 4);
+        return result;
     }
 }
 

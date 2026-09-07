@@ -89,7 +89,7 @@ function btnHidden(btnIds, btnDivId) {
 
 /* function btnEnable
  * @description : 버튼 활성화 제어
- * @param data ({}) : 권한 data
+ * @param data ({}) : 설정 객체
  * @return : null
  */
 function btnEnable({   grid = 1,
