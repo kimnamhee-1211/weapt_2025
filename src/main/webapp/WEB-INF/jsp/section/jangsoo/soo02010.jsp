@@ -705,7 +705,13 @@
 
         let param = AUIGrid.getCheckedRowItemsAll(pop3Grid1);
 
-        editedRowItems.forEach(row => {
+        let itemCount = param.length;
+        if (itemCount === 0) {
+            alert("체크된 항목이 없습니다");
+            return;
+        }
+
+        param.forEach(row => {
             row.PLAN_MONTH = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH
             row.SEQ = AUIGrid.getSelectedRows(grid1)[0].SEQ
             row.CLOSE_YN = AUIGrid.getSelectedRows(grid1)[0].CLOSE_YN
@@ -737,32 +743,18 @@
 
     //그리드 삭제 함수
     function delete_grid1_onclick(){
-        //검증
-        const checkedItems = AUIGrid.getSelectedRows(grid);
+        const param = AUIGrid.getSelectedRows(grid1)[0];
 
-        let itemCount = checkedItems.length;
-        if (itemCount=== 0) {
-            alert("체크된 항목이 없습니다");
+        //검증
+        if(param.CLOSE_YN == "1"){
+            alert("이미 마감된 수립조정은 삭제할 수 없습니다.");
             return;
         }
-        if(itemCount > 100){
-            alert("삭제는 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
-            return;
-        }
-        let delItemsName = checkedItems.map(row => row.item.PLAN_MONTH).join(", ");
-        if (!confirm( delItemsName + " 수립조정기준을(총 " + itemCount +"건) 삭제하시겠습니까?")) return;
+        if (!confirm(" 수립조정기준(" + checkedItem.PLAN_MONTH + ")을 삭제하시겠습니까?")) return;
 
         //포커스 지정
-        focus = (checkedItems[0].rowIndex -1) < 1 ? 0 : (checkedItems[0].rowIndex -1);
+        focus = (param.rowIndex -1) < 1 ? 0 : (param.rowIndex -1);
 
-        // 체크된 행 삭제 처리
-        AUIGrid.removeCheckedRows(grid1);
-
-        // 삭제된 행 아이템들(배열) -> 삭제 데이터
-        let param = {
-            deleteParam : AUIGrid.getRemovedItems(grid1),
-            before : {}
-        };
         //공통 저장 트렌젝션용 데이터
         let deleteData = {
             sectionId : sectionId,

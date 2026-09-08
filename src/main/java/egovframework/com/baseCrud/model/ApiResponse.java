@@ -22,7 +22,9 @@ public class ApiResponse<T> {
         GRD_CREATE,
         GRD_UPDATE,
         GRD_DELETE,
-        GRD_EXCEL
+        GRD_EXCEL,
+
+        BIZ
 
     }
 

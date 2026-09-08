@@ -238,7 +238,12 @@ async function we_delete(data, {successDelete} = {}, timeout = 60_000) {
         const sectionId = encodeURIComponent(data.sectionId);
         const component = encodeURIComponent(data.component);
         const param = JSON.stringify(data.param);
-        let method = "/deleteList/";
+        let method = "";
+        if (Array.isArray(data.param)) {
+            method = "/deleteList/";
+        } else {
+            method = "/deleteOne/";
+        }
 
         const res = await fetch(
             ctx + apiPrefix + method + sectionId + "/" + component,

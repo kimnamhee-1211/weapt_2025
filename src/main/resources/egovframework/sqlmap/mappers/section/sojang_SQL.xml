@@ -525,8 +525,9 @@
 		SELECT 1
 		FROM (
 		<foreach collection="list" item="row" separator="UNION ALL">
-			SELECT #{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
-			#{row.MENU_ID} AS MENU_ID
+			SELECT
+			    #{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
+				#{row.MENU_ID} AS MENU_ID
 		</foreach>
 		) AS temp
 		WHERE temp.OFFICE_CODE = TPM_MENU_ADD.OFFICE_CODE

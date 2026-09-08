@@ -102,6 +102,7 @@ public class JangsooController {
                                                            @RequestAttribute(value = "PG_ID") String pgId,
                                                            @RequestAttribute(value = "MENU_ID") String menuId) {
 
+
         Map<String, Object> resultMap = jangsooService.add_repairCode(sectionId, component, param, loginUser, pgId, menuId);
 
         ApiResponse<Map<String, Object>> result = new ApiResponse<>();
@@ -111,6 +112,26 @@ public class JangsooController {
         result.setO_TYPE(ApiResponse.ApiType.SAVE);
         return result;
     }
+
+    @RequestMapping(value = "/deleteOne/jangsoo/soo02010_grid1", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResponse<Map<String, Object>> delete_plan(@PathVariable("sectionId") String sectionId,
+                                                           @PathVariable("component") String component,
+                                                           @RequestBody Map<String, Object> param,
+                                                           @SessionAttribute("loginUser") LoginVO loginUser,
+                                                           @RequestAttribute(value = "PG_ID") String pgId,
+                                                           @RequestAttribute(value = "MENU_ID") String menuId) {
+
+        Map<String, Object> resultMap = jangsooService.delete_plan(sectionId, component, param, loginUser, pgId, menuId);
+
+        ApiResponse<Map<String, Object>> result = new ApiResponse<>();
+        result.setO_STATUS("SUCCESS");
+        result.setO_RESULT((Integer) resultMap.get("resultRowCount"));
+        result.setO_MSG( (Integer) resultMap.get("resultRowCount") +  "건이 저장되었습니다.");
+        result.setO_TYPE(ApiResponse.ApiType.SAVE);
+        return result;
+    }
+
 
 }
 
