@@ -30,7 +30,7 @@ public class BaseBoardServiceImpl implements BaseBoardService {
     @Transactional
     public Map<String, Object> boardSelectOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_READ");
+        crudAuthService.checkCrudPermission("GRD_READ", loginUser.getUserId(), menuId);
 
         String statement = serviceSupport.buildCrudStatement(sectionId, component, "boardSelectOne");
         serviceSupport.setParam(param, loginUser, pgId, menuId);
@@ -79,7 +79,7 @@ public class BaseBoardServiceImpl implements BaseBoardService {
 
     private int processInsert(String sectionId, String component, LoginVO loginUser, Map<String, Object> insertParam, String pgId, String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_CREATE");
+        crudAuthService.checkCrudPermission("GRD_CREATE", loginUser.getUserId(), menuId);
 
         //loginUser set
         serviceSupport.setParam(insertParam, loginUser, pgId, menuId);
@@ -91,7 +91,7 @@ public class BaseBoardServiceImpl implements BaseBoardService {
 
     private int processUpdate(String sectionId, String component, LoginVO loginUser, Map<String, Object> updateParam, String pgId, String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_UPDATE");
+        crudAuthService.checkCrudPermission("GRD_UPDATE", loginUser.getUserId(), menuId);
 
         //loginUser set
         serviceSupport.setParam(updateParam, loginUser, pgId, menuId);
@@ -106,7 +106,7 @@ public class BaseBoardServiceImpl implements BaseBoardService {
     @Transactional
     public int boardDeleteOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_DELETE");
+        crudAuthService.checkCrudPermission("GRD_DELETE", loginUser.getUserId(), menuId);
 
         String statement = serviceSupport.buildCrudStatement(sectionId, component, "boardDeleteOne");
         Map<String, Object> deleteParam = (Map<String, Object>) param.get("deleteParam");

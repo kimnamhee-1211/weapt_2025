@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static egovframework.com.baseCrud.support.KeyGenerator.setKeyToParam;
 
@@ -45,7 +46,7 @@ public class JangsooServiceImpl extends ServiceSupport implements JangsooService
                                                       String pgId,
                                                       String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_UPDATE");
+        crudAuthService.checkCrudPermission("GRD_UPDATE", loginUser.getUserId(), menuId);
 
         String statement = buildCrudStatement(sectionId, component, "selectOne");
         setParam(param, loginUser, pgId, menuId);
@@ -95,7 +96,7 @@ public class JangsooServiceImpl extends ServiceSupport implements JangsooService
                                                 String pgId,
                                                 String menuId) {
 
-        crudAuthService.checkCrudPermission(loginUser.getUserId(), menuId, "GRD_INSERT");
+        crudAuthService.checkCrudPermission("GRD_INSERT", loginUser.getUserId(), menuId);
 
         String statement = buildCrudStatement(sectionId, component, "selectOne");
         setParam(param, loginUser, pgId, menuId);
@@ -129,6 +130,67 @@ public class JangsooServiceImpl extends ServiceSupport implements JangsooService
             }
 
         };
+
+        if (resultInsertRowCount <= 0) {
+            throw CrudFailException.insertFail(sectionId, pgId, component, param, resultInsertRowCount);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("resultRowCount", (resultInsertRowCount));
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public Map<String, Object> add_repairCode(String sectionId,
+                                              String component,
+                                              List<Map<String, Object>> param,
+                                              LoginVO loginUser,
+                                              String pgId,
+                                              String menuId) {
+
+        crudAuthService.checkCrudPermission("GRD_INSERT", loginUser.getUserId(), menuId);
+
+        setParam(param, loginUser, pgId, menuId);
+
+        int resultDeleteRowCount = 0;
+        int resultInsertRowCount = 0;
+        Map<String, Object> deleteMap = param.get(0);
+        if(deleteMap.get("CLOSE_YN") == "1"){
+            String statement = "";
+            statement = buildCrudStatement(sectionId, component + "_1", "deleteOne");
+            resultDeleteRowCount += baseCrudMapper.deleteOne(statement, deleteMap);
+            statement = buildCrudStatement(sectionId, component + "_2", "deleteOne");
+            resultDeleteRowCount += baseCrudMapper.deleteOne(statement, deleteMap);
+            statement = buildCrudStatement(sectionId, component + "_3", "deleteOne");
+            resultDeleteRowCount += baseCrudMapper.deleteOne(statement, deleteMap);
+            statement = buildCrudStatement(sectionId, component + "_4", "deleteOne");
+            resultDeleteRowCount += baseCrudMapper.deleteOne(statement, deleteMap);
+            statement = buildCrudStatement(sectionId, component + "_5", "deleteOne");
+            resultDeleteRowCount += baseCrudMapper.deleteOne(statement, deleteMap);
+
+            List<Map<String, Object>> insertList1 = param.stream()
+                    .filter(map -> "1".equals(map.get("LEVEL")) )
+                    .collect(Collectors.toList());
+            if(insertList1 != null && insertList1.size() > 0) {
+                statement = buildCrudStatement(sectionId, component + "_1", "insertList");
+                resultInsertRowCount += baseCrudMapper.insertList(statement, insertList1);
+            }
+            List<Map<String, Object>> insertList2 = param.stream()
+                    .filter(map -> "2".equals(map.get("LEVEL")))
+                    .collect(Collectors.toList());
+            if(insertList2 != null && insertList2.size() > 0) {
+                statement = buildCrudStatement(sectionId, component + "_2", "insertList");
+                resultInsertRowCount += baseCrudMapper.insertList(statement, insertList2);
+            }
+            List<Map<String, Object>> insertList3 = param.stream()
+                    .filter(map -> "3".equals(map.get("LEVEL")) )
+                    .collect(Collectors.toList());
+            if(insertList3 != null && insertList3.size() > 0) {
+                statement = buildCrudStatement(sectionId, component + "_3", "insertList");
+                resultInsertRowCount += baseCrudMapper.insertList(statement, insertList3);
+            }
+        }
 
         if (resultInsertRowCount <= 0) {
             throw CrudFailException.insertFail(sectionId, pgId, component, param, resultInsertRowCount);

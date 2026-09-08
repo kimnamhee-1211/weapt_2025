@@ -55,7 +55,7 @@ public class JangsooController {
     }
 
 
-    @RequestMapping(value = "/saveList/jangsoo/soo02010_change", method = RequestMethod.POST)
+    @RequestMapping(value = "/updateOne/jangsoo/soo02010_change", method = RequestMethod.POST)
     @ResponseBody
     public ApiResponse<Map<String, Object>> change_planMonth(@PathVariable("sectionId") String sectionId,
                                       @PathVariable("component") String component,
@@ -74,7 +74,7 @@ public class JangsooController {
         return result;
     }
 
-    @RequestMapping(value = "/saveList/jangsoo/soo02010_copy", method = RequestMethod.POST)
+    @RequestMapping(value = "/insertOne/jangsoo/soo02010_copy", method = RequestMethod.POST)
     @ResponseBody
     public ApiResponse<Map<String, Object>> copy_planMonth(@PathVariable("sectionId") String sectionId,
                                                            @PathVariable("component") String component,
@@ -84,6 +84,25 @@ public class JangsooController {
                                                            @RequestAttribute(value = "MENU_ID") String menuId) {
 
         Map<String, Object> resultMap = jangsooService.copy_planMonth(sectionId, component, param, loginUser, pgId, menuId);
+
+        ApiResponse<Map<String, Object>> result = new ApiResponse<>();
+        result.setO_STATUS("SUCCESS");
+        result.setO_RESULT((Integer) resultMap.get("resultRowCount"));
+        result.setO_MSG( (Integer) resultMap.get("resultRowCount") +  "건이 저장되었습니다.");
+        result.setO_TYPE(ApiResponse.ApiType.SAVE);
+        return result;
+    }
+
+    @RequestMapping(value = "/insertList/jangsoo/soo02010_add", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResponse<Map<String, Object>> add_repairCode(@PathVariable("sectionId") String sectionId,
+                                                           @PathVariable("component") String component,
+                                                           @RequestBody List<Map<String, Object>> param,
+                                                           @SessionAttribute("loginUser") LoginVO loginUser,
+                                                           @RequestAttribute(value = "PG_ID") String pgId,
+                                                           @RequestAttribute(value = "MENU_ID") String menuId) {
+
+        Map<String, Object> resultMap = jangsooService.add_repairCode(sectionId, component, param, loginUser, pgId, menuId);
 
         ApiResponse<Map<String, Object>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");

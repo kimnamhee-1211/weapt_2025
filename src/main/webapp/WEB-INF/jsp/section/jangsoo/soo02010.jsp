@@ -150,10 +150,7 @@
                                     </div>
                                     <div style="height: 600px;" id="pop3Grid1"></div>
                                     &emsp;&#9726&nbsp;이미 선택된 공사종별도 추가선택 저장이 가능합니다.
-                                    <div class="pop_btn" id="pop3_btn">
-                                        <button id="save_btn" onclick="">저장</button>
-                                        <label for="layer_popup3" class="popup_closs_btn">닫기</label>                    
-                                    </div>
+                                    <div class="pop_btn" id="pop3_btn"></div>
                                 </div>
                             </div>
                             <!-- 팝업끝--> 
@@ -336,6 +333,78 @@
             })
     );
 
+    const pop3Grid1ColumnLayout = [
+        { dataField: "SEQ",
+            headerText: "",
+            dataType: "text",
+            width : "8%",
+            renderer : {
+                type : "CheckBoxEditRenderer",
+                showLabel : true
+            },
+            disabledFunction :  function(rowIndex, columnIndex, value, isChecked, item, dataField ) {
+                if(item.LEVEL != "3") {
+                    return true;
+                }
+                return false;
+            }
+        },
+        { dataField: "CODE_NAME",
+            headerText: "공사종별",
+            dataType: "text",
+            width : "*%",
+            editable : false,
+        },
+        { dataField: "REGUL_YN",
+            headerText: "시행규칙",
+            dataType: "text",
+            width : "10%",
+            editable : false,
+        },
+        { headerText: "전면",
+            children : [{
+                dataField : "ALL_PERIOD",
+                headerText : "수선주기",
+                width : "8%",
+                editable : false,
+            }]
+        },
+        { headerText: "부분",
+            children : [{
+                dataField : "SUB_PERIOD",
+                headerText : "수선주기",
+                width : "8%",
+                editable : false,
+            }, {
+                dataField : "SUB_RATE",
+                headerText : "수선율",
+                width : "8%",
+                editable : false,
+            }]
+        },
+        { dataField: "REMARKS",
+            headerText: "비고",
+            dataType: "text",
+            width : "20%",
+            editable : false,
+        },
+    ];
+
+    //그리드 생성
+    pop3Grid1 = AUIGrid.create("#pop3Grid1", pop3Grid1ColumnLayout,
+        Object.assign({}, we_grid_Props,
+            {
+                height: 490,
+                showRowNumColumn : false,
+                displayTreeOpen: true,
+                rowCheckDependingTree: true,
+                treeIdField: "CD",
+                treeIdRefField: "UP_CD",
+                flat2tree: true,
+            })
+    );
+
+
     //그리드 이벤트
     //체크박스 클릭 시
     AUIGrid.bind(grid1, "rowCheckClick", function(event) {
@@ -467,6 +536,32 @@
         });
     }
 
+    function search_add_onclick(){
+
+        //검색데이터
+        let selectParam = {
+        }
+
+        //파라미터
+        let selectData = {
+            sectionId : sectionId,
+            component : pgId + "_pop3Grid1",
+            param: selectParam,
+        }
+
+        we_select( selectData,{
+            successSelect : (json) => {
+                let data = json.DATA;
+                //그리드 데이터 세팅
+                AUIGrid.setGridData(pop3Grid1, data);
+                //포커스 : 첫 조회시 첫 행 / 수정 시 수정 행
+                AUIGrid.setSelectionByIndex(pop3Grid1, 0, 0);
+            }
+        });
+    }
+
+
+
     //그리드 추가 함수
     function add_grid1_onclick(){
         // 그리드의 편집 인푸터가 열린 경우 에디팅 완료 상태로 만듬.
@@ -554,7 +649,7 @@
             param: param,
         }
 
-        we_save( saveData ,{
+        we_update( saveData ,{
             successSave : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
@@ -573,7 +668,7 @@
             return;
         }
 
-        let param = inputToData("copy_popup");
+        let param = inputToData(popupId2);
 
         if(!requireCheck("SAVE_COPY")) return;
 
@@ -590,7 +685,7 @@
             param: param,
         }
 
-        we_save( saveData ,{
+        we_insert( saveData ,{
             successSave : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
@@ -600,6 +695,44 @@
             }
         });
     }
+
+    function save_add_onclick(){
+
+        if(AUIGrid.getSelectedRows(grid1)[0].CLOSE_YN == "1"){
+            alert("이미 마감된 수립조정은 공사종별수립기준을 변경할 수 없습니다.");
+            return;
+        }
+
+        let param = AUIGrid.getCheckedRowItemsAll(pop3Grid1);
+
+        editedRowItems.forEach(row => {
+            row.PLAN_MONTH = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH
+            row.SEQ = AUIGrid.getSelectedRows(grid1)[0].SEQ
+            row.CLOSE_YN = AUIGrid.getSelectedRows(grid1)[0].CLOSE_YN
+        })
+
+        if(!requireCheck("SAVE_COPY")) return;
+
+        if(!confirm("공사종별수립기준을 저장하시겠습니까?")) return;
+
+        //파라미터
+        let saveData  = {
+            sectionId :  sectionId,
+            component : pgId + "_add",
+            param: param,
+        }
+
+        we_insert( saveData ,{
+            successSave : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
+                    //팝업 닫기
+                    search_grid1_onclick()
+                }else return;
+            }
+        });
+    }
+
 
 
     //그리드 삭제 함수
@@ -682,15 +815,23 @@
     async function getSelect_input_year(){
         input_planStYear.innerHTML = "";
         input_planEndYear.innerHTML = "";
+        pop2_planStYear.innerHTML = "";
+        pop2_planEndYear.innerHTML = "";
         let thisYear = getToday("yyyy");
         for(let year = thisYear - 50 ; year <= (thisYear + 20); year++){
             input_planStYear.insertAdjacentHTML("beforeend",
                 "<option value='" + year + "'>" + year + "</option>");
             input_planEndYear.insertAdjacentHTML("beforeend",
                 "<option value='" + year + "'>" + year + "</option>");
+            pop2_planStYear.insertAdjacentHTML("beforeend",
+                "<option value='" + year + "'>" + year + "</option>");
+            pop2_planEndYear.insertAdjacentHTML("beforeend",
+                "<option value='" + year + "'>" + year + "</option>");
         }
         input_planStYear.value = thisYear;
         input_planEndYear.value = thisYear;
+        pop2_planStYear.value = thisYear;
+        pop2_planEndYear.value = thisYear;
     }
 
     //로드
@@ -703,9 +844,9 @@
         btnMaker({ tag: "#pop2_btn", grid: "copy", save : true});
         pop2_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup2_onclick()'>닫기</button>");
-        btnMaker({ tag: "#pop3_btn", grid: "copy", save : true});
+        btnMaker({ tag: "#pop3_btn", grid: "add", search: true, save : true});
         pop3_btn.insertAdjacentHTML("beforeend",
-            "<button id='close_btn1' class='btn_left3' onclick='close_popup2_onclick()'>닫기</button>");
+            "<button id='close_btn1' class='btn_left3' onclick='close_popup3_onclick()'>닫기</button>");
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
 
