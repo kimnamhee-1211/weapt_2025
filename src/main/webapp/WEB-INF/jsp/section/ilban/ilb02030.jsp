@@ -4,7 +4,7 @@
 <%@ include file = "../../inc_nav.jsp" %>
 
 
-<%@ include file = "pop_contract.jsp" %>
+<jsp:include page="/WEB-INF/jsp/section/ilban/pop_contract.jsp" />
 
         <div id="section">
             <div class="section1">
@@ -63,7 +63,6 @@
     const menuId = "${menuId}";	//메뉴ID
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
-    const popupId = "pop_contract";
     const search_what = document.querySelector("#search_what"); //컨트롤 컴포넌트
     const search_text = document.querySelector("#search_text"); //select 컴포넌트
 
@@ -135,18 +134,14 @@
     //행 클릭 시
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        gridToInput(grid1, popup);
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     });
 
     //팝업 이벤트
 
     //팝업 닫기 이벤트
-    function close_popup_onclick(){
-        popupClose(popupId);
-        clearInput(popupId);
-    }
 
     //그리드 조회 함수
     function search_grid1_onclick(){
@@ -208,9 +203,6 @@
         let pop_item = {
             pgId : pgId,
 		    menuId : menuId,
-            popupId : popupId,
-            btnHidden : ["save_btn1"],
-            disabled : true
         }
 
         pop_onload(pop_item);

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <jsp:include page="/WEB-INF/jsp/popup/pop_addr.jsp"/>
-    <div class="layer_bg" id="pop_supplier" onchange="inputToGrid(grid1, popupId)">
+    <div class="layer_bg" id="pop_supplier" onchange="inputToGrid(grid1, popup)">
         <div class="popup" style="width:540px;">
             <div class="pop_title" style="border:none" >&#10004; &nbsp;계약업체등록</div>
             <div class="pop_btn" id="pop_btn"></div>
@@ -78,23 +78,19 @@
 
 <script>
     const popupId = "pop_supplier";
-    //팝업 컴포넌트
+    const popup = document.querySelector("#pop_supplier");
     const pop_btn = document.querySelector("#pop_btn");
 
+    function close_popup_onclick(){
+        popupClose(popup);
+        clearInput(popup);
+    }
 
     function pop_onload(pop_item){
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#pop_btn", grid: "grid1", save: true});
         pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
-
-        if(!isNull(pop_item.btnHidden)){
-            btnHidden(pop_item.btnHidden, pop_item.popupId);
-        }
-
-        if(!isNull(pop_item.disabled)){
-            disableInput(pop_item.popupId);
-        }
     }
 
 </script>

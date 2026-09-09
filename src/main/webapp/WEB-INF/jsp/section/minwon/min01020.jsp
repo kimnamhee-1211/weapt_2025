@@ -194,8 +194,7 @@
     const search_endDate = document.querySelector("#search_endDate")	//select 컴포넌트
     const search_desc = document.querySelector("#search_desc")	//select 컴포넌트
 
-    const min_div = document.querySelector("#min_div");
-
+    const input = document.querySelector("#min_div");
     const input_place = document.querySelector("#input_place");
     const input_minwonDate = document.querySelector("#input_minwonDate");
     const input_slipNo = document.querySelector("#input_slipNo");
@@ -256,7 +255,7 @@
 
     //셀 선택 변경 이벤트 바인딩
     AUIGrid.bind(grid1, "selectionChange", function(event) {
-        clearInput("min_div");
+        clearInput(input);
         search_input1_onclick();
     });
 
@@ -311,7 +310,7 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
-                dataToInput(data[0], "min_div");
+                dataToInput(data[0], input);
                 input_place.value = make_place(data[0]);
                 if (!input_user.some(row => row.NAME == data[0].WORK_USER)) {
                     input_workUser.value = "write";
@@ -325,7 +324,7 @@
     //그리드 저장 함수
     function save_grid1_onclick(){
 
-         let item = inputToData("min_div");
+         let item = inputToData(input);
         item.REG_DATE = getToday("yyyyMMdd");
         item.TIME_INPUT = input_workTimeInput.checked ? "1" : "0";
         if (!isNull(input_workTimeInput.value)) {

@@ -41,26 +41,18 @@
     }
 
 
-    function open_popup1_onclick(data){
+    function open_popup2_onclick(data){
         let pop_data = {};
-
-        const slipNo = data.SLIP_NO || data.slipNo || "";
-        const minwonDate = data.MINWON_DATE || data.minwonDate || "";
-        const gbn = data.GBN || data.gbn || "";
-        const lineGbn = data.LINE_GBN || data.lineGbn || "";
-        const dongId = data.DONG_ID || data.dongId || "";
-        const hoId = data.HO_ID || data.hoId || "";
-        const minwonArearSeq = data.MINWON_AREAR_SEQ || data.minwonArearSeq || "";
-        const arearName = data.AREAR_NAME || data.arearName || "";
-
-        pop_data.slipNo = slipNo;
-        pop_data.minwonDate = minwonDate;
-        pop_data.gbn = gbn;
-        pop_data.lineGbn = lineGbn;
-        pop_data.dongId = dongId;
-        pop_data.hoId = hoId;
-        pop_data.minwonArearSeq = minwonArearSeq;
-        pop_data.arearName = arearName;
+        Object.assign(pop_data, {
+            slipNo: data.SLIP_NO || data.slipNo || "",
+            minwonDate: data.MINWON_DATE || data.minwonDate || "",
+            gbn: data.GBN || data.gbn || "",
+            lineGbn: data.LINE_GBN || data.lineGbn || "",
+            dongId: data.DONG_ID || data.dongId || "",
+            hoId: data.HO_ID || data.hoId || "",
+            minwonArearSeq: data.MINWON_AREAR_SEQ || data.minwonArearSeq || "",
+            arearName: data.AREAR_NAME || data.arearName || ""
+        });
 
         if(isNull(slipNo)){
             pop_data.saveKey = "I";
@@ -72,10 +64,11 @@
             pgId: pgId,
             menuId: menuId,
             querySet: "min011",
+            popId : data.popId || "",
             pop_data: pop_data
         }
-        pop_onload1(pop_item);
-        popupOpen(popupId1);
+        pop2_onload(pop_item);
+        popupOpen(popup2);
 
     }
 
@@ -83,19 +76,15 @@
 
         let pop_data = {};
 
-        const gbn = data.GBN || data.gbn || "";
-        const lineGbn = data.LINE_GBN || data.lineGbn || "";
-        const dongId = data.DONG_ID || data.dongId || "";
-        const hoId = data.HO_ID || data.hoId || "";
-        const minwonArearSeq = data.MINWON_AREAR_SEQ || data.minwonArearSeq || "";
-        const arearName = data.AREAR_NAME || data.arearName || "";
+        Object.assign(pop_data, {
+            gbn: data.GBN || data.gbn || "",
+            lineGbn: data.LINE_GBN || data.lineGbn || "",
+            dongId: data.DONG_ID || data.dongId || "",
+            hoId: data.HO_ID || data.hoId || "",
+            minwonArearSeq: data.MINWON_AREAR_SEQ || data.minwonArearSeq || "",
+            arearName: data.AREAR_NAME || data.arearName || ""
+        });
 
-        pop_data.gbn = gbn;
-        pop_data.lineGbn = lineGbn;
-        pop_data.dongId = dongId;
-        pop_data.hoId = hoId;
-        pop_data.minwonArearSeq = minwonArearSeq;
-        pop_data.arearName = arearName;
 
         let pop_item = {
             pgId: pgId,
@@ -104,7 +93,7 @@
             pop_data: pop_data
         }
         pop_onload(pop_item);
-        popupOpen(popupId);
+        popupOpen(popup);
     }
 
 

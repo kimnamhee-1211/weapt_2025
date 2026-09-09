@@ -272,13 +272,6 @@
 
             btnMaker({ tag: "#pop_file_btn", grid: "file1", add : true, save : true, del : true});
 
-            if(!isNull(pop_item.btnHidden)){
-                btnHidden(pop_item.btnHidden, pop_item.popupId);
-            }
-
-            if(!isNull(pop_item.disabled)){
-                disableInput(pop_item.popupId);
-            }
 
         }
 

@@ -123,19 +123,14 @@
     //행 클릭 시
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        gridToInput(grid1, popup);
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     });
 
     //팝업 이벤트
 
     //팝업 닫기 이벤트
-    function close_popup_onclick(){
-        popupClose(popupId);
-        clearInput(popupId);
-    }
-
 
     //그리드 조회 함수
     function search_grid1_onclick(){
@@ -174,9 +169,9 @@
         item.REG_DATE = getToday("yyyyMMdd");
         AUIGrid.addRow(grid1, item, "last");
         //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        gridToInput(grid1, popup);
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     }
 
     //그리드 저장 함수

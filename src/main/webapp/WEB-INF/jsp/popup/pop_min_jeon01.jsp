@@ -172,6 +172,7 @@
 
 <script>
     const popupId = "min011";
+    const popup = document.querySelector("#min011");
     const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const input_dongName = document.querySelector("#input_dongName");
     const input_ho = document.querySelector("#input_ho");
@@ -276,13 +277,6 @@
         pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
 
-        if(!isNull(pop_item.btnHidden)){
-            btnHidden(pop_item.btnHidden, pop_item.popupId);
-        }
-
-        if(!isNull(pop_item.disabled)){
-            disableInput(pop_item.popupId);
-        }
 
         input_minwonDate.value = getToday("yyyy-MM-dd")
         getSelect_input_minownGbn();

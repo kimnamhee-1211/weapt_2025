@@ -4,7 +4,10 @@
     <option name="state">
       <map>
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/inc_nav.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/ilban/ilb001_noUse.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/ilban" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/ilban/pop_contract.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/ilban" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/iljung/ilj02010.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/iljung" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/iljung/pop_iljung.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/iljung" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/jangbi/jan_nav.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/jangbi" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/jangsoo/soo02010.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/jangsoo" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/minwon/min01010.jsp" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/section/minwon" />

@@ -132,7 +132,7 @@
         };
         pop_onload(pop_item);
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     });
 
     //그리드 조회 함수

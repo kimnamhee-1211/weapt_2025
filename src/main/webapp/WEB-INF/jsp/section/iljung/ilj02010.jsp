@@ -109,6 +109,7 @@
     const popupId = "grid1_popup"; //팝업 컴포넌트
     const search_mstDate = document.querySelector("#search_mstDate")	//select 컴포넌트
     const search_mstMonth = document.querySelector("#search_mstMonth")	//select 컴포넌트
+    const popup = document.querySelector("#grid1_popup");
     const input_scDate = document.querySelector("#input_scDate")	//popup 컴포넌트
     const input_reWorkYn = document.querySelector("#input_reWorkYn")	//popup 컴포넌트
     const input_reWorkGbn = document.querySelector("#input_reWorkGbn")	//popup 컴포넌트
@@ -180,8 +181,8 @@
     //팝업 이벤트
     //팝업 닫기 이벤트
     function close_popup_onclick(){
-        popupClose(popupId);
-        clearInput(popupId);
+        popupClose(popup);
+        clearInput(popup);
         input_reWorkYn.checked = false;
         inputTr_Re.style.display = "none"
     }
@@ -346,7 +347,7 @@
 
         //포커스 지정
         focus = gridFocus(grid1);
-        popupOpen(popupId);
+        popupOpen(popup);
     }
 
     function save_schedule_onclick(){

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-    <div class="layer_bg" id="pop_contract" onchange="inputToGrid(grid1, popupId)">
+    <div class="layer_bg" id="pop_contract" onchange="inputToGrid(grid1, popup)">
         <div class="popup" style="width:840px;">
             <div class="pop_title" style="border:none" >&#10004; &nbsp;계약등록</div>
             <div class="section1_btn" id="pop_btn"></div>
@@ -77,6 +77,7 @@
 
 <script>
     const popupId = "pop_contract";
+    const popup = document.querySelector("#pop_contract"); //팝업버튼 컴포넌트
     const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const input_contractdiv = document.querySelector("#input_contractdiv"); //input 컴포넌트
     const input_supplier = document.querySelector("#input_supplier"); //input 컴포넌트

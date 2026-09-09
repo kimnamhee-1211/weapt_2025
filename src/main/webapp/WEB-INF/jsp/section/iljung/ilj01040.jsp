@@ -3,7 +3,6 @@
 <%@ include file = "../../inc_head.jsp" %>
 <%@ include file = "../../inc_nav.jsp" %>
 
-
         <div id="section">
             <div class="section1">
                 <div class="section1_nav"><i class="icon-calendar-plus-o"></i>일정조회</div>
@@ -144,7 +143,7 @@
         };
         pop_onload(pop_item);
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     });
 
 

@@ -126,8 +126,8 @@
 
     //팝업 닫기 이벤트
     function close_popup_onclick(){
-        popupClose(popupId);
-        clearInput(popupId);
+        popupClose(popup);
+        clearInput(popup);
     }
 
     //그리드 조회 함수

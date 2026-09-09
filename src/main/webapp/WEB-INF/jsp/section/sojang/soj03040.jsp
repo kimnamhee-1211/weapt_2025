@@ -174,9 +174,9 @@
         item.COMP_CODE = loginUser.compCode;
         AUIGrid.addRow(grid1, item, "last");
         //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        gridToInput(grid1, popup);
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     }
 
 

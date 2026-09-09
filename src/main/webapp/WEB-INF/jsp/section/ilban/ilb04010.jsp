@@ -88,6 +88,7 @@
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const inputId = "input_absent";
+    const input = document.querySelector("#input_absent"); //select 컴포넌트
     const input_name = document.querySelector("#input_name"); //select 컴포넌트
     const input_empNo = document.querySelector("#input_empNo"); //select 컴포넌트
     const input_regDate = document.querySelector("#input_regDate"); //select 컴포넌트
@@ -139,7 +140,7 @@
     //그리드 이벤트
     //셀 선택 변경 이벤트 바인딩
     AUIGrid.bind(grid1, "selectionChange", function (event) {
-        clearInput(inputId);
+        clearInput(input);
         input_name.innerHTML = AUIGrid.getSelectedRows(grid1)[0].NAME;
         input_empNo.value = AUIGrid.getSelectedRows(grid1)[0].EMP_NO;
     });

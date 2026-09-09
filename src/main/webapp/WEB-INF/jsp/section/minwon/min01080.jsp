@@ -105,7 +105,7 @@
     let focus2 = 0;	//그리드 컴포넌트 포커스
     let focus3 = 0;	//그리드 컴포넌트 포커스
 
-    const input_setting = document.querySelector("#input_setting");
+    const input = document.querySelector("#input_setting");
     const input_viewGbnA = document.querySelector("#input_viewGbnA"); // 민원대장
     const input_viewGbnB = document.querySelector("#input_viewGbnB"); // 민원전표
     const input_viewUserA = document.querySelector("#input_viewUserA"); // 로그인사용자
@@ -317,7 +317,7 @@
             successSelect : (json) => {
                 let data = json.DATA;
                 input1 = data;
-                dataToInput(data[0], "input_setting");
+                dataToInput(data[0], input);
             }
         });
     }
@@ -509,7 +509,7 @@
     //그리드 저장 함수
     function save_input1_onclick(){
 
-        let item = inputToData("input_setting")
+        let item = inputToData(input)
         item.VIEW_GBN = document.querySelector('input[name="VIEW_GBN"]:checked')?.value || "";
         item.VIEW_USER = document.querySelector('input[name="VIEW_USER"]:checked')?.value || "";
         item.STOCK_GBN = input_stockGbn.checked ? "1" : "0";

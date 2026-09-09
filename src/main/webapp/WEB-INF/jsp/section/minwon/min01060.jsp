@@ -116,7 +116,7 @@
     //그리드 이벤트
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         getSelect_min_setting();
-        open_popup1_onclick(AUIGrid.getSelectedRows(grid1)[0]);
+        open_popup2_onclick(AUIGrid.getSelectedRows(grid1)[0]);
     });
 
     //결재란 클릭 시

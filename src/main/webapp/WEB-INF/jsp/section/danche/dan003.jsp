@@ -204,13 +204,6 @@
 
         querySet = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
 
-        if(!isNull(pop_item.btnHidden)){
-            btnHidden(pop_item.btnHidden, pop_item.popupId);
-        }
-
-        if(!isNull(pop_item.disabled)){
-            disableInput(pop_item.popupId);
-        }
 
         //로드 시 그리드 바로 조회
         search_grid1_onclick();

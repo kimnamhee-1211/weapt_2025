@@ -60,7 +60,6 @@
     const sectionId = "${sectionId}";	//섹션ID
     const pgId = "${pgId}";	//프로그램ID
     const menuId = "${menuId}";	//메뉴ID
-    const popupId = "pop_write_ad";
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     let saveKey = "U";
@@ -120,15 +119,11 @@
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         search_board1_onclick();
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     });
 
     //팝업 이벤트
     //팝업 닫기 이벤트
-    function close_popup_onclick(){
-        popupClose(popupId);
-        clearInput(popupId);
-    }
 
     //그리드 조회 함수
     function search_grid1_onclick(callback){
@@ -183,7 +178,7 @@
             successBoardSelect : (json) => {
                 let data = json.DATA;
                 saveKey = "U";
-                dataToInput(data, popupId);
+                dataToInput(data, popup);
                 search_file1_onclick();
             }
         });
@@ -201,9 +196,9 @@
 
         AUIGrid.addRow(grid1, item, "first");
         //grid-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        gridToInput(grid1, popup);
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     }
 
     //그리드 저장 함수

@@ -117,7 +117,7 @@
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const search_equName = document.querySelector("#search_equName");
-    const jangbi_table = document.querySelector("#jangbi_table"); // 입력부 컴포넌트
+    const input = document.querySelector("#jangbi_table"); // 입력부 컴포넌트
     const input_equGbn = document.querySelector("#input_equGbn");
     const input_equNo = document.querySelector("#input_equNo");
     const input_equName = document.querySelector("#input_equName");
@@ -245,7 +245,7 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
-                dataToInput(data[0], "jangbi_table");
+                dataToInput(data[0], input);
                 search_grid1_onclick();
             }
         });
@@ -301,7 +301,7 @@
         // 수정된 행 아이템들(배열) : 수정된 필드와 수정안된 필드 모두를 얻음.
         let editedRowItems = [];
 
-        let item = inputToData("jangbi_table")
+        let item = inputToData(input)
 
         if(isNull(input_equNo.value)){
             addedRowItems = [{...item}];
@@ -403,7 +403,7 @@
     }
 
     function resign_onclick(){
-        let item = inputToData("jangbi_table")
+        let item = inputToData(input)
 
         if (!confirm( input_equName.value + "을/를 폐기처리하시겠습니까?")) return;
 

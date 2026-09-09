@@ -14,8 +14,8 @@
     </div>
 
 <script>
-    const pop_changeOffice = "pop_changeOffice";
     let officeGrid1;	// 그리드 컴포넌트
+    const pop_changeOffice = document.querySelector("#pop_changeOffice");
     const pop_changeOffice_btn = document.querySelector("#pop_changeOffice_btn");
     const search_officeName = document.querySelector("#search_officeName"); //search 컴포넌트
     const input_changeOfficeCode = document.querySelector("#input_changeOfficeCode");
@@ -88,7 +88,7 @@
                     method: "GET",
                     headers: {
                         "Accept": "application/json",
-                        "X-PG-ID": pop_changeOffice,
+                        "X-PG-ID": "pop_changeOffice",
                     },
                     credentials: "include",
                     signal: controller.signal

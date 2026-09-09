@@ -86,7 +86,7 @@
         let grid1;	// 그리드 컴포넌트
         let focus = 0;	//그리드 컴포넌트 포커스
         let saveKey = "U";
-
+        const popup = document.querySelector("#pop_write_board"); //select 컴포넌트
         const search_what = document.querySelector("#search_what"); //select 컴포넌트
         const search_text = document.querySelector("#search_text"); //select 컴포넌트
         const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
@@ -227,18 +227,16 @@
         AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
             search_board1_onclick();
             //팝업 열기 이벤트
-            popupOpen(popupId);
+            popupOpen(popup);
         });
 
         //팝업 이벤트
         //팝업 닫기 이벤트
         function close_popup_onclick(){
             AUIGrid.clearGridData(file_grid1);
-            popupClose(popupId);
-            clearInput(popupId);
+            popupClose(popup);
+            clearInput(popup);
         }
-
-
 
         //그리드 조회 함수
         function search_grid1_onclick(callback){
@@ -293,7 +291,7 @@
                 successBoardSelect : (json) => {
                     let data = json.DATA;
                     saveKey = "U";
-                    dataToInput(data, popupId);
+                    dataToInput(data, popup);
                     search_file1_onclick();
                 }
             });
@@ -340,9 +338,9 @@
 
             AUIGrid.addRow(grid1, item, "first");
             //grid-input 태그 바인딩
-            gridToInput(grid1, popupId);
+            gridToInput(grid1, popup);
             //팝업 열기 이벤트
-            popupOpen(popupId);
+            popupOpen(popup);
         }
 
 
@@ -482,14 +480,6 @@
                 "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
 
             btnMaker({ tag: "#pop_btn2", grid: "file1", add : true, save : true, del : true});
-
-            if(!isNull(pop_item.btnHidden)){
-                btnHidden(pop_item.btnHidden, pop_item.popupId);
-            }
-
-            if(!isNull(pop_item.disabled)){
-                disableInput(pop_item.popupId);
-            }
 
             search_grid1_onclick();
         }

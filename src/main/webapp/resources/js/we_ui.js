@@ -20,17 +20,17 @@
  * function inputMoneyFormat(obj) : 입력부 text 금액 포멧
  *
  * -----------------------------------------------------------------------
- * function dataToInput(data, inputDivId) : data-input 태그 바인딩
- * function gridToInput(grid, inputDivId) : 그리그-input 태그 바인딩
- * function inputToGrid(grid, inputDivId) : input-그리드 태그 바인딩
- * function inputToGrid(inputDivId) : input-object 태그 바인딩
+ * function dataToInput(data, inputDiv) : data-input 태그 바인딩
+ * function gridToInput(grid, inputDiv) : 그리그-input 태그 바인딩
+ * function inputToGrid(grid, inputDiv) : input-그리드 태그 바인딩
+ * function inputToGrid(inputDiv) : input-object 태그 바인딩
  *
- * function clearInput(inputDivId) : input clear
+ * function clearInput(inputDiv) : input clear
  * function clearInput(disableInput) : disabled input
  *
  * ----------------------------------------------------------------
- * function popupOpen(popupTagId) : 팝업 열기 이벤트
- * function popupClose(popupTagId) : 팝업 닫기 이벤트
+ * function popupOpen(popupTag) : 팝업 열기 이벤트
+ * function popupClose(popupTag) : 팝업 닫기 이벤트
  *
  *
  *
@@ -92,15 +92,16 @@ function btnHidden(btnIds, btnDivId) {
  * @param data ({}) : 설정 객체
  * @return : null
  */
-function btnEnable({   grid = 1,
+function btnEnable({   tag = "#section1_btn",
+                       grid = "grid1",
                        search = true,
                        add = true,
                        del = true,
                        save = true,
                        print = true
                    } = {}) {
-
-    const btnTags = document.querySelectorAll("button");
+    const btnDiv = document.querySelector("#" + tag);
+    const btnTags = btnDiv.querySelectorAll("button");
     for (let btnTag of btnTags) {
         let btnId = btnTag.id;
         let btn_type = btnId.split("_")[0]
@@ -292,8 +293,7 @@ function inputMoneyFormat(obj) {
  * @param inputDivId (str) : 태그 id
  * @return : null
  */
-function dataToInput(data, inputDivId) {
-    const inputDiv = document.querySelector("#" + inputDivId);
+function dataToInput(data, inputDiv) {
     const namedElements = inputDiv.querySelectorAll('[name]');
     for (let el of namedElements) {
         let key = el.name;
@@ -332,10 +332,9 @@ function dataToInput(data, inputDivId) {
  * @param inputDivId (str) : 태그 id
  * @return : null
  */
-function gridToInput(grid, inputDivId) {
+function gridToInput(grid, inputDiv) {
     let selectedRow = AUIGrid.getSelectedRows(grid)[0];
 
-    const inputDiv = document.querySelector("#" + inputDivId);
     const namedElements = inputDiv.querySelectorAll('[name]');
     for (let el of namedElements) {
         let key = el.name;
@@ -363,8 +362,7 @@ function gridToInput(grid, inputDivId) {
  * @param inputDivId (str) :  태그 id
  * @return : null
  */
-function inputToGrid(grid, inputDivId) {
-    const inputDiv = document.querySelector("#" + inputDivId);
+function inputToGrid(grid, inputDiv) {
     const namedElements = inputDiv.querySelectorAll('[name]');
     let item = {};
     for (let el of namedElements) {
@@ -394,8 +392,7 @@ function inputToGrid(grid, inputDivId) {
  * @param inputDivId (str) :  태그 id
  * @return : {}
  */
-function inputToData(inputDivId) {
-    const inputDiv = document.querySelector("#" + inputDivId);
+function inputToData(inputDiv) {
     const namedElements = inputDiv.querySelectorAll('[name]');
     let item = {};
     for (let el of namedElements) {
@@ -422,11 +419,10 @@ function inputToData(inputDivId) {
 
 /* function clearInput
  * @description : input[name] 태그 clear
- * @param inputDivId (str) :  태그 id
+ * @param inputDiv (DOM)
  * @return : null
  */
-function clearInput(inputDivId) {
-    const inputDiv = document.querySelector("#" + inputDivId);
+function clearInput(inputDiv) {
     const namedElements = inputDiv.querySelectorAll('[name]');
     for (let el of namedElements) {
         if (el.type === "checkbox" || el.type === "radio") {
@@ -457,8 +453,7 @@ function disableInput(inputDivId) {
  * @param popupTagId (str) : 팝업 id
  * @return : null
  */
-function popupOpen(popupTagId) {
-    const popupTag = document.querySelector("#" + popupTagId);
+function popupOpen(popupTag) {
     popupTag.style.display = 'block';
 }
 
@@ -468,8 +463,7 @@ function popupOpen(popupTagId) {
  * @param popupTagId (str) : 팝업 id
  * @return : null
  */
-function popupClose(popupTagId) {
-    const popupTag = document.querySelector("#" + popupTagId);
+function popupClose(popupTag) {
     popupTag.style.display = 'none';
 }
 

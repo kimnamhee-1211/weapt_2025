@@ -109,6 +109,7 @@ const sectionId = "${sectionId}";	//섹션ID
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const popupId = "pop_gwanggo"; //팝업 컴포넌트
+    const popup = document.querySelector("#pop_gwanggo"); //팝업버튼 컴포넌트
     const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const search_startDate = document.querySelector("#search_startDate"); //select 컴포넌트
     const search_endDate = document.querySelector("#search_endDate"); //select 컴포넌트
@@ -193,14 +194,14 @@ const sectionId = "${sectionId}";	//섹션ID
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         search_board1_onclick();
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     });
 
     //팝업 이벤트
     //팝업 닫기 이벤트
     function close_popup_onclick(){
-        popupClose(popupId);
-        clearInput(popupId);
+        popupClose(popup);
+        clearInput(popup);
     }
 
     //그리드 조회 함수
@@ -253,7 +254,7 @@ const sectionId = "${sectionId}";	//섹션ID
             successBoardSelect : (json) => {
                 let data = json.DATA;
                 saveKey = "U";
-                dataToInput(data, popupId);
+                dataToInput(data, popup);
                 //search_file1_onclick();
             }
         });
@@ -270,9 +271,9 @@ const sectionId = "${sectionId}";	//섹션ID
         item.REG_DATE = getToday("yyyyMMdd");
         AUIGrid.addRow(grid1, item, "last");
         //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        gridToInput(grid1, popup);
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     }
 
 

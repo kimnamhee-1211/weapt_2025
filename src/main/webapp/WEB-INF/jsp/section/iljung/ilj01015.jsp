@@ -224,7 +224,7 @@
                 };
                 pop_onload(pop_item);
                 //팝업 열기 이벤트
-                popupOpen(popupId);
+                popupOpen(popup);
             },
             //이벤트 클릭 -> 일정 조회/수정/삭제
             eventClick: function(info) {
@@ -243,7 +243,7 @@
                     };
                     pop_onload(pop_item);
                     //팝업 열기 이벤트
-                    popupOpen(popupId);
+                    popupOpen(popup);
                 }
             },
         });

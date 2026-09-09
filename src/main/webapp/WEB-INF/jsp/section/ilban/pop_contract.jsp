@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-    <div class="layer_bg" id="pop_contract" onchange="inputToGrid(grid1, popupId)">
+    <div class="layer_bg" id="pop_contract" onchange="inputToGrid(grid1, popup)">
         <div class="popup" style="width:840px;">
             <div class="pop_title" style="border:none" >&#10004; &nbsp;계약등록</div>
             <div class="section1_btn" id="pop_btn"></div>
@@ -76,7 +76,7 @@
     </div>
 
 <script>
-    const popupId = "pop_contract";
+    const popup = document.querySelector("#pop_contract"); //팝업버튼 컴포넌트
     const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const input_contractdiv = document.querySelector("#input_contractdiv"); //select 컴포넌트
     const input_supplier = document.querySelector("#input_supplier"); //select 컴포넌트
@@ -88,6 +88,12 @@
     const input_cancelDate = document.querySelector("#input_cancelDate"); //select 컴포넌트
 
     let DS_SUPPLIER = [];
+
+    //팝업 닫기 이벤트
+    function close_popup_onclick(){
+        popupClose(popup);
+        clearInput(popup);
+    }
 
     async function getSelect_input_supplier(){
         input_supplier.innerHTML = "";
@@ -136,18 +142,13 @@
         pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
 
-        if(!isNull(pop_item.btnHidden)){
-            btnHidden(pop_item.btnHidden, pop_item.popupId);
-        }
-
-        if(!isNull(pop_item.disabled)){
-            disableInput(pop_item.popupId);
-        }
-
         //공통코드 가져오기
         selectOptionMaker("134", input_contractdiv, "", false);
         getSelect_input_supplier();
 
+        if(pop_item.pgId == "ilb02030"){
+            btnEnable({ tag : "#pop_btn", grid : "grid1", save : false})
+        }
     }
 
 

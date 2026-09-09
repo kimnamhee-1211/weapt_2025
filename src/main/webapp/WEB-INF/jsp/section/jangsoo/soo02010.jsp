@@ -28,7 +28,7 @@
                         <span><i class="icon-pause"></i>수립조정기초</span>
                         <span class="section_middle_btn" id="section_middle_btn"></span>
                         <span class="search-box section_middle_btn">
-                            <button id="change_btn" class="del_btn" onclick="popupOpen(popupId);">조정년월변경</button>
+                            <button id="change_btn" class="del_btn" onclick="popupOpen(popup);">조정년월변경</button>
                              <!-- 변경 팝업시작--> 
                             <div class="layer_bg" id="change_popup">
                                 <div class="popup" style="width:420px;">
@@ -45,7 +45,7 @@
                                 </div>
                             </div>
                             <!-- 팝업끝-->
-                            <button id="copy_btn" class="del_btn" onclick="popupOpen(popupId2);">복사</button>
+                            <button id="copy_btn" class="del_btn" onclick="popupOpen(popup2);">복사</button>
                              <!-- 팝업시작--> 
                             <div class="layer_bg" id="copy_popup">
                                 <div class="popup" style="width:420px;">
@@ -115,7 +115,7 @@
                     <div class="section_middle_title">
                         <span><i class="icon-pause"></i>공사종별수립기준</span>
                         <span class="section_middle_btn">
-                            <button id="add_btn" class="del_btn" onclick="popupOpen(popupId3);">공사종별추가</button>
+                            <button id="add_btn" class="del_btn" onclick="popupOpen(popup3);">공사종별추가</button>
                              <!-- 팝업시작--> 
                             <div class="layer_bg" id="add_popup">
                                 <div class="popup" style="width:900px;">
@@ -199,6 +199,10 @@
     const popupId = "change_popup"; //팝업 컴포넌트
     const popupId2 = "copy_popup"; //팝업 컴포넌트
     const popupId3 = "add_popup"; //팝업 컴포넌트
+    const popup = document.querySelector("#change_popup"); //팝업버튼 컴포넌트
+    const popup2 = document.querySelector("#copy_popup"); //팝업버튼 컴포넌트
+    const popup3 = document.querySelector("#add_popup"); //팝업버튼 컴포넌트
+
 
     const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const pop2_btn = document.querySelector("#pop2_btn"); //팝업버튼 컴포넌트
@@ -211,7 +215,7 @@
 
     const input_firstYrMm = document.querySelector("#input_firstYrMm"); //input 컴포넌트
 
-    const grid1_input = "grid1_input"; //input 컴포넌트
+    const grid1_input = document.querySelector("#grid1_input");
     const input_planGbn    = document.querySelector("#input_planGbn");
     const input_planStYear = document.querySelector("#input_planStYear");
     const input_planEndYear = document.querySelector("#input_planEndYear");
@@ -413,25 +417,25 @@
     //셀 선택 변경 이벤트 바인딩
     AUIGrid.bind(grid1, "selectionChange", function(event) {
         gridToInput(grid1, grid1_input);
-        pop_planMonth.value = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH
-        pop2_copyPlanMonth.value = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH
         if(AUIGrid.isAddedById(grid1, event.rowIdValue)){
             change_btn.disable = true;
-            copy_btn.disable = false;
+            copy_btn.disable = true;
             add_btn.disable = true;
             input_planMonth.disable = false;
             AUIGrid.clearGridData(grid2);
         }else{
             if(AUIGrid.getSelectedRows(grid1)[0].CLOSE_YN ==  "1"){
-                btnEnable({ grid: "grid1", save : false});
+                btnEnable({  tag: "#section_middle_btn", grid: "grid1", save : false});
                 change_btn.disable = true;
                 copy_btn.disable = true;
                 add_btn.disable = true;
             }else{
-                btnEnable({ grid: "grid1", save : true});
+                btnEnable({  tag: "#section_middle_btn", grid: "grid1", save : true});
                 change_btn.disable = false;
                 copy_btn.disable = true;
                 add_btn.disable = false;
+                pop_planMonth.value = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH
+                pop2_copyPlanMonth.value = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH
             }
             input_planMonth.disable = true;
             search_grid2_onclick();
@@ -443,16 +447,16 @@
 
     //팝업 닫기 이벤트
     function close_popup_onclick(){
-        popupClose(popupId);
-        clearInput(popupId);
+        popupClose(popup);
+        clearInput(popup);
     }
     function close_popup2_onclick(){
-        popupClose(popupId2);
-        clearInput(popupId2);
+        popupClose(popup2);
+        clearInput(popup2);
     }
     function close_popup3_onclick(){
-        popupClose(popupId3);
-        clearInput(popupId3);
+        popupClose(popup3);
+        clearInput(popup3);
     }
 
     function search_input1_onclick(){

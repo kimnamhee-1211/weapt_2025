@@ -11,14 +11,14 @@
                 </div>
                 <div class="section1_btn" id="section1_btn"></div>
                 <!-- 팝업시작-->
-                <div class="layer_bg" id="grid1_popup" onchange="inputToGrid(grid1, popupId)">
+                <div class="layer_bg" id="grid1_popup" onchange="inputToGrid(grid1, popup)">
                     <div class="popup" style="width: 600px;">
                         <div class="pop_title">&#10004; 사용자등록</div>
                         <div>
                             <span> &#9726&nbsp;사용자ID : </span>
                             <span><input type="text" id="" name="USER_ID" disabled></span> <!-- 추가하면 자동계산 생성-->
                         </div>
-                        <table id="popupId" style="line-height:40px;">
+                        <table style="line-height:40px;">
                         <tbody>
                             <tr>
                                 <th style="width: 150px;">직원선택</th>
@@ -137,6 +137,7 @@
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const popupId = "grid1_popup"; //팝업 컴포넌트
+    const popup = document.querySelector("#grid1_popup"); //title 컴포넌트
     const title_officeName = document.querySelector("#title_officeName"); //title 컴포넌트
     const input_empNo = document.querySelector("#input_empNo"); //select 컴포넌트
     const input_groupDtlNo = document.querySelector("#input_groupDtlNo"); //select 컴포넌트
@@ -235,10 +236,10 @@
     //행 클릭 시
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        gridToInput(grid1, popup);
         input_passwd2.value = "";
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     });
 
     //팝업 이벤트
@@ -246,8 +247,8 @@
     function close_popup_onclick(){
         let td = input_passwd2.closest("td");
         td.style.border = "";
-        popupClose(popupId);
-        clearInput(popupId);
+        popupClose(popup);
+        clearInput(popup);
     }
 
     //그리드 조회 함수
@@ -290,9 +291,9 @@
         item.COMP_CODE = loginUser.compCode;
         AUIGrid.addRow(grid1, item, "last");
         //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        gridToInput(grid1, popup);
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     }
 
 
@@ -446,14 +447,14 @@
 
     function input_empNo_change(obj){
         if(isNull(obj.value)){
-            clearInput(popupId)
+            clearInput(popup)
         }else{
             if(AUIGrid.getColumnValues(grid1, "EMP_NO").includes(obj.value)){
                 alert("이미 등록된 직원입니다");
-                clearInput(popupId)
+                clearInput(popup)
             }
             let data = DS_EMP.filter(row => obj.value == row.EMP_NO);
-            dataToInput(data[0], popupId);
+            dataToInput(data[0], popup);
         }
     }
     function input_passwd_change(obj){

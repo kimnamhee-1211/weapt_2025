@@ -178,14 +178,10 @@
     //그리드 이벤트
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         getSelect_min_setting();
-        open_popup1_onclick(AUIGrid.getSelectedRows(grid1)[0]);
+        open_popup2_onclick(AUIGrid.getSelectedRows(grid1)[0]);
     });
 
     //팝업 이벤트
-    function close_popup1_onclick(){
-        popupClose(popupId1);
-        clearInput(popupId1);
-    }
 
     //그리드 조회 함수
     function search_grid1_onclick(){

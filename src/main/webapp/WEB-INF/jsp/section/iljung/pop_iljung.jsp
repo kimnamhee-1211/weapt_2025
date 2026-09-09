@@ -88,7 +88,7 @@
      */
 
     //변수 선언
-    const popupId = "pop_iljung";
+    const popup = document.querySelector("#pop_iljung"); //팝업버튼 컴포넌트
     const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const input_title = document.querySelector("#input_title"); //input 컴포넌트
     const input_descr = document.querySelector("#input_descr"); //input 컴포넌트
@@ -111,8 +111,8 @@
     //팝업 이벤트
     //팝업 닫기 이벤트
     function close_popup_onclick(){
-        popupClose(popupId);
-        clearInput(popupId);
+        popupClose(popup);
+        clearInput(popup);
         input_statusCd.innerHTML = "";
         input_reWorkYn.checked = false;
         inputTd_reWork.style.visibility = "hidden";
@@ -138,7 +138,7 @@
                     close_popup_onclick();
                 }else{
                     saveKey == "U";
-                    dataToInput(data[0], popupId);
+                    dataToInput(data[0], popup);
                 }
             }
         });
@@ -157,7 +157,7 @@
 
         let addItem = null;
         let editItem = null;
-        let item = inputToData(popupId);
+        let item = inputToData(popup);
         item.REG_DATE = getToday("yyyyMMdd")
         if(saveKey == "I" && input_reWorkYn.value == "Y"){
             item.SC_DATE = setItemReWork();
@@ -239,7 +239,7 @@
     //그리드 삭제 함수
     function delete_pop_onclick(){
 
-        let item = inputToData(popupId);
+        let item = inputToData(popup);
         let items =  [{ ...item }];
 
         //검증
@@ -440,7 +440,7 @@
                 inputTr_reWork.style.display = "none";
                 input_scDate.disabled = true
             }else{
-                dataToInput(pop_item.addItem, popupId);
+                dataToInput(pop_item.addItem, popup);
                 inputTr_reWork.style.display =  "table-row";
                 input_scDate.disabled = false
             }

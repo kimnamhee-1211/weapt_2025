@@ -36,6 +36,8 @@
     </div>
 
     <script>
+        const popupId = "pop_write";
+        const popup = document.querySelector("#pop_write"); //select 컴포넌트
 
         const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
         const board_id = document.querySelector("#board_id"); //팝업 컴포넌트
@@ -117,6 +119,8 @@
             Object.assign({}, we_file_Props,
                 {})
         );
+
+
 
         function search_file1_onclick(){
 
@@ -294,13 +298,6 @@
 
             btnMaker({ tag: "#pop_btn2", grid: "file1", add : true, save : true, del : true});
 
-            if(!isNull(pop_item.btnHidden)){
-                btnHidden(pop_item.btnHidden, pop_item.popupId);
-            }
-
-            if(!isNull(pop_item.disabled)){
-                disableInput(pop_item.popupId);
-            }
 
         }
 

@@ -165,7 +165,7 @@
     const sectionId = "${sectionId}";	//섹션ID
     const pgId = "${pgId}";	//프로그램ID
     const menuId = "${menuId}";	//메뉴ID
-    const house_table = document.querySelector("#house_table");
+    const input = document.querySelector("#house_table");
     const input_officeCode = document.querySelector("#input_officeCode");
     const input_houseName = document.querySelector("#input_houseName");
     const input_useTestDate = document.querySelector("#input_useTestDate");
@@ -217,7 +217,7 @@
         we_select( selectData,{
             successSelect : (json) => {
                 let data = json.DATA;
-                dataToInput(data[0], "house_table");
+                dataToInput(data[0], input);
             }
         });
     }
@@ -230,7 +230,7 @@
         // 수정된 행 아이템들(배열) : 수정된 필드와 수정안된 필드 모두를 얻음.
         let editedRowItems =  []
 
-        let item = inputToData("house_table")
+        let item = inputToData(input)
         item.HOUSE_ADDR = input_addr1.value
         if(isNull(input_officeCode.value)){
             addedRowItems = [{...item}];

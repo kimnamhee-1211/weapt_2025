@@ -256,18 +256,6 @@
         querySet = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
         empGbm = isNull(pop_item.empGbm) ? "" : pop_item.empGbm;
 
-        if(!isNull(pop_item.btnHidden)){
-            btnHidden(pop_item.btnHidden, pop_item.popupId);
-        }
-
-        if(!isNull(pop_item.btnHidden)){
-            btnHidden(pop_item.btnHidden, pop_item.popupId);
-        }
-
-        if(!isNull(pop_item.disabled)){
-            disableInput(pop_item.popupId);
-        }
-
         //공통코드 가져오기
         selectOptionMaker("137", input_absentCd, "", false);
         //그리드 DDL

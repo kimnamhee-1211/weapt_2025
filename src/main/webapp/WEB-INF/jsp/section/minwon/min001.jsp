@@ -69,11 +69,11 @@
 <script>
     const popupId = "min001";
     let querySet;
-
     let popGrid1;	// 그리드 컴포넌트
     //let focus;	//그리드 컴포넌트 포커스
 
     //팝업 컴포넌트
+    const popup = document.querySelector("#min001");
     const pop_btn = document.querySelector("#pop_btn");
     const pop_title = document.querySelector("#pop_title");
     const info_table = document.querySelector("#info_table");
@@ -134,20 +134,14 @@
         pop_data.slipNo = AUIGrid.getSelectedRows(popGrid1)[0].SLIP_NO;
         pop_data.minwonDate = AUIGrid.getSelectedRows(popGrid1)[0].MINWON_DATE;
         pop_data.popId = popupId;
-        open_popup1_onclick(pop_data);
+        open_popup2_onclick(pop_data);
     });
-
-
-    function close_popup1_onclick(){
-        popupClose(popupId1);
-        clearInput(popupId1);
-    }
 
     function add_popGrid1_onclick(){
         pop_data.slipNo = null;
         pop_data.minwonDate = null;
         pop_data.popId = popupId;
-        open_popup1_onclick(pop_data);
+        open_popup2_onclick(pop_data);
     }
 
     //그리드 조회 함수
@@ -286,7 +280,7 @@
         return we_select(selectData, {
             successSelect: (json) => {
                 let data = json.DATA;
-                dataToInput(data[0], "cnt_table");
+                dataToInput(data[0], cnt_table);
             }
         });
     }

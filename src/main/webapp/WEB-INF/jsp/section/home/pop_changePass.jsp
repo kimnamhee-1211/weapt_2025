@@ -31,7 +31,7 @@
     </div>
 
 <script>
-    const pop_changePass = "pop_changePass";
+    const pop_changePass = document.querySelector("#pop_changePass");
     const pop_changePass_btn = document.querySelector("#pop_changePass_btn");
     const text_userId = document.querySelector("#text_userId");
     const text_userName = document.querySelector("#text_userName");
@@ -98,7 +98,7 @@
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "X-PG-ID": pop_changePass,
+                        "X-PG-ID": "pop_changePass",
                     },
                     body: jsonParam,
                     signal: controller.signal,
@@ -150,7 +150,7 @@
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "X-PG-ID": pop_changePass,
+                        "X-PG-ID": "pop_changePass",
                     },
                     body: jsonParam,
                     signal: controller.signal,

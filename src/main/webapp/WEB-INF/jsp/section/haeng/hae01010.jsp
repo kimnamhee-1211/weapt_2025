@@ -59,7 +59,7 @@
      */
 
         //변수 선언
-const sectionId = "${sectionId}";	//섹션ID
+    const sectionId = "${sectionId}";	//섹션ID
     const pgId = "${pgId}";	//프로그램ID
     const menuId = "${menuId}";	//메뉴ID
     const board_div = "100001";	//게시판 구분
@@ -69,6 +69,7 @@ const sectionId = "${sectionId}";	//섹션ID
     const search_what = document.querySelector("#search_what"); //select 컴포넌트
     const search_text = document.querySelector("#search_text"); //select 컴포넌트
     const popupId = "pop_write";
+    const popup = document.querySelector("#pop_write");
 
     //그리드 설정
     const grid1ColumnLayout = [
@@ -138,15 +139,15 @@ const sectionId = "${sectionId}";	//섹션ID
     AUIGrid.bind(grid1, "cellDoubleClick", function(event) {
         search_board1_onclick();
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     });
 
     //팝업 이벤트
     //팝업 닫기 이벤트
     function close_popup_onclick(){
         AUIGrid.clearGridData(file_grid1);
-        popupClose(popupId);
-        clearInput(popupId);
+        popupClose(popup);
+        clearInput(popup);
     }
 
 
@@ -203,7 +204,7 @@ const sectionId = "${sectionId}";	//섹션ID
         we_boardSelect( boardSelectData,{
             successBoardSelect : (json) => {
                 let data = json.DATA;
-                dataToInput(data, popupId);
+                dataToInput(data, popup);
                 search_file1_onclick();
             }
         });
@@ -221,9 +222,9 @@ const sectionId = "${sectionId}";	//섹션ID
 
         AUIGrid.addRow(grid1, item, "last");
         //grid-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        gridToInput(grid1, popup);
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     }
 
     //그리드 저장 함수

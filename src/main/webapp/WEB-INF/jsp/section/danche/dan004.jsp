@@ -365,14 +365,6 @@
     function pop_onload(pop_item){
         querySet = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
 
-        if(!isNull(pop_item.btnHidden)){
-            btnHidden(pop_item.btnHidden, pop_item.popupId);
-        }
-
-        if(!isNull(pop_item.disabled)){
-            disableInput(pop_item.popupId);
-        }
-
         //그리드 DDL
         Promise.all([
             getSelect_grid1_gradeCd()

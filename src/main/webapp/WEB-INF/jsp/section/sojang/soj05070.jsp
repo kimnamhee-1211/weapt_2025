@@ -30,7 +30,7 @@
         <div id="grid1"></div>
         <div class="section1">
             <%-- 추가 팝업시작--%>
-            <div class="layer_bg" id="grid1_popup" onchange="inputToGrid(grid1, popupId)" >>
+            <div class="layer_bg" id="grid1_popup" onchange="inputToGrid(grid1, popup)" >>
                 <div class="popup" style="width:980px;">
                     <div class="pop_title">&#10004;관리소등록</div>
                     <div>
@@ -152,6 +152,7 @@
     let focus = 0;	//그리드 컴포넌트 포커스
     let focus2 = 0;	//그리드 컴포넌트 포커스
     const popupId = "grid1_popup"; //팝업 컴포넌트
+    const popup = document.querySelector("#grid1_popup"); //팝업버튼 컴포넌트
     const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const search_status = document.querySelector("#search_status"); //select 컴포넌트
     const search_contKindCd = document.querySelector("#search_contKindCd"); //select 컴포넌트
@@ -346,17 +347,17 @@
         }
         search_grid2_onclick();
         //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        gridToInput(grid1, popup);
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
     });
 
     //팝업 이벤트
 
     //팝업 닫기 이벤트
     function close_popup_onclick(){
-        popupClose(popupId);
-        clearInput(popupId);
+        popupClose(popup);
+        clearInput(popup);
         AUIGrid.clearGridData(grid2);
     }
 
@@ -425,9 +426,9 @@
         const item = {};
         AUIGrid.addRow(grid1, item, "last");
         //팝업 열기 이벤트
-        popupOpen(popupId);
+        popupOpen(popup);
         //그리드-input 태그 바인딩
-        gridToInput(grid1, popupId);
+        gridToInput(grid1, popup);
     }
 
     //그리드 추가 함수

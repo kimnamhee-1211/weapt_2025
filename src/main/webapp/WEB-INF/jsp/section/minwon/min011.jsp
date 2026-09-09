@@ -164,7 +164,7 @@
 
 
 <script>
-    const popupId1 = "min011";
+    const popupId2 = "min011";
     let querySet1;
     let pop_data1;
     let pop_popId;
@@ -174,6 +174,8 @@
     let setting = [];
 
     //팝업 컴포넌트
+    const popup2 = document.querySelector("#min011");
+
     const section_middle_btn1 = document.querySelector("#section_middle_btn1");
     const minwon_table = document.querySelector("#minwon_table");
     const minwonWork_table = document.querySelector("#minwonWork_table");
@@ -204,8 +206,13 @@
     const input2_btn_gauge = document.querySelector("#input2_btn_gauge");
 
 
-    let input_user = []
-    let input_user2 = []
+    let input_user = [];
+    let input_user2 = [];
+
+    function close_popup2_onclick(){
+        popupClose(popup2);
+        clearInput(popup2);
+    }
 
     function search_input1_onclick() {
 
@@ -224,7 +231,7 @@
         we_select(selectData, {
             successSelect: (json) => {
                 let data = json.DATA;
-                dataToInput(data[0], "minwon_table");
+                dataToInput(data[0], minwon_table);
                 if (!input_user.some(row => row.NAME == data[0].RECEIPT_USER)) {
                     input_receiptUser.value = "write"
                     input_receiptUserName.value = data[0].RECEIPT_USER
@@ -255,7 +262,7 @@
         we_select(selectData, {
             successSelect: (json) => {
                 let data = json.DATA;
-                dataToInput(data[0], "minwonWork_table");
+                dataToInput(data[0], minwonWork_table);
                 if (!input_user2.some(row => row.NAME == data[0].WORK_USER)) {
                     input_workUser.value = "write";
                     input_workUserName.value = data[0].WORK_USER;
@@ -299,7 +306,7 @@
         if (!confirm("변경사항을 저장하시겠습니까?")) return;
         if (!requireCheck1("SAVE_INPUT1")) return;
 
-        let item = inputToData("minwon_table");
+        let item = inputToData(minwon_table);
         item.MINWON_DATE = input_minwonDate.value.replace(/-/g,"");
         item.REG_DATE = getToday("yyyyMMdd")
         item.TIME_INPUT = input_timeInput.checked ? "1" : "0";
@@ -364,7 +371,7 @@
         if (!requireCheck1("SAVE_INPUT2")) return;
 
 
-        let item = inputToData("minwonWork_table");
+        let item = inputToData(minwonWork_table);
         item.REG_DATE = getToday("yyyyMMdd");
         item.SLIP_NO = input_slipNo.value;
         item.MINWON_DATE = input_minwonDate.value.replace(/-/g,"");
@@ -432,7 +439,7 @@
                     search_cntTable(),
                     search_popGrid1_onclick()
                 ]).then(function () {
-                    open_popup1_onclick();
+                    open_popup2_onclick();
                 })
             }else {
                 focus = AUIGrid.getSelectedIndex(focusGrid)[0];
@@ -491,7 +498,7 @@
                     }else{
                         search_grid1_onclick();
                     }
-                    close_popup1_onclick();
+                    close_popup2_onclick();
                 } else return;
             }
         });
@@ -774,7 +781,7 @@
 
     }
 
-    function pop_onload1(pop_item) {
+    function pop2_onload(pop_item) {
         querySet1 = isNull(pop_item.querySet) ? pop_item.pgId : pop_item.querySet;
         pop_data1 = pop_item.pop_data
         pop_popId = isNull(pop_item.popId) ? "" : pop_item.popId;
@@ -788,7 +795,7 @@
         btnMaker({tag: "#section_middle_btn1", grid: "input1", save: true, del: true});
         btnMaker({tag: "#section_middle_btn2", grid: "input2", save: true, del: true});
         section_middle_btn1.insertAdjacentHTML("beforeend",
-            "<button id='close_btn1' class='btn_left3' onclick='close_popup1_onclick()'>닫기</button>");
+            "<button id='close_btn1' class='btn_left3' onclick='close_popup2_onclick()'>닫기</button>");
 
 
         if (!isNull(pop_item.btnHidden)) {
