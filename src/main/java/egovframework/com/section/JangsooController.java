@@ -5,6 +5,7 @@ import egovframework.com.baseCrud.model.ApiResponse;
 import egovframework.com.baseCrud.service.BaseCrudService;
 import egovframework.com.login.model.LoginVO;
 import egovframework.com.section.service.JangsooService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,37 +35,33 @@ public class JangsooController {
     protected JangsooService jangsooService;
 
 
-    //다중 삭제
-    @RequestMapping(value = "/deleteList/jangsoo/soo02010_grid1", method = RequestMethod.POST)
+    //다중 검색
+    @RequestMapping(value = "/selectList/jangsoo/soo02010_grid2", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
     @ResponseBody
-    public ApiResponse<Void> deleteList(@PathVariable("sectionId") String sectionId,
-                                        @PathVariable("component") String component,
-                                        @RequestBody Map<String, Object> param,
-                                        @SessionAttribute("loginUser") LoginVO loginUser,
-                                        @RequestAttribute(value = "PG_ID") String pgId,
-                                        @RequestAttribute(value = "MENU_ID") String menuId) {
+    public ApiResponse<List<Map<String, Object>>> selectList(@RequestParam Map<String, Object> param,
+                                                             @SessionAttribute("loginUser") LoginVO loginUser,
+                                                             @RequestAttribute(value = "PG_ID") String pgId,
+                                                             @RequestAttribute(value = "MENU_ID") String menuId) {
 
-        //int resultRowCount = jangsooService.deleteList(sectionId, component, param, loginUser, pgId, menuId);
+        List<Map<String, Object>> resultList = jangsooService.selectList("jangsoo", "soo02010_grid2", param, loginUser, pgId, menuId);
 
-        ApiResponse<Void> result = new ApiResponse<>();
+        ApiResponse<List<Map<String, Object>>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
-//        result.setO_RESULT(resultRowCount);
-//        result.setO_MSG(resultRowCount + "건이 삭제되었습니다.");
-        result.setO_TYPE(ApiResponse.ApiType.DELETE);
+        result.setO_RESULT(resultList.size());
+        result.setO_MSG(resultList.size() + "건이 조회되었습니다.");
+        result.setO_TYPE(ApiResponse.ApiType.SELECT);
+        result.setDATA(resultList);
         return result;
     }
 
-
     @RequestMapping(value = "/updateOne/jangsoo/soo02010_change", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResponse<Map<String, Object>> change_planMonth(@PathVariable("sectionId") String sectionId,
-                                      @PathVariable("component") String component,
-                                      @RequestBody Map<String, Object> param,
+    public ApiResponse<Map<String, Object>> change_planMonth( @RequestBody Map<String, Object> param,
                                       @SessionAttribute("loginUser") LoginVO loginUser,
                                       @RequestAttribute(value = "PG_ID") String pgId,
                                       @RequestAttribute(value = "MENU_ID") String menuId) {
 
-        Map<String, Object> resultMap = jangsooService.change_planMonth(sectionId, component, param, loginUser, pgId, menuId);
+        Map<String, Object> resultMap = jangsooService.change_planMonth("jangsoo", "soo02010_change", param, loginUser, pgId, menuId);
 
         ApiResponse<Map<String, Object>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
@@ -76,14 +73,12 @@ public class JangsooController {
 
     @RequestMapping(value = "/insertOne/jangsoo/soo02010_copy", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResponse<Map<String, Object>> copy_planMonth(@PathVariable("sectionId") String sectionId,
-                                                           @PathVariable("component") String component,
-                                                           @RequestBody Map<String, Object> param,
+    public ApiResponse<Map<String, Object>> copy_planMonth(@RequestBody Map<String, Object> param,
                                                            @SessionAttribute("loginUser") LoginVO loginUser,
                                                            @RequestAttribute(value = "PG_ID") String pgId,
                                                            @RequestAttribute(value = "MENU_ID") String menuId) {
 
-        Map<String, Object> resultMap = jangsooService.copy_planMonth(sectionId, component, param, loginUser, pgId, menuId);
+        Map<String, Object> resultMap = jangsooService.copy_planMonth("jangsoo", "soo02010_copy", param, loginUser, pgId, menuId);
 
         ApiResponse<Map<String, Object>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
@@ -93,17 +88,33 @@ public class JangsooController {
         return result;
     }
 
+    @RequestMapping(value = "/selectList/jangsoo/soo02010_pop3Grid1", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiResponse<List<Map<String, Object>>> selectList_pop3Grid1(@RequestParam Map<String, Object> param,
+                                                             @SessionAttribute("loginUser") LoginVO loginUser,
+                                                             @RequestAttribute(value = "PG_ID") String pgId,
+                                                             @RequestAttribute(value = "MENU_ID") String menuId) {
+
+        List<Map<String, Object>> resultList = jangsooService.selectList_pop3Grid1("jangsoo", "soo02010_pop3Grid1", param, loginUser, pgId, menuId);
+
+        ApiResponse<List<Map<String, Object>>> result = new ApiResponse<>();
+        result.setO_STATUS("SUCCESS");
+        result.setO_RESULT(resultList.size());
+        result.setO_MSG(resultList.size() + "건이 조회되었습니다.");
+        result.setO_TYPE(ApiResponse.ApiType.SELECT);
+        result.setDATA(resultList);
+        return result;
+    }
+
     @RequestMapping(value = "/insertList/jangsoo/soo02010_add", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResponse<Map<String, Object>> add_repairCode(@PathVariable("sectionId") String sectionId,
-                                                           @PathVariable("component") String component,
-                                                           @RequestBody List<Map<String, Object>> param,
+    public ApiResponse<Map<String, Object>> add_repairCode(@RequestBody List<Map<String, Object>> param,
                                                            @SessionAttribute("loginUser") LoginVO loginUser,
                                                            @RequestAttribute(value = "PG_ID") String pgId,
                                                            @RequestAttribute(value = "MENU_ID") String menuId) {
 
 
-        Map<String, Object> resultMap = jangsooService.add_repairCode(sectionId, component, param, loginUser, pgId, menuId);
+        Map<String, Object> resultMap = jangsooService.add_repairCode("jangsoo", "soo02010_add", param, loginUser, pgId, menuId);
 
         ApiResponse<Map<String, Object>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
@@ -115,14 +126,12 @@ public class JangsooController {
 
     @RequestMapping(value = "/deleteOne/jangsoo/soo02010_grid1", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResponse<Map<String, Object>> delete_plan(@PathVariable("sectionId") String sectionId,
-                                                           @PathVariable("component") String component,
-                                                           @RequestBody Map<String, Object> param,
+    public ApiResponse<Map<String, Object>> delete_plan(@RequestBody Map<String, Object> param,
                                                            @SessionAttribute("loginUser") LoginVO loginUser,
                                                            @RequestAttribute(value = "PG_ID") String pgId,
                                                            @RequestAttribute(value = "MENU_ID") String menuId) {
 
-        Map<String, Object> resultMap = jangsooService.delete_plan(sectionId, component, param, loginUser, pgId, menuId);
+        Map<String, Object> resultMap = jangsooService.delete_plan("jangsoo", "soo02010_grid1", param, loginUser, pgId, menuId);
 
         ApiResponse<Map<String, Object>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");

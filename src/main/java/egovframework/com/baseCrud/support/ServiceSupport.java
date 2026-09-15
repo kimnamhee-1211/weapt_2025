@@ -1,5 +1,6 @@
 package egovframework.com.baseCrud.support;
 
+import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
 import org.springframework.stereotype.Component;
 
@@ -48,6 +49,7 @@ public class ServiceSupport {
         if (loginUser == null) {
             throw new IllegalStateException("로그인 정보가 없습니다.");
         }
+
         for (Map<String, Object> row : param) {
             setUserToParam(loginUser, row);
         }

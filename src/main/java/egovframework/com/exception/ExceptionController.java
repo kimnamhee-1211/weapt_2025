@@ -72,7 +72,7 @@ public class ExceptionController {
 
     }
     @ExceptionHandler(FileFailException.class)
-    public ResponseEntity<ApiResponse<Void>>  handleCrudFailException(FileFailException ex) {
+    public ResponseEntity<ApiResponse<Void>>  handleFileFailException(FileFailException ex) {
 
         LOGGER.error("FILE FAIL : {}", ex.getMessage(), ex);
 
@@ -91,7 +91,7 @@ public class ExceptionController {
     @ExceptionHandler(BizException.class)
     public ResponseEntity<ApiResponse<Void>>  handleBizException(BizException ex) {
 
-        LOGGER.error("FILE FAIL : {}", ex.getMessage(), ex);
+        LOGGER.error("BIZ FAIL : {}", ex.getMessage(), ex);
 
         ApiResponse<Void> result = new ApiResponse<>();
         result.setO_STATUS("FAIL");
@@ -107,6 +107,8 @@ public class ExceptionController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException(Exception ex) {
+
+        LOGGER.error("FAIL : {}", ex.getMessage(), ex);
 
         ApiResponse<Void> result = new ApiResponse<>();
         result.setO_STATUS("FAIL");

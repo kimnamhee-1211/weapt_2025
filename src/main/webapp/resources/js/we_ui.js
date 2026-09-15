@@ -100,7 +100,7 @@ function btnEnable({   tag = "#section1_btn",
                        save = true,
                        print = true
                    } = {}) {
-    const btnDiv = document.querySelector("#" + tag);
+    const btnDiv = document.querySelector(tag);
     const btnTags = btnDiv.querySelectorAll("button");
     for (let btnTag of btnTags) {
         let btnId = btnTag.id;

@@ -21,7 +21,7 @@
                     <div class="section_middle_title">
                         <span><i class="icon-pause"></i>수립조정상태</span>                
                     </div>
-                    <div style="height: 612px;" id="grid1"></div>
+                    <div id="grid1"></div>
                 </div>
                 <div class="gridcont_right_870">
                     <div class="section_middle_title">
@@ -148,8 +148,8 @@
                                             <button id="search_btn" onclick="">검색</button>&emsp;
                                         </span>
                                     </div>
-                                    <div style="height: 600px;" id="pop3Grid1"></div>
-                                    &emsp;&#9726&nbsp;이미 선택된 공사종별도 추가선택 저장이 가능합니다.
+                                    <div id="pop3Grid1"></div>
+                                    <div>&emsp;&#9726&nbsp;이미 선택된 공사종별도 추가선택 저장이 가능합니다.</div>
                                     <div class="pop_btn" id="pop3_btn"></div>
                                 </div>
                             </div>
@@ -206,7 +206,7 @@
 
     const pop_btn = document.querySelector("#pop_btn"); //팝업버튼 컴포넌트
     const pop2_btn = document.querySelector("#pop2_btn"); //팝업버튼 컴포넌트
-    const pop3_btn = document.querySelector("#pop2_btn"); //팝업버튼 컴포넌트
+    const pop3_btn = document.querySelector("#pop3_btn"); //팝업버튼 컴포넌트
 
     const change_btn = document.querySelector("#change_btn"); //팝업버튼 컴포넌트
     const copy_btn = document.querySelector("#copy_btn"); //팝업버튼 컴포넌트
@@ -239,7 +239,7 @@
 
     //그리드 설정
     const grid1ColumnLayout = [
-        { dataField: "PLAN_GBN",
+        { dataField: "PLAN_GBN_NM",
             headerText: "구분",
             dataType: "text",
             width : "30%",
@@ -270,6 +270,7 @@
     grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
+                height: 614,
                 editable : false,
                 showRowNumColumn : false,
                 showRowCheckColumn : false,
@@ -283,8 +284,9 @@
             dataType: "text",
             width : "*%",
             editable : false,
+            style : "text-align-left",
         },
-        { dataField: "REGUL_YN",
+        { dataField: "REGUL_YN_NM",
             headerText: "시행규칙",
             dataType: "text",
             width : "10%",
@@ -315,6 +317,7 @@
             headerText: "비고",
             dataType: "text",
             width : "20%",
+            style : "text-align-left",
         },
         { dataField: "END_YEAR",
             headerText: "만기년도",
@@ -332,34 +335,26 @@
     grid2 = AUIGrid.create("#grid2", grid2ColumnLayout,
         Object.assign({}, we_grid_Props,
             {
-                height: 490,
-                showRowCheckColumn : false
+                height: 492,
+                showRowCheckColumn : false,
+                showRowNumColumn : false,
+                displayTreeOpen: true,
+                rowCheckDependingTree: true,
+                treeIdField: "CD",
+                treeIdRefField: "UP_CD",
+                flat2tree: true,
+
             })
     );
 
     const pop3Grid1ColumnLayout = [
-        { dataField: "SEQ",
-            headerText: "",
-            dataType: "text",
-            width : "8%",
-            renderer : {
-                type : "CheckBoxEditRenderer",
-                showLabel : true
-            },
-            disabledFunction :  function(rowIndex, columnIndex, value, isChecked, item, dataField ) {
-                if(item.LEVEL != "3") {
-                    return true;
-                }
-                return false;
-            }
-        },
         { dataField: "CODE_NAME",
             headerText: "공사종별",
             dataType: "text",
             width : "*%",
             editable : false,
         },
-        { dataField: "REGUL_YN",
+        { dataField: "REGUL_YN_NM",
             headerText: "시행규칙",
             dataType: "text",
             width : "10%",
@@ -405,6 +400,7 @@
                 treeIdField: "CD",
                 treeIdRefField: "UP_CD",
                 flat2tree: true,
+                width : 880
             })
     );
 
@@ -417,33 +413,36 @@
     //셀 선택 변경 이벤트 바인딩
     AUIGrid.bind(grid1, "selectionChange", function(event) {
         gridToInput(grid1, grid1_input);
-        if(AUIGrid.isAddedById(grid1, event.rowIdValue)){
-            change_btn.disable = true;
-            copy_btn.disable = true;
-            add_btn.disable = true;
-            input_planMonth.disable = false;
+        if(AUIGrid.isAddedByRowIndex(grid1, event.rowIndex)){
+            change_btn.disabled = true;
+            copy_btn.disabled = true;
+            add_btn.disabled = true;
+            input_planMonth.disabled = false;
             AUIGrid.clearGridData(grid2);
         }else{
+            let planMonth = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH
             if(AUIGrid.getSelectedRows(grid1)[0].CLOSE_YN ==  "1"){
                 btnEnable({  tag: "#section_middle_btn", grid: "grid1", save : false});
-                change_btn.disable = true;
-                copy_btn.disable = true;
-                add_btn.disable = true;
+                change_btn.disabled = true;
+                copy_btn.disabled = false;
+                add_btn.disabled = true;
+                pop2_copyPlanMonth.value = planMonth.substring(0, 4) + "-" + planMonth.substring(4, 6)
             }else{
                 btnEnable({  tag: "#section_middle_btn", grid: "grid1", save : true});
-                change_btn.disable = false;
-                copy_btn.disable = true;
-                add_btn.disable = false;
-                pop_planMonth.value = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH
-                pop2_copyPlanMonth.value = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH
+                change_btn.disabled = false;
+                copy_btn.disabled = true;
+                add_btn.disabled = false;
+                pop_planMonth.value = planMonth.substring(0, 4) + "-" + planMonth.substring(4, 6)
             }
-            input_planMonth.disable = true;
+            input_planMonth.disabled = true;
             search_grid2_onclick();
         }
     });
 
-
     //팝업 이벤트
+    add_btn.addEventListener("click", function (){
+        search_add_onclick();
+    })
 
     //팝업 닫기 이벤트
     function close_popup_onclick(){
@@ -602,7 +601,10 @@
         let saveParam = {
             insertParam : addedRowItems,
             updateParam : editedRowItems,
-            key : {},
+            key : {
+                column : ["SEQ"],
+                seq : [1]
+            },
             before : {}
         }
 
@@ -633,8 +635,8 @@
         }
 
         let param = {
-            PLAN_MONTH : pop_planMonth.value,
-            CHANGE_PLAN_MONTH : pop_changePlanMonth.value,
+            PLAN_MONTH : pop_planMonth.value.replace(/-/g, ""),
+            CHANGE_PLAN_MONTH : pop_changePlanMonth.value.replace(/-/g, ""),
             SEQ : AUIGrid.getSelectedRows(grid1)[0].SEQ
         }
 
@@ -673,6 +675,7 @@
         }
 
         let param = inputToData(popupId2);
+        param.PLAN_MONTH = param.PLAN_MONTH.replace(/-/g, "");
 
         if(!requireCheck("SAVE_COPY")) return;
 
@@ -716,7 +719,7 @@
         }
 
         param.forEach(row => {
-            row.PLAN_MONTH = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH
+            row.PLAN_MONTH = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH;
             row.SEQ = AUIGrid.getSelectedRows(grid1)[0].SEQ
             row.CLOSE_YN = AUIGrid.getSelectedRows(grid1)[0].CLOSE_YN
         })
@@ -814,16 +817,16 @@
         pop2_planStYear.innerHTML = "";
         pop2_planEndYear.innerHTML = "";
         let thisYear = getToday("yyyy");
-        for(let year = thisYear - 50 ; year <= (thisYear + 20); year++){
-            input_planStYear.insertAdjacentHTML("beforeend",
-                "<option value='" + year + "'>" + year + "</option>");
-            input_planEndYear.insertAdjacentHTML("beforeend",
-                "<option value='" + year + "'>" + year + "</option>");
-            pop2_planStYear.insertAdjacentHTML("beforeend",
-                "<option value='" + year + "'>" + year + "</option>");
-            pop2_planEndYear.insertAdjacentHTML("beforeend",
-                "<option value='" + year + "'>" + year + "</option>");
+        let options = "";
+
+        for (let year = thisYear - 50; year <= thisYear + 20; year++) {
+            options += `<option value="${year}">${year}</option>`;
         }
+
+        input_planStYear.innerHTML = options;
+        input_planEndYear.innerHTML = options;
+        pop2_planStYear.innerHTML = options;
+        pop2_planEndYear.innerHTML = options;
         input_planStYear.value = thisYear;
         input_planEndYear.value = thisYear;
         pop2_planStYear.value = thisYear;
@@ -833,7 +836,7 @@
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
-        btnMaker({ tag: "#section_middle_btn", grid: "grid1", search : true, add : true, save:true, print : true});
+        btnMaker({ tag: "#section_middle_btn", grid: "grid1", search : true, add : true, save:true, del: true, print : true});
         btnMaker({ tag: "#pop_btn", grid: "change", save : true});
         pop_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup_onclick()'>닫기</button>");
@@ -843,16 +846,14 @@
         btnMaker({ tag: "#pop3_btn", grid: "add", search: true, save : true});
         pop3_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup3_onclick()'>닫기</button>");
+        getSelect_input_year(),
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
 
-        Promise.all([
-            //그리드 DDL
-            getSelect_input_year(),
-        ]).then(function (){
-            //로드 시 그리드 바로 조회
-            search_grid1_onclick();
-        })
+        //로드 시 그리드 바로 조회
+        search_input1_onclick();
+        search_grid1_onclick();
+
     };
 
 </script>
