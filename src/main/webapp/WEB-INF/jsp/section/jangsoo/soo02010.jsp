@@ -354,6 +354,12 @@
             width : "*%",
             editable : false,
         },
+        { dataField: "CNT",
+            headerText: "선택갯수",
+            dataType: "text",
+            width : "10%",
+            editable : false,
+        },
         { dataField: "REGUL_YN_NM",
             headerText: "시행규칙",
             dataType: "text",
@@ -474,14 +480,13 @@
             successSelect : (json) => {
                 let data = json.DATA;
                 if(data.length > 0){
-                    input_firstYrMm.value = data[0].FIRST_YR_MM;
-                    input_firstYrMm.disable = true
-                    init_btn.disable = true;
-
+                    input_firstYrMm.value = data[0].FIRST_YR_MM.substring(0, 4) + "-" + data[0].FIRST_YR_MM.substring(4, 6)
+                    input_firstYrMm.disabled = true
+                    init_btn.disabled = true;
                 }else{
                     input_firstYrMm.value = '';
-                    input_firstYrMm.disable = false
-                    init_btn.disable = false;
+                    input_firstYrMm.disabled = false
+                    init_btn.disabled = false;
                 }
             }
         });
@@ -543,6 +548,7 @@
 
         //검색데이터
         let selectParam = {
+            PLAN_MONTH : AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH,
         }
 
         //파라미터
@@ -656,7 +662,7 @@
         }
 
         we_update( saveData ,{
-            successSave : (json) => {
+            successUpdate : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
                     //팝업 닫기
@@ -693,7 +699,7 @@
         }
 
         we_insert( saveData ,{
-            successSave : (json) => {
+            successInsert : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
                     //팝업 닫기
@@ -736,7 +742,7 @@
         }
 
         we_insert( saveData ,{
-            successSave : (json) => {
+            successInsert : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
                     //팝업 닫기
@@ -816,17 +822,20 @@
         input_planEndYear.innerHTML = "";
         pop2_planStYear.innerHTML = "";
         pop2_planEndYear.innerHTML = "";
-        let thisYear = getToday("yyyy");
+        let thisYear = Number(getToday("yyyy"));
         let options = "";
 
-        for (let year = thisYear - 50; year <= thisYear + 20; year++) {
-            options += `<option value="${year}">${year}</option>`;
+        for(let year = thisYear - 30; year <= (thisYear + 30); year++){
+            input_planStYear.insertAdjacentHTML("beforeend",
+                "<option value='" + year + "'>" + year + "</option>");
+            input_planEndYear.insertAdjacentHTML("beforeend",
+                "<option value='" + year + "'>" + year + "</option>");
+            pop2_planStYear.insertAdjacentHTML("beforeend",
+                "<option value='" + year + "'>" + year + "</option>");
+            pop2_planEndYear.insertAdjacentHTML("beforeend",
+                "<option value='" + year + "'>" + year + "</option>");
         }
 
-        input_planStYear.innerHTML = options;
-        input_planEndYear.innerHTML = options;
-        pop2_planStYear.innerHTML = options;
-        pop2_planEndYear.innerHTML = options;
         input_planStYear.value = thisYear;
         input_planEndYear.value = thisYear;
         pop2_planStYear.value = thisYear;
@@ -846,7 +855,7 @@
         btnMaker({ tag: "#pop3_btn", grid: "add", search: true, save : true});
         pop3_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup3_onclick()'>닫기</button>");
-        getSelect_input_year(),
+        getSelect_input_year();
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
 

@@ -529,14 +529,6 @@
 				PLAN_USER,
 				VIEW_YN,
 				STATUS,
-				CLOSE_YN,
-				CLOSE_ST_USER,
-				CLOSE_END_USER,
-				CLOSE_ST_USER_ID,
-				CLOSE_END_UUER_ID,
-				CLOSE_CNT,
-				CLOST_ST_DATE,
-				CLOSE_END_DATE,
 				READY_AMT
 			)
 			<foreach collection="list" item="row" separator=" UNION ALL ">
@@ -550,14 +542,6 @@
 				#{row.PLAN_USER},
 				#{row.VIEW_YN},
 				#{row.STATUS},
-				#{row.CLOSE_YN},
-				#{row.CLOSE_ST_USER},
-				#{row.CLOSE_END_USER},
-				#{row.CLOSE_ST_USER_ID},
-				#{row.CLOSE_END_UUER_ID},
-				#{row.CLOSE_CNT},
-				#{row.CLOST_ST_DATE},
-				#{row.CLOSE_END_DATE},
 				#{row.READY_AMT}
 			</foreach>
 		</if>
@@ -573,14 +557,6 @@
 			A.PLAN_USER         = B.PLAN_USER,
 			A.VIEW_YN           = B.VIEW_YN,
 			A.STATUS            = B.STATUS,
-			A.CLOSE_YN          = B.CLOSE_YN,
-			A.CLOSE_ST_USER     = B.CLOSE_ST_USER,
-			A.CLOSE_END_USER    = B.CLOSE_END_USER,
-			A.CLOSE_ST_USER_ID  = B.CLOSE_ST_USER_ID,
-			A.CLOSE_END_UUER_ID = B.CLOSE_END_UUER_ID,
-			A.CLOSE_CNT         = B.CLOSE_CNT,
-			A.CLOST_ST_DATE     = B.CLOST_ST_DATE,
-			A.CLOSE_END_DATE    = B.CLOSE_END_DATE,
 			A.READY_AMT         = B.READY_AMT
 			FROM dbo.TRP_MONTH_REPAIR_BASIC A
 			JOIN (
@@ -595,14 +571,6 @@
 				#{row.PLAN_USER}            AS PLAN_USER,
 				#{row.VIEW_YN}              AS VIEW_YN,
 				#{row.STATUS}               AS STATUS,
-				#{row.CLOSE_YN}             AS CLOSE_YN,
-				#{row.CLOSE_ST_USER}        AS CLOSE_ST_USER,
-				#{row.CLOSE_END_USER}       AS CLOSE_END_USER,
-				#{row.CLOSE_ST_USER_ID}     AS CLOSE_ST_USER_ID,
-				#{row.CLOSE_END_UUER_ID}    AS CLOSE_END_UUER_ID,
-				#{row.CLOSE_CNT}            AS CLOSE_CNT,
-				#{row.CLOST_ST_DATE}        AS CLOST_ST_DATE,
-				#{row.CLOSE_END_DATE}       AS CLOSE_END_DATE,
 				#{row.READY_AMT}            AS READY_AMT
 			</foreach>
 			) B
@@ -727,7 +695,7 @@
 		WHERE D.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
 		AND D.PLAN_MONTH = #{PLAN_MONTH} AND D.SEQ = #{SEQ}
 		-->
-		ORDER BY OR_1, OR_2, OR_3, OR_4, LEVEL
+		ORDER BY OR_1, OR_2, OR_3, OR_4, CD
 	</select>
 
 	<select id="selectOne_soo02010_change" parameterType="map" resultType="map">
@@ -1062,9 +1030,11 @@
 			0 AS OR_3,
 			0 AS OR_4,
 			NULL AS REGUL_YN,
+			NULL AS REGUL_YN_NM,
 			NULL AS ALL_PERIOD,
 			NULL AS SUB_PERIOD,
-			NULL AS SUB_RATE
+			NULL AS SUB_RATE,
+			NULL AS CNT
 		FROM dbo.TRP_REPAIR_CODE A
 		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND ISNULL(A.USE_YN, '1') = '1'
 		UNION ALL
@@ -1083,9 +1053,11 @@
 			0 AS OR_3,
 			0 AS OR_4,
 			NULL AS REGUL_YN,
+			NULL AS REGUL_YN_NM,
 			NULL AS ALL_PERIOD,
 			NULL AS SUB_PERIOD,
-			NULL AS SUB_RATE
+			NULL AS SUB_RATE,
+			NULL AS CNT
 		FROM dbo.TRP_REPAIR_SUBCODE B
 		INNER JOIN dbo.TRP_REPAIR_CODE A ON A.CODE = B.CODE AND A.OFFICE_CODE = B.OFFICE_CODE
 		WHERE B.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND ISNULL(B.USE_YN, '1') = '1'
@@ -1105,14 +1077,26 @@
 			C.ORDER_SEQ AS OR_3,
 			0 AS OR_4,
 			C.REGUL_YN AS REGUL_YN,
+			CASE WHEN C.REGUL_YN = '1' THEN 'YES' ELSE 'NO' END AS REGUL_YN_NM,
 			C.ALL_PERIOD AS ALL_PERIOD,
 			C.SUB_PERIOD AS SUB_PERIOD,
-			C.SUB_RATE AS SUB_RATE
+			C.SUB_RATE AS SUB_RATE,
+			D.CNT AS CNT
 		FROM dbo.TRP_REPAIR_KIND C
 		INNER JOIN dbo.TRP_REPAIR_SUBCODE B ON B.CODE = C.CODE
 		AND B.SUB_CODE = C.SUB_CODE AND B.OFFICE_CODE = C.OFFICE_CODE
 		INNER JOIN dbo.TRP_REPAIR_CODE A ON A.CODE = C.CODE
 		AND A.OFFICE_CODE = C.OFFICE_CODE
+		LEFT JOIN (
+		    SELECT
+				COUNT(*) AS CNT,
+				CODE,
+				SUB_CODE,
+				KIND_NAME
+		    FROM dbo.TRP_MONTH_REPAIR_KIND
+		    WHERE OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND PLAN_MONTH = #{PLAN_MONTH}
+		    GROUP BY CODE, SUB_CODE, KIND_NAME) D
+		ON D.CODE = C.CODE AND  D.SUB_CODE = C.SUB_CODE AND D.KIND_NAME = C.KIND_NAME
 		WHERE C.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND ISNULL(C.USE_YN, '1') = '1'
 		<!--
 		UNION ALL
@@ -1143,7 +1127,7 @@
 		AND A.OFFICE_CODE = D.OFFICE_CODE
 		WHERE D.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND ISNULL(D.USE_YN, '1') = '1'
 		-->
-		ORDER BY OR_1, OR_2, OR_3, OR_4, LEVEL
+		ORDER BY OR_1, OR_2, OR_3, OR_4, CD, LEVEL
 	</select>
 
 	<delete id="deleteOne_soo02010_add_1" parameterType="map">
@@ -1188,12 +1172,15 @@
 					A.CODE,
 					A.OFFICE_CODE,
 					#{row.PLAN_MONTH},
-					#{row.SEQ},
+					'1',
 					A.CODE_NAME,
 					A.REMARKS,
 					A.ORDER_SEQ
 				FROM dbo.TRP_REPAIR_CODE A
 				WHERE A.OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND A.CODE = #{row.CODE}
+				AND NOT EXISTS(SELECT 1
+				FROM dbo.TRP_MONTH_REPAIR_CODE
+				WHERE OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND CODE = #{row.CODE})
 			</foreach>
 		</if>
 	</insert>
@@ -1212,12 +1199,15 @@
 				A.SUB_CODE,
 				A.OFFICE_CODE,
 				#{row.PLAN_MONTH},
-				#{row.SEQ},
+				'1',
 				A.SUB_CODE_NAME,
 				A.REMARKS,
 				A.ORDER_SEQ
 			FROM dbo.TRP_REPAIR_SUBCODE A
 			WHERE A.OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND A.CODE = #{row.CODE} AND A.SUB_CODE = #{row.SUB_CODE}
+			AND NOT EXISTS(SELECT 1
+			               FROM dbo.TRP_MONTH_REPAIR_SUBCODE
+			               WHERE OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND CODE = #{row.CODE} AND SUB_CODE = #{row.SUB_CODE})
 		</foreach>
 		</if>
 	</insert>
@@ -1259,7 +1249,7 @@
 					AND B.SUB_CODE = #{row.SUB_CODE} AND B.KIND_CODE = #{row.KIND_CODE})
 				THEN (
 					SELECT CONVERT(VARCHAR(20),
-					MAX(CONVERT(INT, C.KIND_CODE)) + 1000)
+						MAX(CONVERT(BIGINT, C.KIND_CODE)) + 1000)
 					FROM dbo.TRP_MONTH_REPAIR_KIND C
 					WHERE C.OFFICE_CODE = #{row.LOGIN_OFFICE_CODE}
 					AND C.PLAN_MONTH = #{row.PLAN_MONTH} AND C.CODE = #{row.CODE}
@@ -1268,7 +1258,7 @@
 				END,
 				A.OFFICE_CODE,
 				#{row.PLAN_MONTH},
-				#{row.SEQ},
+				'1',
 				CONVERT(VARCHAR(8), GETDATE(), 112),
 				A.KIND_NAME,
 				A.KIND_S_NAME,
@@ -1289,8 +1279,19 @@
 		</if>
 	</insert>
 
-
 	<!-- ITEM -->
+	<select id="selectList_soo02010_add_4" parameterType="map" resultType="map">
+	SELECT
+		A.OFFICE_CODE AS LOGIN_OFFICE_CODE,
+		A.PLAN_MONTH,
+		A.CODE,
+		A.SUB_CODE,
+		A.KIND_CODE
+	FROM dbo.TRP_MONTH_REPAIR_KIND A
+	WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.PLAN_MONTH = #{PLAN_MONTH}
+
+	</select>
+
 	<insert id="insertList_soo02010_add_4" parameterType="list">
 		<if test = "list != null and list.size > 0">
 			INSERT INTO dbo.TRP_REPAIR_ITEM (
@@ -1299,24 +1300,27 @@
 				SUB_CODE,
 				KIND_CODE,
 				OFFICE_CODE,
-				PLAN_MONTH, SEQ,
-				'1',
-				1
+				ITEM_NAME,
+				USE_YN,
+				ORDER_SEQ
 			)
 			<foreach collection = "list" item = "row" separator = " UNION ALL ">
 				SELECT
-				CONVERT(VARCHAR,CONVERT(INT, A.KIND_CODE) + 1),
+				CONVERT(VARCHAR,CONVERT(BIGINT, #{row.KIND_CODE}) + 1),
 				A.CODE,
 				A.SUB_CODE,
 				A.KIND_CODE,
 				A.OFFICE_CODE,
-				#{row.PLAN_MONTH},
-				#{row.SEQ},
 				'시공견적(예정)가',
-				A.USE_YN,
+				'1',
 				A.ORDER_SEQ
 				FROM dbo.TRP_MONTH_REPAIR_KIND A
 				WHERE A.OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND A.CODE = #{row.CODE} AND A.SUB_CODE = #{row.SUB_CODE}
+				AND A.KIND_CODE = #{row.KIND_CODE}
+				AND NOT EXISTS(SELECT 1
+						FROM dbo.TRP_REPAIR_ITEM
+						WHERE OFFICE_CODE = #{row.LOGIN_OFFICE_CODE}
+						  AND CODE = #{row.CODE} AND SUB_CODE = #{row.SUB_CODE} AND KIND_CODE = #{row.KIND_CODE})
 			</foreach>
 		</if>
 	</insert>
@@ -1329,7 +1333,8 @@
 			SUB_CODE,
 			KIND_CODE,
 			OFFICE_CODE,
-			PLAN_MONTH, SEQ,
+			PLAN_MONTH,
+		    SEQ,
 			ITEM_NAME,
 			REMARKS,
 			ORDER_SEQ
@@ -1342,12 +1347,17 @@
 			A.KIND_CODE,
 			A.OFFICE_CODE,
 			#{row.PLAN_MONTH},
-			#{row.SEQ},
+			'1',
 			A.ITEM_NAME,
 			A.REMARKS,
 			A.ORDER_SEQ
 		FROM dbo.TRP_REPAIR_ITEM A
-		WHERE A.OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND A.CODE = #{row.CODE} AND A.SUB_CODE = #{row.SUB_CODE}
+		WHERE A.OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND A.CODE = #{row.CODE}
+		  AND A.SUB_CODE = #{row.SUB_CODE} AND A.KIND_CODE = #{row.KIND_CODE}
+		AND NOT EXISTS(SELECT 1
+			FROM dbo.TRP_MONTH_REPAIR_ITEM
+			WHERE OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND PLAN_MONTH = #{row.PLAN_MONTH}
+			AND CODE = #{row.CODE} AND SUB_CODE = #{row.SUB_CODE} AND KIND_CODE = #{row.KIND_CODE} AND B.ITEM_CODE = A.ITEM_CODE)
 		</foreach>
 		</if>
 	</insert>

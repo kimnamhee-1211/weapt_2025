@@ -66,7 +66,7 @@ public class JangsooController {
         ApiResponse<Map<String, Object>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
         result.setO_RESULT((Integer) resultMap.get("resultRowCount"));
-        result.setO_MSG( (Integer) resultMap.get("resultRowCount") +  "건이 저장되었습니다.");
+        result.setO_MSG( "조정년월이 변경되었습니다.");
         result.setO_TYPE(ApiResponse.ApiType.SAVE);
         return result;
     }
@@ -83,7 +83,7 @@ public class JangsooController {
         ApiResponse<Map<String, Object>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
         result.setO_RESULT((Integer) resultMap.get("resultRowCount"));
-        result.setO_MSG( (Integer) resultMap.get("resultRowCount") +  "건이 저장되었습니다.");
+        result.setO_MSG( "수립조정기준이 복사되었습니다.");
         result.setO_TYPE(ApiResponse.ApiType.SAVE);
         return result;
     }
@@ -136,7 +136,7 @@ public class JangsooController {
         ApiResponse<Map<String, Object>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
         result.setO_RESULT((Integer) resultMap.get("resultRowCount"));
-        result.setO_MSG( (Integer) resultMap.get("resultRowCount") +  "건이 저장되었습니다.");
+        result.setO_MSG( (Integer) resultMap.get("resultRowCount") +  "건이 삭제되었습니다.");
         result.setO_TYPE(ApiResponse.ApiType.SAVE);
         return result;
     }

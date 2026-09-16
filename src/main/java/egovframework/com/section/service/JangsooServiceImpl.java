@@ -201,7 +201,7 @@ public class JangsooServiceImpl implements JangsooService {
                                                 String pgId,
                                                 String menuId) {
 
-        crudAuthService.checkCrudPermission("GRD_INSERT", loginUser.getUserId(), menuId);
+        crudAuthService.checkCrudPermission("GRD_CREATE", loginUser.getUserId(), menuId);
 
         if (param == null || param.isEmpty()) {
             throw CrudFailException.insertFail(
@@ -272,7 +272,7 @@ public class JangsooServiceImpl implements JangsooService {
                                               String pgId,
                                               String menuId) {
 
-        crudAuthService.checkCrudPermission("GRD_INSERT", loginUser.getUserId(), menuId);
+        crudAuthService.checkCrudPermission("GRD_CREATE", loginUser.getUserId(), menuId);
 
         serviceSupport.setParam(param, loginUser, pgId, menuId);
 
@@ -319,10 +319,14 @@ public class JangsooServiceImpl implements JangsooService {
         if(insertList3 != null && insertList3.size() > 0) {
             statement = serviceSupport.buildCrudStatement(sectionId, component + "_3", "insertList");
             resultInsertRowCount += baseCrudMapper.insertList(statement, insertList3);
+
+            statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "selectList");
+            List<Map<String, Object>> insertList4 = baseCrudMapper.selectList(statement, insertList3.get(0));
+
             statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "insertList");
-            resultInsertRowCount += baseCrudMapper.insertList(statement, insertList3);
+            resultInsertRowCount += baseCrudMapper.insertList(statement, insertList4);
             statement = serviceSupport.buildCrudStatement(sectionId, component + "_5", "insertList");
-            resultInsertRowCount += baseCrudMapper.insertList(statement, insertList3);
+            resultInsertRowCount += baseCrudMapper.insertList(statement, insertList4);
         }
         if (resultInsertRowCount <= 0) {
             throw CrudFailException.insertFail(sectionId, pgId, component, param, resultInsertRowCount);
