@@ -1,6 +1,7 @@
 package egovframework.com.common;
 
 
+import egovframework.com.baseCrud.service.CrudAuthService;
 import egovframework.com.common.service.MenuService;
 import egovframework.com.exception.ExceptionController;
 import egovframework.com.login.model.LoginVO;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
@@ -18,6 +20,7 @@ import java.util.Map;
 import org.springframework.ui.Model;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 /**
  * @Class Name : MenuController.java
@@ -42,6 +45,9 @@ public class MenuController {
 	@Resource(name = "menuService")
 	protected MenuService menuService;
 
+	@Resource(name = "crudAuthService")
+	protected CrudAuthService crudAuthService;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionController.class);
 
 	//메뉴 이동
@@ -50,16 +56,20 @@ public class MenuController {
 						 @PathVariable("id") String id,
 						 @RequestParam(required = false) Map<String, Object> menuParam,
 						 @RequestParam(required = false) Map<String, Object> requestParams,
+						 @SessionAttribute("loginUser") LoginVO loginUser,
 						 Model model) throws Exception {
-
 		try {
+
 			String menuId = id.split("-")[0];
 			String pgId = id.split("-")[1];
+
+			Map<String, Object> crudAuth = crudAuthService.getCrudPermission(loginUser.getUserId(), menuId);
 
 			model.addAttribute("sectionId", sectionId);
 			model.addAttribute("menuId", menuId);
 			model.addAttribute("pgId", pgId);
 			model.addAttribute("menuName", menuParam.get("menuName"));
+			model.addAttribute("crudAuth", crudAuth);
 			if(requestParams != null) {
 				model.addAttribute("requestParams", requestParams);
 			}

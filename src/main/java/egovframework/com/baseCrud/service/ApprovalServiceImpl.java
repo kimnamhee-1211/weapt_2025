@@ -90,7 +90,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     //결재 처리 프로세스
     @Override
-    @Transactional(rollbackFor = Exception.class, noRollbackFor = ApprovalFailException.class)
+    @Transactional
     public List<Map<String, Object>> processApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         serviceSupport.setParam(param, loginUser, pgId, menuId);
@@ -167,7 +167,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
     //결재 취소 처리 프로세스
     @Override
-    @Transactional(rollbackFor = Exception.class, noRollbackFor = ApprovalFailException.class)
+    @Transactional
     public List<Map<String, Object>> processCnlApproval(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId) {
 
         serviceSupport.setParam(param, loginUser, pgId, menuId);

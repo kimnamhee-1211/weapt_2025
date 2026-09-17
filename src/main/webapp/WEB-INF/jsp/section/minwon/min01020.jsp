@@ -390,7 +390,7 @@
 
         let itemCount = checkedItems.length;
         if (itemCount=== 0) {
-            alert("체크된 항목이 없습니다");
+            alert("선택된 항목이 없습니다");
             return;
         }
         if(itemCount > 100){

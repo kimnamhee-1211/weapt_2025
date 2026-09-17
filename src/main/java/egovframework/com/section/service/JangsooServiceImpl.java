@@ -274,11 +274,6 @@ public class JangsooServiceImpl implements JangsooService {
 
         crudAuthService.checkCrudPermission("GRD_CREATE", loginUser.getUserId(), menuId);
 
-        serviceSupport.setParam(param, loginUser, pgId, menuId);
-
-        int resultDeleteRowCount = 0;
-        int resultInsertRowCount = 0;
-
         if (param == null || param.isEmpty()) {
             throw new BizException(
                     "Business FAIL : " + pgId + " / " + menuId,
@@ -286,6 +281,12 @@ public class JangsooServiceImpl implements JangsooService {
                     ApiResponse.ApiType.BIZ
             );
         }
+
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
+
+        int resultDeleteRowCount = 0;
+        int resultInsertRowCount = 0;
+        int resultInsertRowCountToview = 0;
 
         String statement = "";
 //        statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "deleteOne");
@@ -318,7 +319,8 @@ public class JangsooServiceImpl implements JangsooService {
                 .collect(Collectors.toList());
         if(insertList3 != null && insertList3.size() > 0) {
             statement = serviceSupport.buildCrudStatement(sectionId, component + "_3", "insertList");
-            resultInsertRowCount += baseCrudMapper.insertList(statement, insertList3);
+            resultInsertRowCountToview += baseCrudMapper.insertList(statement, insertList3);
+            resultInsertRowCount += resultInsertRowCountToview;
 
             statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "selectList");
             List<Map<String, Object>> insertList4 = baseCrudMapper.selectList(statement, insertList3.get(0));
@@ -333,7 +335,7 @@ public class JangsooServiceImpl implements JangsooService {
         }
 
         Map<String, Object> result = new HashMap<>();
-        result.put("resultRowCount", (resultInsertRowCount));
+        result.put("resultRowCount", (resultInsertRowCountToview));
         return result;
     }
 

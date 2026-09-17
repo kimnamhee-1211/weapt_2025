@@ -10,7 +10,7 @@
                 </div>
                 <div class="section1_btn" id="input">
                     최초설치년월 : <input type="month" id="input_firstYrMm">
-                    <button id="init_btn" onclick="save_init_onclick()">저장</button>
+                    <button id="init_btn" onclick="save_input1_onclick()">저장</button>
                 </div>
             </div>
             <div class="section2">
@@ -569,8 +569,6 @@
         });
     }
 
-
-
     //그리드 추가 함수
     function add_grid1_onclick(){
         // 그리드의 편집 인푸터가 열린 경우 에디팅 완료 상태로 만듬.
@@ -581,6 +579,59 @@
     }
 
     //그리드 저장 함수
+    function save_input1_onclick(){
+        // 추가된 행 아이템들(배열)
+        // 수정된 행 아이템들(배열) : 수정된 필드와 수정안된 필드 모두를 얻음.
+        let editedRowItems = [];
+        let item = {
+            FIRST_YEAR : input_firstYrMm.substring(0,4),
+            FIRST_MONTH : input_firstYrMm.substring(5,7),
+        }
+        editedRowItems.push(item)
+
+        //검증
+        let itemCount = editedRowItems.length;
+
+        if(itemCount == 0){
+            alert("변경된 항목이 없습니다");
+            return;
+        }
+        if(itemCount > 100){
+            alert("변경사항 저장은 최대 100건까지만 가능합니다. (현재 " + itemCount + "건)");
+            return;
+        }
+        if(!confirm("최초설치년월을 저장하시겠습니까?")) return;
+        if(!requireCheck("SAVE_INPUT1")) return;
+
+        //포커스 지정
+        focus = gridFocus(grid1);
+
+        //저장 데이터
+        let saveParam = {
+            insertParam : null,
+            updateParam : editedRowItems,
+            key : {},
+            before : {}
+        }
+
+        //파라미터
+        let saveData  = {
+            sectionId : sectionId,
+            component : pgId + "_input1",
+            param: saveParam,
+        }
+
+        we_save( saveData ,{
+            successSave : (json) => {
+                alert(json.O_MSG);
+                if(json.O_RESULT > 0){
+                    //팝업 닫기
+                    search_grid1_onclick()
+                }else return;
+            }
+        });
+    }
+
     function save_grid1_onclick(){
         // 추가된 행 아이템들(배열)
         let addedRowItems = AUIGrid.getAddedRowItems(grid1);
@@ -681,7 +732,6 @@
         }
 
         let param = inputToData(popupId2);
-        param.PLAN_MONTH = param.PLAN_MONTH.replace(/-/g, "");
 
         if(!requireCheck("SAVE_COPY")) return;
 
@@ -720,7 +770,7 @@
 
         let itemCount = param.length;
         if (itemCount === 0) {
-            alert("체크된 항목이 없습니다");
+            alert("선택된 항목이 없습니다");
             return;
         }
 
@@ -730,7 +780,7 @@
             row.CLOSE_YN = AUIGrid.getSelectedRows(grid1)[0].CLOSE_YN
         })
 
-        if(!requireCheck("SAVE_COPY")) return;
+        if(!requireCheck("SAVE_ADD")) return;
 
         if(!confirm("공사종별수립기준을 저장하시겠습니까?")) return;
 

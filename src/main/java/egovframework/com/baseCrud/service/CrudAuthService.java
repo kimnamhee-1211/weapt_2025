@@ -22,7 +22,6 @@ public class CrudAuthService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CrudAuthService.class);
 
-
     public Map<String, Object> getCrudPermission(String userId, String menuId) {
 
         Map<String, Object> data = crudAuthCacheService.getCrudAuth(userId, menuId);
