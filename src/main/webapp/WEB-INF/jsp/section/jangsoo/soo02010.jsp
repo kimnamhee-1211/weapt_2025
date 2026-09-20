@@ -34,10 +34,10 @@
                                 <div class="popup" style="width:420px;">
                                     <div class="pop_title">&#10004;조정년월변경</div>
                                         <div style="height:100px; padding: 15px; border: 1px solid #bcbcbc;">
-                                            <div id="">&#9726&nbsp;변경전 수립조정년월 :&nbsp;
+                                            <div id="">&#9726&nbsp;변경 전 수립조정년월 :&nbsp;
                                                 <input type="month" id="pop_planMonth" name="PLAN_MONTH" data-format="date"><!--변경전 수립조정년월 표시 2024년 03월-->
                                             </div>
-                                            <span class="search-box">&#9726&nbsp;변경후 수립조정년월 :&nbsp;
+                                            <span class="search-box">&#9726&nbsp;변경 후 수립조정년월 :&nbsp;
                                                 <input type="month" id="pop_changePlanMonth" name="CHANGE_PLAN_MONTH" data-format="date">
                                             </span>
                                         </div>
@@ -123,29 +123,23 @@
                                     <div>
                                         <span>&emsp;&#9726&nbsp;검색조건 :&nbsp;</span>
                                         <span class="select-container">&emsp;
-                                            <select id="jan_label_1" name="" class="select_cont150">
-                                                <option value="jan_label_1"><****></option>
-                                            </select>
+                                            <select id="search_code" name="" class="select_cont150"></select>
                                         </span>
                                         <span class="select-container">&emsp;
-                                            <select id="jan_label_2" name="" class="select_cont150">
-                                                <option value="jan_label_2"><****></option>
-                                            </select>
+                                            <select id="search_subCode" name="" class="select_cont150"></select>
                                         </span>
                                         <span class="select-container">&emsp;
-                                            <select id="jan_label_3" name="" class="select_cont150">
-                                                <option value="jan_label_3"><****></option>
-                                            </select>
+                                            <select id="search_kindCode" name="" class="select_cont150"></select>
                                         </span>
                                         <span class="select-container">&emsp;시행규칙 :&nbsp;
-                                            <select id="rule" name="" class="select_cont70">
-                                                <option value="all">전체</option>
-                                                <option value="yes">Y</option>
-                                                <option value="no">N</option>
+                                            <select id="search_regulYn" class="select_cont70">
+                                                <option value="">전체</option>
+                                                <option value="1">Y</option>
+                                                <option value="0">N</option>
                                             </select>
                                         </span>
                                         <span class="section_middle_btn">
-                                            <button id="search_btn" onclick="">검색</button>&emsp;
+                                            <button id="search_btn" onclick="search_add_onclick()">검색</button>&emsp;
                                         </span>
                                     </div>
                                     <div id="pop3Grid1"></div>
@@ -194,6 +188,7 @@
     const menuId = "${menuId}";	//메뉴ID
     let grid1;	// 그리드 컴포넌트
     let grid2;	// 그리드 컴포넌트
+    let pop3Grid; //팝업 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     let focus2 = 0;	//그리드 컴포넌트 포커스
     const popupId = "change_popup"; //팝업 컴포넌트
@@ -216,25 +211,28 @@
     const input_firstYrMm = document.querySelector("#input_firstYrMm"); //input 컴포넌트
 
     const grid1_input = document.querySelector("#grid1_input");
-    const input_planGbn    = document.querySelector("#input_planGbn");
+    const input_planGbn = document.querySelector("#input_planGbn");
     const input_planStYear = document.querySelector("#input_planStYear");
     const input_planEndYear = document.querySelector("#input_planEndYear");
-    const input_planUser   = document.querySelector("#input_planUser");
-    const input_readyAmt   = document.querySelector("#input_readyAmt");
+    const input_planUser = document.querySelector("#input_planUser");
+    const input_readyAmt = document.querySelector("#input_readyAmt");
     const input_planMonth = document.querySelector("#input_planMonth"); //input 컴포넌트
 
-    const change_popup   = document.querySelector("change_popup");
-    const pop_planMonth   = document.querySelector("#pop_planMonth");
-    const pop_changePlanMonth   = document.querySelector("#pop_changePlanMonth");
+    const change_popup = document.querySelector("change_popup");
+    const pop_planMonth = document.querySelector("#pop_planMonth");
+    const pop_changePlanMonth = document.querySelector("#pop_changePlanMonth");
 
-    const copy_popup        = document.querySelector("#copy_popup");
-    const pop2_copyPlanMonth  = document.querySelector("#pop2_copyPlanMonth");
-    const pop2_planGbn      = document.querySelector("#pop2_planGbn");
-    const pop2_planMonth    = document.querySelector("#pop2_planMonth");
-    const pop2_planStYear   = document.querySelector("#pop2_planStYear");
-    const pop2_planEndYear  = document.querySelector("#pop2_planEndYear");
-    const pop2_planUser     = document.querySelector("#pop2_planUser");
-    const pop2_readyAmt     = document.querySelector("#pop2_readyAmt");
+    const copy_popup = document.querySelector("#copy_popup");
+    const search_code = document.querySelector("#search_code");
+    const search_subCode = document.querySelector("#search_subCode");
+    const search_kindCode = document.querySelector("#search_kindCode");
+    const pop2_copyPlanMonth = document.querySelector("#pop2_copyPlanMonth");
+    const pop2_planGbn = document.querySelector("#pop2_planGbn");
+    const pop2_planMonth = document.querySelector("#pop2_planMonth");
+    const pop2_planStYear = document.querySelector("#pop2_planStYear");
+    const pop2_planEndYear = document.querySelector("#pop2_planEndYear");
+    const pop2_planUser = document.querySelector("#pop2_planUser");
+    const pop2_readyAmt = document.querySelector("#pop2_readyAmt");
 
 
     //그리드 설정
@@ -432,13 +430,11 @@
                 change_btn.disabled = true;
                 copy_btn.disabled = false;
                 add_btn.disabled = true;
-                pop2_copyPlanMonth.value = planMonth.substring(0, 4) + "-" + planMonth.substring(4, 6)
             }else{
                 btnEnable({  tag: "#section_middle_btn", grid: "grid1", save : true});
                 change_btn.disabled = false;
                 copy_btn.disabled = true;
                 add_btn.disabled = false;
-                pop_planMonth.value = planMonth.substring(0, 4) + "-" + planMonth.substring(4, 6)
             }
             input_planMonth.disabled = true;
             search_grid2_onclick();
@@ -448,6 +444,24 @@
     //팝업 이벤트
     add_btn.addEventListener("click", function (){
         search_add_onclick();
+        if(isNull(search_code.innerHTML)){
+            getSelect_search_code();
+            search_code.value = "";
+        }
+    })
+    search_code.addEventListener("change", function (){
+        getSelect_search_subCode();
+    })
+    search_subCode.addEventListener("change", function (){
+        getSelect_search_kindCode();
+    })
+    change_btn.addEventListener("click", function (){
+        pop_planMonth.value = planMonth.substring(0, 4) + "-" + planMonth.substring(4, 6)
+    })
+
+    copy_btn.addEventListener("click", function (){
+        pop2_copyPlanMonth.value = planMonth.substring(0, 4) + "-" + planMonth.substring(4, 6)
+        pop2_planMonth.value = getToday("yyyy-MM")
     })
 
     //팝업 닫기 이벤트
@@ -549,6 +563,10 @@
         //검색데이터
         let selectParam = {
             PLAN_MONTH : AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH,
+            CODE : search_code.value,
+            SUB_CODE : search_subCode.value,
+            KIND_CODE : search_kindCode.value,
+            REGUL_YN : search_regulYn.value
         }
 
         //파라미터
@@ -584,8 +602,8 @@
         // 수정된 행 아이템들(배열) : 수정된 필드와 수정안된 필드 모두를 얻음.
         let editedRowItems = [];
         let item = {
-            FIRST_YEAR : input_firstYrMm.substring(0,4),
-            FIRST_MONTH : input_firstYrMm.substring(5,7),
+            FIRST_YEAR : input_firstYrMm.value.substring(0,4),
+            FIRST_MONTH : input_firstYrMm.value.substring(5,7),
         }
         editedRowItems.push(item)
 
@@ -604,7 +622,7 @@
         if(!requireCheck("SAVE_INPUT1")) return;
 
         //포커스 지정
-        focus = gridFocus(grid1);
+        focus = AUIGrid.getSelectedIndex(grid1)[0];
 
         //저장 데이터
         let saveParam = {
@@ -703,7 +721,7 @@
             + pop_changePlanMonth.value + "로 변경하시겠습니까?")) return;
 
         //포커스 지정
-        focus = gridFocus(grid1);
+        focus = AUIGrid.getSelectedIndex(grid1)[0];
 
         //파라미터
         let saveData  = {
@@ -739,7 +757,7 @@
             ")로 복사하시겠습니까?")) return;
 
         //포커스 지정
-        focus = gridFocus(grid1);
+        focus = AUIGrid.getSelectedIndex(grid1)[0];
 
         //파라미터
         let saveData  = {
@@ -774,15 +792,18 @@
             return;
         }
 
+        if(!requireCheck("SAVE_ADD")) return;
+
+        if(!confirm("공사종별수립기준을 저장하시겠습니까?")) return;
+
         param.forEach(row => {
             row.PLAN_MONTH = AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH;
             row.SEQ = AUIGrid.getSelectedRows(grid1)[0].SEQ
             row.CLOSE_YN = AUIGrid.getSelectedRows(grid1)[0].CLOSE_YN
         })
 
-        if(!requireCheck("SAVE_ADD")) return;
-
-        if(!confirm("공사종별수립기준을 저장하시겠습니까?")) return;
+        //포커스 지정
+        focus = AUIGrid.getSelectedIndex(grid1)[0];
 
         //파라미터
         let saveData  = {
@@ -803,7 +824,6 @@
     }
 
 
-
     //그리드 삭제 함수
     function delete_grid1_onclick(){
         const param = AUIGrid.getSelectedRows(grid1)[0];
@@ -813,10 +833,10 @@
             alert("이미 마감된 수립조정은 삭제할 수 없습니다.");
             return;
         }
-        if (!confirm(" 수립조정기준(" + checkedItem.PLAN_MONTH + ")을 삭제하시겠습니까?")) return;
+        if (!confirm(" 수립조정기준(" + param.PLAN_MONTH + ")을 삭제하시겠습니까?")) return;
 
         //포커스 지정
-        focus = (param.rowIndex -1) < 1 ? 0 : (param.rowIndex -1);
+        focus = AUIGrid.getSelectedIndex(grid1)[0] - 1 < 1 ? 0 : AUIGrid.getSelectedIndex(grid1)[0] - 1 ;
 
         //공통 저장 트렌젝션용 데이터
         let deleteData = {
@@ -849,6 +869,47 @@
                         isValid = false;
                         break;
                     }
+                    if(isNull(row.PLAN_GBN)){
+                        alert("구분은 반드시 입력해야 합니다.");
+                        isValid = false;
+                        break;
+                    }
+                }
+                break;
+            case "SAVE_INPUT1":
+                if(isNull(input_firstYrMm.value)){
+                    alert("최초설치년월은 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
+                }
+                break;
+            case "SAVE_CHANGE":
+                if(isNull(pop_planMonth.value)){
+                    alert("변경 전 수립조정년월은 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
+                }
+                if(isNull(pop_changePlanMonth.value)){
+                    alert("변경 후 수립조정년월은 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
+                }
+                break;
+            case "SAVE_COPY":
+                if(isNull(pop2_copyPlanMonth.value)){
+                    alert("복사원년은 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
+                }
+                if(isNull(pop2_planMonth.value)){
+                    alert("수립조정년월은 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
+                }
+                if(isNull(pop2_planGbn.value)){
+                    alert("구분은 반드시 입력해야 합니다.");
+                    isValid = false;
+                    break;
                 }
                 break;
 
@@ -892,6 +953,76 @@
         pop2_planEndYear.value = thisYear;
     }
 
+    async function getSelect_search_code(){
+        search_code.innerHTML = "";
+        //검색데이터
+        let param = {
+        }
+        //파라미터
+        let data = {
+            sectionId : sectionId,
+            component : pgId + "_search_code",
+            param: param,
+        }
+        let list = await we_getSelect(data);
+
+        if(list){
+            search_code.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");
+            list.forEach(row => {
+                search_code.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.CODE + "'>" + row.CODE_NAME + "</option>");
+            })
+        }
+        search_code.selectedIndex = 0;
+    }
+    async function getSelect_search_subCode(){
+        search_subCode.innerHTML = "";
+        //검색데이터
+        let param = {
+            CODE : search_code.value
+        }
+        //파라미터
+        let data = {
+            sectionId : sectionId,
+            component : pgId + "_search_subCode",
+            param: param,
+        }
+        let list = await we_getSelect(data);
+
+        if(list){
+            search_subCode.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");
+            list.forEach(row => {
+                search_subCode.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.SUB_CODE + "'>" + row.CODE_NAME + "</option>");
+            })
+        }
+        search_subCode.selectedIndex = 0;
+    }
+    async function getSelect_search_kindCode(){
+        search_kindCode.innerHTML = "";
+        //검색데이터
+        let param = {
+            CODE : search_code.value,
+            SUB_CODE : search_subCode.value
+        }
+        //파라미터
+        let data = {
+            sectionId : sectionId,
+            component : pgId + "_search_kindCode",
+            param: param,
+        }
+        let list = await we_getSelect(data);
+
+        if(list){
+            search_kindCode.insertAdjacentHTML("afterbegin", "<option value='' selected>(전체)</option>");
+            list.forEach(row => {
+                search_kindCode.insertAdjacentHTML("beforeend",
+                    "<option value='" + row.KIND_CODE + "'>" + row.CODE_NAME + "</option>");
+            })
+        }
+        search_kindCode.selectedIndex = 0;
+    }
+
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
@@ -902,7 +1033,7 @@
         btnMaker({ tag: "#pop2_btn", grid: "copy", save : true});
         pop2_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup2_onclick()'>닫기</button>");
-        btnMaker({ tag: "#pop3_btn", grid: "add", search: true, save : true});
+        btnMaker({ tag: "#pop3_btn", grid: "add", save : true});
         pop3_btn.insertAdjacentHTML("beforeend",
             "<button id='close_btn1' class='btn_left3' onclick='close_popup3_onclick()'>닫기</button>");
         getSelect_input_year();

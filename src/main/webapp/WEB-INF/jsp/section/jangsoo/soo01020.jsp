@@ -254,7 +254,7 @@
         }];
 
     const footerLayout3 = [{
-        dataField: "HOUSEHOLDS_NUMBER",an
+        dataField: "HOUSEHOLDS_NUMBER",
         positionField: "HOUSEHOLDS_NUMBER",
         operation: "SUM",
         formatString: "##0"

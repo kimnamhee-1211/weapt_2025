@@ -15,6 +15,8 @@
  */
 package egovframework.com.login;
 
+import egovframework.com.exception.BizException;
+import egovframework.com.exception.CrudAuthFailException;
 import org.egovframe.rte.fdl.property.EgovPropertyService;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +94,12 @@ public class LoginController {
 	public String login(@RequestParam Map<String, Object> params,
 						HttpServletRequest request,
 						HttpServletResponse response) throws Exception {
+
+		if(params == null || params.size() == 0){
+			LOGGER.debug("로그인 정보 없음");
+			return "redirect:/start";
+		}
+
 		LOGGER.debug("^o^ [ login ] request params : "+params);
 		
 		RSATest rsaTest = new RSATest();
@@ -137,6 +145,13 @@ public class LoginController {
 		}
 
 	}
+	//url 접근 시 오류 방지
+	@RequestMapping(value = "/login", method = { RequestMethod.GET })
+	public String login() throws Exception {
+
+		LOGGER.debug("로그인 정보 없음");
+		return "redirect:/start";
+	}
 
 	//관리소변경 - 관리소 조회
 	@RequestMapping(value = "/selectOffice")
@@ -144,7 +159,6 @@ public class LoginController {
 	public List<Map<String, Object>> selectOffice(@RequestParam Map<String, Object> params) throws Exception {
 
 		List<Map<String, Object>> resultList  = loginService.selectOffice(params);
-
 
 		return resultList;
 	}
@@ -157,6 +171,10 @@ public class LoginController {
 
 		HttpSession session = request.getSession();
 		LoginVO loginUser = (LoginVO)session.getAttribute("loginUser");
+		if(!loginUser.getOfficeCode().equals("10001") && !loginUser.getOfficeCode().equals("10002")){
+			throw CrudAuthFailException.noPermission(loginUser.getUserId(), loginUser.getOfficeCode());
+		}
+
 		params.put("userId", loginUser.getUserId());
 
 		LoginVO resultList  = loginService.changeOffice(params);

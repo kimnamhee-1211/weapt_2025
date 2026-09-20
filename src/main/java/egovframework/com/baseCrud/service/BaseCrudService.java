@@ -11,7 +11,7 @@ public interface BaseCrudService {
 
     public Map<String, Object> selectMap(String sectionId, String component, Map<String, Object> param, String mapKey, LoginVO loginUser, String pgId, String menuId);
 
-    public int insertList(String sectionId, String component, List<Map<String, Object>> param, LoginVO loginUser, String pgId, String menuId);
+    public Map<String, Object> insertList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
     public int insertOne(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
@@ -25,7 +25,7 @@ public interface BaseCrudService {
 
     public Map<String, Object> saveList(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 
-    public List<Map<String, Object>> getKeyToParam(List<Map<String, Object>> insertParam, Map<String, Object> rawKey, String sectionId, String component, LoginVO loginUser);
+    //public List<Map<String, Object>> getKeyToParam(List<Map<String, Object>> insertParam, Map<String, Object> rawKey, String sectionId, String component, LoginVO loginUser);
 
     public List<Map<String, Object>> getCode(String CODEDV_NO);
 

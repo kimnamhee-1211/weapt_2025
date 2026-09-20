@@ -36,12 +36,64 @@ public class JangsooServiceImpl implements JangsooService {
     @Autowired
     private CrudAuthService crudAuthService;
 
-
     private static final Logger LOGGER = LoggerFactory.getLogger(JangsooServiceImpl.class);
 
     @Override
+    @Transactional
+    public Map<String, Object> delete_soo02010_grid1(String sectionId,
+                                                     String component,
+                                                     Map<String, Object> param,
+                                                     LoginVO loginUser,
+                                                     String pgId,
+                                                     String menuId) {
+
+        crudAuthService.checkCrudPermission("GRD_DELETE", loginUser.getUserId(), menuId);
+
+        if (param == null || param.isEmpty()) {
+            throw new BizException(
+                    "Business FAIL : " + pgId + " / " + menuId,
+                    "수립조정이 존재하지 않습니다.",
+                    ApiResponse.ApiType.BIZ
+            );
+        }
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
+
+        if ("1".equals(String.valueOf(param.get("CLOSE_YN")))) {
+            throw new BizException(
+                    "Business FAIL : " + pgId + " / " + menuId,
+                    "이미 마감된 수립조정은 삭제할 수 없습니다.",
+                    ApiResponse.ApiType.BIZ
+            );
+        }
+
+        int resultDeleteRowCount = 0;
+        int resultDeleteRowCountToView = 0;
+        String statement = "";
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "deleteOne");
+        resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_2", "deleteOne");
+        resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_3", "deleteOne");
+        resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "deleteOne");
+        resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_5", "deleteOne");
+        resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
+        statement = serviceSupport.buildCrudStatement(sectionId, component, "deleteOne");
+        resultDeleteRowCountToView += baseCrudMapper.deleteOne(statement, param);
+        resultDeleteRowCount += resultDeleteRowCountToView;
+
+        if (resultDeleteRowCount <= 0) {
+            throw CrudFailException.insertFail(sectionId, pgId, component, param, resultDeleteRowCount);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("resultRowCount", (resultDeleteRowCountToView));
+        return result;
+    }
+    @Override
     @Transactional(readOnly = true)
-    public List<Map<String, Object>> selectList(String sectionId,
+    public List<Map<String, Object>> selectList_soo02010_grid2(String sectionId,
                                                 String component,
                                                 Map<String, Object> param,
                                                 LoginVO loginUser,
@@ -52,7 +104,6 @@ public class JangsooServiceImpl implements JangsooService {
 
         String statement = serviceSupport.buildCrudStatement(sectionId, component, "selectList");
         serviceSupport.setParam(param, loginUser, pgId, menuId);
-        System.out.println(param);
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
         int level1 = 1;
@@ -84,7 +135,7 @@ public class JangsooServiceImpl implements JangsooService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Map<String, Object>> selectList_pop3Grid1(String sectionId,
+    public List<Map<String, Object>> selectList_soo02010_pop3Grid1(String sectionId,
                                                 String component,
                                                 Map<String, Object> param,
                                                 LoginVO loginUser,
@@ -95,7 +146,6 @@ public class JangsooServiceImpl implements JangsooService {
 
         String statement = serviceSupport.buildCrudStatement(sectionId, component, "selectList");
         serviceSupport.setParam(param, loginUser, pgId, menuId);
-        System.out.println(param);
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
         int level1 = 1;
@@ -158,7 +208,7 @@ public class JangsooServiceImpl implements JangsooService {
         }
 
         int resultUpdateRowCount = 0;
-
+        int resultUpdateRowCountToView = 0;
         if((int)updateMap.get("ITEM_UNIT_CNT") > 0){
             statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "updateOne");
             resultUpdateRowCount += baseCrudMapper.updateOne(statement, param);
@@ -180,15 +230,15 @@ public class JangsooServiceImpl implements JangsooService {
             resultUpdateRowCount += baseCrudMapper.updateOne(statement, param);
         }
         statement = serviceSupport.buildCrudStatement(sectionId, component, "updateOne");
-        resultUpdateRowCount += baseCrudMapper.updateOne(statement, param);
-
+        resultUpdateRowCountToView += baseCrudMapper.updateOne(statement, param);
+        resultUpdateRowCount += resultUpdateRowCountToView;
         if (resultUpdateRowCount <= 0) {
             throw CrudFailException.updateFail(sectionId, pgId, component, param, resultUpdateRowCount);
         }
 
 
         Map<String, Object> result = new HashMap<>();
-        result.put("resultRowCount", (resultUpdateRowCount));
+        result.put("resultRowCount", (resultUpdateRowCountToView));
         return result;
     }
 
@@ -229,10 +279,10 @@ public class JangsooServiceImpl implements JangsooService {
         }
 
         int resultInsertRowCount = 0;
-
+        int resultInsertRowCountToView = 0;
         statement = serviceSupport.buildCrudStatement(sectionId, component, "insertOne");
-        resultInsertRowCount += baseCrudMapper.insertOne(statement, param);
-
+        resultInsertRowCountToView += baseCrudMapper.insertOne(statement, param);
+        resultInsertRowCount += resultInsertRowCountToView;
         if((int)insertMap.get("CODE_CNT") > 0){
             statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "insertOne");
             resultInsertRowCount += baseCrudMapper.insertOne(statement, param);
@@ -259,7 +309,7 @@ public class JangsooServiceImpl implements JangsooService {
 
 
         Map<String, Object> result = new HashMap<>();
-        result.put("resultRowCount", (resultInsertRowCount));
+        result.put("resultRowCount", (resultInsertRowCountToView));
         return result;
     }
 
@@ -281,7 +331,6 @@ public class JangsooServiceImpl implements JangsooService {
                     ApiResponse.ApiType.BIZ
             );
         }
-
         serviceSupport.setParam(param, loginUser, pgId, menuId);
 
         int resultDeleteRowCount = 0;
@@ -339,20 +388,61 @@ public class JangsooServiceImpl implements JangsooService {
         return result;
     }
 
+
+
+    //soo02020
+    @Override
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> selectList_soo02020_grid1(String sectionId,
+                                                               String component,
+                                                               Map<String, Object> param,
+                                                               LoginVO loginUser,
+                                                               String pgId,
+                                                               String menuId) {
+
+        crudAuthService.checkCrudPermission("GRD_READ", loginUser.getUserId(), menuId);
+
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "selectList");
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
+        List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
+
+        int level1 = 1;
+        int level2 = 0;
+        String[] korean = {
+                "가", "나", "다", "라", "마", "바", "사", "아", "자", "차",
+                "카", "타", "파", "하"
+        };
+        int level3 = 1;
+
+        for (Map<String, Object> e : result) {
+            if ("1".equals(e.get("LEVEL"))) {
+                e.put("CODE_NAME", level1 + "." + e.get("CODE_NAME"));
+                level1++;
+                level2 = 0;
+                level3 = 1;
+            } else if ("2".equals(e.get("LEVEL"))) {
+                e.put("CODE_NAME", korean[level2] + ". " + e.get("CODE_NAME"));
+                level2++;
+                if(level2 > 13) level2 = 0;
+                level3 = 1;
+            } else if ("3".equals(e.get("LEVEL"))) {
+                e.put("CODE_NAME", "(" + level3 + ") " + e.get("CODE_NAME"));
+                level3++;
+            }
+        }
+        return result;
+    }
+
     @Override
     @Transactional
-    public Map<String, Object> delete_plan(String sectionId,
-                                              String component,
-                                              Map<String, Object> param,
-                                              LoginVO loginUser,
-                                              String pgId,
-                                              String menuId) {
+    public Map<String, Object> delete_soo02020_grid1(String sectionId,
+                                                     String component,
+                                                     Map<String, Object> param,
+                                                     LoginVO loginUser,
+                                                     String pgId,
+                                                     String menuId) {
 
         crudAuthService.checkCrudPermission("GRD_DELETE", loginUser.getUserId(), menuId);
-
-        serviceSupport.setParam(param, loginUser, pgId, menuId);
-
-        int resultDeleteRowCount = 0;
 
         if (param == null || param.isEmpty()) {
             throw new BizException(
@@ -361,6 +451,7 @@ public class JangsooServiceImpl implements JangsooService {
                     ApiResponse.ApiType.BIZ
             );
         }
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
 
         if ("1".equals(String.valueOf(param.get("CLOSE_YN")))) {
             throw new BizException(
@@ -370,6 +461,8 @@ public class JangsooServiceImpl implements JangsooService {
             );
         }
 
+        int resultDeleteRowCount = 0;
+        int resultDeleteRowCountToView = 0;
         String statement = "";
         statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "deleteOne");
         resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
@@ -379,20 +472,101 @@ public class JangsooServiceImpl implements JangsooService {
         resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
         statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "deleteOne");
         resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
-        statement = serviceSupport.buildCrudStatement(sectionId, component + "_5", "deleteOne");
-        resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
         statement = serviceSupport.buildCrudStatement(sectionId, component, "deleteOne");
-        resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
-
+        resultDeleteRowCountToView += baseCrudMapper.deleteOne(statement, param);
+        resultDeleteRowCount += resultDeleteRowCountToView;
         if (resultDeleteRowCount <= 0) {
             throw CrudFailException.insertFail(sectionId, pgId, component, param, resultDeleteRowCount);
         }
 
         Map<String, Object> result = new HashMap<>();
-        result.put("resultRowCount", (resultDeleteRowCount));
+        result.put("resultRowCount", (resultDeleteRowCountToView));
         return result;
     }
 
+    @Override
+    @Transactional
+    public Map<String, Object> saveList_soo02020_grid3(String sectionId,
+                                        String component,
+                                        Map<String, Object> param,
+                                        LoginVO loginUser,
+                                        String pgId,
+                                        String menuId) {
+
+        List<Map<String, Object>> insertParam = (List<Map<String, Object>>) param.get("insertParam");
+        List<Map<String, Object>> updateParam = (List<Map<String, Object>>) param.get("updateParam");
+
+        Map<String, Object> data = crudAuthService.getCrudPermission(loginUser.getUserId(), menuId);
+
+        if (insertParam != null && !insertParam.isEmpty()) {
+            crudAuthService.checkCrudPermission("GRD_CREATE", data);
+        }
+        if (updateParam != null && !updateParam.isEmpty()) {
+            crudAuthService.checkCrudPermission("GRD_UPDATE", data);
+        }
+
+        //insert
+        int resultInsertRowCount = 0;
+        String statement = "";
+        List<Map<String, Object>> key = new ArrayList<Map<String, Object>>();
+        if (insertParam != null && !insertParam.isEmpty()) {
+            resultInsertRowCount = insert_soo02020_grid3(sectionId, component, insertParam, loginUser, pgId, menuId);
+        }
+
+        //update
+        int resultUpdateRowCount = 0;
+        if (updateParam != null && !updateParam.isEmpty()) {
+            resultUpdateRowCount = update_soo02020_grid3(sectionId, component, updateParam, loginUser, pgId, menuId);
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("resultRowCount", (resultInsertRowCount + resultUpdateRowCount));
+
+        return result;
+    }
+
+     private int insert_soo02020_grid3(String sectionId,
+                                       String component,
+                                       List<Map<String, Object>> insertParam,
+                                       LoginVO loginUser,
+                                       String pgId,
+                                       String menuId){
+         serviceSupport.setParam(insertParam, loginUser, pgId, menuId);
+
+         int resultInsertRowCount = 0;
+         String statement = "";
+         statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "insertList");
+         resultInsertRowCount += baseCrudMapper.insertList(statement, insertParam);
+         statement = serviceSupport.buildCrudStatement(sectionId, component  + "_2", "insertList");
+         resultInsertRowCount += baseCrudMapper.insertList(statement, insertParam);
+
+         if (resultInsertRowCount <= 0) {
+             throw CrudFailException.insertFail(sectionId, pgId, component, insertParam, resultInsertRowCount);
+         }
+         return resultInsertRowCount;
+     }
+
+    private int update_soo02020_grid3(String sectionId,
+                                      String component,
+                                      List<Map<String, Object>> updateParam,
+                                      LoginVO loginUser,
+                                      String pgId,
+                                      String menuId){
+
+        serviceSupport.setParam(updateParam, loginUser, pgId, menuId);
+
+        int resultUpdateRowCount = 0;
+        String statement = "";
+        serviceSupport.setParam(updateParam, loginUser, pgId, menuId);
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "updateList");
+        resultUpdateRowCount += baseCrudMapper.updateList(statement, updateParam);
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_2", "updateList");
+        resultUpdateRowCount += baseCrudMapper.updateList(statement, updateParam);
+
+        if (resultUpdateRowCount <= 0) {
+            throw CrudFailException.updateFail(sectionId, pgId, component, updateParam, resultUpdateRowCount);
+        }
+        return resultUpdateRowCount;
+    }
 
 
 

@@ -24,6 +24,7 @@ public class ApiResponse<T> {
         GRD_DELETE,
         GRD_EXCEL,
 
+        NO_PERMISSION,
         BIZ
 
     }

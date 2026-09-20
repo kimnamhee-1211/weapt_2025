@@ -29,7 +29,6 @@ public class BaseCrudServiceImpl implements BaseCrudService {
 
     @Autowired
     private CrudAuthService crudAuthService;
-
     @Autowired
     private CrudBeforeService crudBeforeService;
 
@@ -81,22 +80,32 @@ public class BaseCrudServiceImpl implements BaseCrudService {
     //다중 저장
     @Override
     @Transactional
-    public int insertList(String sectionId,
+    public Map<String, Object> insertList(String sectionId,
                           String component,
-                          List<Map<String, Object>> param,
+                          Map<String, Object> param,
                           LoginVO loginUser,
                           String pgId,
                           String menuId) {
 
         crudAuthService.checkCrudPermission("GRD_CREATE", loginUser.getUserId(), menuId);
 
-        String statement = serviceSupport.buildCrudStatement(sectionId, component, "insertList");
-        serviceSupport.setParam(param, loginUser, pgId, menuId);
-        int resultRowCount = baseCrudMapper.insertList(statement, param);
-        if (resultRowCount <= 0) {
-            throw CrudFailException.insertFail(sectionId, pgId, component, param, resultRowCount);
-        }
-        return resultRowCount;
+        List<Map<String, Object>> insertParam = (List<Map<String, Object>>) param.get("insertParam");
+        Map<String, Object> rawKey = (Map<String, Object>) param.get("key");
+
+        Map<String, Object> resultInsert = saveInsert(sectionId,
+                component,
+                insertParam,
+                rawKey,
+                null,
+                loginUser, pgId, menuId);
+        int resultInsertRowCount = (Integer) resultInsert.get("resultInsertRowCount");
+        List<Map<String, Object>> key = (List<Map<String, Object>>) resultInsert.get("key");
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("resultRowCount", (resultInsertRowCount));
+        result.put("key", key);
+
+        return result;
     }
 
     //단일 저장
@@ -125,20 +134,20 @@ public class BaseCrudServiceImpl implements BaseCrudService {
     @Transactional
     public int updateList(String sectionId,
                           String component,
-                          List<Map<String, Object>> param,
+                          List<Map<String, Object>> updateParam,
                           LoginVO loginUser,
                           String pgId,
                           String menuId) {
 
         crudAuthService.checkCrudPermission("GRD_UPDATE", loginUser.getUserId(), menuId);
 
-        String statement = serviceSupport.buildCrudStatement(sectionId, component, "updateList");
-        serviceSupport.setParam(param, loginUser, pgId, menuId);
-        int resultRowCount = baseCrudMapper.updateList(statement, param);
-        if (resultRowCount <= 0) {
-            throw CrudFailException.updateFail(sectionId, pgId, component, param, resultRowCount);
-        }
-        return resultRowCount;
+        int resultUpdateRowCount = saveUpdate(sectionId,
+                component,
+                updateParam,
+                null,
+                loginUser, pgId, menuId);
+
+        return resultUpdateRowCount;
     }
 
     //단일 수정
@@ -251,7 +260,6 @@ public class BaseCrudServiceImpl implements BaseCrudService {
         int resultInsertRowCount = 0;
         List<Map<String, Object>> key = new ArrayList<Map<String, Object>>();
         if (insertParam != null && !insertParam.isEmpty()) {
-
             Map<String, Object> rawKey = (Map<String, Object>) param.get("key");
             resultInsert = saveInsert(sectionId,
                                     component,
@@ -298,13 +306,11 @@ public class BaseCrudServiceImpl implements BaseCrudService {
                 pgId,
                 menuId, "insert");
 
+        serviceSupport.setParam(insertParam, loginUser, pgId, menuId);
         //pk 생성
         List<Map<String, Object>> key = new ArrayList<Map<String, Object>>();
         if (rawKey != null && !rawKey.isEmpty()) {
-
             insertParam = getKeyToParam(insertParam, rawKey, sectionId, component, loginUser);
-            System.out.println("getKeyToParam : " + insertParam);
-
             List<String> column = (List<String>)rawKey.get("column");
             //return할 key값 구하기
             for ( Map<String, Object> map : insertParam){
@@ -315,8 +321,6 @@ public class BaseCrudServiceImpl implements BaseCrudService {
                 key.add(keyMap);
             }
         }
-
-        serviceSupport.setParam(insertParam, loginUser, pgId, menuId);
         System.out.println(insertParam);
         String statement = serviceSupport.buildCrudStatement(sectionId, component, "insertList");
         int resultInsertRowCount = baseCrudMapper.insertList(statement, insertParam);
@@ -349,7 +353,6 @@ public class BaseCrudServiceImpl implements BaseCrudService {
                 pgId,
                 menuId, "update");
 
-
         serviceSupport.setParam(updateParam, loginUser, pgId, menuId);
         System.out.println(updateParam);
         String statement = serviceSupport.buildCrudStatement(sectionId, component, "updateList");
@@ -363,9 +366,7 @@ public class BaseCrudServiceImpl implements BaseCrudService {
     }
 
     //pk 채번 && param set
-    @Override
-    @Transactional
-    public List<Map<String, Object>> getKeyToParam(List<Map<String, Object>> param,
+    private List<Map<String, Object>> getKeyToParam(List<Map<String, Object>> insertParam,
                                                    Map<String, Object> rawKey,
                                                    String sectionId,
                                                    String component,
@@ -373,13 +374,12 @@ public class BaseCrudServiceImpl implements BaseCrudService {
 
         String statement = serviceSupport.buildCrudStatement(sectionId, component, "getKey");
 
-        Map<String, Object> keyParam = param.get(0);
-        serviceSupport.setUserToParam(loginUser, keyParam);
+        Map<String, Object> keyParam = insertParam.get(0);
         Map<String, Object> keyValues = baseCrudMapper.selectOne(statement, keyParam);
         System.out.println(keyValues);
 
-        param = setKeyToParam(param, rawKey, keyValues);
-        return param;
+        insertParam = setKeyToParam(insertParam, rawKey, keyValues);
+        return insertParam;
     }
 
     //공통코드 검색

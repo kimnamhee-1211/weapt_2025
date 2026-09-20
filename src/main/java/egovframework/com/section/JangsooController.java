@@ -3,6 +3,7 @@ package egovframework.com.section;
 
 import egovframework.com.baseCrud.model.ApiResponse;
 import egovframework.com.baseCrud.service.BaseCrudService;
+import egovframework.com.baseCrud.service.BaseCrudServiceImpl;
 import egovframework.com.login.model.LoginVO;
 import egovframework.com.section.service.JangsooService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +34,35 @@ public class JangsooController {
 
     @Resource(name = "jangsooService")
     protected JangsooService jangsooService;
+    @Autowired
+    private BaseCrudService baseCrudService;
 
+    //soo02010
+    @RequestMapping(value = "/deleteOne/jangsoo/soo02010_grid1", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResponse<Map<String, Object>> delete_soo02010_grid1(@RequestBody Map<String, Object> param,
+                                                        @SessionAttribute("loginUser") LoginVO loginUser,
+                                                        @RequestAttribute(value = "PG_ID") String pgId,
+                                                        @RequestAttribute(value = "MENU_ID") String menuId) {
 
+        Map<String, Object> resultMap = jangsooService.delete_soo02010_grid1("jangsoo", "soo02010_grid1", param, loginUser, pgId, menuId);
+
+        ApiResponse<Map<String, Object>> result = new ApiResponse<>();
+        result.setO_STATUS("SUCCESS");
+        result.setO_RESULT((Integer) resultMap.get("resultRowCount"));
+        result.setO_MSG( (Integer) resultMap.get("resultRowCount") +  "건이 삭제되었습니다.");
+        result.setO_TYPE(ApiResponse.ApiType.SAVE);
+        return result;
+    }
     //다중 검색
     @RequestMapping(value = "/selectList/jangsoo/soo02010_grid2", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
     @ResponseBody
-    public ApiResponse<List<Map<String, Object>>> selectList(@RequestParam Map<String, Object> param,
+    public ApiResponse<List<Map<String, Object>>> selectList_soo02010_grid2(@RequestParam Map<String, Object> param,
                                                              @SessionAttribute("loginUser") LoginVO loginUser,
                                                              @RequestAttribute(value = "PG_ID") String pgId,
                                                              @RequestAttribute(value = "MENU_ID") String menuId) {
 
-        List<Map<String, Object>> resultList = jangsooService.selectList("jangsoo", "soo02010_grid2", param, loginUser, pgId, menuId);
+        List<Map<String, Object>> resultList = jangsooService.selectList_soo02010_grid2("jangsoo", "soo02010_grid2", param, loginUser, pgId, menuId);
 
         ApiResponse<List<Map<String, Object>>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
@@ -53,6 +72,7 @@ public class JangsooController {
         result.setDATA(resultList);
         return result;
     }
+
 
     @RequestMapping(value = "/updateOne/jangsoo/soo02010_change", method = RequestMethod.POST)
     @ResponseBody
@@ -90,12 +110,12 @@ public class JangsooController {
 
     @RequestMapping(value = "/selectList/jangsoo/soo02010_pop3Grid1", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
     @ResponseBody
-    public ApiResponse<List<Map<String, Object>>> selectList_pop3Grid1(@RequestParam Map<String, Object> param,
+    public ApiResponse<List<Map<String, Object>>> selectList_soo02010_pop3Grid1(@RequestParam Map<String, Object> param,
                                                              @SessionAttribute("loginUser") LoginVO loginUser,
                                                              @RequestAttribute(value = "PG_ID") String pgId,
                                                              @RequestAttribute(value = "MENU_ID") String menuId) {
 
-        List<Map<String, Object>> resultList = jangsooService.selectList_pop3Grid1("jangsoo", "soo02010_pop3Grid1", param, loginUser, pgId, menuId);
+        List<Map<String, Object>> resultList = jangsooService.selectList_soo02010_pop3Grid1("jangsoo", "soo02010_pop3Grid1", param, loginUser, pgId, menuId);
 
         ApiResponse<List<Map<String, Object>>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
@@ -124,14 +144,34 @@ public class JangsooController {
         return result;
     }
 
-    @RequestMapping(value = "/deleteOne/jangsoo/soo02010_grid1", method = RequestMethod.POST)
-    @ResponseBody
-    public ApiResponse<Map<String, Object>> delete_plan(@RequestBody Map<String, Object> param,
-                                                           @SessionAttribute("loginUser") LoginVO loginUser,
-                                                           @RequestAttribute(value = "PG_ID") String pgId,
-                                                           @RequestAttribute(value = "MENU_ID") String menuId) {
 
-        Map<String, Object> resultMap = jangsooService.delete_plan("jangsoo", "soo02010_grid1", param, loginUser, pgId, menuId);
+    //soo02020
+    @RequestMapping(value = "/selectList/jangsoo/soo02020_grid1", produces = "application/json;charset=UTF-8", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiResponse<List<Map<String, Object>>> selectList_soo02020_grid1(@RequestParam Map<String, Object> param,
+                                                                            @SessionAttribute("loginUser") LoginVO loginUser,
+                                                                            @RequestAttribute(value = "PG_ID") String pgId,
+                                                                            @RequestAttribute(value = "MENU_ID") String menuId) {
+
+        List<Map<String, Object>> resultList = jangsooService.selectList_soo02020_grid1("jangsoo", "soo02020_grid1", param, loginUser, pgId, menuId);
+
+        ApiResponse<List<Map<String, Object>>> result = new ApiResponse<>();
+        result.setO_STATUS("SUCCESS");
+        result.setO_RESULT(resultList.size());
+        result.setO_MSG(resultList.size() + "건이 조회되었습니다.");
+        result.setO_TYPE(ApiResponse.ApiType.SELECT);
+        result.setDATA(resultList);
+        return result;
+    }
+
+    @RequestMapping(value = "/deleteOne/jangsoo/soo02020_grid1", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResponse<Map<String, Object>> delete_soo02020_grid1(@RequestBody Map<String, Object> param,
+                                                        @SessionAttribute("loginUser") LoginVO loginUser,
+                                                        @RequestAttribute(value = "PG_ID") String pgId,
+                                                        @RequestAttribute(value = "MENU_ID") String menuId) {
+
+        Map<String, Object> resultMap = jangsooService.delete_soo02020_grid1("jangsoo", "soo02020_grid1", param, loginUser, pgId, menuId);
 
         ApiResponse<Map<String, Object>> result = new ApiResponse<>();
         result.setO_STATUS("SUCCESS");
@@ -141,6 +181,22 @@ public class JangsooController {
         return result;
     }
 
+    @RequestMapping(value = "/saveList/jangsoo/soo02020_grid3", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResponse<Map<String, Object>> saveList_soo02020_grid3(@RequestBody Map<String, Object> param,
+                                                                  @SessionAttribute("loginUser") LoginVO loginUser,
+                                                                  @RequestAttribute(value = "PG_ID") String pgId,
+                                                                  @RequestAttribute(value = "MENU_ID") String menuId) {
+
+        Map<String, Object> resultMap = jangsooService.saveList_soo02020_grid3("jangsoo", "soo02020_grid3", param, loginUser, pgId, menuId);
+
+        ApiResponse<Map<String, Object>> result = new ApiResponse<>();
+        result.setO_STATUS("SUCCESS");
+        result.setO_RESULT((Integer) resultMap.get("resultRowCount"));
+        result.setO_MSG( (Integer) resultMap.get("resultRowCount") +  "건이 저장되었습니다.");
+        result.setO_TYPE(ApiResponse.ApiType.SAVE);
+        return result;
+    }
 
 }
 

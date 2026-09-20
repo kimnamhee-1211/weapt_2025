@@ -28,7 +28,6 @@ public class CrudBeforeServiceImpl extends ServiceSupport implements CrudBeforeS
 
         if (before == null || before.isEmpty()) return;
 
-
         if (!action.equals(before.get("action"))) return;
 
         if(action.equals(before.get("action"))){
@@ -51,10 +50,10 @@ public class CrudBeforeServiceImpl extends ServiceSupport implements CrudBeforeS
     private void callBefore(List<Map<String, Object>> beforeParam,
                             String saveMode,
                             LoginVO loginUser,
-                          String sectionId,
-                          String component,
-                          String pgId,
-                          String menuId) {
+                           String sectionId,
+                           String component,
+                           String pgId,
+                           String menuId) {
 
         //loginUser set
         setParam(beforeParam, loginUser, pgId, menuId);
