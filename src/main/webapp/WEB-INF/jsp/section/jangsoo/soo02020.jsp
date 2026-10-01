@@ -401,7 +401,7 @@
     })
     input_reYearSub.addEventListener("input", function (){
         let yearSub = input_reYearSub.value ? input_reYearSub.value : input_firstYrMm.value.substring(0,4);
-        input_planYearSub.value = Number(input_subPeriod).value +  Number(yearSub);
+        input_planYearSub.value = Number(input_subPeriod.value) +  Number(yearSub);
     })
     input_subRate.addEventListener("input", function (){
         let amt = AUIGrid.getColumnValues(grid2,"AMT")

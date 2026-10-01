@@ -9,6 +9,7 @@ import egovframework.com.baseCrud.support.ServiceSupport;
 import egovframework.com.exception.BizException;
 import egovframework.com.exception.CrudFailException;
 import egovframework.com.login.model.LoginVO;
+import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -376,8 +377,6 @@ public class JangsooServiceImpl implements JangsooService {
 
             statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "insertList");
             resultInsertRowCount += baseCrudMapper.insertList(statement, insertList4);
-            statement = serviceSupport.buildCrudStatement(sectionId, component + "_5", "insertList");
-            resultInsertRowCount += baseCrudMapper.insertList(statement, insertList4);
         }
         if (resultInsertRowCount <= 0) {
             throw CrudFailException.insertFail(sectionId, pgId, component, param, resultInsertRowCount);
@@ -470,10 +469,23 @@ public class JangsooServiceImpl implements JangsooService {
         resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
         statement = serviceSupport.buildCrudStatement(sectionId, component + "_3", "deleteOne");
         resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
-        statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "deleteOne");
-        resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
-        statement = serviceSupport.buildCrudStatement(sectionId, component, "deleteOne");
-        resultDeleteRowCountToView += baseCrudMapper.deleteOne(statement, param);
+
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "selectOne");
+        Map<String, Object> selectOne = baseCrudMapper.selectOne(statement, param);
+        if (((Number) selectOne.get("COUNT")).intValue() == 0) {
+            statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "deleteOne");
+            resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
+            statement = serviceSupport.buildCrudStatement(sectionId, component + "_5", "deleteOne");
+            resultDeleteRowCountToView += baseCrudMapper.deleteOne(statement, param);
+        }
+
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_5", "selectOne");
+        selectOne = baseCrudMapper.selectOne(statement, param);
+        if (((Number) selectOne.get("COUNT")).intValue() == 0) {
+            statement = serviceSupport.buildCrudStatement(sectionId, component + "_5", "deleteOne");
+            resultDeleteRowCountToView += baseCrudMapper.deleteOne(statement, param);
+        }
+
         resultDeleteRowCount += resultDeleteRowCountToView;
         if (resultDeleteRowCount <= 0) {
             throw CrudFailException.insertFail(sectionId, pgId, component, param, resultDeleteRowCount);
@@ -531,6 +543,7 @@ public class JangsooServiceImpl implements JangsooService {
                                        String pgId,
                                        String menuId){
          serviceSupport.setParam(insertParam, loginUser, pgId, menuId);
+         LOGGER.debug("insertList_soo02020_grid3: " + insertParam);
 
          int resultInsertRowCount = 0;
          String statement = "";
@@ -553,14 +566,26 @@ public class JangsooServiceImpl implements JangsooService {
                                       String menuId){
 
         serviceSupport.setParam(updateParam, loginUser, pgId, menuId);
+        LOGGER.debug("updateList_soo02020_grid3: " + updateParam);
 
         int resultUpdateRowCount = 0;
         String statement = "";
         serviceSupport.setParam(updateParam, loginUser, pgId, menuId);
         statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "updateList");
         resultUpdateRowCount += baseCrudMapper.updateList(statement, updateParam);
-        statement = serviceSupport.buildCrudStatement(sectionId, component + "_2", "updateList");
-        resultUpdateRowCount += baseCrudMapper.updateList(statement, updateParam);
+
+        for(Map<String, Object> updateParamMap : updateParam){
+            statement = serviceSupport.buildCrudStatement(sectionId, component + "_2", "selectOne");
+            Map<String, Object> selectOne =  baseCrudMapper.selectOne(statement, updateParamMap);
+            if(((Number)selectOne.get("COUNT")).intValue() > 0){
+                statement = serviceSupport.buildCrudStatement(sectionId, component + "_2", "updateOne");
+                resultUpdateRowCount += baseCrudMapper.updateOne(statement, updateParamMap);
+            }else{
+                statement = serviceSupport.buildCrudStatement(sectionId, component + "_2", "insertOne");
+                resultUpdateRowCount += baseCrudMapper.insertOne(statement, updateParamMap);
+            }
+        }
+
 
         if (resultUpdateRowCount <= 0) {
             throw CrudFailException.updateFail(sectionId, pgId, component, updateParam, resultUpdateRowCount);

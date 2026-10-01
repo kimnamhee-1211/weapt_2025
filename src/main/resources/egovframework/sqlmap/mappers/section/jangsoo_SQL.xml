@@ -1370,40 +1370,6 @@
 
 	<insert id="insertList_soo02010_add_4" parameterType="list">
 		<if test = "list != null and list.size > 0">
-			INSERT INTO dbo.TRP_REPAIR_ITEM (
-				ITEM_CODE,
-				CODE,
-				SUB_CODE,
-				KIND_CODE,
-				OFFICE_CODE,
-				ITEM_NAME,
-				USE_YN,
-				ORDER_SEQ
-			)
-			<foreach collection = "list" item = "row" separator = " UNION ALL ">
-				SELECT
-				CONVERT(VARCHAR,CONVERT(BIGINT, #{row.KIND_CODE}) + 1),
-				A.CODE,
-				A.SUB_CODE,
-				A.KIND_CODE,
-				A.OFFICE_CODE,
-				'시공견적(예정)가',
-				'1',
-				A.ORDER_SEQ
-				FROM dbo.TRP_MONTH_REPAIR_KIND A
-				WHERE A.OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND A.CODE = #{row.CODE}
-				  AND A.SUB_CODE = #{row.SUB_CODE} AND A.KIND_CODE = #{row.KIND_CODE}
-				AND NOT EXISTS(SELECT 1
-						FROM dbo.TRP_REPAIR_ITEM
-						WHERE OFFICE_CODE = #{row.LOGIN_OFFICE_CODE}
-						  AND CODE = #{row.CODE} AND SUB_CODE = #{row.SUB_CODE}
-						  AND KIND_CODE = #{row.KIND_CODE} AND ITEM_CODE = #{row.ITEM_CODE})
-			</foreach>
-		</if>
-	</insert>
-
-	<insert id="insertList_soo02010_add_5" parameterType="list">
-		<if test = "list != null and list.size > 0">
 		INSERT INTO dbo.TRP_MONTH_REPAIR_ITEM (
 			ITEM_CODE,
 			CODE,
@@ -1418,11 +1384,11 @@
 		)
 		<foreach collection = "list" item = "row" separator = " UNION ALL ">
 		SELECT
-			A.ITEM_CODE,
+			CONVERT(VARCHAR,CONVERT(BIGINT, #{row.KIND_CODE}) + 1),
 			A.CODE,
 			A.SUB_CODE,
-			A.KIND_CODE,
-			A.OFFICE_CODE,
+			#{row.KIND_CODE},
+			#{row.LOGIN_OFFICE_CODE},
 			#{row.PLAN_MONTH},
 			'1',
 			A.ITEM_NAME,
@@ -1430,7 +1396,7 @@
 			A.ORDER_SEQ
 		FROM dbo.TRP_REPAIR_ITEM A
 		WHERE A.OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND A.CODE = #{row.CODE}
-		  AND A.SUB_CODE = #{row.SUB_CODE} AND A.KIND_CODE = #{row.KIND_CODE}
+		  AND A.SUB_CODE = #{row.SUB_CODE} AND  (LEFT(A.KIND_CODE, 6) = LEFT(#{row.KIND_CODE}, 6))
 		AND NOT EXISTS(SELECT 1
 			FROM dbo.TRP_MONTH_REPAIR_ITEM
 			WHERE OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND PLAN_MONTH = #{row.PLAN_MONTH}
@@ -1439,47 +1405,6 @@
 		</if>
 	</insert>
 
-
-	<insert id="insertList_soo02010_add_6" parameterType="list">
-		<if test = "list != null and list.size > 0">
-		INSERT INTO dbo.TRP_MONTH_REPAIR_ITEM_UNIT (
-			ITEM_CODE,
-			CODE,
-			SUB_CODE,
-			KIND_CODE,
-			OFFICE_CODE,
-			PLAN_MONTH,
-			SEQ,
-			BS_DATE,
-			ITEM,
-			UNIT,
-			BASE_UNIT_PRICE,
-			RATE,
-			CNT,
-			REMARKS
-		)
-		<foreach collection = "list" item = "row" separator = " UNION ALL ">
-		SELECT
-			A.ITEM_CODE,
-			A.CODE,
-			A.SUB_CODE,
-			A.KIND_CODE,
-			A.OFFICE_CODE,
-			#{row.PLAN_MONTH},
-			#{row.SEQ},
-			A.BS_DATE,
-			A.ITEM,
-			A.UNIT,
-			A.BASE_UNIT_PRICE,
-			A.RATE,
-			A.CNT,
-			A.REMARKS
-		FROM dbo.TRP_REPAIR_ITEM_UNIT A
-		WHERE A.OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND A.CODE = #{row.CODE} AND A.SUB_CODE = #{row.SUB_CODE}
-		  AND A.KIND_CODE = #{row.KIND_CODE} AND A.ITEM_CODE = #{row.ITEM_CODE}
-		</foreach>
-		</if>
-	</insert>
 
 	<delete id="deleteOne_soo02010_grid1_1" parameterType="map">
 		DELETE dbo.TRP_MONTH_REPAIR_ITEM_UNIT
@@ -1771,18 +1696,35 @@
 		AND CODE = #{CODE} AND SUB_CODE = #{SUB_CODE} AND KIND_CODE = #{KIND_CODE}
 	</delete>
 
+	<select id="selectOne_soo02020_grid1_4" parameterType="map" resultType="map">
+		SELECT
+			COUNT(*) AS COUNT
+		FROM dbo.TRP_MONTH_REPAIR_KIND A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+		AND A.PLAN_MONTH = #{PLAN_MONTH}
+		AND A.CODE = #{CODE}  AND A.SUB_CODE = #{SUB_CODE}
+	</select>
+
 	<delete id="deleteOne_soo02020_grid1_4" parameterType="map">
 		DELETE dbo.TRP_MONTH_REPAIR_SUBCODE
 		WHERE OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND PLAN_MONTH = #{PLAN_MONTH} AND SEQ = #{SEQ}
 		AND CODE = #{CODE} AND SUB_CODE = #{SUB_CODE} AND KIND_CODE = #{KIND_CODE}
 	</delete>
 
-	<delete id="deleteOne_soo02020_grid1" parameterType="map">
+	<select id="selectOne_soo02020_grid1_5" parameterType="map" resultType="map">
+		SELECT
+			COUNT(*) AS COUNT
+		FROM dbo.TRP_MONTH_REPAIR_SUBCODE A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE}
+		  AND A.PLAN_MONTH = #{PLAN_MONTH}
+		  AND A.CODE = #{CODE}
+	</select>
+
+	<delete id="deleteOne_soo02020_grid1_5" parameterType="map">
 		DELETE dbo.TRP_MONTH_REPAIR_CODE
 		WHERE OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND PLAN_MONTH = #{PLAN_MONTH} AND SEQ = #{SEQ}
 		AND CODE = #{CODE} AND SUB_CODE = #{SUB_CODE} AND KIND_CODE = #{KIND_CODE}
 	</delete>
-
 
 
 	<select id="selectList_soo02020_grid2" parameterType="map" resultType="map">
@@ -1871,7 +1813,7 @@
 						FROM dbo.TRP_MONTH_REPAIR_ITEM C
 						WHERE C.OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND C.PLAN_MONTH = #{row.PLAN_MONTH}
 						  AND C.CODE = #{row.CODE} AND C.SUB_CODE = #{row.SUB_CODE} AND  C.KIND_CODE = #{row.KIND_CODE})
-					ELSE ELSE CONVERT(VARCHAR(20), CONVERT(BIGINT, #{row.KIND_CODE}) + 1) END,
+					ELSE CONVERT(VARCHAR(20), CONVERT(BIGINT, #{row.KIND_CODE}) + 1) END,
 					#{row.CODE},
 					#{row.SUB_CODE},
 					#{row.KIND_CODE},
@@ -1932,9 +1874,9 @@
 				WHERE A.OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND A.PLAN_MONTH = #{row.PLAN_MONTH} AND A.SEQ = #{row.SEQ}
 				AND A.CODE = #{row.CODE} AND A.SUB_CODE = #{row.SUB_CODE} AND A.KIND_CODE = #{row.KIND_CODE}
 				AND NOT EXISTS(SELECT 1
-				FROM dbo.TRP_MONTH_REPAIR_ITEM_UNIT
-				WHERE OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND PLAN_MONTH = #{row.PLAN_MONTH} AND SEQ = #{row.SEQ}
-				AND CODE = #{row.CODE} AND SUB_CODE = #{row.SUB_CODE} AND KIND_CODE = #{row.KIND_CODE} AND ITEM_CODE = A.ITEM_CODE)
+					FROM dbo.TRP_MONTH_REPAIR_ITEM_UNIT
+					WHERE OFFICE_CODE = #{row.LOGIN_OFFICE_CODE} AND PLAN_MONTH = #{row.PLAN_MONTH} AND SEQ = #{row.SEQ}
+					AND CODE = #{row.CODE} AND SUB_CODE = #{row.SUB_CODE} AND KIND_CODE = #{row.KIND_CODE} AND ITEM_CODE = A.ITEM_CODE)
 			</foreach>
 		</if>
 	</insert>
@@ -1965,43 +1907,63 @@
 		</if>
 	</update>
 
-	<update id="updateList_soo02020_grid3_2" parameterType="list">
-		<if test="list != null and list.size > 0">
+	<select id="selectList_soo02020_grid3" parameterType="map" resultType="map">
+		SELECT
+			COUNT(*) AS COUNT
+		FROM dbo.TRP_MONTH_REPAIR_ITEM_UNIT A
+		WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.PLAN_MONTH = #{PLAN_MONTH} AND A.SEQ = #{SEQ}
+		  AND A.CODE = #{CODE} AND A.SUB_CODE = #{SUB_CODE} AND A.KIND_CODE = #{KIND_CODE}  A.ITEM_CODE = #{ITEM_CODE}
+	</select>
+
+	<update id="updateOne_soo02020_grid3_2" parameterType="map">
 			UPDATE A
 			SET
-				A.ITEM = U.ITEM,
-				A.UNIT = U.UNIT,
-				A.BASE_UNIT_PRICE = U.BASE_UNIT_PRICE,
-				A.UNIT_PRICE = U.UNIT_PRICE,
-				A.RATE = U.RATE,
-				A.CNT = U.CNT,
-				A.AMT = U.AMT
+				A.ITEM = #{ITEM},
+				A.UNIT = #{UNIT},
+				A.BASE_UNIT_PRICE = #{BASE_UNIT_PRICE} ,
+				A.UNIT_PRICE = #{UNIT_PRICE} ,
+				A.RATE = #{RATE} ,
+				A.CNT = #{CNT} ,
+				A.AMT = #{AMT}
 			FROM dbo.TRP_MONTH_REPAIR_ITEM_UNIT A
-			JOIN(
-			<foreach collection="list" item="row" separator=" UNION ALL ">
-				SELECT
-				#{row.LOGIN_OFFICE_CODE} AS OFFICE_CODE,
-				#{row.PLAN_MONTH} AS PLAN_MONTH,
-				#{row.SEQ} AS SEQ,
-				#{row.CODE} AS CODE,
-				#{row.SUB_CODE} AS SUB_CODE,
-				#{row.KIND_CODE} AS KIND_CODE,
-				#{row.ITEM_CODE} AS ITEM_CODE,
-				#{row.ITEM} AS ITEM,
-				#{row.UNIT} AS UNIT,
-				#{row.BASE_UNIT_PRICE} AS BASE_UNIT_PRICE,
-				#{row.UNIT_PRICE}  AS UNIT_PRICE,
-				#{row.RATE} AS RATE,
-				#{row.CNT} AS CNT,
-				#{row.AMT}  AS AMT
-			</foreach>
-			) AS U ON A.OFFICE_CODE = U.OFFICE_CODE	AND A.PLAN_MONTH = U.PLAN_MONTH AND A.SEQ = U.SEQ
-			    AND A.CODE = U.CODE AND A.SUB_CODE = U.SUB_CODE AND A.KIND_CODE = U.KIND_CODE AND A.ITEM_CODE = U.ITEM_CODE
-		</if>
+			WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} 	AND A.PLAN_MONTH = #{PLAN_MONTH}  AND A.SEQ = #{SEQ}
+			  AND A.CODE = #{CODE}  AND A.SUB_CODE = #{SUB_CODE}  AND A.KIND_CODE = #{KIND_CODE}  AND A.ITEM_CODE = #{ITEM_CODE}
 	</update>
 
-
-
+	<insert id="insertOne_soo02020_grid3_2" parameterType="map">
+			INSERT INTO dbo.TRP_MONTH_REPAIR_ITEM_UNIT (
+				ITEM_CODE,
+				CODE,
+				SUB_CODE,
+				KIND_CODE,
+				OFFICE_CODE,
+				PLAN_MONTH,
+				SEQ,
+				ITEM,
+				UNIT,
+				BASE_UNIT_PRICE,
+				RATE,
+				CNT,
+				REMARKS
+			)
+			SELECT
+				A.ITEM_CODE,
+				A.CODE,
+				A.SUB_CODE,
+				A.KIND_CODE,
+				A.OFFICE_CODE,
+				A.PLAN_MONTH,
+				A.SEQ,
+				#{ITEM},
+				#{UNIT},
+				#{BASE_UNIT_PRICE},
+				#{RATE},
+				#{CNT},
+				#{REMARKS}
+			FROM dbo.TRP_MONTH_REPAIR_ITEM A
+			WHERE A.OFFICE_CODE = #{LOGIN_OFFICE_CODE} AND A.PLAN_MONTH = #{PLAN_MONTH} AND A.SEQ = #{SEQ}
+			AND A.CODE = #{CODE} AND A.SUB_CODE = #{SUB_CODE} AND A.KIND_CODE = #{KIND_CODE} AND A.ITEM_CODE = #{ITEM_CODE}
+	</insert>
 
 
 </mapper>
