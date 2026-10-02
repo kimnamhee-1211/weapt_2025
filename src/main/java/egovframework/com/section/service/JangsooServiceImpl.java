@@ -107,31 +107,7 @@ public class JangsooServiceImpl implements JangsooService {
         serviceSupport.setParam(param, loginUser, pgId, menuId);
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
-        int level1 = 1;
-        int level2 = 0;
-        String[] korean = {
-                "가", "나", "다", "라", "마", "바", "사", "아", "자", "차",
-                "카", "타", "파", "하"
-        };
-        int level3 = 1;
-
-        for (Map<String, Object> e : result) {
-            if ("1".equals(e.get("LEVEL"))) {
-                e.put("CODE_NAME", level1 + "." + e.get("CODE_NAME"));
-                level1++;
-                level2 = 0;
-                level3 = 1;
-            } else if ("2".equals(e.get("LEVEL"))) {
-                e.put("CODE_NAME", korean[level2] + ". " + e.get("CODE_NAME"));
-                level2++;
-                if(level2 > 13) level2 = 0;
-                level3 = 1;
-            } else if ("3".equals(e.get("LEVEL"))) {
-                e.put("CODE_NAME", "(" + level3 + ") " + e.get("CODE_NAME"));
-                level3++;
-            }
-        }
-        return result;
+        return make_name(result);
     }
 
     @Override
@@ -149,31 +125,7 @@ public class JangsooServiceImpl implements JangsooService {
         serviceSupport.setParam(param, loginUser, pgId, menuId);
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
-        int level1 = 1;
-        int level2 = 0;
-        String[] korean = {
-                "가", "나", "다", "라", "마", "바", "사", "아", "자", "차",
-                "카", "타", "파", "하"
-        };
-        int level3 = 1;
-
-        for (Map<String, Object> e : result) {
-            if ("1".equals(e.get("LEVEL"))) {
-                e.put("CODE_NAME", level1 + "." + e.get("CODE_NAME"));
-                level1++;
-                level2 = 0;
-                level3 = 1;
-            } else if ("2".equals(e.get("LEVEL"))) {
-                e.put("CODE_NAME", korean[level2] + ". " + e.get("CODE_NAME"));
-                level2++;
-                if(level2 > 13) level2 = 0;
-                level3 = 1;
-            } else if ("3".equals(e.get("LEVEL"))) {
-                e.put("CODE_NAME", "(" + level3 + ") " + e.get("CODE_NAME"));
-                level3++;
-            }
-        }
-        return result;
+        return make_name(result);
     }
 
     //다중 검색
@@ -405,31 +357,8 @@ public class JangsooServiceImpl implements JangsooService {
         serviceSupport.setParam(param, loginUser, pgId, menuId);
         List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
 
-        int level1 = 1;
-        int level2 = 0;
-        String[] korean = {
-                "가", "나", "다", "라", "마", "바", "사", "아", "자", "차",
-                "카", "타", "파", "하"
-        };
-        int level3 = 1;
+        return make_name(result);
 
-        for (Map<String, Object> e : result) {
-            if ("1".equals(e.get("LEVEL"))) {
-                e.put("CODE_NAME", level1 + "." + e.get("CODE_NAME"));
-                level1++;
-                level2 = 0;
-                level3 = 1;
-            } else if ("2".equals(e.get("LEVEL"))) {
-                e.put("CODE_NAME", korean[level2] + ". " + e.get("CODE_NAME"));
-                level2++;
-                if(level2 > 13) level2 = 0;
-                level3 = 1;
-            } else if ("3".equals(e.get("LEVEL"))) {
-                e.put("CODE_NAME", "(" + level3 + ") " + e.get("CODE_NAME"));
-                level3++;
-            }
-        }
-        return result;
     }
 
     @Override
@@ -475,8 +404,6 @@ public class JangsooServiceImpl implements JangsooService {
         if (((Number) selectOne.get("COUNT")).intValue() == 0) {
             statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "deleteOne");
             resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
-            statement = serviceSupport.buildCrudStatement(sectionId, component + "_5", "deleteOne");
-            resultDeleteRowCountToView += baseCrudMapper.deleteOne(statement, param);
         }
 
         statement = serviceSupport.buildCrudStatement(sectionId, component + "_5", "selectOne");
@@ -594,9 +521,60 @@ public class JangsooServiceImpl implements JangsooService {
     }
 
 
+    //soo02030
+    @Override
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> selectList_soo02030_grid1(String sectionId,
+                                                               String component,
+                                                               Map<String, Object> param,
+                                                               LoginVO loginUser,
+                                                               String pgId,
+                                                               String menuId) {
+
+        crudAuthService.checkCrudPermission("GRD_READ", loginUser.getUserId(), menuId);
+
+        String statement = serviceSupport.buildCrudStatement(sectionId, component, "selectList");
+        serviceSupport.setParam(param, loginUser, pgId, menuId);
+        List<Map<String, Object>> result = baseCrudMapper.selectList(statement, param);
+
+        return make_name(result);
+    }
 
 
 
+
+
+
+
+    private List<Map<String, Object>> make_name(List<Map<String, Object>> result){
+
+        int level1 = 1;
+        int level2 = 0;
+        String[] korean = {
+                "가", "나", "다", "라", "마", "바", "사", "아", "자", "차",
+                "카", "타", "파", "하"
+        };
+        int level3 = 1;
+
+        for (Map<String, Object> e : result) {
+            if ("1".equals(e.get("LEVEL"))) {
+                e.put("CODE_NAME", level1 + "." + e.get("CODE_NAME"));
+                level1++;
+                level2 = 0;
+                level3 = 1;
+            } else if ("2".equals(e.get("LEVEL"))) {
+                e.put("CODE_NAME", korean[level2] + ". " + e.get("CODE_NAME"));
+                level2++;
+                if(level2 > 13) level2 = 0;
+                level3 = 1;
+            } else if ("3".equals(e.get("LEVEL"))) {
+                e.put("CODE_NAME", "(" + level3 + ") " + e.get("CODE_NAME"));
+                level3++;
+            }
+        }
+
+        return result;
+    }
 }
 
 

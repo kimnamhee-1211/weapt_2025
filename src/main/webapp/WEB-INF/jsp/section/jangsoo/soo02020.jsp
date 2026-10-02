@@ -375,41 +375,6 @@
         }
     });
 
-    search_planMonth.addEventListener("change", function (){
-        getSelect_search_code();
-        getSelect_search_subCode();
-        getSelect_search_kindCode();
-    })
-    search_code.addEventListener("change", function (){
-        getSelect_search_subCode();
-        getSelect_search_kindCode();
-    })
-    search_subCode.addEventListener("change", function (){
-        getSelect_search_kindCode();
-    })
-    input_allPeriod.addEventListener("input", function (){
-        let yearAll = input_reYearAll.value ? input_reYearAll.value : input_firstYrMm.value.substring(0,4);
-        input_planYearAll.value = Number(input_allPeriod.value) + Number(yearAll);
-    })
-    input_reYearAll.addEventListener("input", function (){
-        let yearAll = input_reYearAll.value ? input_reYearAll.value : input_firstYrMm.value.substring(0,4);
-        input_planYearAll.value = Number(input_allPeriod.value) + Number(yearAll);
-    })
-    input_subPeriod.addEventListener("chinputange", function (){
-        let yearSub = input_reYearSub.value ? input_reYearSub.value : input_firstYrMm.value.substring(0,4);
-        input_planYearSub.value = Number(input_subPeriod.value) +  Number(yearSub);
-    })
-    input_reYearSub.addEventListener("input", function (){
-        let yearSub = input_reYearSub.value ? input_reYearSub.value : input_firstYrMm.value.substring(0,4);
-        input_planYearSub.value = Number(input_subPeriod.value) +  Number(yearSub);
-    })
-    input_subRate.addEventListener("input", function (){
-        let amt = AUIGrid.getColumnValues(grid2,"AMT")
-        let amts = 0;
-        amt.forEach(row => amts += row);
-        input_planAmtSub.value = amts * (Number(input_subRate.value)/100);
-    })
-
 
     //팝업 이벤트
     price_btn.addEventListener("click", function (){
@@ -839,6 +804,41 @@
         }
         search_kindCode.selectedIndex = 0;
     }
+
+    search_planMonth.addEventListener("change", function (){
+        getSelect_search_code();
+        getSelect_search_subCode();
+        getSelect_search_kindCode();
+    })
+    search_code.addEventListener("change", function (){
+        getSelect_search_subCode();
+        getSelect_search_kindCode();
+    })
+    search_subCode.addEventListener("change", function (){
+        getSelect_search_kindCode();
+    })
+    input_allPeriod.addEventListener("input", function (){
+        let yearAll = input_reYearAll.value ? input_reYearAll.value : input_firstYrMm.value.substring(0,4);
+        input_planYearAll.value = Number(input_allPeriod.value) + Number(yearAll);
+    })
+    input_reYearAll.addEventListener("input", function (){
+        let yearAll = input_reYearAll.value ? input_reYearAll.value : input_firstYrMm.value.substring(0,4);
+        input_planYearAll.value = Number(input_allPeriod.value) + Number(yearAll);
+    })
+    input_subPeriod.addEventListener("chinputange", function (){
+        let yearSub = input_reYearSub.value ? input_reYearSub.value : input_firstYrMm.value.substring(0,4);
+        input_planYearSub.value = Number(input_subPeriod.value) +  Number(yearSub);
+    })
+    input_reYearSub.addEventListener("input", function (){
+        let yearSub = input_reYearSub.value ? input_reYearSub.value : input_firstYrMm.value.substring(0,4);
+        input_planYearSub.value = Number(input_subPeriod.value) +  Number(yearSub);
+    })
+    input_subRate.addEventListener("input", function (){
+        let amt = AUIGrid.getColumnValues(grid2,"AMT")
+        let amts = 0;
+        amt.forEach(row => amts += row);
+        input_planAmtSub.value = amts * (Number(input_subRate.value)/100);
+    })
 
     //로드
     window.onload = function() {

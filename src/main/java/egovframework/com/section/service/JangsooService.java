@@ -17,4 +17,5 @@ public interface JangsooService {
     public List<Map<String, Object>> selectList_soo02020_grid1(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
     public Map<String, Object> delete_soo02020_grid1(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
     public Map<String, Object> saveList_soo02020_grid3(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
+    public List<Map<String, Object>> selectList_soo02030_grid1(String sectionId, String component, Map<String, Object> param, LoginVO loginUser, String pgId, String menuId);
 }
