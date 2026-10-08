@@ -67,13 +67,13 @@
                                 </tr>
                                 <tr>
                                     <th>최종수선년도</th>
-                                    <td><input type="text" id="input_reYearAll" name="RE_YEAR_ALL" class="box50" oninput="inputNumFormat(this)" maxlength="4"></td>
-                                    <td><input type="text" id="input_reYearSub" name="RE_YEAR_SUB" class="box50" oninput="inputNumFormat(this)" maxlength="4"></td>
+                                    <td><input type="text" id="input_reYearAll" name="RE_YEAR_ALL" class="box50" oninput="inputNumFormat(this)" maxlength="4"  min="1900" max="2100"></td>
+                                    <td><input type="text" id="input_reYearSub" name="RE_YEAR_SUB" class="box50" oninput="inputNumFormat(this)" maxlength="4"  min="1900" max="2100"></td>
                                 </tr>
                                 <tr>
                                     <th>수선예정년도</th>   <!--최종이 있으면 최종 + 주기 , 없으면 최초년도 + 주기-->
-                                    <td><input type="text" id="input_planYearAll" name="PLAN_YEAR_ALL" class="box50" oninput="inputNumFormat(this)" maxlength="4"></td>
-                                    <td><input type="text" id="input_planYearSub" name="PLAN_YEAR_SUB" class="box50" oninput="inputNumFormat(this)" maxlength="4"></td>
+                                    <td><input type="text" id="input_planYearAll" name="PLAN_YEAR_ALL" class="box50" oninput="inputNumFormat(this)" maxlength="4"  min="1900" max="2100"></td>
+                                    <td><input type="text" id="input_planYearSub" name="PLAN_YEAR_SUB" class="box50" oninput="inputNumFormat(this)" maxlength="4"  min="1900" max="2100"></td>
                                 </tr>
                                 <tr>
                                     <th>수선계획금액</th>  <!--수정가능 저장-->
