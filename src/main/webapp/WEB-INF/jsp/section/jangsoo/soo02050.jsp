@@ -203,7 +203,6 @@
     }
 
 
-
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)

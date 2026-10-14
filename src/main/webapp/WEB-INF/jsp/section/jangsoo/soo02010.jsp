@@ -404,10 +404,15 @@
                 treeIdField: "CD",
                 treeIdRefField: "UP_CD",
                 flat2tree: true,
-                width : 880
+                width : 880,
+                rowCheckDisabledFunction : function(rowIndex, isChecked, item) {
+                    if(item.LEVEL != "3") { // 이름이 "Anna" 인 경우 엑스트라 행 체크박스 비활성화 처리함.
+                        return false;
+                    }
+                    return true; // 일반 활성화 된 체크박스로 표현
+                }
             })
     );
-
 
     //그리드 이벤트
     //체크박스 클릭 시
@@ -440,6 +445,10 @@
             search_grid2_onclick();
         }
     });
+
+
+
+
 
     //팝업 이벤트
     add_btn.addEventListener("click", function (){
@@ -817,7 +826,7 @@
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
                     //팝업 닫기
-                    search_grid1_onclick()
+                    search_grid2_onclick();
                 }else return;
             }
         });

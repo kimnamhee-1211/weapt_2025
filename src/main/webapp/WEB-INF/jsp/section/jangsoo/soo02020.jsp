@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div>
-                        <table class="input_table" id="grid1_input">
+                        <table class="input_table" id="grid1_input" onchange="inputToGrid(grid1, grid1_input)">
                             <tbody>
                                 <tr>
                                     <th style="width: 150px;">구분</th>
@@ -57,13 +57,13 @@
                                 </tr>
                                 <tr>
                                     <th>수선주기(년)등록</th>
-                                    <td><input type="text" id="input_allPeriod" name="ALL_PERIOD" class="box50" oninput="inputNumFormat(this)" maxlength="3"></td>
-                                    <td><input type="text" id="input_subPeriod" name="SUB_PERIOD" class="box50" oninput="inputNumFormat(this)" maxlength="3"></td>
+                                    <td><input type="text" id="input_allPeriod" name="RE_PERIOD_ALL" class="box50" oninput="inputNumFormat(this)" maxlength="3"></td>
+                                    <td><input type="text" id="input_subPeriod" name="RE_PERIOD_SUB" class="box50" oninput="inputNumFormat(this)" maxlength="3"></td>
                                 </tr>
                                 <tr>
                                     <th>수선율(%)등록</th>
                                     <td></td>
-                                    <td><input type="text" id="input_subRate" name="SUB_RATE" class="box50"></td>
+                                    <td><input type="text" id="input_subRate" name="RE_RATE_SUB" class="box50"></td>
                                 </tr>
                                 <tr>
                                     <th>최종수선년도</th>
@@ -77,8 +77,8 @@
                                 </tr>
                                 <tr>
                                     <th>수선계획금액</th>  <!--수정가능 저장-->
-                                    <td><input type="text" id="input_planAmtAll" name="PLAN_AMT_ALL" class="box50" oninput="inputMoneyFormat(this)"></td>
-                                    <td><input type="text" id="input_planAmtSub" name="PLAN_AMT_SUB" class="box50" oninput="inputMoneyFormat(this)"></td>
+                                    <td><input type="text" id="input_planAmtAll" name="PLAN_AMT_ALL" class="box50" oninput="inputMoneyFormat(this)" data-format="money"></td>
+                                    <td><input type="text" id="input_planAmtSub" name="PLAN_AMT_SUB" class="box50" oninput="inputMoneyFormat(this)" data-format="money"></td>
                                 </tr>
                                 <tr>
                                     <th>실시 및 계획 (전면)</th>
@@ -86,7 +86,7 @@
                                 </tr>
                                 <tr>
                                     <th>실시 및 계획 (부분)</th>
-                                    <td colspan="2"><input type="text" id="input_planRemarksSub" name="PLAN_REMARKS"></td>
+                                    <td colspan="2"><input type="text" id="input_planRemarksSub" name="PLAN_REMARKS_SUB"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -96,6 +96,9 @@
                         <span class="section_middle_btn">
                             <button id="price_btn" class="del_btn" onclick="popupOpen(popup);">단가등록</button>
                         </span>
+                    </div>
+                    <div >
+                        <div id="grid2"></div>
                     </div>
                     <div>
                          <!-- 팝업시작-->
@@ -113,9 +116,6 @@
                             </div>
                         </div>
                         <!-- 팝업끝-->
-                    </div>
-                    <div>
-                        <div id="grid2"></div>
                     </div>
                 </div>
             </div>            
@@ -208,7 +208,7 @@
                 editable : false,
                 showRowNumColumn : false,
                 displayTreeOpen: true,
-                rowCheckDependingTree: true,
+                rowCheckDependingTree: false,
                 treeIdField: "CD",
                 treeIdRefField: "UP_CD",
                 flat2tree: true,
@@ -550,6 +550,17 @@
 
         // 추가된 행 아이템들(배열)
         let addedRowItems = AUIGrid.getAddedRowItems(grid3);
+        if(!isNull(addedRowItems)){
+            addedRowItems.forEach(row =>{
+                row.PLAN_MONTH =  AUIGrid.getSelectedRows(grid1)[0].PLAN_MONTH;
+                row.SEQ =  AUIGrid.getSelectedRows(grid1)[0].SEQ
+                row.CODE =  AUIGrid.getSelectedRows(grid1)[0].CODE
+                row.SUB_CODE =  AUIGrid.getSelectedRows(grid1)[0].SUB_CODE
+                row.KIND_CODE =  AUIGrid.getSelectedRows(grid1)[0].KIND_CODE
+            })
+
+        }
+
         // 수정된 행 아이템들(배열) : 수정된 필드와 수정안된 필드 모두를 얻음.
         let editedRowItems = AUIGrid.getEditedRowItems(grid3);
 
@@ -588,13 +599,9 @@
             successSave : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
-                    //팝업 닫기
+                    focus = AUIGrid.getSelectedRowIndexes(grid1)[0];
                     search_grid3_onclick();
-                    let amt = AUIGrid.getColumnValues(grid3, "AMT")
-                    let amts = 0;
-                    amt.forEach(row => amts += row)
-                    input_planAmtAll.value = amts;
-                    save_grid1_onclick();
+                    search_grid1_onclick();
                 }else return;
             }
         });
@@ -619,13 +626,11 @@
             component : pgId + "_grid1",
             param : param,
         }
-
         we_delete(deleteData,{
             successDelete : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
                     search_grid1_onclick();
-                    search_grid3_onclick();
                 }else return;
             }
         });
@@ -674,8 +679,7 @@
             successDelete : (json) => {
                 alert(json.O_MSG);
                 if(json.O_RESULT > 0){
-                    search_grid2_onclick();
-                    search_grid3_onclick();
+                    search_grid1_onclick();
                 }else return;
             }
         });
@@ -840,6 +844,7 @@
         input_planAmtSub.value = amts * (Number(input_subRate.value)/100);
     })
 
+
     //로드
     window.onload = function() {
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
@@ -850,15 +855,12 @@
 
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
-        Promise.all([
-            getSelect_search_planMonth(),
-            getSelect_search_code(),
-            getSelect_search_subCode(),
-            getSelect_search_kindCode(),
-        ]).then(function(){
-            //로드 시 그리드 바로 조회
-            search_grid1_onclick();
-        })
+
+        getSelect_search_planMonth()
+            .then(() => getSelect_search_code())
+            .then(() => getSelect_search_subCode())
+            .then(() => getSelect_search_kindCode())
+            .then(() => search_grid1_onclick())
 
     };
 

@@ -25,6 +25,11 @@
                     <span class="select-container">&emsp;
                         <select id="search_kindCode" class="select_cont150"></select>
                     </span>
+                    <span class="select-container">&emsp;
+                        <input type="checkbox" id="search_remarks" checked/>
+                        실시 및 계획 포함
+                    </span>
+
                 </div>
             </div>
             <div id="grid1"  style="height: 611px; border: 1px solid #bcbcbc;"></div>
@@ -63,39 +68,40 @@
     const search_code = document.querySelector("#search_code");
     const search_subCode = document.querySelector("#search_subCode");
     const search_kindCode = document.querySelector("#search_kindCode");
+    const search_remarks = document.querySelector("#search_remarks");
 
     //그리드 설정
     const grid1ColumnLayout = [
         { dataField: "CODE_NAME",
             headerText: "공사종별",
             dataType: "text",
-            width : "30%",
+            width : "20%",
             style : "text-align-left",
         },
-        { dataField: "REGUL_YN_NM",
+        { dataField: "NAME",
             headerText: "방법",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
-        { dataField: "PERIOD",
+        { dataField: "RE_PERIOD",
             headerText: "주기",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
-        { dataField: "RATE",
+        { dataField: "RE_RATE",
             headerText: "수선율",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
         { dataField: "RE_YEAR",
             headerText: "최종년도",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
         { dataField: "PLAN_YEAR",
             headerText: "예정년도",
             dataType: "text",
-            width : "10%",
+            width : "8%",
         },
         { dataField: "UNIT",
             headerText: "단위",
@@ -106,24 +112,24 @@
             headerText: "수량",
             dataType: "numeric",
             formatString :"#,###",
-            width : "10%",
+            width : "8%",
         },
         { dataField: "UNIT_PRICE",
             headerText: "단가",
             dataType: "numeric",
             formatString : "#,###",
-            width : "15%",
+            width : "10%",
         },
         { dataField: "PLAN_AMT",
             headerText: "수선예정금액",
             dataType: "numeric",
             formatString : "#,###",
-            width : "20%",
+            width : "15%",
         },
         { dataField: "PLAN_REMARKS",
             headerText: "실시 및 계획",
             dataType: "text",
-            width : "30%",
+            width : "20%",
             style : "text-align-left",
         },
     ];
@@ -153,6 +159,13 @@
 
     //그리드 이벤트
     //체크박스 클릭 시
+    search_remarks.addEventListener("change", (event)=>{
+        if(event.target.checked){
+            AUIGrid.setColumnPropByDataField( grid1, "PLAN_REMARKS", {  width : "20%" } );
+        }else{
+            AUIGrid.setColumnPropByDataField( grid1, "PLAN_REMARKS", {  width : 0 } );
+        }
+    })
 
     //그리드 조회 함수
     function search_grid1_onclick(){
@@ -320,15 +333,11 @@
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
 
-        Promise.all([
-            getSelect_search_planMonth(),
-            getSelect_search_code(),
-            getSelect_search_subCode(),
-            getSelect_search_kindCode(),
-        ]).then(function (){
-            //로드 시 그리드 바로 조회
-            search_grid1_onclick();
-        })
+        getSelect_search_planMonth()
+            .then(() => getSelect_search_code())
+            .then(() => getSelect_search_subCode())
+            .then(() => getSelect_search_kindCode())
+            .then(() => search_grid1_onclick())
     };
 
 </script>

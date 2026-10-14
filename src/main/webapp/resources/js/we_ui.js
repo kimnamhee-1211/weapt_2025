@@ -278,7 +278,6 @@ function inputMoneyFormat(obj) {
         obj.value = "";
         return;
     }
-
     // 숫자를 3자리 단위로 콤마 추가
     if (num !== "") {
         obj.value = Number(num).toLocaleString('ko-KR');
@@ -342,6 +341,9 @@ function gridToInput(grid, inputDiv) {
             if (el.dataset.format === "date") {
                 el.value = "";
                 el.value = dateFormat(selectedRow[key]) ?? '';
+            }else if (el.dataset.format  === "money") {
+                el.value = "";
+                el.value = Number(selectedRow[key]).toLocaleString('ko-KR') ?? '';
             }else if (el.type === "checkbox") {
                 el.checked = false;
                 el.checked = (el.value == selectedRow[key]);
@@ -369,6 +371,8 @@ function inputToGrid(grid, inputDiv) {
         let key = el.name;
         let value = "";
         if (el.dataset.format === "date") {
+            value = el.value.replace(/\D/g, '');
+        }else if (el.dataset.format === "money") {
             value = el.value.replace(/\D/g, '');
         }else if (el.dataset.format === "licenseNo") {
             value = el.value.replace(/\D/g, '');

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.xml.bind.SchemaOutputResolver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -285,7 +286,7 @@ public class JangsooServiceImpl implements JangsooService {
             );
         }
         serviceSupport.setParam(param, loginUser, pgId, menuId);
-
+        System.out.println("param" + param);
         int resultDeleteRowCount = 0;
         int resultInsertRowCount = 0;
         int resultInsertRowCountToview = 0;
@@ -302,34 +303,20 @@ public class JangsooServiceImpl implements JangsooService {
 //        statement = serviceSupport.buildCrudStatement(sectionId, component + "_5", "deleteOne");
 //        resultDeleteRowCount += baseCrudMapper.deleteOne(statement, deleteMap);
 
-        List<Map<String, Object>> insertList1 = param.stream()
-                .filter(map -> "1".equals(map.get("LEVEL")) )
-                .collect(Collectors.toList());
-        if(insertList1 != null && insertList1.size() > 0) {
-            statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "insertList");
-            resultInsertRowCount += baseCrudMapper.insertList(statement, insertList1);
-        }
-        List<Map<String, Object>> insertList2 = param.stream()
-                .filter(map -> "2".equals(map.get("LEVEL")))
-                .collect(Collectors.toList());
-        if(insertList2 != null && insertList2.size() > 0) {
-            statement = serviceSupport.buildCrudStatement(sectionId, component + "_2", "insertList");
-            resultInsertRowCount += baseCrudMapper.insertList(statement, insertList2);
-        }
-        List<Map<String, Object>> insertList3 = param.stream()
-                .filter(map -> "3".equals(map.get("LEVEL")) )
-                .collect(Collectors.toList());
-        if(insertList3 != null && insertList3.size() > 0) {
-            statement = serviceSupport.buildCrudStatement(sectionId, component + "_3", "insertList");
-            resultInsertRowCountToview += baseCrudMapper.insertList(statement, insertList3);
-            resultInsertRowCount += resultInsertRowCountToview;
 
-            statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "selectList");
-            List<Map<String, Object>> insertList4 = baseCrudMapper.selectList(statement, insertList3.get(0));
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "insertList");
+        resultInsertRowCount += baseCrudMapper.insertList(statement, param);
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_2", "insertList");
+        resultInsertRowCount += baseCrudMapper.insertList(statement, param);
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_3", "insertList");
+        resultInsertRowCountToview += baseCrudMapper.insertList(statement, param);
+        resultInsertRowCount += resultInsertRowCountToview;
 
-            statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "insertList");
-            resultInsertRowCount += baseCrudMapper.insertList(statement, insertList4);
-        }
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "selectList");
+        List<Map<String, Object>> insertList = baseCrudMapper.selectList(statement, param.get(0));
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_4", "insertList");
+        resultInsertRowCount += baseCrudMapper.insertList(statement, insertList);
+
         if (resultInsertRowCount <= 0) {
             throw CrudFailException.insertFail(sectionId, pgId, component, param, resultInsertRowCount);
         }
@@ -393,7 +380,8 @@ public class JangsooServiceImpl implements JangsooService {
         int resultDeleteRowCountToView = 0;
         String statement = "";
         statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "deleteOne");
-        resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
+        resultDeleteRowCountToView += baseCrudMapper.deleteOne(statement, param);
+        resultDeleteRowCount += resultDeleteRowCountToView;
         statement = serviceSupport.buildCrudStatement(sectionId, component + "_2", "deleteOne");
         resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
         statement = serviceSupport.buildCrudStatement(sectionId, component + "_3", "deleteOne");
@@ -410,10 +398,9 @@ public class JangsooServiceImpl implements JangsooService {
         selectOne = baseCrudMapper.selectOne(statement, param);
         if (((Number) selectOne.get("COUNT")).intValue() == 0) {
             statement = serviceSupport.buildCrudStatement(sectionId, component + "_5", "deleteOne");
-            resultDeleteRowCountToView += baseCrudMapper.deleteOne(statement, param);
+            resultDeleteRowCount += baseCrudMapper.deleteOne(statement, param);
         }
 
-        resultDeleteRowCount += resultDeleteRowCountToView;
         if (resultDeleteRowCount <= 0) {
             throw CrudFailException.insertFail(sectionId, pgId, component, param, resultDeleteRowCount);
         }
@@ -473,16 +460,17 @@ public class JangsooServiceImpl implements JangsooService {
          LOGGER.debug("insertList_soo02020_grid3: " + insertParam);
 
          int resultInsertRowCount = 0;
+         int resultInsertRowCountView = 0;
          String statement = "";
          statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "insertList");
          resultInsertRowCount += baseCrudMapper.insertList(statement, insertParam);
          statement = serviceSupport.buildCrudStatement(sectionId, component  + "_2", "insertList");
-         resultInsertRowCount += baseCrudMapper.insertList(statement, insertParam);
-
+         resultInsertRowCountView += baseCrudMapper.insertList(statement, insertParam);
+         resultInsertRowCount += resultInsertRowCountView;
          if (resultInsertRowCount <= 0) {
              throw CrudFailException.insertFail(sectionId, pgId, component, insertParam, resultInsertRowCount);
          }
-         return resultInsertRowCount;
+         return resultInsertRowCountView;
      }
 
     private int update_soo02020_grid3(String sectionId,
@@ -496,14 +484,16 @@ public class JangsooServiceImpl implements JangsooService {
         LOGGER.debug("updateList_soo02020_grid3: " + updateParam);
 
         int resultUpdateRowCount = 0;
+        int resultUpdateRowCountView = 0;
         String statement = "";
         serviceSupport.setParam(updateParam, loginUser, pgId, menuId);
         statement = serviceSupport.buildCrudStatement(sectionId, component + "_1", "updateList");
-        resultUpdateRowCount += baseCrudMapper.updateList(statement, updateParam);
-
+        resultUpdateRowCountView += baseCrudMapper.updateList(statement, updateParam);
+        resultUpdateRowCount += resultUpdateRowCountView;
         for(Map<String, Object> updateParamMap : updateParam){
             statement = serviceSupport.buildCrudStatement(sectionId, component + "_2", "selectOne");
             Map<String, Object> selectOne =  baseCrudMapper.selectOne(statement, updateParamMap);
+            System.out.println("그리드3 :" + selectOne);
             if(((Number)selectOne.get("COUNT")).intValue() > 0){
                 statement = serviceSupport.buildCrudStatement(sectionId, component + "_2", "updateOne");
                 resultUpdateRowCount += baseCrudMapper.updateOne(statement, updateParamMap);
@@ -512,12 +502,14 @@ public class JangsooServiceImpl implements JangsooService {
                 resultUpdateRowCount += baseCrudMapper.insertOne(statement, updateParamMap);
             }
         }
+        statement = serviceSupport.buildCrudStatement(sectionId, component + "_3", "updateOne");
+        resultUpdateRowCount += baseCrudMapper.updateOne(statement, updateParam.get(0));
 
 
         if (resultUpdateRowCount <= 0) {
             throw CrudFailException.updateFail(sectionId, pgId, component, updateParam, resultUpdateRowCount);
         }
-        return resultUpdateRowCount;
+        return resultUpdateRowCountView;
     }
 
 
@@ -539,12 +531,6 @@ public class JangsooServiceImpl implements JangsooService {
 
         return make_name(result);
     }
-
-
-
-
-
-
 
     private List<Map<String, Object>> make_name(List<Map<String, Object>> result){
 

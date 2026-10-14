@@ -16,19 +16,19 @@
                         <select id="search_planMonth" class="select_cont100"></select>&emsp;
                     </span>
                     <span class="select-container">&emsp;
-                        <input type="radio" id="" name="" class="">
+                        <input type="radio" id="search_level" name="LEVEL" value="1" class="">
                         <label for="option1">총괄</label>
                     </span>
                     <span class="select-container">&emsp;
-                        <input type="radio" id="" name="" class="">
+                        <input type="radio" id="" name="LEVEL"  value="2" class="">
                         <label for="option2">총괄구분</label>
                     </span>
                     <span class="select-container">&emsp;
-                        <input type="radio" id="" name="" class="" checked>
+                        <input type="radio" id="" name="LEVEL"  value="3" class="" checked>
                         <label for="option3">공사종별</label>
                     </span>
                     <span class="select-container">&emsp;&emsp;수선예정년 :&nbsp;
-                        <select id="search_planYear" name="" class="select_cont70"></select>
+                        <select id="search_planYear" class="select_cont70"></select>
                     </span>
                 </div>
             </div>
@@ -65,7 +65,6 @@
     let grid1;	// 그리드 컴포넌트
     let focus = 0;	//그리드 컴포넌트 포커스
     const search_planMonth = document.querySelector("#search_planMonth")	//select 컴포넌트
-    const search_date = document.querySelector("#search_date")	//select 컴포넌트
     const search_planYear = document.querySelector("#search_planYear")	//select 컴포넌트
 
     //그리드 설정
@@ -77,19 +76,19 @@
             style : "text-align-left",
             editable : false
         },
-        { dataField: "REGUL_YN_NM",
+        { dataField: "NAME",
             headerText: "방법",
             dataType: "text",
             width : "10%",
             editable : false
         },
-        { dataField: "PERIOD",
+        { dataField: "RE_PERIOD",
             headerText: "주기",
             dataType: "text",
             width : "10%",
             editable : false
         },
-        { dataField: "RATE",
+        { dataField: "RE_RATE",
             headerText: "수선율",
             dataType: "text",
             width : "10%",
@@ -153,7 +152,7 @@
         //검색데이터
         let selectParam = {
             PLAN_MONTH : search_planMonth.value,
-            DATE : search_date.value,
+            LEVEL : document.querySelector('input[name="LEVEL"]:checked')?.value,
             PLAN_YEAR : search_planYear.value
         }
 
@@ -268,6 +267,7 @@
         search_planYear.innerHTML = "";
         //검색데이터
         let param = {
+            PLAN_MONTH :  search_planMonth.value
         }
         //파라미터
         let data = {
@@ -286,7 +286,6 @@
         }
         search_planYear.selectedIndex = 0;
     }
-
     search_planMonth.addEventListener("change", function (){
         getSelect_search_planYear();
     })
@@ -300,13 +299,10 @@
         //crud 권한 처리 함수
         checkCrudPermission(pgId);
 
-        Promise.all([
-            getSelect_search_planMonth(),
-            getSelect_search_planYear()
-        ]).then(function (){
-            //로드 시 그리드 바로 조회
-            search_grid1_onclick();
-        })
+        getSelect_search_planMonth()
+            .then(() => getSelect_search_planYear())
+            .then(() => search_grid1_onclick())
+
     };
 
 </script>
