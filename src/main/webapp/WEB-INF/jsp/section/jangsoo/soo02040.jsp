@@ -32,7 +32,7 @@
 
                 </div>
             </div>
-            <div id="grid1"  style="height: 611px; border: 1px solid #bcbcbc;"></div>
+            <div id="grid1"  style="height: 611px;"></div>
         </div>
 
 <script>

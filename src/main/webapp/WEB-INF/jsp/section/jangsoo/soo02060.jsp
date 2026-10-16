@@ -9,16 +9,13 @@
                 <div class="section1_nav">
                     <i class="icon-recycle"></i>장기수선계획마감
                 </div>
-                 <div class="section1_btn">
-                    <button id="deadline" onclick="">마감</button>
-                    <button id="eadline_cancel" onclick="">마감해지</button>
-                </div>
+                 <div class="section1_btn" id="section1_btn"></div>
             </div>
             <div class="section2">
                 <div class="section2_line0">
                 </div>
             </div>
-            <div id="grid1" style="height: 652px; border: 1px solid #bcbcbc;"></div>
+            <div id="grid1" style="height: 652px;"></div>
         </div>
 
 
@@ -270,9 +267,8 @@
         //기본 crud 버튼 생성(검색/추가/저장/삭제/인쇄)
         btnMaker({ tag: "#section1_btn", grid:"grid1", search: true});
 
-        document.querySelector("#section1_btn").insertAdjacentHTML("afterbegin", "<button id='close_btn' onclick='close_onclick()' class='admin_btn'>기본 등록</button>");
-
-        document.querySelector("#section1_btn").insertAdjacentHTML("afterbegin", "<button id='cancelClose_btn' onclick='cancelClose_onclick()' class='admin_btn'>기본 등록</button>");
+        document.querySelector("#section1_btn").insertAdjacentHTML("afterbegin", "<button id='close_btn' onclick='close_onclick()' class='admin_btn'>마감</button>");
+        document.querySelector("#section1_btn").insertAdjacentHTML("afterbegin", "<button id='cancelClose_btn' onclick='cancelClose_onclick()' class='admin_btn'>마감해지</button>");
 
         //crud 권한 처리 함수
         checkCrudPermission(pgId);

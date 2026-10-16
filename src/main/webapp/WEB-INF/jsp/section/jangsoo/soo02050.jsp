@@ -24,7 +24,7 @@
                         </span>
                 </div>
             </div>
-            <div id="grid1" style="height: 611px; border: 1px solid #bcbcbc;">
+            <div id="grid1" style="height: 611px;">
             </div>  
         </div>
 
@@ -68,52 +68,77 @@
             width : "30%",
             style : "text-align-left",
         },
-        { dataField: "REGUL_YN_NM",
+        { dataField: "NAME",
             headerText: "방법",
             dataType: "text",
             width : "10%",
         },
-        { dataField: "PERIOD",
-            headerText: "주기",
-            dataType: "text",
-            width : "10%",
+        {
+            headerText : "직전수립조정년월",
+            children : [{ dataField: "PRE_RE_PERIOD",
+                    headerText: "주기",
+                    dataType: "text",
+                    width : "10%",
+                },
+                { dataField: "PRE_PLAN_AMT",
+                    headerText: "수선예정금액",
+                    dataType: "numeric",
+                    formatString : "#,###",
+                    width : "20%",
+                }]
         },
-        { dataField: "PLAN_AMT",
-            headerText: "수선예정금액",
-            dataType: "numeric",
-            formatString : "#,###",
-            width : "20%",
+        {
+            headerText : "기준수립조정년월",
+            children : [ { dataField: "RE_PERIOD",
+                    headerText: "주기",
+                    dataType: "text",
+                    width : "10%",
+                },
+                { dataField: "PLAN_AMT",
+                    headerText: "수선예정금액",
+                    dataType: "numeric",
+                    formatString : "#,###",
+                    width : "20%",
+                }]
         },
-        { dataField: "PERIOD",
-            headerText: "주기",
-            dataType: "text",
-            width : "10%",
-        },
-        { dataField: "PLAN_AMT",
-            headerText: "수선예정금액",
-            dataType: "numeric",
-            formatString : "#,###",
-            width : "20%",
-        },
-        { dataField: "PERIOD",
-            headerText: "주기",
-            dataType: "text",
-            width : "10%",
-        },
-        { dataField: "PLAN_AMT",
-            headerText: "수선예정금액",
-            dataType: "numeric",
-            formatString : "#,###",
-            width : "20%",
+        {
+            headerText : "증감(기준 - 직전)",
+            children : [{ dataField: "DIFF_RE_PERIOD",
+                    headerText: "주기",
+                    width : "10%",
+                    expFunction : function (rowIndex, columnIndex, item, dataField ) {
+                        return Number(Number(item.RE_PERIOD) - Number(item.PRE_RE_PERIOD))
+                    }
+                },
+                { dataField: "DIFF_PLAN_AMT",
+                    headerText: "수선예정금액",
+                    dataType: "numeric",
+                    formatString : "#,###",
+                    width : "20%",
+                    expFunction : function (rowIndex, columnIndex, item, dataField ) {
+                        return Number(Number(item.PLAN_AMT) - Number(item.PRE_PLAN_AMT))
+                    }
+                }]
         },
     ];
 
-    const footerLayout1 = [{
-        dataField: "PLAN_AMT",
-        positionField: "PLAN_AMT",
-        operation: "SUM",
-        formatString: "#,###"
-    }];
+    const footerLayout1 = [
+        {
+            dataField: "PRE_PLAN_AMT",
+            positionField: "PRE_PLAN_AMT",
+            operation: "SUM",
+            formatString: "#,###"
+        },{
+            dataField: "PLAN_AMT",
+            positionField: "PLAN_AMT",
+            operation: "SUM",
+            formatString: "#,###"
+        },{
+            dataField: "DIFF_PLAN_AMT",
+            positionField: "DIFF_PLAN_AMT",
+            operation: "SUM",
+            formatString: "#,###"
+        }];
 
     //그리드 생성
     grid1 = AUIGrid.create("#grid1", grid1ColumnLayout,
